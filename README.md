@@ -121,3 +121,17 @@ xiangqi-opening-recognition-spec.md
 - 使用者案例：`backend/tests/fixtures/user/*.json`
 
 每個案例包含 `id`、`name`、`fen`、`expectedName`、`memoryPreset`、`notes` 及 `source`。需要依賴走子次序的分類，應在 `memoryPreset` 或完整 UCCI 測試中提供最小歷史，而不能只依靠 FEN 推測。
+
+## One-command local startup
+
+Open one Command Prompt in the project folder and run:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File .\start-local.ps1
+```
+
+The script starts both services in hidden windows and opens the browser at `http://127.0.0.1:3001/`. Keep the Command Prompt open while using the app. Press Enter in that window to close the launcher. To stop services later, run:
+
+```powershell
+powershell.exe -ExecutionPolicy Bypass -File .\stop-local.ps1
+```
