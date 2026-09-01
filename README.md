@@ -47,6 +47,16 @@ cd ..
 npm.cmd run dev
 ```
 
+## Windows 桌面版
+
+需要安裝 Electron、PyInstaller 及前端依賴後，可建立免命令列操作的便攜版：
+
+```powershell
+npm.cmd run desktop:portable
+```
+
+完成後雙擊 `release-portable\象棋殺法識別.exe` 即可啟動；應用程式會自動啟動內置前後端服務，關閉視窗時一併停止服務。Electron Builder 的 NSIS 安裝包命令為 `npm.cmd run desktop:dist`。
+
 ## 開發與測試命令
 
 ```powershell

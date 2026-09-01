@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from pathlib import Path
 
@@ -28,7 +29,7 @@ from .service import advance, analyze, create_initial, inspect
 from .patterns import analyze_patterns
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(os.environ.get("XIANGQI_DATA_DIR", Path(__file__).resolve().parents[1]))
 BUILT_IN_DIR = ROOT / "tests" / "fixtures" / "built_in"
 USER_DIR = ROOT / "tests" / "fixtures" / "user"
 SAFE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{1,63}$")

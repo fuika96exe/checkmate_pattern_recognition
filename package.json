@@ -9,6 +9,9 @@
     "dev": "vinext dev --hostname 127.0.0.1 --port 3001",
     "build": "vinext build",
     "start": "vinext start",
+    "desktop:backend": "powershell.exe -ExecutionPolicy Bypass -File desktop/build-backend.ps1",
+    "desktop:portable": "npm.cmd run build && npm.cmd run desktop:backend && powershell.exe -ExecutionPolicy Bypass -File desktop/build-portable.ps1",
+    "desktop:dist": "npm.cmd run build && npm.cmd run desktop:backend && electron-builder --win nsis",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint app tests --ignore-pattern dist --ignore-pattern .next --ignore-pattern .pytest_cache",
     "db:generate": "drizzle-kit generate"
@@ -19,7 +22,9 @@
     "drizzle-orm": "0.45.2",
     "next": "16.2.6",
     "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react-dom": "19.2.6",
+    "vite": "8.0.13",
+    "vinext": "0.0.50"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
@@ -30,14 +35,33 @@
     "@vitejs/plugin-react": "6.0.2",
     "@vitejs/plugin-rsc": "0.5.26",
     "drizzle-kit": "0.31.10",
+    "electron": "^44.1.0",
+    "electron-builder": "^26.15.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
     "react-server-dom-webpack": "19.2.6",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vinext": "0.0.50",
-    "vite": "8.0.13",
     "wrangler": "4.92.0"
   },
-  "type": "module"
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "build": {
+    "appId": "com.fuika96exe.checkmatepattern",
+    "productName": "象棋杀法识别",
+    "directories": { "output": "release-app" },
+    "files": ["desktop/main.cjs", "package.json"],
+    "extraResources": [
+      { "from": "dist", "to": "app-runtime/dist" },
+      { "from": "node_modules", "to": "app-runtime/node_modules" },
+      { "from": "package.json", "to": "app-runtime/package.json" },
+      { "from": "vite.config.ts", "to": "app-runtime/vite.config.ts" },
+      { "from": "next.config.ts", "to": "app-runtime/next.config.ts" },
+      { "from": "backend/tests/fixtures", "to": "backend-data/tests/fixtures" },
+      { "from": "release-backend/xiangqi-backend.exe", "to": "backend/xiangqi-backend.exe" }
+    ],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
+    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true }
+  }
 }

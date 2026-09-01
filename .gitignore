@@ -36,3 +36,10 @@ test_convert.js
 
 # Local development server logs
 .server-logs/
+
+# Desktop build output
+release/
+release-app/
+release-backend/
+release-portable/
+build/pyinstaller/
