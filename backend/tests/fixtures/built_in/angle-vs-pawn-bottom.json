@@ -1,0 +1,11 @@
+{
+  "id": "angle-vs-pawn-bottom",
+  "name": "仙人指路對卒底炮",
+  "fen": "rnbakabnr/9/2c4c1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKA1BR w - - 0 1",
+  "expectedName": "仙人指路對卒底炮",
+  "memoryPreset": {
+    "redChoicePath": ["angle_pawn"]
+  },
+  "notes": "卒底炮只由黑方觸發，且炮在已挺起的三七路兵底",
+  "source": "built_in"
+}

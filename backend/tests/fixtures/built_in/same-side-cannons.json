@@ -1,0 +1,9 @@
+{
+  "id": "same-side-cannons",
+  "name": "順炮",
+  "fen": "rnbakabnr/9/1c2c4/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/9/RNBAKABNR w - - 2 2",
+  "expectedName": "順炮",
+  "memoryPreset": {},
+  "notes": "雙方中炮均由 h 線炮移入，另兩炮同留在 b 線；只看四炮位置",
+  "source": "built_in"
+}

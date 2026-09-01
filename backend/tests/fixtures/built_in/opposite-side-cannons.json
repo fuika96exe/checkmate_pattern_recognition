@@ -1,0 +1,9 @@
+{
+  "id": "opposite-side-cannons",
+  "name": "列炮",
+  "fen": "rnbakabnr/9/4c2c1/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/9/RNBAKABNR w - - 2 2",
+  "expectedName": "列炮",
+  "memoryPreset": {},
+  "notes": "紅方中炮由 h 線移入、黑方由 b 線移入，另兩炮分留相反側；只看四炮位置",
+  "source": "built_in"
+}

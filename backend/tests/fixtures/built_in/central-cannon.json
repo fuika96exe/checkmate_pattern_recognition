@@ -1,0 +1,9 @@
+{
+  "id": "central-cannon",
+  "name": "中炮",
+  "fen": "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/9/RNBAKABNR w - - 0 1",
+  "expectedName": "中炮",
+  "memoryPreset": {},
+  "notes": "FEN 直接見紅方中相位有炮",
+  "source": "built_in"
+}

@@ -1,0 +1,9 @@
+{
+  "id": "horse-vs-screen",
+  "name": "起馬對屏風馬",
+  "fen": "r1bakab1r/9/1cn3nc1/p1p1p1p1p/9/2P6/P3P1P1P/1C4NC1/9/RNBAKAB1R w - - 0 1",
+  "expectedName": "起馬對屏風馬",
+  "memoryPreset": {},
+  "notes": "FEN 檢視模式按辨認優先序推斷紅方先選起馬",
+  "source": "built_in"
+}

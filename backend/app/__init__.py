@@ -1,0 +1,2 @@
+"""Xiangqi opening recognition MVP."""
+
