@@ -42,4 +42,6 @@ release/
 release-app/
 release-backend/
 release-portable/
+release-portable-fixed/
+release-portable-final/
 build/pyinstaller/
