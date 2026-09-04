@@ -18,8 +18,8 @@ import type {
 import { XiangqiBoard } from "./XiangqiBoard";
 
 const PAGE_SIZE = 24;
-const ANALYSIS_WORKERS = 3;
-const CACHE_PREFIX = "xiangqi-puzzle-recognition:v1";
+const ANALYSIS_WORKERS = 1;
+const CACHE_PREFIX = "xiangqi-puzzle-recognition:v2";
 
 interface RecognitionCache {
   datasetVersion: string;
@@ -31,6 +31,7 @@ interface BatchState {
   running: boolean;
   completed: number;
   total: number;
+  failed: number;
 }
 
 function parseFen(fen: string): Record<string, string> {
@@ -125,7 +126,7 @@ export function PuzzleBrowser() {
   const [filtersExpanded, setFiltersExpanded] = useState(true);
   const [listExpanded, setListExpanded] = useState(true);
   const [page, setPage] = useState(1);
-  const [batch, setBatch] = useState<BatchState>({ running: false, completed: 0, total: 0 });
+  const [batch, setBatch] = useState<BatchState>({ running: false, completed: 0, total: 0, failed: 0 });
   const selectionToken = useRef(0);
   const batchController = useRef<AbortController | null>(null);
 
@@ -253,8 +254,6 @@ export function PuzzleBrowser() {
       }
     } catch (reason) {
       const error = reason instanceof Error ? reason.message : "棋题分析失败";
-      const summary: PuzzleRecognitionSummary = { status: "invalid", patternIds: [], error };
-      setSummaries((current) => ({ ...current, [puzzle.key]: summary }));
       if (selectionToken.current === token) {
         setSelectedResult({ rulesVersion, valid: false, error, failedMoveIndex: null, timeline: [], analysis: null });
       }
@@ -273,7 +272,7 @@ export function PuzzleBrowser() {
     const puzzles = dataset.puzzles.filter((puzzle) => puzzle.importStatus === "ready");
     const controller = new AbortController();
     batchController.current = controller;
-    setBatch({ running: true, completed: 0, total: puzzles.length });
+    setBatch({ running: true, completed: 0, total: puzzles.length, failed: 0 });
     let cursor = 0;
 
     async function worker() {
@@ -285,13 +284,9 @@ export function PuzzleBrowser() {
         try {
           const response = await api.analyzePuzzle(puzzle, controller.signal);
           recordResponse(puzzle, response);
-        } catch (reason) {
+        } catch {
           if (!controller.signal.aborted) {
-            const error = reason instanceof Error ? reason.message : "棋题分析失败";
-            setSummaries((current) => ({
-              ...current,
-              [puzzle.key]: { status: "invalid", patternIds: [], error },
-            }));
+            setBatch((current) => ({ ...current, failed: current.failed + 1 }));
           }
         } finally {
           setAnalyzing((current) => {
@@ -368,8 +363,8 @@ export function PuzzleBrowser() {
 
         <div className="batch-bar">
           <div>
-            <strong>{batch.running ? `正在分析 ${batch.completed} / ${batch.total}` : "全量人工复核准备"}</strong>
-            <small>每题实时运行全部杀法规则，结果仅作人工检查。</small>
+            <strong>{batch.running ? `正在分析 ${batch.completed} / ${batch.total}` : batch.total > 0 ? `上次完成 ${batch.completed} / ${batch.total}` : "全量人工复核准备"}</strong>
+            <small>{batch.failed > 0 ? `${batch.failed} 题因暂时性服务错误未完成；重新分析即可重试，不会误标为无效。` : "每题实时运行全部杀法规则，结果仅作人工检查。"}</small>
           </div>
           {batch.running ? <Button onClick={stopBatch}>停止</Button> : <Button appearance="primary" onClick={() => void runAllPuzzles()}>分析全部 {dataset.puzzleCount} 题</Button>}
         </div>
