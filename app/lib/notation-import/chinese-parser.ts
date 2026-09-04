@@ -109,18 +109,9 @@ function matchChineseMove(
     if (toCol !== fileToCol(targetDigit)) return false;
   }
 
-  // Check prefix or starting file
-  const isPrefix0 = ['前', '后', '中', '一', '二', '三', '四', '五', '1', '2', '3', '4', '5'].includes(
-    char0,
-  );
-
-  if (isPrefix0) {
-    const pieceChar = char1;
-    const expectedKind = PIECE_KIND_MAP[pieceChar];
-    if (!expectedKind || expectedKind !== piece.toLowerCase()) return false;
-
-    // Find all pieces of this kind
-    // Typically in the same column, or on the board for pawns
+  // Case A: char0 is piece, char1 is 前/后 (e.g. 车前退二, 炮后平四, 马前进三)
+  if (PIECE_KIND_MAP[char0] && (char1 === '前' || char1 === '后')) {
+    if (PIECE_KIND_MAP[char0] !== piece.toLowerCase()) return false;
     const sameKindPieces = Object.keys(board)
       .filter((sq) => board[sq] === piece)
       .sort((a, b) => {
@@ -128,18 +119,74 @@ function matchChineseMove(
         const rb = parseInt(b[1], 10);
         return isRed ? rb - ra : ra - rb; // front to back
       });
-
-    // If there's a column with multiple pieces of this type
     const colGroups: Record<number, string[]> = {};
     for (const sq of sameKindPieces) {
       const c = FILES.indexOf(sq[0]);
       if (!colGroups[c]) colGroups[c] = [];
       colGroups[c].push(sq);
     }
-
     const multiCol = Object.values(colGroups).find((grp) => grp.length > 1);
     const candidates = multiCol || sameKindPieces;
     const idx = candidates.indexOf(from);
+    if (char1 === '前' && idx !== 0) return false;
+    if (char1 === '后' && idx !== candidates.length - 1) return false;
+    return true;
+  }
+
+  // Case B: char0 is prefix (前/后/中/一~五)
+  const isPrefix0 = ['前', '后', '中', '一', '二', '三', '四', '五', '1', '2', '3', '4', '5'].includes(
+    char0,
+  );
+
+  if (isPrefix0) {
+    // 中 / 一~五 only apply to pawns in Xiangqi
+    if (char0 !== '前' && char0 !== '后' && piece.toLowerCase() !== 'p') {
+      return false;
+    }
+
+    let candidates: string[] = [];
+    if (char1 in PIECE_KIND_MAP) {
+      const pieceChar = char1;
+      const expectedKind = PIECE_KIND_MAP[pieceChar];
+      if (!expectedKind || expectedKind !== piece.toLowerCase()) return false;
+
+      // Find all pieces of this kind
+      const sameKindPieces = Object.keys(board)
+        .filter((sq) => board[sq] === piece)
+        .sort((a, b) => {
+          const ra = parseInt(a[1], 10);
+          const rb = parseInt(b[1], 10);
+          return isRed ? rb - ra : ra - rb; // front to back
+        });
+
+      const colGroups: Record<number, string[]> = {};
+      for (const sq of sameKindPieces) {
+        const c = FILES.indexOf(sq[0]);
+        if (!colGroups[c]) colGroups[c] = [];
+        colGroups[c].push(sq);
+      }
+
+      const multiCol = Object.values(colGroups).find((grp) => grp.length > 1);
+      candidates = multiCol || sameKindPieces;
+    } else {
+      // char1 is column digit, e.g. 前2平4
+      const fileDigit = parseDigit(char1);
+      if (fileDigit === null) return false;
+      const expectedCol = fileToCol(fileDigit);
+      if (fromCol !== expectedCol) return false;
+
+      const colPieces = Object.keys(board)
+        .filter((sq) => board[sq] === piece && FILES.indexOf(sq[0]) === expectedCol)
+        .sort((a, b) => {
+          const ra = parseInt(a[1], 10);
+          const rb = parseInt(b[1], 10);
+          return isRed ? rb - ra : ra - rb;
+        });
+      candidates = colPieces;
+    }
+
+    const idx = candidates.indexOf(from);
+    if (idx === -1) return false;
 
     if (char0 === '前' && idx !== 0) return false;
     if (char0 === '后' && idx !== candidates.length - 1) return false;
@@ -155,7 +202,7 @@ function matchChineseMove(
     return true;
   }
 
-  // Standard notation: char0 is piece, char1 is file
+  // Case C: Standard notation: char0 is piece, char1 is file
   const expectedKind = PIECE_KIND_MAP[char0];
   if (!expectedKind || expectedKind !== piece.toLowerCase()) return false;
 
@@ -176,13 +223,20 @@ export function parseChineseGame(text: string): ImportResult {
     headers[pgnMatch[1]] = pgnMatch[2];
   }
 
-  // 2. Extract Chinese key-value lines (e.g. 标题: ..., 红方: ..., 结果: ...)
+  // 2. Extract Chinese key-value lines and filter out non-move lines
   const lines = text.split('\n');
+  const contentLines: string[] = [];
+
   for (const rawLine of lines) {
     const line = rawLine.trim();
     if (!line || isJunkLine(line)) continue;
+
+    if (/^\[[A-Za-z0-9_]+\s+"[^"]*"\]$/.test(line)) {
+      continue;
+    }
+
     const colonMatch = line.match(/^([^\s:：]{2,8})[:：]\s*(.+)$/);
-    if (colonMatch && !line.match(/^\d+[\.、]/)) {
+    if (colonMatch && !line.match(/^\d+[\.、:]/)) {
       const key = colonMatch[1].trim();
       const val = colonMatch[2].trim();
       if (key === '标题' || key === '棋局标题') headers.Title = val;
@@ -193,7 +247,14 @@ export function parseChineseGame(text: string): ImportResult {
       else if (key === '日期') headers.Date = val;
       else if (key.includes('Fen') || key.includes('FEN')) headers.FEN = val;
       else headers[key] = val;
+      continue;
     }
+
+    if (/^棋谱由\s*https?:\/\//i.test(line) || /^来源网站/i.test(line) || /^棋谱主人/i.test(line)) {
+      continue;
+    }
+
+    contentLines.push(rawLine);
   }
 
   const initialFen = headers.FEN || START_FEN;
@@ -203,15 +264,24 @@ export function parseChineseGame(text: string): ImportResult {
   let result = headers.Result;
 
   // 3. Preprocess text: clean comments, normalize fullwidth and characters
-  let cleanText = stripComments(text);
+  let cleanText = stripComments(contentLines.join('\n'));
+  cleanText = cleanText.replace(/\[[A-Za-z0-9_]+\s+"[^"]*"\]/g, ' ');
   cleanText = normalizeFullwidth(cleanText);
   cleanText = normalizeMoveChars(cleanText);
 
   // 4. Extract Chinese move tokens
   // A Xiangqi move is 4 characters:
   // [Piece or Prefix][File or Piece or Prefix][Direction][Target/Step]
-  const moveTokenRegex =
-    /([车马炮相象仕士兵卒帅将前后中一二三四五1-5][车马炮相象仕士兵卒帅将前后中一二三四五六七八九1-9][进退平][一二三四五六七八九1-9])/g;
+  const STANDARD_MOVE =
+    '[车马炮相象仕士兵卒帅将][一二三四五六七八九1-9前后][进退平][一二三四五六七八九1-9]';
+  const FRONT_BACK_MOVE =
+    '[前后][车马炮相象仕士兵卒一二三四五六七八九1-9][进退平][一二三四五六七八九1-9]';
+  const MULTI_PAWN_MOVE =
+    '[中一二三四五1-5][兵卒][进退平][一二三四五六七八九1-9]';
+  const moveTokenRegex = new RegExp(
+    `(${STANDARD_MOVE}|${FRONT_BACK_MOVE}|${MULTI_PAWN_MOVE})`,
+    'g',
+  );
 
   const rawTokens = cleanText.match(moveTokenRegex) || [];
 
