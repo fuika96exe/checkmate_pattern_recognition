@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from functools import lru_cache
+
 from .board import (
     _between,
     _xy,
@@ -42,21 +44,28 @@ PATTERN_ORDER = [
     "STALEMATE",
 ]
 
+CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.09.04"
+
+
+@lru_cache(maxsize=2048)
+def _apply_moves_cached(fen: str, moves: tuple[str, ...]) -> tuple[str, tuple[str, ...]]:
+    current_fen = fen
+    for move in moves:
+        current_fen = apply_move(current_fen, move)
+    return current_fen, moves
+
 
 def _apply_moves(fen: str, moves: list[str] | None) -> tuple[str, list[str]]:
-    current_fen = fen
-    applied: list[str] = []
-    for move in moves or []:
-        current_fen = apply_move(current_fen, move)
-        applied.append(move)
-    return current_fen, applied
+    current_fen, applied = _apply_moves_cached(fen, tuple(moves or ()))
+    return current_fen, list(applied)
 
 
-def _move_trace(fen: str, moves: list[str] | None) -> list[dict[str, object]]:
+@lru_cache(maxsize=1024)
+def _move_trace_cached(fen: str, moves: tuple[str, ...]) -> tuple[dict[str, object], ...]:
     current_fen = fen
     identities = build_piece_identity(fen)
     trace: list[dict[str, object]] = []
-    for ply, move in enumerate(moves or [], start=1):
+    for ply, move in enumerate(moves, start=1):
         board = parse_fen(current_fen)
         from_square = move[:2]
         to_square = move[2:]
@@ -77,7 +86,11 @@ def _move_trace(fen: str, moves: list[str] | None) -> list[dict[str, object]]:
         )
         identities = move_piece_identity(identities, from_square, to_square)
         current_fen = next_fen
-    return trace
+    return tuple(trace)
+
+
+def _move_trace(fen: str, moves: list[str] | None) -> list[dict[str, object]]:
+    return list(_move_trace_cached(fen, tuple(moves or ())))
 
 
 def _infer_sides(current_fen: str) -> tuple[dict[str, str], dict, str, str, str | None, str | None]:

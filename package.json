@@ -14,6 +14,7 @@
     "desktop:dist": "npm.cmd run build && npm.cmd run desktop:backend && electron-builder --win nsis",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint app tests --ignore-pattern dist --ignore-pattern .next --ignore-pattern .pytest_cache",
+    "puzzles:import": "python backend/scripts/import_puzzles.py",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
@@ -23,8 +24,8 @@
     "next": "16.2.6",
     "react": "19.2.6",
     "react-dom": "19.2.6",
-    "vite": "8.0.13",
-    "vinext": "0.0.50"
+    "vinext": "0.0.50",
+    "vite": "8.0.13"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.37.1",
@@ -43,25 +44,64 @@
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vinext": "0.0.50",
-    "wrangler": "4.92.0"
+    "wrangler": "^4.129.0"
   },
   "type": "module",
   "main": "desktop/main.cjs",
   "build": {
     "appId": "com.fuika96exe.checkmatepattern",
     "productName": "象棋杀法识别",
-    "directories": { "output": "release-app" },
-    "files": ["desktop/main.cjs", "package.json"],
-    "extraResources": [
-      { "from": "dist", "to": "app-runtime/dist" },
-      { "from": "node_modules", "to": "app-runtime/node_modules" },
-      { "from": "package.json", "to": "app-runtime/package.json" },
-      { "from": "vite.config.ts", "to": "app-runtime/vite.config.ts" },
-      { "from": "next.config.ts", "to": "app-runtime/next.config.ts" },
-      { "from": "backend/tests/fixtures", "to": "backend-data/tests/fixtures" },
-      { "from": "release-backend/xiangqi-backend.exe", "to": "backend/xiangqi-backend.exe" }
+    "directories": {
+      "output": "release-app"
+    },
+    "files": [
+      "desktop/main.cjs",
+      "package.json"
     ],
-    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }] },
-    "nsis": { "oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true }
+    "extraResources": [
+      {
+        "from": "dist",
+        "to": "app-runtime/dist"
+      },
+      {
+        "from": "node_modules",
+        "to": "app-runtime/node_modules"
+      },
+      {
+        "from": "package.json",
+        "to": "app-runtime/package.json"
+      },
+      {
+        "from": "vite.config.ts",
+        "to": "app-runtime/vite.config.ts"
+      },
+      {
+        "from": "next.config.ts",
+        "to": "app-runtime/next.config.ts"
+      },
+      {
+        "from": "backend/tests/fixtures",
+        "to": "backend-data/tests/fixtures"
+      },
+      {
+        "from": "release-backend/xiangqi-backend.exe",
+        "to": "backend/xiangqi-backend.exe"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

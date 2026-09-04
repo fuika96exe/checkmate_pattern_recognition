@@ -1,6 +1,7 @@
-import type { AdvanceResponse, MemoryPreset, PatternAnalysis, PatternId, PositionResponse, RecognitionState, RunAllResponse, TestCase } from "./types";
+import type { AdvanceResponse, HealthResponse, MemoryPreset, PatternAnalysis, PatternId, PositionResponse, PuzzleLineResponse, PuzzleRecord, RecognitionState, RunAllResponse, TestCase } from "./types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE
+  ?? (process.env.NODE_ENV === "production" ? "" : "http://127.0.0.1:8000");
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
@@ -23,6 +24,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  health: () => request<HealthResponse>("/api/health"),
   initial: () => request<PositionResponse>("/api/state/initial", { method: "POST" }),
   advance: (state: RecognitionState, ucciMove: string) => request<AdvanceResponse>("/api/advance", { method: "POST", body: JSON.stringify({ state, ucciMove }) }),
   inspect: (fen: string, memoryPreset: MemoryPreset) => request<PositionResponse>("/api/inspect", { method: "POST", body: JSON.stringify({ fen, memoryPreset, inferFromFen: true }) }),
@@ -31,4 +33,9 @@ export const api = {
   deleteCase: (id: string) => request<{ deleted: boolean }>(`/api/test-cases/${id}`, { method: "DELETE" }),
   runAll: () => request<RunAllResponse>("/api/test-cases/run-all", { method: "POST" }),
   analyzePattern: (fen: string, ucciMoves: string[], patternId?: PatternId) => request<PatternAnalysis>("/api/analyze-checkmate-pattern", { method: "POST", body: JSON.stringify({ patternId, fen, ucciMoves }) }),
+  analyzePuzzle: (puzzle: PuzzleRecord, signal?: AbortSignal) => request<PuzzleLineResponse>("/api/analyze-puzzle-line", {
+    method: "POST",
+    body: JSON.stringify({ fen: puzzle.initialFen, blunderMove: puzzle.blunderMove, pv: puzzle.pv }),
+    signal,
+  }),
 };

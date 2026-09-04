@@ -18,7 +18,7 @@ Install dependencies:
 
 ```powershell
 npm.cmd install
-python -m pip install -r backend\requirements.txt
+python -m pip install -r backend\requirements-local.txt
 ```
 
 Start the local app:
@@ -49,7 +49,7 @@ app/components/Workbench.tsx
   -> backend/app/board.py, notation.py, recognizer.py
 ```
 
-- `backend/app/board.py`: UCCI validation, FEN parsing, legal moves, and move application through `pyffish`.
+- `backend/app/board.py`: UCCI validation, FEN parsing, legal moves, and move application through local `pyffish` or the Cloudflare-compatible pure-Python fallback.
 - `backend/app/notation.py`: standard Chinese move notation. Red uses Chinese numerals; Black uses full-width Arabic numerals.
 - `backend/app/recognizer.py`: current-shape detection, historical facts, append-only opening memory, composite systems, modifiers, and classification names.
 - `backend/app/service.py`: service-level state transitions and immutable snapshot creation.

@@ -1,3 +1,4 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import { sites } from "./build/sites-vite-plugin";
@@ -10,5 +11,11 @@ export default defineConfig({
       ignored: ["**/release/**", "**/release-*/**", "**/build/pyinstaller/**", "**/.server-logs/**"],
     },
   },
-  plugins: [vinext(), sites()],
+  plugins: [
+    vinext(),
+    cloudflare({
+      viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
+    }),
+    sites(),
+  ],
 });

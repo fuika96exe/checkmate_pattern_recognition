@@ -6,6 +6,7 @@ import { Button } from "@fluentui/react-button";
 import { Spinner } from "@fluentui/react-spinner";
 import { Textarea } from "@fluentui/react-textarea";
 import { api } from "../lib/api";
+import { PATTERN_LABELS } from "../lib/patterns";
 import type {
   MemoryPreset,
   MoveRecord,
@@ -24,38 +25,31 @@ const EMPTY_MEMORY: MemoryPreset = {
   redWing: null,
   blackWing: null,
 };
-const PATTERN_LABELS: Record<PatternId, string> = {
-  CROWNED_CHECKMATE: "平顶冠",
-  EUNUCHS_CHASING_EMPEROR_CHECKMATE: "太监追皇帝",
-  CENTROID_PAWN_CHECKMATE: "花心兵",
-  CANNONS_SANDWICHING_CHARIOT_CHECKMATE: "夹车炮",
-  DOUBLE_CANNON_CHECKMATE: "重炮杀",
-  DOUBLE_TOAST_CHECKMATE: "双杯献酒",
-  SMOTHERED_CANNON_CHECKMATE: "闷宫杀",
-  HEAVEN_AND_EARTH_CANNON_CHECKMATE: "天地炮",
-  IRON_BOLT_CHECKMATE: "铁门栓",
-  DRAWER_CHECKMATE: "进洞出洞",
-  THROAT_CUTTING_CHECKMATE: "大胆穿心",
-  THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE: "三车闹士",
-  TWO_DEVILS_KNOCKING_CHECKMATE: "双鬼拍门",
-  DOUBLE_CHARIOTS_CHECKMATE: "双车错",
-  DISCOVERED_HORSE_CHECKMATE: "拔簧马",
-  CENTROID_CHARIOT_CHECKMATE: "花心车",
-  TIGER_SILHOUETTE_CHECKMATE: "侧面虎",
-  HORSE_CANNON_CHECKMATE: "马后炮",
-  DOUBLE_HORSES_DRINKING_SPRING_CHECKMATE: "双马饮泉",
-  DOUBLE_CHECK_CHECKMATE: "双将",
-  ELBOW_HORSE_CHECKMATE: "卧槽马",
-  PALCORNER_HORSE_CHECKMATE: "挂角马",
-  ANGLER_HORSE_CHECKMATE: "钓鱼马",
-  SMOTHERED_CHECKMATE: "闷杀",
-  WHITE_FACE_GENERAL: "白脸将",
-  STALEMATE: "困毙",
-};
-
 interface BoardSession {
   state: RecognitionState;
   legalMoves: string[];
+}
+
+function hasCompleteFenShape(fen: string): boolean {
+  const [placement, side] = fen.trim().split(/\s+/);
+  if (!placement || (side !== "w" && side !== "b")) return false;
+
+  const ranks = placement.split("/");
+  if (ranks.length !== 10) return false;
+
+  return ranks.every((rank) => {
+    let files = 0;
+    for (const character of rank) {
+      if (/^[1-9]$/.test(character)) {
+        files += Number(character);
+      } else if ("rnbakcpRNBAKCP".includes(character)) {
+        files += 1;
+      } else {
+        return false;
+      }
+    }
+    return files === 9;
+  });
 }
 
 export function WhiteFaceGeneralLab() {
@@ -72,15 +66,23 @@ export function WhiteFaceGeneralLab() {
 
   useEffect(() => {
     const trimmedFen = baseFen.trim();
-    if (!trimmedFen) {
-      setBoardSession(null);
-      setLastMove(undefined);
-      return;
-    }
-    if (boardSession?.state.fen === trimmedFen && moveText.trim() === "") {
-      return;
-    }
     const token = ++syncToken.current;
+    const deferStateUpdate = (callback: () => void) => {
+      const timer = window.setTimeout(() => {
+        if (syncToken.current === token) callback();
+      }, 0);
+      return () => window.clearTimeout(timer);
+    };
+    if (!trimmedFen) {
+      return deferStateUpdate(() => {
+        setBoardSession(null);
+        setLastMove(undefined);
+        setBoardBusy(false);
+      });
+    }
+    if (!hasCompleteFenShape(trimmedFen)) {
+      return deferStateUpdate(() => setBoardBusy(false));
+    }
     const timer = window.setTimeout(() => {
       setBoardBusy(true);
       api.inspect(trimmedFen, EMPTY_MEMORY)
@@ -131,7 +133,7 @@ export function WhiteFaceGeneralLab() {
     setBusy(true);
     setError("");
     try {
-      let response: PositionResponse = await api.inspect(baseFen.trim(), EMPTY_MEMORY);
+      const response: PositionResponse = await api.inspect(baseFen.trim(), EMPTY_MEMORY);
       let currentState = response.state;
       let currentLegalMoves = response.legalMoves;
       let currentMove: MoveRecord | undefined;

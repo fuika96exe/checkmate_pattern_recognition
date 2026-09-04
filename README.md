@@ -1,12 +1,12 @@
 # 象棋開局辨識實驗室
 
-本地 MVP，用 Python/FastAPI 處理中國象棋合法著法、中文記譜、FEN 檢視及開局辨識；前端提供可點擊棋盤、開局記憶、不可變時間線及回歸案例管理。
+本地 MVP，用 Python/FastAPI 處理中國象棋合法著法、中文記譜、FEN 檢視、開局辨識及殺法辨識；前端提供可點擊棋盤、開局記憶、不可變時間線、棋題瀏覽器及回歸案例管理。
 
 ## 最新技術設定
 
 - 前端：Next.js 16.2.6、React 19.2.6、TypeScript、Fluent UI、Vinext
 - 後端：Python 3.12、FastAPI、Uvicorn、Pydantic 2、Pyffish
-- 前端開發伺服器：`http://127.0.0.1:3000`
+- 前端開發伺服器：`http://127.0.0.1:3001`
 - 後端 API：`http://127.0.0.1:8000`
 - Node.js：`>=22.13.0`
 - 前端 API 位址環境變數：`NEXT_PUBLIC_API_BASE`，預設為 `http://127.0.0.1:8000`
@@ -17,7 +17,7 @@ PowerShell：
 
 ```powershell
 npm.cmd install
-python -m pip install -r backend\requirements.txt
+python -m pip install -r backend\requirements-local.txt
 ```
 
 若 PowerShell 因執行原則拒絕 `npm`，請使用 `npm.cmd`。
@@ -31,7 +31,7 @@ python -m pip install -r backend\requirements.txt
 腳本會以隱藏視窗啟動：
 
 - FastAPI：`backend\run.py`，port 8000
-- Vinext 前端：`npm.cmd run dev`，port 3000
+- Vinext 前端：`npm.cmd run dev`，port 3001
 
 腳本不會自動停止舊進程。若畫面仍顯示舊的辨識結果，請重啟 8000 port 的後端，然後在前端重新整理或按「重設」。
 
@@ -70,6 +70,18 @@ npm.cmd run lint
 npm.cmd run build
 ```
 
+## 棋題資料匯入
+
+棋題瀏覽器使用標準化 JSON，不在執行時直接解析 CSV。任何具有相同欄位的後續匯出檔都可用同一命令重新匯入：
+
+```powershell
+npm.cmd run puzzles:import -- "C:\path\to\Puzzles.csv"
+```
+
+輸出會寫入 `public/data/checkmate-puzzles.json`。格式錯誤的資料列不會被丟棄，而會以「無效」狀態及錯誤原因保留。人工覆核標籤另存於 `public/data/checkmate-puzzle-expectations.json`，不會把目前引擎輸出當成標準答案。
+
+「棋題瀏覽器」會在打開一道棋題時即時分析整條 `Initial Fen → Blunder Move → Pv`。棋盤預設停在失着之後，仍可退回初始局面、逐着前進或自動播放。按「分析全部」會以有限並行度執行整個語料庫，並把精簡結果按資料版本及規則版本快取在瀏覽器。
+
 `npm test` 目前仍會執行 `tests/rendered-html.test.mjs` 的舊 starter skeleton 測試；該測試尚未遷移到現有實驗室頁面，因此不是目前的 canonical 驗證命令。請使用上面的 pytest、lint 及 build 組合。
 
 ## 主要目錄
@@ -98,6 +110,8 @@ xiangqi-opening-recognition-spec.md
 | POST | `/api/advance` | 套用一步合法著法並更新辨識狀態 |
 | POST | `/api/analyze` | 重播一組 UCCI 著法 |
 | POST | `/api/inspect` | 以 FEN 及 memory preset 檢視局面 |
+| POST | `/api/analyze-checkmate-pattern` | 以 FEN 及 UCCI 序列辨識全部命中殺法 |
+| POST | `/api/analyze-puzzle-line` | 驗證棋題、建立重播時間線並辨識全部殺法 |
 | GET | `/api/test-cases` | 取得所有案例 |
 | POST | `/api/test-cases` | 儲存使用者案例 |
 | DELETE | `/api/test-cases/{case_id}` | 刪除使用者案例 |
@@ -135,3 +149,30 @@ The script starts both services in hidden windows and opens the browser at `http
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -File .\stop-local.ps1
 ```
+
+## Cloudflare deployment
+
+Current production deployments:
+
+- Frontend: `https://checkmate-pattern-recognition.kwand7910.workers.dev`
+- Recognition API: `https://checkmate-pattern-api.kwand7910.workers.dev`
+
+The Cloudflare API uses the same recognition modules with a pure-Python
+Xiangqi move/FEN layer because native CPython extensions such as `pyffish`
+cannot run in the Python Workers WebAssembly runtime. Built-in fixtures are
+available in production; saving and deleting fixture files remains a local-only
+feature.
+
+To redeploy the API and frontend:
+
+```powershell
+cd backend
+uv run pywrangler deploy
+cd ..
+.\node_modules\.bin\vinext.cmd deploy
+```
+
+The frontend calls `/api/*` on its own origin. Its Worker forwards those
+requests to `checkmate-pattern-api` through the `API` Service Binding, so no
+browser CORS configuration is required. `NEXT_PUBLIC_API_BASE` remains
+available when a separate API URL is needed for development.

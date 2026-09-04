@@ -120,3 +120,56 @@ export type PatternId =
 export interface PatternMatch { patternId: PatternId; patternNameZh: string; detected: boolean; causal: boolean; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; features: Record<string, unknown>; diagnostics: string[]; }
 
 export interface PatternAnalysis { requestedPatternId: PatternId | null; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; bestMatch: PatternMatch | null; matches: PatternMatch[]; }
+
+export interface PuzzleRecord {
+  key: string;
+  id: string;
+  rating: number | null;
+  initialFen: string;
+  blunderMove: string;
+  solverSide: Side | null;
+  pv: string[];
+  moveCount: number;
+  importStatus: "ready" | "invalid";
+  importErrors: string[];
+}
+
+export interface PuzzleDataset {
+  schemaVersion: string;
+  datasetVersion: string;
+  generatedAt: string;
+  sourceFile: string;
+  puzzleCount: number;
+  invalidCount: number;
+  puzzles: PuzzleRecord[];
+}
+
+export interface PuzzleExpectations {
+  schemaVersion: string;
+  expectations: Record<string, PatternId[]>;
+}
+
+export interface PuzzleTimelineEntry {
+  index: number;
+  fen: string;
+  move: string | null;
+}
+
+export interface PuzzleLineResponse {
+  rulesVersion: string;
+  valid: boolean;
+  error: string | null;
+  failedMoveIndex: number | null;
+  timeline: PuzzleTimelineEntry[];
+  analysis: PatternAnalysis | null;
+}
+
+export type PuzzleRecognitionStatus = "unanalyzed" | "analyzing" | "matched" | "unmatched" | "invalid";
+
+export interface PuzzleRecognitionSummary {
+  status: Exclude<PuzzleRecognitionStatus, "analyzing">;
+  patternIds: PatternId[];
+  error?: string;
+}
+
+export interface HealthResponse { status: string; rulesVersion: string }

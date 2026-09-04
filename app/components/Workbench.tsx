@@ -11,6 +11,7 @@ import { ArrowResetRegular, ChevronLeftRegular, ChevronRightRegular } from "@flu
 import { api } from "../lib/api";
 import type { MoveRecord, RecognitionState } from "../lib/types";
 import { TestCaseLab } from "./TestCaseLab";
+import { PuzzleBrowser } from "./PuzzleBrowser";
 import { XiangqiBoard } from "./XiangqiBoard";
 import { WhiteFaceGeneralLab } from "./WhiteFaceGeneralLab";
 
@@ -126,13 +127,13 @@ export function Workbench() {
 
       <nav className="app-tabs" aria-label="主要功能">
         <TabList selectedValue={tab} onTabSelect={(_, data) => setTab(String(data.value))}>
-          <Tab value="game">棋局工作台</Tab><Tab value="patterns">殺法測試</Tab><Tab value="tests">案例測試</Tab>
+          <Tab value="game">棋局工作台</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab>
         </TabList>
       </nav>
 
       <main className="app-main">
         {error && <div className="error-banner app-error" role="alert"><span>{error}</span><Button size="small" onClick={reset}>重新連接</Button></div>}
-        {!current ? <div className="loading-state"><Spinner label="正在啟動辨認服務" /></div> : tab === "patterns" ? <WhiteFaceGeneralLab /> : tab === "tests" ? <TestCaseLab currentFen={current.state.fen} /> : (
+        {!current ? <div className="loading-state"><Spinner label="正在啟動辨認服務" /></div> : tab === "patterns" ? <WhiteFaceGeneralLab /> : tab === "puzzles" ? <PuzzleBrowser /> : tab === "tests" ? <TestCaseLab currentFen={current.state.fen} /> : (
           <div className="workbench-grid">
             <section className="board-column">
               <div className="board-toolbar">

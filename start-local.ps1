@@ -11,17 +11,8 @@ Start-Process -FilePath $PythonCommand.Source `
   -WorkingDirectory (Join-Path $ProjectRoot "backend") `
   -WindowStyle Hidden
 
-$ProductionServer = Join-Path $ProjectRoot "dist\server\index.js"
-if (-not (Test-Path $ProductionServer)) {
-  Write-Host "Building the frontend for the first run..."
-  & npm.cmd run build
-  if ($LASTEXITCODE -ne 0) {
-    throw "Frontend build failed"
-  }
-}
-
 Start-Process -FilePath "npm.cmd" `
-  -ArgumentList "run", "start", "--", "--hostname", "127.0.0.1", "--port", "3001" `
+  -ArgumentList "run", "dev" `
   -WorkingDirectory $ProjectRoot `
   -WindowStyle Hidden
 

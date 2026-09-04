@@ -178,6 +178,27 @@ class PatternAnalysisResponse(ApiModel):
     matches: list[PatternMatch] = Field(default_factory=list)
 
 
+class PuzzleLineRequest(ApiModel):
+    fen: str
+    blunder_move: str
+    pv: list[str] = Field(default_factory=list)
+
+
+class PuzzleTimelineEntry(ApiModel):
+    index: int
+    fen: str
+    move: str | None = None
+
+
+class PuzzleLineResponse(ApiModel):
+    rules_version: str
+    valid: bool
+    error: str | None = None
+    failed_move_index: int | None = None
+    timeline: list[PuzzleTimelineEntry] = Field(default_factory=list)
+    analysis: PatternAnalysisResponse | None = None
+
+
 class TestCaseInput(ApiModel):
     id: str
     name: str
