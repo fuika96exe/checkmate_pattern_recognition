@@ -167,7 +167,7 @@ To redeploy the API and frontend:
 
 ```powershell
 cd backend
-uv run pywrangler deploy
+uv run pywrangler deploy --config wrangler.jsonc
 cd ..
 .\node_modules\.bin\vinext.cmd deploy
 ```

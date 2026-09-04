@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from app.main import api_analyze_puzzle_line
@@ -6,11 +7,13 @@ from scripts.import_puzzles import import_csv
 
 
 def test_puzzle_line_returns_full_timeline_and_all_matches() -> None:
-    response = api_analyze_puzzle_line(
-        PuzzleLineRequest(
-            fen="4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
-            blunder_move="e1d2",
-            pv=["b1b0", "e0e1", "c4e3"],
+    response = asyncio.run(
+        api_analyze_puzzle_line(
+            PuzzleLineRequest(
+                fen="4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
+                blunder_move="e1d2",
+                pv=["b1b0", "e0e1", "c4e3"],
+            )
         )
     )
 
@@ -22,11 +25,13 @@ def test_puzzle_line_returns_full_timeline_and_all_matches() -> None:
 
 
 def test_puzzle_line_keeps_invalid_case_visible() -> None:
-    response = api_analyze_puzzle_line(
-        PuzzleLineRequest(
-            fen="4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
-            blunder_move="a0a9",
-            pv=[],
+    response = asyncio.run(
+        api_analyze_puzzle_line(
+            PuzzleLineRequest(
+                fen="4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
+                blunder_move="a0a9",
+                pv=[],
+            )
         )
     )
 

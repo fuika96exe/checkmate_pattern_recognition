@@ -105,12 +105,12 @@ def _run_case(case: TestCaseInput) -> TestRunResult:
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
+async def health() -> dict[str, str]:
     return {"status": "ok", "rulesVersion": CHECKMATE_RULES_VERSION}
 
 
 @app.post("/api/state/initial", response_model=InitialResponse)
-def api_initial() -> InitialResponse:
+async def api_initial() -> InitialResponse:
     try:
         return create_initial()
     except Exception as exc:  # pragma: no cover
@@ -118,7 +118,7 @@ def api_initial() -> InitialResponse:
 
 
 @app.post("/api/advance", response_model=AdvanceResponse)
-def api_advance(request: AdvanceRequest) -> AdvanceResponse:
+async def api_advance(request: AdvanceRequest) -> AdvanceResponse:
     try:
         return advance(request.state, request.ucci_move)
     except Exception as exc:
@@ -126,7 +126,7 @@ def api_advance(request: AdvanceRequest) -> AdvanceResponse:
 
 
 @app.post("/api/analyze", response_model=AnalyzeResponse)
-def api_analyze(request: AnalyzeRequest) -> AnalyzeResponse:
+async def api_analyze(request: AnalyzeRequest) -> AnalyzeResponse:
     try:
         return analyze(request.ucci_moves)
     except Exception as exc:
@@ -134,7 +134,7 @@ def api_analyze(request: AnalyzeRequest) -> AnalyzeResponse:
 
 
 @app.post("/api/inspect", response_model=InspectResponse)
-def api_inspect(request: InspectRequest) -> InspectResponse:
+async def api_inspect(request: InspectRequest) -> InspectResponse:
     try:
         return inspect(request)
     except Exception as exc:
@@ -142,7 +142,7 @@ def api_inspect(request: InspectRequest) -> InspectResponse:
 
 
 @app.post("/api/analyze-position", response_model=PositionAnalysisResponse)
-def api_analyze_position(request: PositionAnalysisRequest) -> PositionAnalysisResponse:
+async def api_analyze_position(request: PositionAnalysisRequest) -> PositionAnalysisResponse:
     try:
         return PositionAnalysisResponse.model_validate(position_analysis(request.fen))
     except Exception as exc:
@@ -150,7 +150,7 @@ def api_analyze_position(request: PositionAnalysisRequest) -> PositionAnalysisRe
 
 
 @app.post("/api/analyze-checkmate-pattern", response_model=PatternAnalysisResponse)
-def api_analyze_checkmate_pattern(request: PatternAnalysisRequest) -> PatternAnalysisResponse:
+async def api_analyze_checkmate_pattern(request: PatternAnalysisRequest) -> PatternAnalysisResponse:
     try:
         return PatternAnalysisResponse.model_validate(
             analyze_patterns(request.fen, request.ucci_moves, request.pattern_id)
@@ -160,7 +160,7 @@ def api_analyze_checkmate_pattern(request: PatternAnalysisRequest) -> PatternAna
 
 
 @app.post("/api/analyze-puzzle-line", response_model=PuzzleLineResponse)
-def api_analyze_puzzle_line(request: PuzzleLineRequest) -> PuzzleLineResponse:
+async def api_analyze_puzzle_line(request: PuzzleLineRequest) -> PuzzleLineResponse:
     moves = [request.blunder_move, *request.pv]
     timeline = [PuzzleTimelineEntry(index=0, fen=request.fen)]
     current_fen = request.fen
@@ -208,12 +208,12 @@ def api_analyze_puzzle_line(request: PuzzleLineRequest) -> PuzzleLineResponse:
 
 
 @app.get("/api/test-cases", response_model=list[TestCaseInput])
-def list_test_cases() -> list[TestCaseInput]:
+async def list_test_cases() -> list[TestCaseInput]:
     return _load_cases()
 
 
 @app.post("/api/test-cases", response_model=TestCaseInput)
-def save_test_case(case: TestCaseInput) -> TestCaseInput:
+async def save_test_case(case: TestCaseInput) -> TestCaseInput:
     if IS_CLOUDFLARE_WORKER or os.getenv("READ_ONLY_TEST_CASES") == "1":
         raise HTTPException(
             status_code=503,
@@ -232,7 +232,7 @@ def save_test_case(case: TestCaseInput) -> TestCaseInput:
 
 
 @app.delete("/api/test-cases/{case_id}")
-def delete_test_case(case_id: str) -> dict[str, bool]:
+async def delete_test_case(case_id: str) -> dict[str, bool]:
     if IS_CLOUDFLARE_WORKER or os.getenv("READ_ONLY_TEST_CASES") == "1":
         raise HTTPException(
             status_code=503,
@@ -246,7 +246,7 @@ def delete_test_case(case_id: str) -> dict[str, bool]:
 
 
 @app.post("/api/test-cases/{case_id}/run", response_model=TestRunResult)
-def run_test_case(case_id: str) -> TestRunResult:
+async def run_test_case(case_id: str) -> TestRunResult:
     for case in _load_cases():
         if case.id == case_id:
             return _run_case(case)
@@ -254,7 +254,7 @@ def run_test_case(case_id: str) -> TestRunResult:
 
 
 @app.post("/api/test-cases/run-all", response_model=TestRunAllResponse)
-def run_all_test_cases() -> TestRunAllResponse:
+async def run_all_test_cases() -> TestRunAllResponse:
     results = [_run_case(case) for case in _load_cases()]
     return TestRunAllResponse(
         total=len(results),
