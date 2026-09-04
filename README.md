@@ -78,9 +78,11 @@ npm.cmd run build
 npm.cmd run puzzles:import -- "C:\path\to\Puzzles.csv"
 ```
 
-輸出會寫入 `public/data/checkmate-puzzles.json`。格式錯誤的資料列不會被丟棄，而會以「無效」狀態及錯誤原因保留。人工覆核標籤另存於 `public/data/checkmate-puzzle-expectations.json`，不會把目前引擎輸出當成標準答案。
+輸出會寫入 `public/data/checkmate-puzzles.json`，並以當前全部殺法規則同步生成 `public/data/checkmate-puzzle-recognition.json`。格式錯誤的資料列不會被丟棄，而會以「無效」狀態及錯誤原因保留。人工覆核標籤另存於 `public/data/checkmate-puzzle-expectations.json`，不會把目前引擎輸出當成標準答案。
 
-「棋題瀏覽器」會在打開一道棋題時即時分析整條 `Initial Fen → Blunder Move → Pv`。棋盤預設停在失着之後，仍可退回初始局面、逐着前進或自動播放。按「分析全部」會以有限並行度執行整個語料庫，並把精簡結果按資料版本及規則版本快取在瀏覽器。
+只修改殺法規則而沒有更換 CSV 時，可執行 `npm.cmd run puzzles:analyze` 重新生成全量識別索引。
+
+「棋題瀏覽器」的列表與篩選器會讀取匯入時生成的全量識別索引，避免瀏覽器以數百個 CPU 密集請求壓垮雲端 Worker。打開一道棋題時仍會即時分析整條 `Initial Fen → Blunder Move → Pv`；棋盤預設停在失着之後，仍可退回初始局面、逐着前進或自動播放。即時結果按資料版本及規則版本快取在瀏覽器，並覆蓋該題的索引結果供人工復核。
 
 `npm test` 目前仍會執行 `tests/rendered-html.test.mjs` 的舊 starter skeleton 測試；該測試尚未遷移到現有實驗室頁面，因此不是目前的 canonical 驗證命令。請使用上面的 pytest、lint 及 build 組合。
 

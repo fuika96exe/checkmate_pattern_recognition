@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import asyncio
 import csv
 import hashlib
 import json
@@ -160,9 +161,18 @@ def main() -> None:
         json.dumps(dataset, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    from generate_puzzle_recognition import generate_recognition
+
+    recognition = asyncio.run(generate_recognition(dataset))
+    recognition_output = args.output.with_name("checkmate-puzzle-recognition.json")
+    recognition_output.write_text(
+        json.dumps(recognition, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(
         f"已匯入 {dataset['puzzleCount']} 題，"
-        f"無效 {dataset['invalidCount']} 題，版本 {dataset['datasetVersion']}"
+        f"無效 {dataset['invalidCount']} 題，版本 {dataset['datasetVersion']}；"
+        f"已生成 {recognition['puzzleCount']} 題识别结果"
     )
 
 

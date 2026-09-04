@@ -3,6 +3,8 @@ from pathlib import Path
 
 from app.main import api_analyze_puzzle_line
 from app.models import PuzzleLineRequest
+from app.patterns import CHECKMATE_RULES_VERSION
+from scripts.generate_puzzle_recognition import generate_recognition
 from scripts.import_puzzles import import_csv
 
 
@@ -57,3 +59,36 @@ def test_importer_preserves_invalid_rows(tmp_path: Path) -> None:
     assert dataset["puzzles"][0]["importStatus"] == "ready"
     assert dataset["puzzles"][1]["importStatus"] == "invalid"
     assert dataset["puzzles"][1]["importErrors"]
+
+
+def test_generated_recognition_index_matches_dataset_and_rules() -> None:
+    dataset = {
+        "datasetVersion": "test-dataset",
+        "puzzles": [
+            {
+                "key": "valid",
+                "initialFen": "4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
+                "blunderMove": "e1d2",
+                "pv": ["b1b0", "e0e1", "c4e3"],
+                "importStatus": "ready",
+                "importErrors": [],
+            },
+            {
+                "key": "invalid",
+                "importStatus": "invalid",
+                "importErrors": ["测试无效资料"],
+            },
+        ],
+    }
+
+    recognition = asyncio.run(generate_recognition(dataset))
+
+    assert recognition["datasetVersion"] == "test-dataset"
+    assert recognition["rulesVersion"] == CHECKMATE_RULES_VERSION
+    assert recognition["puzzleCount"] == 2
+    assert recognition["results"]["valid"]["status"] in {"matched", "unmatched"}
+    assert recognition["results"]["invalid"] == {
+        "status": "invalid",
+        "patternIds": [],
+        "error": "测试无效资料",
+    }

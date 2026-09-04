@@ -15,6 +15,7 @@
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint app tests --ignore-pattern dist --ignore-pattern .next --ignore-pattern .pytest_cache",
     "puzzles:import": "python backend/scripts/import_puzzles.py",
+    "puzzles:analyze": "python backend/scripts/generate_puzzle_recognition.py",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

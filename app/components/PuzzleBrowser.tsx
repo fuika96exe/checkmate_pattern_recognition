@@ -11,6 +11,7 @@ import type {
   PuzzleDataset,
   PuzzleExpectations,
   PuzzleLineResponse,
+  PuzzleRecognitionDataset,
   PuzzleRecognitionStatus,
   PuzzleRecognitionSummary,
   PuzzleRecord,
@@ -18,8 +19,7 @@ import type {
 import { XiangqiBoard } from "./XiangqiBoard";
 
 const PAGE_SIZE = 24;
-const ANALYSIS_WORKERS = 1;
-const CACHE_PREFIX = "xiangqi-puzzle-recognition:v2";
+const CACHE_PREFIX = "xiangqi-puzzle-recognition:v3";
 
 interface RecognitionCache {
   datasetVersion: string;
@@ -28,7 +28,6 @@ interface RecognitionCache {
 }
 
 interface BatchState {
-  running: boolean;
   completed: number;
   total: number;
   failed: number;
@@ -109,6 +108,7 @@ export function PuzzleBrowser() {
   const [expectations, setExpectations] = useState<Record<string, PatternId[]>>({});
   const [rulesVersion, setRulesVersion] = useState("");
   const [summaries, setSummaries] = useState<Record<string, PuzzleRecognitionSummary>>({});
+  const [generatedSummaries, setGeneratedSummaries] = useState<Record<string, PuzzleRecognitionSummary>>({});
   const [analyzing, setAnalyzing] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<PuzzleRecord | null>(null);
   const [selectedResult, setSelectedResult] = useState<PuzzleLineResponse | null>(null);
@@ -126,9 +126,8 @@ export function PuzzleBrowser() {
   const [filtersExpanded, setFiltersExpanded] = useState(true);
   const [listExpanded, setListExpanded] = useState(true);
   const [page, setPage] = useState(1);
-  const [batch, setBatch] = useState<BatchState>({ running: false, completed: 0, total: 0, failed: 0 });
+  const [batch, setBatch] = useState<BatchState>({ completed: 0, total: 0, failed: 0 });
   const selectionToken = useRef(0);
-  const batchController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -141,23 +140,41 @@ export function PuzzleBrowser() {
         if (!response.ok) return { schemaVersion: "1.0", expectations: {} } as PuzzleExpectations;
         return response.json() as Promise<PuzzleExpectations>;
       }),
+      fetch("/data/checkmate-puzzle-recognition.json").then((response) => {
+        if (!response.ok) return null;
+        return response.json() as Promise<PuzzleRecognitionDataset>;
+      }),
       api.health(),
-    ]).then(([nextDataset, nextExpectations, health]) => {
+    ]).then(([nextDataset, nextExpectations, generated, health]) => {
       if (!active) return;
       setDataset(nextDataset);
       setExpectations(nextExpectations.expectations);
       setRulesVersion(health.rulesVersion);
+      const generatedResults = generated
+        && generated.datasetVersion === nextDataset.datasetVersion
+        && generated.rulesVersion === health.rulesVersion
+        && generated.puzzleCount === nextDataset.puzzleCount
+        ? generated.results
+        : {};
+      setGeneratedSummaries(generatedResults);
+      setBatch({
+        completed: Object.keys(generatedResults).length,
+        total: nextDataset.puzzleCount,
+        failed: nextDataset.puzzleCount - Object.keys(generatedResults).length,
+      });
+      let initialSummaries = generatedResults;
       try {
         const raw = window.localStorage.getItem(`${CACHE_PREFIX}:${nextDataset.datasetVersion}`);
         if (raw) {
           const cache = JSON.parse(raw) as RecognitionCache;
           if (cache.datasetVersion === nextDataset.datasetVersion && cache.rulesVersion === health.rulesVersion) {
-            setSummaries(cache.results);
+            initialSummaries = { ...generatedResults, ...cache.results };
           }
         }
       } catch {
         try { window.localStorage.removeItem(`${CACHE_PREFIX}:${nextDataset.datasetVersion}`); } catch { /* storage is unavailable */ }
       }
+      setSummaries(initialSummaries);
     }).catch((reason: unknown) => {
       if (active) setLoadError(reason instanceof Error ? reason.message : "无法载入棋题浏览器");
     });
@@ -267,48 +284,15 @@ export function PuzzleBrowser() {
     }
   }
 
-  async function runAllPuzzles() {
-    if (!dataset || batch.running) return;
-    const puzzles = dataset.puzzles.filter((puzzle) => puzzle.importStatus === "ready");
-    const controller = new AbortController();
-    batchController.current = controller;
-    setBatch({ running: true, completed: 0, total: puzzles.length, failed: 0 });
-    let cursor = 0;
-
-    async function worker() {
-      while (!controller.signal.aborted) {
-        const puzzle = puzzles[cursor];
-        cursor += 1;
-        if (!puzzle) return;
-        setAnalyzing((current) => new Set(current).add(puzzle.key));
-        try {
-          const response = await api.analyzePuzzle(puzzle, controller.signal);
-          recordResponse(puzzle, response);
-        } catch {
-          if (!controller.signal.aborted) {
-            setBatch((current) => ({ ...current, failed: current.failed + 1 }));
-          }
-        } finally {
-          setAnalyzing((current) => {
-            const next = new Set(current);
-            next.delete(puzzle.key);
-            return next;
-          });
-          if (!controller.signal.aborted) {
-            setBatch((current) => ({ ...current, completed: current.completed + 1 }));
-          }
-        }
-      }
-    }
-
-    await Promise.all(Array.from({ length: ANALYSIS_WORKERS }, () => worker()));
-    setBatch((current) => ({ ...current, running: false }));
-    batchController.current = null;
-  }
-
-  function stopBatch() {
-    batchController.current?.abort();
-    setBatch((current) => ({ ...current, running: false }));
+  function reloadGeneratedResults() {
+    if (!dataset) return;
+    const completed = Object.keys(generatedSummaries).length;
+    setSummaries(generatedSummaries);
+    setBatch({
+      completed,
+      total: dataset.puzzleCount,
+      failed: dataset.puzzleCount - completed,
+    });
   }
 
   if (loadError) return <div className="error-banner">{loadError}</div>;
@@ -363,10 +347,10 @@ export function PuzzleBrowser() {
 
         <div className="batch-bar">
           <div>
-            <strong>{batch.running ? `正在分析 ${batch.completed} / ${batch.total}` : batch.total > 0 ? `上次完成 ${batch.completed} / ${batch.total}` : "全量人工复核准备"}</strong>
-            <small>{batch.failed > 0 ? `${batch.failed} 题因暂时性服务错误未完成；重新分析即可重试，不会误标为无效。` : "每题实时运行全部杀法规则，结果仅作人工检查。"}</small>
+            <strong>{batch.total > 0 ? `全量识别结果 ${batch.completed} / ${batch.total}` : "正在载入全量识别结果"}</strong>
+            <small>{batch.failed > 0 ? `识别索引缺少 ${batch.failed} 题，请重新导入 CSV 后再发布。` : "列表使用当前规则预先生成的结果；打开单题时仍会实时重算，供人工复核。"}</small>
           </div>
-          {batch.running ? <Button onClick={stopBatch}>停止</Button> : <Button appearance="primary" onClick={() => void runAllPuzzles()}>分析全部 {dataset.puzzleCount} 题</Button>}
+          <Button appearance="primary" disabled={batch.completed === 0} onClick={reloadGeneratedResults}>重新载入全量结果</Button>
         </div>
         {batch.total > 0 && <progress className="batch-progress" max={batch.total} value={batch.completed} />}
 

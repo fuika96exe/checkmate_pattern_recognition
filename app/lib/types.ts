@@ -172,4 +172,13 @@ export interface PuzzleRecognitionSummary {
   error?: string;
 }
 
+export interface PuzzleRecognitionDataset {
+  schemaVersion: string;
+  datasetVersion: string;
+  rulesVersion: string;
+  generatedAt: string;
+  puzzleCount: number;
+  results: Record<string, PuzzleRecognitionSummary>;
+}
+
 export interface HealthResponse { status: string; rulesVersion: string }
