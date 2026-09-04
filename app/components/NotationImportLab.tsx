@@ -8,11 +8,10 @@ import {
   ArrowNextRegular,
   PlayRegular,
   PauseRegular,
-  TopSpeedRegular,
   DocumentCopyRegular,
   DeleteRegular,
 } from "@fluentui/react-icons";
-import { importXiangqiGame, applyMove, START_FEN, parseFen } from "../lib/notation-import";
+import { importXiangqiGame, applyMove, START_FEN } from "../lib/notation-import";
 import type { ImportResult } from "../lib/notation-import/types";
 import { XiangqiBoard } from "./XiangqiBoard";
 import type { MoveRecord } from "../lib/types";
@@ -376,6 +375,55 @@ export function NotationImportLab() {
     };
   }, [importResult, stepIndex, positions]);
 
+  // 双列着法映射（完美支持红先/黑先）
+  const moveRows = useMemo(() => {
+    if (!importResult || !importResult.success || importResult.moves.length === 0) {
+      return [];
+    }
+    const rows: {
+      round: number;
+      redStepIndex?: number;
+      redNotation?: string;
+      blackStepIndex?: number;
+      blackNotation?: string;
+    }[] = [];
+    const isInitialBlack = (importResult.initialFen.split(" ")[1] || "w") === "b";
+
+    let currentRound = 1;
+    let i = 0;
+
+    if (isInitialBlack && importResult.moves.length > 0) {
+      rows.push({
+        round: currentRound++,
+        blackStepIndex: 1,
+        blackNotation: importResult.chineseMoves[0],
+      });
+      i = 1;
+    }
+
+    while (i < importResult.moves.length) {
+      const redStepIndex = i + 1;
+      const redNotation = importResult.chineseMoves[i];
+      i++;
+      let blackStepIndex: number | undefined;
+      let blackNotation: string | undefined;
+      if (i < importResult.moves.length) {
+        blackStepIndex = i + 1;
+        blackNotation = importResult.chineseMoves[i];
+        i++;
+      }
+      rows.push({
+        round: currentRound++,
+        redStepIndex,
+        redNotation,
+        blackStepIndex,
+        blackNotation,
+      });
+    }
+
+    return rows;
+  }, [importResult]);
+
   // 执行导入解析
   function handleParse(textToParse = inputText) {
     setIsPlaying(false);
@@ -614,9 +662,9 @@ export function NotationImportLab() {
                   <em>初始局面</em>
                 ) : (
                   <span>
-                    第 {Math.ceil(stepIndex / 2)} 回合 ·{" "}
-                    <strong style={{ color: stepIndex % 2 === 1 ? "#dc2626" : "#1e293b" }}>
-                      {stepIndex % 2 === 1 ? "红方" : "黑方"}
+                    第 {currentMoveRecord ? Math.ceil(currentMoveRecord.ply / 2) : Math.ceil(stepIndex / 2)} 步 ·{" "}
+                    <strong style={{ color: currentMoveRecord?.side === "red" ? "#dc2626" : "#1e293b" }}>
+                      {currentMoveRecord?.side === "red" ? "红方" : "黑方"}
                     </strong>{" "}
                     <strong>{importResult.chineseMoves[stepIndex - 1]}</strong>{" "}
                     <code style={{ fontSize: "12px", color: "#6b7280" }}>({importResult.moves[stepIndex - 1]})</code>
@@ -631,7 +679,7 @@ export function NotationImportLab() {
             </div>
 
             {/* 棋盘渲染 */}
-            <div style={{ width: "380px" }}>
+            <div style={{ width: "100%", maxWidth: "440px" }}>
               <XiangqiBoard
                 fen={currentFen}
                 legalMoves={[]}
@@ -672,44 +720,42 @@ export function NotationImportLab() {
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.from({ length: Math.ceil(importResult.moves.length / 2) }).map((_, roundIdx) => {
-                    const redIdx = roundIdx * 2;
-                    const blackIdx = roundIdx * 2 + 1;
-                    const isRedActive = stepIndex === redIdx + 1;
-                    const isBlackActive = stepIndex === blackIdx + 1;
+                  {moveRows.map((row) => {
+                    const isRedActive = row.redStepIndex !== undefined && stepIndex === row.redStepIndex;
+                    const isBlackActive = row.blackStepIndex !== undefined && stepIndex === row.blackStepIndex;
 
                     return (
-                      <tr key={roundIdx} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                        <td style={{ padding: "6px 8px", color: "#94a3b8", fontWeight: 500 }}>{roundIdx + 1}.</td>
+                      <tr key={row.round} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                        <td style={{ padding: "6px 8px", color: "#94a3b8", fontWeight: 500 }}>{row.round}.</td>
                         
                         {/* 红方走子 */}
                         <td
-                          onClick={() => setStepIndex(redIdx + 1)}
+                          onClick={() => row.redStepIndex !== undefined && setStepIndex(row.redStepIndex)}
                           style={{
                             padding: "6px 8px",
-                            cursor: "pointer",
+                            cursor: row.redStepIndex !== undefined ? "pointer" : "default",
                             fontWeight: isRedActive ? 700 : 400,
                             background: isRedActive ? "#fee2e2" : "transparent",
-                            color: isRedActive ? "#b91c1c" : "inherit",
+                            color: isRedActive ? "#b91c1c" : row.redNotation ? "inherit" : "#94a3b8",
                             borderRadius: "4px",
                           }}
                         >
-                          {importResult.chineseMoves[redIdx]}
+                          {row.redNotation || "..."}
                         </td>
 
                         {/* 黑方走子 */}
                         <td
-                          onClick={() => blackIdx < importResult.moves.length && setStepIndex(blackIdx + 1)}
+                          onClick={() => row.blackStepIndex !== undefined && setStepIndex(row.blackStepIndex)}
                           style={{
                             padding: "6px 8px",
-                            cursor: blackIdx < importResult.moves.length ? "pointer" : "default",
+                            cursor: row.blackStepIndex !== undefined ? "pointer" : "default",
                             fontWeight: isBlackActive ? 700 : 400,
                             background: isBlackActive ? "#e2e8f0" : "transparent",
                             color: isBlackActive ? "#0f172a" : "inherit",
                             borderRadius: "4px",
                           }}
                         >
-                          {blackIdx < importResult.moves.length ? importResult.chineseMoves[blackIdx] : ""}
+                          {row.blackNotation || ""}
                         </td>
                       </tr>
                     );

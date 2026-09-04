@@ -495,3 +495,62 @@ test('Case 10: 布局头信息含着法字样 (中炮进三兵) 与后车/后马
   assert.equal(result.chineseMoves[91], '马2退4');
 });
 
+test('Case 11: ICCS 与 WXF 评注内包含走法字符串不应被当做实战走法', () => {
+  const iccsWithComment = `
+[Format "ICCS"]
+1. H2-E2 { H9-G7 is natural but here we test comment stripping } H9-G7
+2. B0-C2
+`;
+  const res1 = importXiangqiGame(iccsWithComment);
+  assert.equal(res1.success, true, res1.error);
+  assert.equal(res1.moves.length, 3, 'Should parse 3 moves, not 4');
+  assert.equal(res1.moves[0], 'h2e2');
+  assert.equal(res1.moves[1], 'h9g7');
+  assert.equal(res1.moves[2], 'b0c2');
+
+  const wxfWithComment = `
+[Event "WXF Comment Test"]
+[Format "WXF"]
+1. C8.5 { c2.5 is also playable } c2.5
+2. H8+7
+`;
+  const res2 = importXiangqiGame(wxfWithComment);
+  assert.equal(res2.success, true, res2.error);
+  assert.equal(res2.moves.length, 3, 'Should parse 3 moves, not 4');
+  assert.equal(res2.moves[0], 'b2e2');
+  assert.equal(res2.moves[1], 'b7e7');
+  assert.equal(res2.moves[2], 'b0c2');
+});
+
+test('Case 12: 无效/无着法输入严格返回失败（如 hello world）', () => {
+  const garbage = 'hello world this is not a chess game';
+  const res1 = importXiangqiGame(garbage);
+  assert.equal(res1.success, false, 'Garbage text must not succeed');
+  assert.equal(res1.moves.length, 0);
+
+  const emptyIccs = '[Format "ICCS"]\n[Red "A"]\n[Black "B"]\n';
+  const res2 = importXiangqiGame(emptyIccs);
+  assert.equal(res2.success, false, 'ICCS without moves must not succeed');
+
+  const emptyWxf = '[Format "WXF"]\n[Event "Empty"]\n';
+  const res3 = importXiangqiGame(emptyWxf);
+  assert.equal(res3.success, false, 'WXF without moves must not succeed');
+});
+
+test('Case 13: 黑方先走 (Black to move) 自定义 FEN 开局解析', () => {
+  // Black to move initial FEN (side = 'b')
+  const blackFirstFen = 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR b - - 0 1';
+  const notation = `
+[FEN "${blackFirstFen}"]
+1. ... 炮8平5
+2. 炮二平五 马8进7
+`;
+  const res = importXiangqiGame(notation);
+  assert.equal(res.success, true, res.error);
+  assert.equal(res.moves.length, 3);
+  assert.equal(res.chineseMoves[0], '炮8平5');
+  assert.equal(res.chineseMoves[1], '炮二平五');
+  assert.equal(res.chineseMoves[2], '马8进7');
+});
+
+

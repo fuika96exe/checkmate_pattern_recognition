@@ -74,7 +74,8 @@ export function importXiangqiGame(rawText: string): ImportResult {
         chineseMoves.push(uciToChinese(currentFen, uci));
         moves.push(uci);
         currentFen = applyMove(currentFen, uci);
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : String(err);
         return {
           success: false,
           format: 'uci',
@@ -83,7 +84,7 @@ export function importXiangqiGame(rawText: string): ImportResult {
           moves,
           chineseMoves,
           headers: {},
-          error: `Move ${i + 1} (${uci}) failed: ${err.message}`,
+          error: `Move ${i + 1} (${uci}) failed: ${msg}`,
           failedMoveIndex: i,
         };
       }
@@ -100,6 +101,20 @@ export function importXiangqiGame(rawText: string): ImportResult {
     };
   }
 
-  // Fallback try Chinese parser in case there are odd characters
-  return parseChineseGame(rawText);
+  // Fallback try Chinese parser in case there are odd characters or formatting
+  const fallbackResult = parseChineseGame(rawText);
+  if (fallbackResult.success) {
+    return fallbackResult;
+  }
+
+  return {
+    success: false,
+    format: 'plain_chinese',
+    title: 'Unknown Format',
+    initialFen: START_FEN,
+    moves: [],
+    chineseMoves: [],
+    headers: {},
+    error: fallbackResult.error || '无法识别该棋谱格式或未包含有效走法',
+  };
 }

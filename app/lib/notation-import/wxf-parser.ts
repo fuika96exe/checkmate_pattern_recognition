@@ -1,4 +1,5 @@
 import { START_FEN, applyMove, legalMoves, parseFen, uciToChinese } from './board-rules.ts';
+import { stripComments } from './preprocessor.ts';
 import type { ImportResult } from './types.ts';
 
 const FILES = 'abcdefghi';
@@ -128,6 +129,9 @@ export function parseWXF(text: string): ImportResult {
     moveSection = text.slice(startIdx + 6, endIdx !== -1 ? endIdx : undefined);
   }
 
+  // Strip comments and PGN bracket headers
+  moveSection = stripComments(moveSection).replace(/^\[[A-Za-z0-9_]+\s+"[^"]*"\]/gm, ' ');
+
   const moveTokens = moveSection
     .replace(/\b\d+\.\s*/g, ' ')
     .split(/\s+/)
@@ -163,7 +167,8 @@ export function parseWXF(text: string): ImportResult {
       chineseMoves.push(ch);
       moves.push(matchedUci);
       currentFen = applyMove(currentFen, matchedUci);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
       return {
         success: false,
         format: 'wxf',
@@ -173,10 +178,24 @@ export function parseWXF(text: string): ImportResult {
         chineseMoves,
         headers,
         result,
-        error: `Move ${i + 1} (${matchedUci}) error: ${err.message}`,
+        error: `Move ${i + 1} (${matchedUci}) error: ${msg}`,
         failedMoveIndex: i,
       };
     }
+  }
+
+  if (moves.length === 0) {
+    return {
+      success: false,
+      format: 'wxf',
+      title,
+      initialFen,
+      moves: [],
+      chineseMoves: [],
+      headers,
+      result,
+      error: '未识别到任何有效着法 (No valid moves found)',
+    };
   }
 
   return {

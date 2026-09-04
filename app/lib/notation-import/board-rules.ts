@@ -383,7 +383,7 @@ export function applyMove(fen: string, uci: string): string {
 }
 
 export function uciToChinese(fenBefore: string, uci: string): string {
-  const { board, side } = parseFen(fenBefore);
+  const { board } = parseFen(fenBefore);
   const fromSquare = uci.slice(0, 2);
   const toSquare = uci.slice(2, 4);
   const piece = board[fromSquare];

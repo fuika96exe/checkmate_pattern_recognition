@@ -77,7 +77,6 @@ function matchChineseMove(
   const toRank = parseInt(to[1], 10);
 
   const fileToCol = (fileNum: number) => (isRed ? 9 - fileNum : fileNum - 1);
-  const colToFile = (col: number) => (isRed ? 9 - col : col + 1);
 
   const char0 = token[0];
   const char1 = token[1];
@@ -320,7 +319,8 @@ export function parseChineseGame(text: string): ImportResult {
       chineseMoves.push(ch);
       moves.push(matchedUci);
       currentFen = applyMove(currentFen, matchedUci);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
       return {
         success: false,
         format: 'plain_chinese',
@@ -330,10 +330,24 @@ export function parseChineseGame(text: string): ImportResult {
         chineseMoves,
         headers,
         result,
-        error: `Move ${i + 1} (${matchedUci}) error: ${err.message}`,
+        error: `Move ${i + 1} (${matchedUci}) error: ${msg}`,
         failedMoveIndex: i,
       };
     }
+  }
+
+  if (moves.length === 0) {
+    return {
+      success: false,
+      format: 'plain_chinese',
+      title,
+      initialFen,
+      moves: [],
+      chineseMoves: [],
+      headers,
+      result,
+      error: '未识别到任何有效着法 (No valid moves found)',
+    };
   }
 
   return {

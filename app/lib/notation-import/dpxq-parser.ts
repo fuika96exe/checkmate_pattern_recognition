@@ -116,7 +116,8 @@ export function parseDhtmlXQ(text: string): ImportResult {
       chineseMoves.push(ch);
       moves.push(uci);
       currentFen = applyMove(currentFen, uci);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
       return {
         success: false,
         format: 'dpxq_ubb',
@@ -126,10 +127,24 @@ export function parseDhtmlXQ(text: string): ImportResult {
         chineseMoves,
         headers,
         result,
-        error: `Move ${Math.floor(i / 4) + 1} (${uci}) failed: ${err.message}`,
+        error: `Move ${Math.floor(i / 4) + 1} (${uci}) failed: ${msg}`,
         failedMoveIndex: Math.floor(i / 4),
       };
     }
+  }
+
+  if (moves.length === 0) {
+    return {
+      success: false,
+      format: 'dpxq_ubb',
+      title: red && black ? `${red} vs ${black}` : title,
+      initialFen,
+      moves: [],
+      chineseMoves: [],
+      headers,
+      result,
+      error: '未识别到任何有效着法 (No valid moves found)',
+    };
   }
 
   return {
