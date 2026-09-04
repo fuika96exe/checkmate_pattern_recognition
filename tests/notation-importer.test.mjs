@@ -553,4 +553,30 @@ test('Case 13: 黑方先走 (Black to move) 自定义 FEN 开局解析', () => {
   assert.equal(res.chineseMoves[2], '马8进7');
 });
 
+test('Case 14: 中文棋谱注释内含 ICCS/WXF 坐标时不误判格式 (Reviewer finding)', () => {
+  const chineseWithIccsComment = `
+[Game "Chinese Chess"]
+{alternative H2-E2}
+1. 炮二平五 炮8平5
+`;
+  const res1 = importXiangqiGame(chineseWithIccsComment);
+  assert.equal(res1.success, true, res1.error);
+  assert.equal(res1.format, 'plain_chinese');
+  assert.equal(res1.moves.length, 2);
+  assert.equal(res1.chineseMoves[0], '炮二平五');
+  assert.equal(res1.chineseMoves[1], '炮8平5');
+
+  const chineseWithWxfComment = `
+[Game "Chinese Chess"]
+{note: C8.5 or h2+3 were considered}
+1. 马二进三 马8进7
+`;
+  const res2 = importXiangqiGame(chineseWithWxfComment);
+  assert.equal(res2.success, true, res2.error);
+  assert.equal(res2.format, 'plain_chinese');
+  assert.equal(res2.moves.length, 2);
+  assert.equal(res2.chineseMoves[0], '马二进三');
+  assert.equal(res2.chineseMoves[1], '马8进7');
+});
+
 

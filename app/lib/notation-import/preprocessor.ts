@@ -38,11 +38,15 @@ export function normalizeMoveChars(text: string): string {
 }
 
 export function stripComments(text: string): string {
-  // Remove { ... } multiline
-  let res = text.replace(/\{[\s\S]*?\}/g, ' ');
+  // Preserve PlayOK block markers if present
+  let safeText = text.replace(/START\{/g, '__PLAYOK_START__').replace(/\}END/g, '__PLAYOK_END__');
+  // Remove { ... } multiline comments
+  safeText = safeText.replace(/\{[\s\S]*?\}/g, ' ');
   // Remove comments inside （ ... ） if they are text descriptions
-  res = res.replace(/（[^）]*[\u4e00-\u9fa5]{2,}[^）]*）/g, ' ');
-  return res;
+  safeText = safeText.replace(/（[^）]*[\u4e00-\u9fa5]{2,}[^）]*）/g, ' ');
+  // Restore PlayOK block markers
+  safeText = safeText.replace(/__PLAYOK_START__/g, 'START{').replace(/__PLAYOK_END__/g, '}END');
+  return safeText;
 }
 
 export function isResultToken(token: string): boolean {

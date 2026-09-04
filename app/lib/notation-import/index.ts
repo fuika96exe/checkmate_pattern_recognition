@@ -2,6 +2,7 @@ import { START_FEN, applyMove, legalMoves, uciToChinese } from './board-rules.ts
 import { isChineseNotation, parseChineseGame } from './chinese-parser.ts';
 import { isDhtmlXQ, parseDhtmlXQ } from './dpxq-parser.ts';
 import { isICCS, parseICCS } from './iccs-parser.ts';
+import { stripComments } from './preprocessor.ts';
 import type { ImportResult } from './types.ts';
 import { isWXF, parseWXF } from './wxf-parser.ts';
 
@@ -22,28 +23,33 @@ export function importXiangqiGame(rawText: string): ImportResult {
     };
   }
 
+  // Use comment-stripped text for heuristic format detection so that coordinates or
+  // notation tokens inside comments (e.g. { alternative H2-E2 } or { C8.5 })
+  // do not mislead format routing, while still passing rawText to the selected parser.
+  const detectionText = stripComments(rawText);
+
   // 1. DhtmlXQ format
   if (isDhtmlXQ(rawText)) {
     return parseDhtmlXQ(rawText);
   }
 
   // 2. ICCS format (e.g. H2-D2 G6-G5)
-  if (isICCS(rawText)) {
+  if (isICCS(detectionText)) {
     return parseICCS(rawText);
   }
 
   // 3. WXF format (e.g. C8.5 c2.5, H8+7 h2+3)
-  if (isWXF(rawText)) {
+  if (isWXF(detectionText)) {
     return parseWXF(rawText);
   }
 
   // 4. Chinese notation (Standard PGN, Dpxq plain text, compact unspaced)
-  if (isChineseNotation(rawText)) {
+  if (isChineseNotation(detectionText)) {
     return parseChineseGame(rawText);
   }
 
   // 5. Raw UCI stream (e.g. h2e2 h9e7 b0c2 ...)
-  const uciTokens = rawText
+  const uciTokens = detectionText
     .replace(/\b\d+\.\s*/g, ' ')
     .split(/\s+/)
     .map((t) => t.trim().toLowerCase())
