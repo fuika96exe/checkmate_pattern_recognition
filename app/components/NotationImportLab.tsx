@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@fluentui/react-badge";
 import { Button } from "@fluentui/react-button";
 import {
@@ -12,7 +12,7 @@ import {
   DeleteRegular,
 } from "@fluentui/react-icons";
 import { importXiangqiGame, applyMove, START_FEN } from "../lib/notation-import";
-import type { ImportResult } from "../lib/notation-import/types";
+import type { GameBranch, ImportResult } from "../lib/notation-import/types";
 import { XiangqiBoard } from "./XiangqiBoard";
 import type { MoveRecord } from "../lib/types";
 
@@ -109,6 +109,87 @@ const PRESET_EXAMPLES: Record<string, { label: string; text: string }> = {
 [DhtmlXQ_red]北京 刘永富[/DhtmlXQ_red]
 [DhtmlXQ_black]北京 张永生[/DhtmlXQ_black]
 [DhtmlXQ_result]黑胜[/DhtmlXQ_result]
+[/DhtmlXQ]`,
+  },
+  dpxq_branches: {
+    label: "弈林新编 23变着与评注 (Case 15)",
+    text: `[DhtmlXQ]
+[DhtmlXQ_ver]www_dpxq_com[/DhtmlXQ_ver]
+[DhtmlXQ_init]500,350[/DhtmlXQ_init]
+[DhtmlXQ_binit]8979695949392919097717866646260600102030405060708012720323436383[/DhtmlXQ_binit]
+[DhtmlXQ_pver]130606[/DhtmlXQ_pver]
+[DhtmlXQ_adddate]2008-02-24 22:50:01[/DhtmlXQ_adddate]
+[DhtmlXQ_editdate]2008-02-24 22:50:00[/DhtmlXQ_editdate]
+[DhtmlXQ_title]中炮巡河炮对屏风马(一)[/DhtmlXQ_title]
+[DhtmlXQ_movelist]774770627967102289798070262563641927204217157274666512117976116165646164675530412735001009191013594864655534232434222425223413143453742476701415707515192907656475654344354362435361403047374445654524214535213135331911614225354223111337676404334304074959[/DhtmlXQ_movelist]
+[DhtmlXQ_move_0_48_1]24216535213135334362331325351319313761426042191030314837[/DhtmlXQ_move_0_48_1]
+[DhtmlXQ_move_1_52_2]19116173[/DhtmlXQ_move_1_52_2]
+[DhtmlXQ_move_0_43_3]47444030[/DhtmlXQ_move_0_43_3]
+[DhtmlXQ_move_0_39_4]3527656475656082652524272527[/DhtmlXQ_move_0_39_4]
+[DhtmlXQ_move_4_44_5]1929476724276947[/DhtmlXQ_move_4_44_5]
+[DhtmlXQ_move_0_37_6]190962705361403047372434352734042715040915236564[/DhtmlXQ_move_0_37_6]
+[DhtmlXQ_move_0_34_7]6564355670737674[/DhtmlXQ_move_0_34_7]
+[DhtmlXQ_move_0_34_8]656335436343536140304737[/DhtmlXQ_move_0_34_8]
+[DhtmlXQ_move_8_36_9]25154322[/DhtmlXQ_move_8_36_9]
+[DhtmlXQ_move_0_31_10]354362432243651543627414[/DhtmlXQ_move_0_31_10]
+[DhtmlXQ_move_0_26_11]43445574707476746274474464656947[/DhtmlXQ_move_0_26_11]
+[DhtmlXQ_move_0_22_12]232425240030152530352522[/DhtmlXQ_move_0_22_12]
+[DhtmlXQ_move_0_20_13]00100919101427357073252414241513643413113439493924253543224355436243474373437674[/DhtmlXQ_move_0_20_13]
+[DhtmlXQ_move_13_32_14]73537675242539492535557435757453[/DhtmlXQ_move_13_32_14]
+[DhtmlXQ_move_13_30_15]30412907[/DhtmlXQ_move_13_30_15]
+[DhtmlXQ_move_13_27_16]15102210354324544362545519105535[/DhtmlXQ_move_13_27_16]
+[DhtmlXQ_move_13_22_17]232425247424767062702735[/DhtmlXQ_move_13_22_17]
+[DhtmlXQ_move_0_20_18]23242524422415252442091930412735747519127535767062701222642429077062474324542223[/DhtmlXQ_move_0_20_18]
+[DhtmlXQ_move_18_27_19]19122234553474347670627047430020294720234344[/DhtmlXQ_move_18_27_19]
+[DhtmlXQ_move_18_24_20]223455347434767062704743[/DhtmlXQ_move_18_24_20]
+[DhtmlXQ_move_18_22_21]7424767062702735001009193041354322435543[/DhtmlXQ_move_18_22_21]
+[DhtmlXQ_move_21_28_22]70621511[/DhtmlXQ_move_21_28_22]
+[DhtmlXQ_move_0_15_23]656411717974[/DhtmlXQ_move_0_15_23]
+[DhtmlXQ_firstnum]0[/DhtmlXQ_firstnum]
+[DhtmlXQ_length]232[/DhtmlXQ_length]
+[DhtmlXQ_type]全局[/DhtmlXQ_type]
+[DhtmlXQ_gametype]慢棋[/DhtmlXQ_gametype]
+[DhtmlXQ_other]中炮巡河炮对屏风马(一) [/DhtmlXQ_other]
+[DhtmlXQ_open]C84 中炮巡河炮对屏风马 黑飞右象[/DhtmlXQ_open]
+[DhtmlXQ_class]象棋谱大全-现代棋书专集[/DhtmlXQ_class]
+[DhtmlXQ_event]弈林新编-杨官璘著[/DhtmlXQ_event]
+[DhtmlXQ_round]4.布局研究[/DhtmlXQ_round]
+[DhtmlXQ_date]0000-00-00[/DhtmlXQ_date]
+[DhtmlXQ_result]红胜[/DhtmlXQ_result]
+[DhtmlXQ_remark]杨官璘[/DhtmlXQ_remark]
+[DhtmlXQ_hits]11782[/DhtmlXQ_hits]
+[DhtmlXQ_sortid]695550[/DhtmlXQ_sortid]
+[DhtmlXQ_owner]象棋谱大全[/DhtmlXQ_owner]
+[DhtmlXQ_oldowner]象棋谱大全[/DhtmlXQ_oldowner]
+[DhtmlXQ_comment0]《弈林新编》杨官璘编著||||||中炮巡河炮对屏风马||||中炮巡河炮又称为“五八炮巡河”，是常见的一种布局。这个布局的变化比较广泛，如中炮过河车对屏风马横车左相、及中炮直车对屏风马进炮封车等变化，也可以演变成中炮巡河炮的形势。||||现在，这里所介绍的形势，在先手方面主要是左炮先巡河，右车伺机进取的变化。在屏风马方面，大致有：左炮巡河、右炮巡河、兑三路兵、平右车等类型的应着。这些应着的变化，都是非常复杂的。||||它的特点是：当头炮方面较有稳健持久的先手攻势，但攻势比较缓慢。[/DhtmlXQ_comment0]
+[DhtmlXQ_comment19]如图局势，黑方可走：(一)士4进5，(二)车1平2，(三)兵3进1，兹将三种着法，演变如下：[/DhtmlXQ_comment19]
+[DhtmlXQ_comment25]巩固中路，并伏有伺机进取，是好的停着。[/DhtmlXQ_comment25]
+[DhtmlXQ_comment63]红方稍占先手。[/DhtmlXQ_comment63]
+[DhtmlXQ_comment1_61]红方优势。[/DhtmlXQ_comment1_61]
+[DhtmlXQ_comment2_53]红方先手。[/DhtmlXQ_comment2_53]
+[DhtmlXQ_comment3_44]局势比较平稳。[/DhtmlXQ_comment3_44]
+[DhtmlXQ_comment4_45]红方略先。[/DhtmlXQ_comment4_45]
+[DhtmlXQ_comment5_47]红方先手。[/DhtmlXQ_comment5_47]
+[DhtmlXQ_comment6_48]局势平稳。[/DhtmlXQ_comment6_48]
+[DhtmlXQ_comment7_37]兑子之后红方易走。[/DhtmlXQ_comment7_37]
+[DhtmlXQ_comment8_39]红方优势。[/DhtmlXQ_comment8_39]
+[DhtmlXQ_comment9_37]红方先手。[/DhtmlXQ_comment9_37]
+[DhtmlXQ_comment10_36]兑子之后黑方先手。[/DhtmlXQ_comment10_36]
+[DhtmlXQ_comment11_26]改走卒5进1比较平稳。[/DhtmlXQ_comment11_26]
+[DhtmlXQ_comment11_33]红方较优。[/DhtmlXQ_comment11_33]
+[DhtmlXQ_comment12_27]红方优势。[/DhtmlXQ_comment12_27]
+[DhtmlXQ_comment13_28]如改走车3进1，则红方进马抢中兵，红方优势。[/DhtmlXQ_comment13_28]
+[DhtmlXQ_comment13_39]红方优势。[/DhtmlXQ_comment13_39]
+[DhtmlXQ_comment14_39]红方得子占优。[/DhtmlXQ_comment14_39]
+[DhtmlXQ_comment15_31]避免黑车牵制，下一步红有车八进七捉马，红方先手。[/DhtmlXQ_comment15_31]
+[DhtmlXQ_comment16_34]各有顾忌。[/DhtmlXQ_comment16_34]
+[DhtmlXQ_comment17_27]红方先手。[/DhtmlXQ_comment17_27]
+[DhtmlXQ_comment18_39]红方优势。[/DhtmlXQ_comment18_39]
+[DhtmlXQ_comment19_37]红方稍占优。[/DhtmlXQ_comment19_37]
+[DhtmlXQ_comment20_29]红方优势。[/DhtmlXQ_comment20_29]
+[DhtmlXQ_comment21_31]红方优势。[/DhtmlXQ_comment21_31]
+[DhtmlXQ_comment22_29]红方先手。[/DhtmlXQ_comment22_29]
+[DhtmlXQ_comment23_17]演成“车换马炮局”，在中局研究栏里已有详载。[/DhtmlXQ_comment23_17]
 [/DhtmlXQ]`,
   },
   pgn_handicap: {
@@ -334,18 +415,65 @@ START{
 export function NotationImportLab() {
   const [inputText, setInputText] = useState("");
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
+  const [activeBranchId, setActiveBranchId] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const playTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const activeMoveRowRef = useRef<HTMLTableRowElement | null>(null);
 
-  // 计算每一步的历史局面 FEN 序列
+  // 自动滚动活动着法到可视区域
+  useEffect(() => {
+    if (activeMoveRowRef.current) {
+      activeMoveRowRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [stepIndex, activeBranchId]);
+
+  // 当前选中的活动分支 (若无多分支则默认为主线)
+  const activeBranch = useMemo<GameBranch | null>(() => {
+    if (!importResult || !importResult.branches || importResult.branches.length === 0) {
+      return null;
+    }
+    return (
+      importResult.branches.find((b) => b.branchId === activeBranchId) ||
+      importResult.branches[0]
+    );
+  }, [importResult, activeBranchId]);
+
+  // 当前分支的走法序列
+  const activeMoves = useMemo(() => {
+    if (activeBranch) {
+      return activeBranch.moves;
+    }
+    return importResult?.moves || [];
+  }, [activeBranch, importResult]);
+
+  // 当前分支的中文着法列表
+  const activeChineseMoves = useMemo(() => {
+    if (activeBranch) {
+      return activeBranch.chineseMoves;
+    }
+    return importResult?.chineseMoves || [];
+  }, [activeBranch, importResult]);
+
+  // 当前分支的评注字典
+  const activeComments = useMemo<Record<number, string>>(() => {
+    if (activeBranch) {
+      return activeBranch.comments;
+    }
+    return importResult?.comments || {};
+  }, [activeBranch, importResult]);
+
+  // 计算当前分支每一步的历史局面 FEN 序列
   const positions = useMemo(() => {
-    if (!importResult || !importResult.success || importResult.moves.length === 0) {
+    if (!importResult || !importResult.success || activeMoves.length === 0) {
       return [importResult?.initialFen || START_FEN];
     }
     const list = [importResult.initialFen];
     let cur = importResult.initialFen;
-    for (const uci of importResult.moves) {
+    for (const uci of activeMoves) {
       try {
         cur = applyMove(cur, uci);
         list.push(cur);
@@ -354,79 +482,242 @@ export function NotationImportLab() {
       }
     }
     return list;
-  }, [importResult]);
+  }, [importResult, activeMoves]);
 
   const currentFen = positions[stepIndex] || START_FEN;
 
   const currentMoveRecord = useMemo<MoveRecord | undefined>(() => {
-    if (!importResult || stepIndex === 0 || !importResult.moves[stepIndex - 1]) {
+    if (!importResult || stepIndex === 0 || !activeMoves[stepIndex - 1]) {
       return undefined;
     }
-    const uci = importResult.moves[stepIndex - 1];
+    const uci = activeMoves[stepIndex - 1];
     const prevFen = positions[stepIndex - 1];
     const side = prevFen ? (prevFen.split(" ")[1] === "b" ? "black" : "red") : "red";
     return {
       ply: stepIndex,
       side,
       ucci: uci,
-      chineseNotation: importResult.chineseMoves[stepIndex - 1] || uci,
+      chineseNotation: activeChineseMoves[stepIndex - 1] || uci,
       fromSquare: uci.slice(0, 2),
       toSquare: uci.slice(2, 4),
     };
-  }, [importResult, stepIndex, positions]);
+  }, [importResult, stepIndex, activeMoves, activeChineseMoves, positions]);
 
-  // 双列着法映射（完美支持红先/黑先）
+  const ALPHABETS = useMemo(() => ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'], []);
+
+  // 收集对局中所有存在分支变着的步骤序号 (1-based ply)
+  const allDivergencePlies = useMemo(() => {
+    if (!importResult?.branches || importResult.branches.length <= 1) return [];
+    const pliesSet = new Set<number>();
+    for (const b of importResult.branches) {
+      if (b.branchPly > 0) {
+        pliesSet.add(b.branchPly);
+      }
+    }
+    return Array.from(pliesSet).sort((a, b) => a - b);
+  }, [importResult]);
+
+  // 根据当前活动分支与谱树血缘，计算指定步骤在当前线路上对应的变着代号 (A, B, C...)
+  const getVariantLetter = useCallback(
+    (ply: number): string | undefined => {
+      if (!allDivergencePlies.includes(ply)) return undefined;
+      if (!importResult?.branches) return undefined;
+
+      let b: GameBranch | undefined = activeBranch || importResult.branches[0];
+      while (b && b.branchId !== 0) {
+        if (b.branchPly === ply) {
+          const siblings = importResult.branches.filter(
+            (item) => item.parentBranchId === b!.parentBranchId && item.branchPly === ply
+          );
+          const idx = siblings.findIndex((item) => item.branchId === b!.branchId);
+          if (idx >= 0) {
+            return ALPHABETS[idx + 1] || `${idx + 2}`;
+          }
+        }
+        b = importResult.branches.find((item) => item.branchId === b!.parentBranchId);
+      }
+      return 'A';
+    },
+    [allDivergencePlies, importResult, activeBranch, ALPHABETS]
+  );
+
+  // 双列着法映射（完美支持红先/黑先，并标记变着代号与评注图标）
   const moveRows = useMemo(() => {
-    if (!importResult || !importResult.success || importResult.moves.length === 0) {
+    if (!importResult || !importResult.success || activeMoves.length === 0) {
       return [];
     }
     const rows: {
       round: number;
       redStepIndex?: number;
       redNotation?: string;
+      redVariant?: string;
+      redHasComment?: boolean;
       blackStepIndex?: number;
       blackNotation?: string;
+      blackVariant?: string;
+      blackHasComment?: boolean;
     }[] = [];
     const isInitialBlack = (importResult.initialFen.split(" ")[1] || "w") === "b";
 
     let currentRound = 1;
     let i = 0;
 
-    if (isInitialBlack && importResult.moves.length > 0) {
+    if (isInitialBlack && activeMoves.length > 0) {
       rows.push({
         round: currentRound++,
         blackStepIndex: 1,
-        blackNotation: importResult.chineseMoves[0],
+        blackNotation: activeChineseMoves[0],
+        blackVariant: getVariantLetter(1),
+        blackHasComment: Boolean(activeComments[1]),
       });
       i = 1;
     }
 
-    while (i < importResult.moves.length) {
+    while (i < activeMoves.length) {
       const redStepIndex = i + 1;
-      const redNotation = importResult.chineseMoves[i];
+      const redNotation = activeChineseMoves[i];
+      const redVariant = getVariantLetter(redStepIndex);
+      const redHasComment = Boolean(activeComments[redStepIndex]);
       i++;
       let blackStepIndex: number | undefined;
       let blackNotation: string | undefined;
-      if (i < importResult.moves.length) {
+      let blackVariant: string | undefined;
+      let blackHasComment = false;
+      if (i < activeMoves.length) {
         blackStepIndex = i + 1;
-        blackNotation = importResult.chineseMoves[i];
+        blackNotation = activeChineseMoves[i];
+        blackVariant = getVariantLetter(blackStepIndex);
+        blackHasComment = Boolean(activeComments[blackStepIndex]);
         i++;
       }
       rows.push({
         round: currentRound++,
         redStepIndex,
         redNotation,
+        redVariant,
+        redHasComment,
         blackStepIndex,
         blackNotation,
+        blackVariant,
+        blackHasComment,
       });
     }
 
     return rows;
-  }, [importResult]);
+  }, [importResult, activeMoves, activeChineseMoves, activeComments, getVariantLetter]);
+
+  // 当前步骤处的备选变着列表 (类似 xiangqi.com 的 VariationsList: A. 主线, B. 变着13, C. 变着18)
+  const currentStepVariations = useMemo(() => {
+    if (!importResult?.branches || importResult.branches.length <= 1) return [];
+
+    const targetPly =
+      stepIndex > 0
+        ? allDivergencePlies.includes(stepIndex)
+          ? stepIndex
+          : allDivergencePlies.includes(stepIndex + 1)
+          ? stepIndex + 1
+          : null
+        : allDivergencePlies.includes(1)
+        ? 1
+        : null;
+
+    if (!targetPly) return [];
+
+    const branches = importResult.branches;
+    const currentB = activeBranch || branches[0];
+
+    // 寻找在 targetPly 处的父基准分支
+    let curr: GameBranch | undefined = currentB;
+    while (curr && curr.branchId !== 0 && curr.branchPly > targetPly) {
+      curr = branches.find((b) => b.branchId === curr!.parentBranchId);
+    }
+    if (!curr) curr = branches[0];
+
+    let baseBranchId = curr.branchId;
+    if (curr.branchPly === targetPly) {
+      baseBranchId = curr.parentBranchId;
+    }
+
+    const baseBranch = branches.find((b) => b.branchId === baseBranchId);
+    if (!baseBranch) return [];
+
+    const diverging = branches.filter(
+      (b) => b.parentBranchId === baseBranchId && b.branchPly === targetPly
+    );
+    if (diverging.length === 0) return [];
+
+    function isDescendantOrSelf(targetId: number, checkId: number): boolean {
+      if (targetId === checkId) return true;
+      let c: GameBranch | undefined = branches.find((b) => b.branchId === checkId);
+      while (c && c.branchId !== 0) {
+        if (c.parentBranchId === targetId) return true;
+        c = branches.find((b) => b.branchId === c!.parentBranchId);
+      }
+      return false;
+    }
+
+    const options: Array<{
+      variantLetter: string;
+      branchId: number;
+      notation: string;
+      label: string;
+      isSelected: boolean;
+      ply: number;
+    }> = [];
+
+    const baseMoveChinese = baseBranch.chineseMoves[targetPly - 1] || "...";
+    options.push({
+      variantLetter: "A",
+      branchId: baseBranchId,
+      notation: baseMoveChinese,
+      label: baseBranchId === 0 ? "主线" : `变着 ${baseBranchId}`,
+      isSelected:
+        isDescendantOrSelf(baseBranchId, currentB.branchId) &&
+        !diverging.some((d) => isDescendantOrSelf(d.branchId, currentB.branchId)),
+      ply: targetPly,
+    });
+
+    diverging.forEach((d, idx) => {
+      options.push({
+        variantLetter: ALPHABETS[idx + 1] || `${idx + 2}`,
+        branchId: d.branchId,
+        notation: d.divergenceMoveChinese || d.chineseMoves[targetPly - 1] || "...",
+        label: `变着 ${d.branchId}`,
+        isSelected: isDescendantOrSelf(d.branchId, currentB.branchId),
+        ply: targetPly,
+      });
+    });
+
+    return options;
+  }, [importResult, activeBranch, stepIndex, allDivergencePlies, ALPHABETS]);
+
+  // 计算当前分支层级面包屑路径
+  const branchBreadcrumbs = useMemo(() => {
+    if (!activeBranch || activeBranch.branchId === 0) {
+      return [{ branchId: 0, label: "主线" }];
+    }
+    const crumbs: Array<{ branchId: number; label: string }> = [];
+    let curr: GameBranch | undefined = activeBranch;
+    while (curr && curr.branchId !== 0) {
+      crumbs.unshift({
+        branchId: curr.branchId,
+        label: `变着 ${curr.branchId}${curr.divergenceMoveChinese ? ` (${curr.divergenceMoveChinese})` : ""}`,
+      });
+      const parentId = curr.parentBranchId;
+      curr = importResult?.branches?.find((b) => b.branchId === parentId);
+    }
+    crumbs.unshift({ branchId: 0, label: "主线" });
+    return crumbs;
+  }, [activeBranch, importResult]);
+
+  // 当前步骤评注与开局总评
+  const currentComment = activeComments[stepIndex];
+  const openingComment = activeComments[0];
 
   // 执行导入解析
   function handleParse(textToParse = inputText) {
     setIsPlaying(false);
+    setActiveBranchId(0);
     if (!textToParse.trim()) {
       setImportResult(null);
       return;
@@ -552,10 +843,16 @@ export function NotationImportLab() {
             <Badge appearance="outline">识别格式: {importResult.format.toUpperCase()}</Badge>
             <strong>{importResult.title}</strong>
             <span style={{ fontSize: "13px", color: "#666" }}>
-              共识别 <strong>{importResult.moves.length}</strong> 步着法
+              主线共 <strong>{importResult.moves.length}</strong> 步着法
             </span>
             {importResult.result && (
               <Badge color="informative">终局结果: {importResult.result}</Badge>
+            )}
+            {importResult.branches && importResult.branches.length > 1 && (
+              <Badge color="informative">含 {importResult.branches.length - 1} 个变着分支</Badge>
+            )}
+            {importResult.comments && Object.keys(importResult.comments).length > 0 && (
+              <Badge color="brand">含 {Object.keys(importResult.comments).length} 处评注</Badge>
             )}
           </div>
 
@@ -577,10 +874,10 @@ export function NotationImportLab() {
         </section>
       )}
 
-      {/* 棋盘推演与走子列表双栏展示 */}
-      {importResult && importResult.success && importResult.moves.length > 0 && (
+      {/* 棋盘推演与走子列表双栏展示 (参考 xiangqi.com GameNote 布局设计) */}
+      {importResult && importResult.success && activeMoves.length > 0 && (
         <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "20px", alignItems: "start" }}>
-          {/* 左栏：棋盘与步数控制 */}
+          {/* 左栏：棋盘与步数控制 (专注棋盘，消除多余弹窗与重复卡片) */}
           <section
             style={{
               background: "var(--card-bg, #fff)",
@@ -666,8 +963,8 @@ export function NotationImportLab() {
                     <strong style={{ color: currentMoveRecord?.side === "red" ? "#dc2626" : "#1e293b" }}>
                       {currentMoveRecord?.side === "red" ? "红方" : "黑方"}
                     </strong>{" "}
-                    <strong>{importResult.chineseMoves[stepIndex - 1]}</strong>{" "}
-                    <code style={{ fontSize: "12px", color: "#6b7280" }}>({importResult.moves[stepIndex - 1]})</code>
+                    <strong>{activeChineseMoves[stepIndex - 1]}</strong>{" "}
+                    <code style={{ fontSize: "12px", color: "#6b7280" }}>({activeMoves[stepIndex - 1]})</code>
                   </span>
                 )}
               </div>
@@ -696,7 +993,7 @@ export function NotationImportLab() {
             </div>
           </section>
 
-          {/* 右栏：双列着法记录表，支持任意步骤点击跳转 */}
+          {/* 右栏：侧边栏 (遵循 xiangqi.com GameNote 经典四段式布局) */}
           <section
             className="panel"
             style={{
@@ -704,64 +1001,375 @@ export function NotationImportLab() {
               padding: "16px",
               borderRadius: "8px",
               border: "1px solid #e0e0e0",
-              maxHeight: "680px",
               display: "flex",
               flexDirection: "column",
+              gap: "12px",
+              minWidth: "360px",
             }}
           >
-            <h3 style={{ margin: "0 0 12px 0", fontSize: "15px", fontWeight: 600 }}>对局着法列表 (点击任意步跳转)</h3>
-            <div style={{ overflowY: "auto", flex: 1, paddingRight: "4px" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                <thead>
-                  <tr style={{ background: "#f1f5f9", borderBottom: "1px solid #cbd5e1", textAlign: "left" }}>
-                    <th style={{ padding: "6px 8px", width: "45px" }}>序号</th>
-                    <th style={{ padding: "6px 8px" }}>红方</th>
-                    <th style={{ padding: "6px 8px" }}>黑方</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {moveRows.map((row) => {
-                    const isRedActive = row.redStepIndex !== undefined && stepIndex === row.redStepIndex;
-                    const isBlackActive = row.blackStepIndex !== undefined && stepIndex === row.blackStepIndex;
+            {/* 1. 评注区 (NotePreviewBox) */}
+            <div
+              style={{
+                background: "#f8fafc",
+                border: "1px solid #cbd5e1",
+                borderRadius: "6px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  padding: "8px 12px",
+                  background: "#f1f5f9",
+                  borderBottom: "1px solid #e2e8f0",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "#334155",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span>
+                  {stepIndex === 0
+                    ? "📖 棋谱开局总评 (Overview)"
+                    : `📝 局面评注 · 第 ${Math.ceil(stepIndex / 2)} 步 ${currentMoveRecord?.side === "red" ? "红方" : "黑方"} ${activeChineseMoves[stepIndex - 1] || ""}`}
+                </span>
+                {((stepIndex === 0 && openingComment) || (stepIndex > 0 && currentComment)) && (
+                  <span style={{ fontSize: "11px", color: "#166534", fontWeight: 600, background: "#dcfce7", padding: "1px 6px", borderRadius: "3px" }}>
+                    含评注
+                  </span>
+                )}
+              </div>
+              <div
+                style={{
+                  padding: "10px 12px",
+                  fontSize: "13px",
+                  lineHeight: "1.6",
+                  maxHeight: "130px",
+                  overflowY: "auto",
+                  color: (stepIndex === 0 ? openingComment : currentComment) ? "#1e293b" : "#94a3b8",
+                  fontStyle: (stepIndex === 0 ? openingComment : currentComment) ? "normal" : "italic",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {(stepIndex === 0 ? openingComment : currentComment) ||
+                  (stepIndex === 0 ? "（初始局面无总评）" : "（当前步骤无评注）")}
+              </div>
+            </div>
 
-                    return (
-                      <tr key={row.round} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                        <td style={{ padding: "6px 8px", color: "#94a3b8", fontWeight: 500 }}>{row.round}.</td>
-                        
-                        {/* 红方走子 */}
-                        <td
-                          onClick={() => row.redStepIndex !== undefined && setStepIndex(row.redStepIndex)}
+            {/* 2. 线路面包屑与切换 */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "6px 10px",
+                background: activeBranchId === 0 ? "#f8fafc" : "#eff6ff",
+                border: `1px solid ${activeBranchId === 0 ? "#e2e8f0" : "#bfdbfe"}`,
+                borderRadius: "6px",
+                fontSize: "12px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "6px", overflow: "hidden" }}>
+                <span style={{ color: "#64748b", flexShrink: 0 }}>线路:</span>
+                <span
+                  style={{
+                    fontWeight: 600,
+                    color: activeBranchId === 0 ? "#166534" : "#1d4ed8",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                  }}
+                >
+                  {branchBreadcrumbs.map((crumb, idx) => (
+                    <span key={crumb.branchId}>
+                      {idx > 0 && <span style={{ color: "#94a3b8", margin: "0 4px" }}>&gt;</span>}
+                      {crumb.branchId === activeBranchId ? (
+                        <strong>{crumb.label}</strong>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => setActiveBranchId(crumb.branchId)}
                           style={{
-                            padding: "6px 8px",
-                            cursor: row.redStepIndex !== undefined ? "pointer" : "default",
-                            fontWeight: isRedActive ? 700 : 400,
-                            background: isRedActive ? "#fee2e2" : "transparent",
-                            color: isRedActive ? "#b91c1c" : row.redNotation ? "inherit" : "#94a3b8",
-                            borderRadius: "4px",
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            color: "#2563eb",
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            fontSize: "12px",
                           }}
                         >
-                          {row.redNotation || "..."}
-                        </td>
+                          {crumb.label}
+                        </button>
+                      )}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              {activeBranchId !== 0 && (
+                <Button
+                  size="small"
+                  appearance="outline"
+                  onClick={() => setActiveBranchId(0)}
+                  style={{ fontSize: "11px", padding: "2px 8px", height: "24px", flexShrink: 0 }}
+                >
+                  返回主线
+                </Button>
+              )}
+            </div>
 
-                        {/* 黑方走子 */}
-                        <td
-                          onClick={() => row.blackStepIndex !== undefined && setStepIndex(row.blackStepIndex)}
+            {/* 3. 对局着法列表 (Moves List Table) */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 600, color: "#1e293b" }}>
+                  着法记录
+                </h3>
+                <span style={{ fontSize: "12px", color: "#64748b" }}>
+                  共 {activeMoves.length} 步
+                </span>
+              </div>
+              <div
+                style={{
+                  maxHeight: currentStepVariations.length > 0 ? "240px" : "340px",
+                  overflowY: "auto",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "6px",
+                }}
+              >
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                  <thead>
+                    <tr style={{ background: "#f1f5f9", borderBottom: "1px solid #cbd5e1", textAlign: "left", position: "sticky", top: 0, zIndex: 1 }}>
+                      <th style={{ padding: "6px 8px", width: "40px", color: "#475569" }}>序号</th>
+                      <th style={{ padding: "6px 8px", color: "#dc2626" }}>红方</th>
+                      <th style={{ padding: "6px 8px", color: "#0f172a" }}>黑方</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {moveRows.map((row) => {
+                      const isRedActive = row.redStepIndex !== undefined && stepIndex === row.redStepIndex;
+                      const isBlackActive = row.blackStepIndex !== undefined && stepIndex === row.blackStepIndex;
+
+                      return (
+                        <tr
+                          key={row.round}
+                          ref={isRedActive || isBlackActive ? (el) => { activeMoveRowRef.current = el; } : undefined}
                           style={{
-                            padding: "6px 8px",
-                            cursor: row.blackStepIndex !== undefined ? "pointer" : "default",
-                            fontWeight: isBlackActive ? 700 : 400,
-                            background: isBlackActive ? "#e2e8f0" : "transparent",
-                            color: isBlackActive ? "#0f172a" : "inherit",
-                            borderRadius: "4px",
+                            borderBottom: "1px solid #f1f5f9",
+                            background: row.round % 2 === 1 ? "#ffffff" : "#f8fafc",
                           }}
                         >
-                          {row.blackNotation || ""}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <td style={{ padding: "5px 8px", color: "#94a3b8", fontWeight: 500, fontSize: "12px" }}>
+                            {row.round}.
+                          </td>
+
+                          {/* 红方走子 */}
+                          <td
+                            onClick={() => row.redStepIndex !== undefined && setStepIndex(row.redStepIndex)}
+                            style={{
+                              padding: "5px 8px",
+                              cursor: row.redStepIndex !== undefined ? "pointer" : "default",
+                              fontWeight: isRedActive ? 700 : 400,
+                              background: isRedActive ? "#fee2e2" : "transparent",
+                              color: isRedActive ? "#b91c1c" : row.redNotation ? "inherit" : "#94a3b8",
+                              borderRadius: "4px",
+                              border: isRedActive ? "1px solid #ef4444" : "1px solid transparent",
+                            }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                              <span>
+                                {row.redNotation || "..."}
+                                {row.redVariant && (
+                                  <span style={{ color: "#2563eb", fontWeight: 600, marginLeft: "4px", fontSize: "11px" }}>
+                                    ({row.redVariant})
+                                  </span>
+                                )}
+                              </span>
+                              {row.redHasComment && (
+                                <span title="包含局面评注" style={{ fontSize: "12px", marginLeft: "4px" }}>
+                                  📝
+                                </span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* 黑方走子 */}
+                          <td
+                            onClick={() => row.blackStepIndex !== undefined && setStepIndex(row.blackStepIndex)}
+                            style={{
+                              padding: "5px 8px",
+                              cursor: row.blackStepIndex !== undefined ? "pointer" : "default",
+                              fontWeight: isBlackActive ? 700 : 400,
+                              background: isBlackActive ? "#e2e8f0" : "transparent",
+                              color: isBlackActive ? "#0f172a" : "inherit",
+                              borderRadius: "4px",
+                              border: isBlackActive ? "1px solid #94a3b8" : "1px solid transparent",
+                            }}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                              <span>
+                                {row.blackNotation || ""}
+                                {row.blackVariant && (
+                                  <span style={{ color: "#2563eb", fontWeight: 600, marginLeft: "4px", fontSize: "11px" }}>
+                                    ({row.blackVariant})
+                                  </span>
+                                )}
+                              </span>
+                              {row.blackHasComment && (
+                                <span title="包含局面评注" style={{ fontSize: "12px", marginLeft: "4px" }}>
+                                  📝
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* 4. 变着分支区 (VariantsContainer / VariationsList) */}
+            <div
+              style={{
+                borderTop: "1px solid #e2e8f0",
+                paddingTop: "12px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h4 style={{ margin: 0, fontSize: "13px", fontWeight: 600, color: "#1e293b", display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span>🔀 变着 (Variations)</span>
+                </h4>
+                {currentStepVariations.length > 0 && (
+                  <span style={{ fontSize: "11px", color: "#64748b" }}>
+                    {currentStepVariations[0]?.ply === stepIndex
+                      ? `第 ${Math.ceil(stepIndex / 2)} 步本着变着`
+                      : `第 ${Math.ceil((stepIndex + 1) / 2)} 步下着分支`}
+                  </span>
+                )}
+              </div>
+
+              {currentStepVariations.length > 0 ? (
+                <ul
+                  className="sortable-list"
+                  style={{
+                    margin: 0,
+                    padding: 0,
+                    listStyle: "none",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                    maxHeight: "180px",
+                    overflowY: "auto",
+                  }}
+                >
+                  {currentStepVariations.map((v) => (
+                    <li key={v.branchId} style={{ width: "100%" }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveBranchId(v.branchId);
+                          setStepIndex(v.ply);
+                        }}
+                        style={{
+                          width: "100%",
+                          boxSizing: "border-box",
+                          padding: "6px 10px",
+                          borderRadius: "6px",
+                          border: v.isSelected ? "1px solid #94a3b8" : "1px solid #e2e8f0",
+                          background: v.isSelected ? "#e2e8f0" : "#ffffff",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          transition: "all 0.15s ease",
+                          textAlign: "left",
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              fontSize: "13px",
+                              color: v.isSelected ? "#0f172a" : "#64748b",
+                              minWidth: "18px",
+                            }}
+                          >
+                            {v.variantLetter}.
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "13px",
+                              fontWeight: v.isSelected ? 700 : 500,
+                              color: v.isSelected ? "#0f172a" : "#334155",
+                            }}
+                          >
+                            {v.notation}
+                          </span>
+                        </div>
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            background: v.isSelected ? "#cbd5e1" : "#f1f5f9",
+                            color: v.isSelected ? "#0f172a" : "#64748b",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {v.label}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div style={{ fontSize: "12px", color: "#64748b", padding: "4px 0" }}>
+                  {allDivergencePlies.length > 0 ? (
+                    <div>
+                      <div style={{ marginBottom: "6px", color: "#94a3b8" }}>
+                        当前步无其他变着分支。对局分叉节点：
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                        {allDivergencePlies.map((ply) => (
+                          <button
+                            key={ply}
+                            type="button"
+                            onClick={() => {
+                              if (ply > activeMoves.length) {
+                                const targetB = importResult?.branches?.find((b) => b.branchPly === ply);
+                                if (targetB) {
+                                  setActiveBranchId(targetB.parentBranchId >= 0 ? targetB.parentBranchId : 0);
+                                } else {
+                                  setActiveBranchId(0);
+                                }
+                              }
+                              setStepIndex(ply);
+                            }}
+                            style={{
+                              padding: "2px 6px",
+                              fontSize: "11px",
+                              borderRadius: "4px",
+                              border: "1px solid #cbd5e1",
+                              background: "#f8fafc",
+                              color: "#334155",
+                              cursor: "pointer",
+                            }}
+                          >
+                            第 {Math.ceil(ply / 2)} 步 ({ply % 2 === 1 ? "红" : "黑"})
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <span style={{ fontStyle: "italic", color: "#94a3b8" }}>（本对局无变着分支）</span>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         </div>
