@@ -48,7 +48,7 @@ const PIECE_KIND_MAP: Record<string, string> = {
 };
 
 export function isChineseNotation(text: string): boolean {
-  return /[车马炮相象仕士兵卒帅将][一二三四五六七八九1-9前后中][进退平][一二三四五六七八九1-9]/.test(
+  return /(?:[车马炮相象仕士兵卒帅将][一二三四五六七八九1-9前后中]|[前后][车马炮相象仕士兵卒一二三四五六七八九1-9])[进退平][一二三四五六七八九1-9]/.test(
     normalizeMoveChars(normalizeFullwidth(text)),
   );
 }

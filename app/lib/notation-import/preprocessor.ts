@@ -22,7 +22,23 @@ const CHAR_REPLACEMENTS: Record<string, string> = {
   '進': '进',
   '上': '进',
   '下': '退',
+  '後': '后',
+  '壹': '一',
+  '貳': '二',
+  '贰': '二',
+  '參': '三',
+  '参': '三',
+  '肆': '四',
+  '伍': '五',
+  '陸': '六',
+  '陆': '六',
+  '柒': '七',
+  '捌': '八',
+  '玖': '九',
+  '拾': '十',
 };
+
+const CHAR_REPLACE_REGEX = new RegExp(`[${Object.keys(CHAR_REPLACEMENTS).join('')}]`, 'g');
 
 export const RESULT_REGEX =
   /^(1-0|0-1|1\/2-1\/2|0\.5-0\.5|\*|红胜|黑胜|和棋|黑方胜|红方胜|红先胜|黑先胜|红负|黑负|先胜|先负|先和|后胜|后负|后和)$/i;
@@ -34,7 +50,7 @@ export function normalizeFullwidth(text: string): string {
 }
 
 export function normalizeMoveChars(text: string): string {
-  return text.replace(/[俥車傌馬砲帥將進上下]/g, (ch) => CHAR_REPLACEMENTS[ch] || ch);
+  return text.replace(CHAR_REPLACE_REGEX, (ch) => CHAR_REPLACEMENTS[ch] || ch);
 }
 
 export function stripComments(text: string): string {
