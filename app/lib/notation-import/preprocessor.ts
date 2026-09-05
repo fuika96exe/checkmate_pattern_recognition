@@ -23,19 +23,6 @@ const CHAR_REPLACEMENTS: Record<string, string> = {
   '上': '进',
   '下': '退',
   '後': '后',
-  '壹': '一',
-  '貳': '二',
-  '贰': '二',
-  '參': '三',
-  '参': '三',
-  '肆': '四',
-  '伍': '五',
-  '陸': '六',
-  '陆': '六',
-  '柒': '七',
-  '捌': '八',
-  '玖': '九',
-  '拾': '十',
 };
 
 const CHAR_REPLACE_REGEX = new RegExp(`[${Object.keys(CHAR_REPLACEMENTS).join('')}]`, 'g');
