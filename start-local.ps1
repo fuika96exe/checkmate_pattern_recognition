@@ -1,12 +1,21 @@
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
+$env:XDG_CONFIG_HOME = Join-Path $ProjectRoot ".wrangler-config"
+$env:XDG_DATA_HOME = Join-Path $ProjectRoot ".wrangler-data"
+$env:XDG_CACHE_HOME = Join-Path $ProjectRoot ".wrangler-cache"
 
 $PythonCommand = Get-Command python.exe -ErrorAction SilentlyContinue
-if (-not $PythonCommand) {
+$PythonPath = if ($PythonCommand) {
+  $PythonCommand.Source
+} else {
+  Get-ChildItem "$env:LOCALAPPDATA\Programs\Python\*\python.exe" -ErrorAction SilentlyContinue |
+    Select-Object -First 1 -ExpandProperty FullName
+}
+if (-not $PythonPath) {
   throw "Python was not found. Install Python 3.12+ first."
 }
 
-Start-Process -FilePath $PythonCommand.Source `
+Start-Process -FilePath $PythonPath `
   -ArgumentList "run.py" `
   -WorkingDirectory (Join-Path $ProjectRoot "backend") `
   -WindowStyle Hidden
