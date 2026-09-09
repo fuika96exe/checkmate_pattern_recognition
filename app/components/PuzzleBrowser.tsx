@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@fluentui/react-badge";
 import { Button } from "@fluentui/react-button";
 import { Spinner } from "@fluentui/react-spinner";
@@ -121,6 +121,7 @@ export function PuzzleBrowser() {
   const [ratingMax, setRatingMax] = useState("");
   const [movesMin, setMovesMin] = useState("");
   const [movesMax, setMovesMax] = useState("");
+  const [puzzleIdQuery, setPuzzleIdQuery] = useState("");
   const [patternFilter, setPatternFilter] = useState<"" | PatternId>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "matched" | "unmatched" | "invalid">("all");
   const [filtersExpanded, setFiltersExpanded] = useState(true);
@@ -212,8 +213,10 @@ export function PuzzleBrowser() {
     const maxRating = ratingMax === "" ? null : Number(ratingMax);
     const minMoves = movesMin === "" ? null : Number(movesMin);
     const maxMoves = movesMax === "" ? null : Number(movesMax);
+    const normalizedPuzzleIdQuery = puzzleIdQuery.trim().toLowerCase();
     return dataset.puzzles.filter((puzzle) => {
       const status = statusFor(puzzle, summaries, analyzing);
+      if (normalizedPuzzleIdQuery && !puzzle.key.toLowerCase().includes(normalizedPuzzleIdQuery)) return false;
       if (minRating !== null && (puzzle.rating === null || puzzle.rating < minRating)) return false;
       if (maxRating !== null && (puzzle.rating === null || puzzle.rating > maxRating)) return false;
       if (minMoves !== null && puzzle.moveCount < minMoves) return false;
@@ -222,7 +225,7 @@ export function PuzzleBrowser() {
       if (statusFilter !== "all" && status !== statusFilter) return false;
       return true;
     });
-  }, [analyzing, dataset, movesMax, movesMin, patternFilter, ratingMax, ratingMin, statusFilter, summaries]);
+  }, [analyzing, dataset, movesMax, movesMin, patternFilter, puzzleIdQuery, ratingMax, ratingMin, statusFilter, summaries]);
 
   const totalPages = Math.max(1, Math.ceil(filteredPuzzles.length / PAGE_SIZE));
   const visiblePuzzles = filteredPuzzles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -240,20 +243,21 @@ export function PuzzleBrowser() {
     ratingMax,
     movesMin,
     movesMax,
+    puzzleIdQuery,
     patternFilter,
     statusFilter === "all" ? "" : statusFilter,
   ].filter(Boolean).length;
 
-  function recordResponse(puzzle: PuzzleRecord, response: PuzzleLineResponse) {
+  const recordResponse = useCallback((puzzle: PuzzleRecord, response: PuzzleLineResponse) => {
     if (rulesVersion && response.rulesVersion !== rulesVersion) {
       setRulesVersion(response.rulesVersion);
       setSummaries({ [puzzle.key]: responseSummary(response) });
       return;
     }
     setSummaries((current) => ({ ...current, [puzzle.key]: responseSummary(response) }));
-  }
+  }, [rulesVersion]);
 
-  async function openPuzzle(puzzle: PuzzleRecord) {
+  const openPuzzle = useCallback(async (puzzle: PuzzleRecord) => {
     const token = ++selectionToken.current;
     setSelected(puzzle);
     setSelectedResult(null);
@@ -282,7 +286,56 @@ export function PuzzleBrowser() {
       });
       if (selectionToken.current === token) setSelectedBusy(false);
     }
-  }
+  }, [recordResponse, rulesVersion]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.isContentEditable
+        || target instanceof HTMLInputElement
+        || target instanceof HTMLTextAreaElement
+        || target instanceof HTMLSelectElement
+      ) return;
+
+      if (!selected) {
+        if (event.key === "ArrowDown" && filteredPuzzles[0]) {
+          event.preventDefault();
+          void openPuzzle(filteredPuzzles[0]);
+        }
+        return;
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        const replayLength = selectedResult?.timeline.length ?? 0;
+        if (!replayLength) return;
+        event.preventDefault();
+        setPlaying(false);
+        setTimelineIndex((current) => Math.max(
+          0,
+          Math.min(
+            replayLength - 1,
+            current + (event.key === "ArrowRight" ? 1 : -1),
+          ),
+        ));
+        return;
+      }
+
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+      const currentIndex = filteredPuzzles.findIndex((puzzle) => puzzle.key === selected.key);
+      if (currentIndex < 0) return;
+      const nextIndex = currentIndex + (event.key === "ArrowDown" ? 1 : -1);
+      const nextPuzzle = filteredPuzzles[nextIndex];
+      if (!nextPuzzle) return;
+      event.preventDefault();
+      const nextPage = Math.floor(nextIndex / PAGE_SIZE) + 1;
+      if (nextPage !== page) setPage(nextPage);
+      void openPuzzle(nextPuzzle);
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [filteredPuzzles, openPuzzle, page, selected, selectedResult]);
 
   function reloadGeneratedResults() {
     if (!dataset) return;
@@ -336,6 +389,7 @@ export function PuzzleBrowser() {
 
         {filtersExpanded && (
           <div className="puzzle-filter-grid" id="puzzle-filter-panel">
+            <label className="wide"><span>题目 ID</span><input value={puzzleIdQuery} onChange={(event) => { setPuzzleIdQuery(event.target.value); setPage(1); }} placeholder="例如 La1zML" /></label>
             <label><span>评分下限</span><input type="number" value={ratingMin} onChange={(event) => { setRatingMin(event.target.value); setPage(1); }} placeholder="不限" /></label>
             <label><span>评分上限</span><input type="number" value={ratingMax} onChange={(event) => { setRatingMax(event.target.value); setPage(1); }} placeholder="不限" /></label>
             <label><span>着数下限</span><input type="number" value={movesMin} onChange={(event) => { setMovesMin(event.target.value); setPage(1); }} placeholder="不限" /></label>
@@ -430,6 +484,7 @@ export function PuzzleBrowser() {
                     <Button onClick={() => { if (timelineIndex >= timeline.length - 1) setTimelineIndex(Math.min(1, timeline.length - 1)); setPlaying(!playbackActive); }}>{playbackActive ? "暂停" : "自动播放"}</Button>
                     <Button onClick={() => { setPlaying(false); setTimelineIndex(Math.min(1, timeline.length - 1)); }}>回到解题起点</Button>
                     <label>速度<select value={playbackDelay} onChange={(event) => setPlaybackDelay(Number(event.target.value))}><option value={1200}>慢</option><option value={800}>正常</option><option value={450}>快</option></select></label>
+                    <span className="puzzle-keyboard-hint">↑↓ 选择题目 · ←→ 查看着法</span>
                   </div>
                   <div className="fen-strip"><span>FEN</span><code>{currentFrame.fen}</code></div>
                   <div className="puzzle-moves">

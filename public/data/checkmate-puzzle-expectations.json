@@ -1,4 +1,12 @@
 {
   "schemaVersion": "1.0",
-  "expectations": {}
+  "expectations": {
+    "onWE9q": ["HORSE_CANNON_CHECKMATE"],
+    "onWr9q": ["HORSE_CANNON_CHECKMATE"],
+    "qAa1jq": ["OCTAGON_HORSE_CHECKMATE"],
+    "LJD43o": ["DOUBLE_CHECK_CHECKMATE"],
+    "LNxxlo": ["ELBOW_HORSE_CHECKMATE"],
+    "oM72PL": ["ELBOW_HORSE_CHECKMATE"],
+    "L3M1Go": ["DOUBLE_CANNON_CHECKMATE", "ELBOW_HORSE_CHECKMATE"]
+  }
 }

@@ -73,6 +73,7 @@ export function Workbench() {
   const [snapshots, setSnapshots] = useState<Snapshot[]>([]);
   const [index, setIndex] = useState(0);
   const [tab, setTab] = useState("game");
+  const [hydrated, setHydrated] = useState(false);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
   const [language, setLanguage] = useState<"zh" | "en">("en");
@@ -90,6 +91,7 @@ export function Workbench() {
   }, []);
 
   useEffect(() => {
+    setHydrated(true);
     let active = true;
     void api.initial().then((response) => {
       if (!active) return;
@@ -127,9 +129,11 @@ export function Workbench() {
       </header>
 
       <nav className="app-tabs" aria-label="主要功能">
-        <TabList selectedValue={tab} onTabSelect={(_, data) => setTab(String(data.value))}>
-          <Tab value="game">棋局工作台</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
-        </TabList>
+        {hydrated ? (
+          <TabList selectedValue={tab} onTabSelect={(_, data) => setTab(String(data.value))}>
+            <Tab value="game">棋局工作台</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
+          </TabList>
+        ) : <div className="app-tabs-placeholder" aria-hidden="true" />}
       </nav>
 
       <main className="app-main">

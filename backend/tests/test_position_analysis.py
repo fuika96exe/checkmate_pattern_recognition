@@ -20,6 +20,7 @@ from app.patterns import (
     recognize_centroid_chariot_checkmate,
     recognize_heaven_and_earth_cannon_checkmate,
     recognize_horse_cannon_checkmate,
+    recognize_octagon_horse_checkmate,
     recognize_iron_bolt_checkmate,
     recognize_palcorner_horse_checkmate,
     recognize_pattern,
@@ -156,6 +157,22 @@ def test_double_chariots_checkmate_examples() -> None:
         assert result["features"]["alternating_rooks"] is True
         assert result["features"]["checking_sequence"] is True
 
+    black_to_move_red_double_chariots = recognize_double_chariots_checkmate(
+        "2b1kab2/3Cn4/n1R1c4/p1p1p1p1p/5r1r1/P8/2P1P1P1P/C5N2/9/1RBAKAB2 b - - 4 15",
+        ["e9d9", "c7c9", "d9d8", "b0b8", "a7c8", "b8c8", "d8d7", "c9d9"],
+    )
+    assert black_to_move_red_double_chariots["analysis"]["is_checkmate"] is True
+    assert black_to_move_red_double_chariots["detected"] is True
+    assert black_to_move_red_double_chariots["features"]["immediate_rook_finish"] is True
+
+    red_to_move_black_double_chariots = recognize_double_chariots_checkmate(
+        "3akab2/9/4b1R1n/4R3p/9/2P6/P3P3P/C3BK3/1r1r5/2B6 w - - 6 22",
+        ["e2g0", "d1f1", "f2e2", "b1b2"],
+    )
+    assert red_to_move_black_double_chariots["analysis"]["is_checkmate"] is True
+    assert red_to_move_black_double_chariots["detected"] is True
+    assert red_to_move_black_double_chariots["features"]["immediate_rook_finish"] is True
+
 
 def test_double_cannon_checkmate_examples() -> None:
     file_result = recognize_double_cannon_checkmate(
@@ -203,6 +220,22 @@ def test_smothered_cannon_checkmate_rejects_escape_example() -> None:
     assert result["analysis"]["is_checkmate"] is False
     assert result["analysis"]["legal_moves"] == ["d9d8"]
     assert result["detected"] is False
+
+
+def test_smothered_cannon_requires_two_defenders_and_can_be_smothered_by_support() -> None:
+    result = recognize_smothered_cannon_checkmate(
+        "4C1b2/2C3R2/3ak4/p5p2/4r2c1/2P6/P8/4r4/4A4/3AK4 b - - 13 36",
+        ["h5h0", "c8c7"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is False
+
+    generic = recognize_smothered_checkmate(
+        "4C1b2/2C3R2/3ak4/p5p2/4r2c1/2P6/P8/4r4/4A4/3AK4 b - - 13 36",
+        ["h5h0", "c8c7"],
+    )
+    assert generic["detected"] is True
+    assert generic["features"]["supported_cannon_smothered"] is True
 
 
 def test_smothered_checkmate_examples() -> None:
@@ -392,6 +425,29 @@ def test_elbow_horse_checkmate_examples() -> None:
     assert pawn_finish["detected"] is True
     assert pawn_finish["features"]["final_piece_type"] == "P"
 
+    static_elbow_examples = [
+        (
+            "3ak3r/4aRN2/1R5c1/6p1p/9/2n3P2/p1C1r3P/9/2N1A4/2B1KAB2 b - - 1 21",
+            ["i9g9", "f8e8", "e9e8", "b7b8"],
+            "g8",
+        ),
+        (
+            "3k1ab2/n1N1a4/5c2n/p1P1p4/3N5/2C6/9/4B4/4A4/3AK4 b - - 0 31",
+            ["f7f8", "c4d4", "e8d7", "d5e7", "d7e8", "c6d6"],
+            "c8",
+        ),
+        (
+            "1r2kabr1/1R2a4/2n1b2c1/p4N1Rp/2p2n3/4C4/P1P3p1P/C5N2/9/2BAKAB2 b - - 0 17",
+            ["f5h6", "f6g8", "e9d9", "a2d2", "c7e6", "e4d4"],
+            "g8",
+        ),
+    ]
+    for fen, moves, square in static_elbow_examples:
+        result = recognize_elbow_horse_checkmate(fen, moves)
+        assert result["analysis"]["is_checkmate"] is True
+        assert result["detected"] is True
+        assert result["features"]["static_elbow_horse_squares"] == [square]
+
 
 def test_palcorner_horse_checkmate_examples() -> None:
     rook_finish = recognize_palcorner_horse_checkmate(
@@ -456,6 +512,24 @@ def test_angler_horse_checkmate_examples() -> None:
     assert rook_finish["detected"] is True
     assert rook_finish["features"]["angler_horse_squares"] == ["g7"]
     assert rook_finish["features"]["final_checker_types"] == ["R"]
+
+
+def test_angler_horse_uses_the_mating_side_and_opponent_camp() -> None:
+    red_mating_line = recognize_angler_horse_checkmate(
+        "CR2k1b2/4a4/3abrn2/p1R1p1p1p/9/2P6/P3P1P1P/4K1C2/7r1/3A1ABc1 b - - 5 24",
+        ["e7c9", "c6c9", "e8d9", "c9d9", "e9e8", "d9e9", "e8f8", "b9b8", "d7e8", "b8e8"],
+    )
+    assert red_mating_line["analysis"]["is_checkmate"] is True
+    assert red_mating_line["detected"] is False
+    assert red_mating_line["features"]["angler_horse_squares"] == []
+
+    own_camp_horse = recognize_angler_horse_checkmate(
+        "2C1kab2/2P1a4/4c1n2/4p3p/3Nc1p2/9/5nP1P/4C1N2/4A4/2B1KAB2 w - - 7 20",
+        ["d5e7", "f3d2", "e0d0", "e5d5"],
+    )
+    assert own_camp_horse["analysis"]["is_checkmate"] is True
+    assert own_camp_horse["detected"] is False
+    assert own_camp_horse["features"]["angler_horse_squares"] == []
 
     pawn_finish = recognize_angler_horse_checkmate(
         "4k1P2/9/6N2/9/9/9/9/9/9/3K5 w - - 0 1",
@@ -764,6 +838,68 @@ def test_horse_cannon_checkmate_rejects_blockable_counterexample() -> None:
     assert result["detected"] is False
 
 
+def test_horse_cannon_checkmate_accepts_black_attacker_lines() -> None:
+    cases = [
+        (
+            "4kab2/4a4/4b4/2p5C/4c4/2n6/P5R1P/9/1r2A4/4KA3 w - - 2 37",
+            ["e1d2", "b1b0", "e0e1", "c4e3"],
+        ),
+        (
+            "3ak1b2/4a4/9/9/3P5/7N1/2n1c4/5A3/4A4/4K4 w - - 3 50",
+            ["e0d0", "c3b1", "d0d1", "e3a3", "d5d6", "a3a1"],
+        ),
+    ]
+    for fen, moves in cases:
+        result = recognize_horse_cannon_checkmate(fen, moves)
+        assert result["analysis"]["is_checkmate"] is True
+        assert result["detected"] is True
+        assert result["features"]["final_cannon_finish"] is True
+
+
+def test_horse_cannon_accepts_horse_occupying_escape_square() -> None:
+    result = recognize_horse_cannon_checkmate(
+        "3a3C1/2r1ak3/4b1RNb/p2P5/2c6/4N4/P8/4B4/4A4/4K1Bn1 b - - 0 36",
+        ["c5c7", "g7g8", "f8f9", "h7g9"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is True
+    assert result["features"]["pair_count"] == 1
+    assert result["features"]["cannon_horse_pairs"][0]["horse_square"] == "g9"
+
+
+def test_octagon_horse_checkmate_example() -> None:
+    result = recognize_octagon_horse_checkmate(
+        "2b6/5R3/n2kb1N1C/p1p3p2/9/P1PNp1P2/3c4P/4B4/9/1rBAKA3 b - - 4 23",
+        ["e4d4", "g7f9", "e7g5", "f8d8"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is True
+    assert result["features"]["octagon_square"] == "f9"
+    assert result["features"]["final_checker_types"] == ["R"]
+
+
+def test_octagon_horse_accepts_static_control_horse_and_horse_finish() -> None:
+    result = recognize_octagon_horse_checkmate(
+        "3k5/4a4/9/3PP4/4Nn3/9/9/3n5/9/5K3 w - - 9 82",
+        ["e5d3", "f5e3", "e6e7", "e3g2"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is True
+    assert result["features"]["octagon_square"] == "d2"
+    assert result["features"]["restricted_escape_squares"] == ["e0", "f1"]
+
+
+def test_octagon_horse_accepts_direct_horse_checkmate() -> None:
+    result = recognize_octagon_horse_checkmate(
+        "3a1ab2/4k4/5P3/2N6/2b1C2n1/7p1/9/4B4/4A4/3K1A3 b - - 8 48",
+        ["e8e9", "f7f8", "h5f4", "c6b8", "f4d3", "b8d7"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is True
+    assert result["features"]["octagon_square"] == "d7"
+    assert result["features"]["octagon_direct_checkmate"] is True
+
+
 def test_double_check_checkmate_examples() -> None:
     horse_and_cannon = recognize_double_check_checkmate(
         "3a5/4ak3/9/5N3/5c3/5C3/9/9/9/3K5 w - - 0 1",
@@ -797,6 +933,14 @@ def test_double_check_checkmate_examples() -> None:
     assert rook_and_cannon_corner["detected"] is True
     assert rook_and_cannon_corner["features"]["checking_piece_types"] == ["C", "R"]
 
+    black_to_move_double_check = recognize_double_check_checkmate(
+        "1rba3C1/4ak3/n7b/p1pnp1R1p/3N5/9/P3P3P/5C3/4A4/1c2KAB2 b - - 4 25",
+        ["b0a0", "g6f6", "e8f7", "f6e6", "f7e8", "d5f6", "e8f7", "f6h7"],
+    )
+    assert black_to_move_double_check["analysis"]["is_checkmate"] is True
+    assert black_to_move_double_check["detected"] is True
+    assert black_to_move_double_check["features"]["checking_piece_types"] == ["C", "N"]
+
 
 def test_double_chariots_checkmate_accepts_immediate_finish() -> None:
     result = recognize_double_chariots_checkmate(
@@ -806,6 +950,39 @@ def test_double_chariots_checkmate_accepts_immediate_finish() -> None:
     assert result["analysis"]["is_checkmate"] is True
     assert result["detected"] is True
     assert result["features"]["immediate_rook_finish"] is True
+
+
+def test_double_chariots_checkmate_rejects_incidental_second_rooks() -> None:
+    cases = [
+        (
+            "r2akab2/9/2n1b1R2/pCp1p3p/4P4/2PN5/P3cp2P/4C4/9/R1BK1rBc1 w - - 0 17",
+            ["d0d1", "f0d0"],
+        ),
+        (
+            "4kab2/4a4/2n1b1c2/p1RN4p/6p2/9/P1P1c3P/RC6B/3KC2r1/2B1rA3 b - - 5 21",
+            ["e3d3", "d6f7", "e9d9", "c6d6", "e8d7", "d6d7"],
+        ),
+        (
+            "3ak1bn1/2NRa2C1/b4rc2/p5p1p/4p4/6P1c/P8/6N2/4A4/2BAK1BR1 b - - 7 29",
+            ["g7g8", "d8e8", "e9f9", "e8e9"],
+        ),
+        (
+            "2bak1b2/4a4/9/C1p2N2p/1rc6/2N4r1/P1Pn4P/4BR3/2n1A4/2RAK1B2 w - - 7 22",
+            ["e0f0", "c5f5", "f2f5", "b5f5", "e1f2", "f5f2"],
+        ),
+        (
+            "R4a3/4kc3/5a3/4prp1p/2p1r4/P5B2/2P1c3P/4C4/4A4/2BAK2R1 w - - 3 28",
+            [
+                "a9f9", "e5f5", "f9f8", "e8f8", "h0h8", "f8f9", "h8h9",
+                "f9f8", "h9h0", "f7e8", "h0h8", "f8f9", "h8h9", "f9f8",
+                "h9f9", "e8f9", "c3c4", "f5f0",
+            ],
+        ),
+    ]
+    for fen, moves in cases:
+        result = recognize_double_chariots_checkmate(fen, moves)
+        assert result["analysis"]["is_checkmate"] is True
+        assert result["detected"] is False
 
 
 def test_centroid_chariot_checkmate_rejects_defendable_counterexamples() -> None:
@@ -1297,6 +1474,37 @@ def test_analyze_patterns_auto_detects_discovered_horse_before_centroid() -> Non
     ]
 
 
+def test_discovered_horse_checkmate_supports_both_attacking_sides() -> None:
+    cases = [
+        (
+            "2CNkab2/C8/3c5/8p/9/2P6/P3r3P/4B4/4A1n2/1R1K1ABc1 b - - 14 32",
+            ["e9e8", "b0b8", "d7d8", "b8d8", "e8e7", "d8f8"],
+            "red",
+        ),
+        (
+            "2b1k4/4a2C1/4b4/p5r1p/4p4/8P/P3cp3/1R7/4A2n1/2BA1K3 w - - 22 43",
+            ["f0f1", "g6g1", "f1f0", "g1e1"],
+            "black",
+        ),
+        (
+            "3ak1b2/4a4/5r3/p2N2N2/1r6p/9/P3P1R1P/4B4/9/3AKA3 b - - 1 46",
+            ["b5f5", "d6c8", "e9f9", "g6h8", "f9f8", "g3g8", "f8f9", "g8e8"],
+            "red",
+        ),
+        (
+            "4kab2/4a4/4b4/2c6/9/9/9/N3B1n2/4A1Nr1/2BAK4 w - - 2 50",
+            ["a2b4", "c6e6", "e0f0", "h1g1", "b4a6", "g1e1"],
+            "black",
+        ),
+    ]
+    for fen, moves, attacker_side in cases:
+        result = recognize_discovered_horse_checkmate(fen, moves)
+        assert result["analysis"]["is_checkmate"] is True
+        assert result["detected"] is True
+        assert result["features"]["attacker_side"] == attacker_side
+        assert result["features"]["discovered_horse_count"] >= 1
+
+
 def test_analyze_patterns_auto_detects_double_chariots_before_generic_patterns() -> None:
     result = analyze_patterns(
         "3a1k3/4a4/9/6R2/7R1/9/9/9/9/4K4 w - - 0 1",
@@ -1415,6 +1623,16 @@ def test_analyze_patterns_auto_detects_two_devils_before_double_chariots() -> No
     ]
 
 
+def test_two_devils_rejects_a_remote_pawn_without_attack_contribution() -> None:
+    result = recognize_two_devils_knocking_checkmate(
+        "4k4/2R6/4bN3/6P2/r8/9/9/9/9/3AKA3 b - - 4 68",
+        ["e9d9", "c8c7", "a5d5", "c7e7", "d5d0", "e0e1", "d0d1", "e1e0", "d9d8", "e7e9", "d8d7", "e9d9"],
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is False
+    assert result["features"]["participating_ghost_squares"] == ["c8"]
+
+
 def test_analyze_patterns_auto_detects_tiger_silhouette_before_white_face() -> None:
     result = analyze_patterns(
         "3a5/4ak3/6R2/6N2/9/9/9/9/9/4K4 w - - 0 1",
@@ -1519,6 +1737,7 @@ def test_analyze_patterns_auto_detects_palcorner_horse_before_smothered() -> Non
     assert result["best_match"]["pattern_id"] == "PALCORNER_HORSE_CHECKMATE"
     assert [match["pattern_id"] for match in result["matches"]] == [
         "PALCORNER_HORSE_CHECKMATE",
+        "OCTAGON_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE",
     ]
 
