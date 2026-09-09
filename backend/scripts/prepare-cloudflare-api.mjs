@@ -27,3 +27,7 @@ copyFileSync(
   join(backendDirectory, "worker.py"),
   join(outputDirectory, "worker.py"),
 );
+copyFileSync(
+  join(backendDirectory, "pyproject.toml"),
+  join(outputDirectory, "pyproject.toml"),
+);
