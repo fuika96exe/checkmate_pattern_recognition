@@ -45,7 +45,7 @@ PATTERN_ORDER = [
     "STALEMATE",
 ]
 
-CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.09.15"
+CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.09.26"
 
 
 @lru_cache(maxsize=2048)
@@ -1340,7 +1340,14 @@ def recognize_palcorner_horse_checkmate(
     board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
         current_fen
     )
-    palcorner_targets = {"d2", "d7", "f2", "f7"}
+    # Both corner ranks can occur in the opponent's palace.  The distinction
+    # from Octagon Horse is made by the number of palace squares controlled,
+    # not by the corner coordinate alone.
+    palcorner_targets = (
+        {"d7", "d9", "f7", "f9"}
+        if defender == "black"
+        else {"d0", "d2", "f0", "f2"}
+    )
     defender_king_piece = "k" if defender == "black" else "K"
     attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
 
@@ -1372,6 +1379,21 @@ def recognize_palcorner_horse_checkmate(
     palcorner_horse_present = bool(
         palcorner_square and board.get(palcorner_square, "").upper() == "N"
     )
+    defender_neighbors = (
+        _orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
+    )
+    palace_control_squares = (
+        [defender_king, *defender_neighbors] if defender_king else defender_neighbors
+    )
+    palcorner_restricted_escape_squares = sorted(
+        square
+        for square in palace_control_squares
+        if any(
+            attack["square"] == palcorner_square
+            and attack["reason"] == "horse_attack"
+            for attack in analysis["attacked_squares"].get(square, [])
+        )
+    )
     final_piece_type = str(attacker_trace[-1]["piece"]).upper() if attacker_trace else None
     final_checker_types = sorted(
         {board.get(item["square"], "").upper() for item in analysis["checking_pieces"]}
@@ -1381,6 +1403,7 @@ def recognize_palcorner_horse_checkmate(
         analysis["is_checkmate"]
         and palcorner_move
         and palcorner_horse_present
+        and len(palcorner_restricted_escape_squares) == 1
         and (
             immediate_finish
             or (
@@ -1404,6 +1427,7 @@ def recognize_palcorner_horse_checkmate(
             "defender_general_square": defender_king,
             "palcorner_square": palcorner_square,
             "palcorner_horse_present": palcorner_horse_present,
+            "palcorner_restricted_escape_squares": palcorner_restricted_escape_squares,
             "palcorner_move_ply": int(palcorner_move["ply"]) if palcorner_move else None,
             "immediate_finish": immediate_finish,
             "forced_king_reply": forced_king_reply,
@@ -1435,6 +1459,35 @@ def recognize_angler_horse_checkmate(
         for square, piece in board.items()
         if piece == attacker_horse_piece and square in angler_targets
     )
+    empty_escape_squares = {
+        square for square in (
+            _orthogonal_palace_neighbors(defender_king, defender)
+            if defender_king else []
+        ) if square not in board
+    }
+    angler_horse_contributions = {
+        square: sorted(
+            target
+            for target, reasons in analysis["attacked_squares"].items()
+            if (target == defender_king or target in empty_escape_squares)
+            and any(
+                reason["reason"] == "horse_attack"
+                and reason["square"] == square
+                for reason in reasons
+            )
+            and not any(
+                reason["reason"] != "horse_attack"
+                and _is_attacker_piece(board.get(reason["square"], ""), attacker)
+                for reason in reasons
+            )
+        )
+        for square in angler_horses
+    }
+    angler_horse_contributions = {
+        square: targets
+        for square, targets in angler_horse_contributions.items()
+        if targets
+    }
 
     angler_index: int | None = None
     angler_move: dict[str, object] | None = None
@@ -1466,13 +1519,13 @@ def recognize_angler_horse_checkmate(
 
     static_angler_support = bool(
         analysis["is_checkmate"]
-        and angler_horses
+        and angler_horse_contributions
         and any(piece_type in {"R", "N", "C", "P"} for piece_type in final_checker_types)
     )
     dynamic_angler_support = bool(
         analysis["is_checkmate"]
         and angler_move
-        and angler_horses
+        and angler_horse_contributions
         and (
             immediate_finish
             or (
@@ -1496,6 +1549,8 @@ def recognize_angler_horse_checkmate(
             "attacker_general_square": attacker_king,
             "defender_general_square": defender_king,
             "angler_horse_squares": angler_horses,
+            "angler_horse_contributions": angler_horse_contributions,
+            "empty_escape_squares": sorted(empty_escape_squares),
             "angler_move_square": str(angler_move["to_square"]) if angler_move else None,
             "angler_move_ply": int(angler_move["ply"]) if angler_move else None,
             "immediate_finish": immediate_finish,
@@ -1599,18 +1654,39 @@ def recognize_tiger_silhouette_checkmate(
     board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
         current_fen
     )
-    tiger_horse_targets = {"c6", "c3", "g6", "g3"}
+    # The tiger horse must occupy a flank square in the defender's camp:
+    # c6/g6 for Red's attack and c3/g3 for Black's attack.
+    tiger_horse_targets = {"c6", "g6"} if attacker == "red" else {"c3", "g3"}
     horse_piece = "N" if attacker == "red" else "n"
     tiger_horses = sorted(
         square
         for square, piece in board.items()
         if piece == horse_piece and square in tiger_horse_targets
     )
-    checking_rooks = [
-        item["square"]
+    checking_support_pieces = [
+        item
         for item in analysis["checking_pieces"]
-        if board.get(item["square"], "").upper() == "R"
+        if board.get(item["square"], "").upper() != "N"
     ]
+    defender_escape_squares = set(_orthogonal_palace_neighbors(defender_king, defender)) if defender_king else set()
+    tiger_horse_contributions = {
+        square: sorted(
+            target
+            for target, reasons in analysis["attacked_squares"].items()
+            if target == defender_king or target in defender_escape_squares
+            and any(
+                reason["reason"] == "horse_attack"
+                and reason["square"] == square
+                for reason in reasons
+            )
+        )
+        for square in tiger_horses
+    }
+    tiger_horse_contributions = {
+        square: targets
+        for square, targets in tiger_horse_contributions.items()
+        if targets
+    }
     attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
     tiger_horse_move_ply = next(
         (
@@ -1621,17 +1697,17 @@ def recognize_tiger_silhouette_checkmate(
         ),
         None,
     )
-    rook_check_count = sum(
+    support_check_count = sum(
         1
         for item in attacker_trace
-        if str(item["piece"]).upper() == "R" and bool(item["analysis"]["is_check"])
+        if str(item["piece"]).upper() != "N" and bool(item["analysis"]["is_check"])
     )
     detected = bool(
         analysis["is_checkmate"]
         and defender_king
         and defender_king[0] in {"d", "f"}
-        and tiger_horses
-        and checking_rooks
+        and tiger_horse_contributions
+        and checking_support_pieces
     )
     return {
         "pattern_id": "TIGER_SILHOUETTE_CHECKMATE",
@@ -1647,14 +1723,15 @@ def recognize_tiger_silhouette_checkmate(
             "attacker_general_square": attacker_king,
             "defender_general_square": defender_king,
             "tiger_horse_squares": tiger_horses,
-            "checking_rook_squares": checking_rooks,
+            "checking_support_squares": [item["square"] for item in checking_support_pieces],
+            "tiger_horse_contributions": tiger_horse_contributions,
             "tiger_horse_move_ply": tiger_horse_move_ply,
-            "rook_check_count": rook_check_count,
+            "support_check_count": support_check_count,
         },
         "diagnostics": [
             "防守方将帅位于 d 路或 f 路肋道。",
-            "攻击方有一匹马稳占 c6/c3/g6/g3 的侧面虎马位。",
-            "最终由车在侧翼连续压将并完成绝杀，因此构成侧面虎。",
+            "攻击方的马必须进入对方阵营的 c6/c3/g6/g3 侧面虎马位。",
+            "该马必须实际控制将帅周边的宫内活动位置，并由其他棋子参与最终攻击。",
         ],
     }
 
@@ -1846,12 +1923,28 @@ def recognize_octagon_horse_checkmate(
         else (static_octagon_horses[0] if static_octagon_horses else None)
     )
     octagon_horse_present = bool(octagon_square)
+    opposite_corner = {
+        "d7": "f9",
+        "f9": "d7",
+        "f7": "d9",
+        "d9": "f7",
+        "d2": "f0",
+        "f0": "d2",
+        "f2": "d0",
+        "d0": "f2",
+    }.get(octagon_square)
+    diagonal_corner_alignment = bool(
+        octagon_square and defender_king == opposite_corner
+    )
     defender_neighbors = (
         _orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
     )
+    palace_control_squares = (
+        [defender_king, *defender_neighbors] if defender_king else defender_neighbors
+    )
     restricted_escape_squares = sorted(
         square
-        for square in defender_neighbors
+        for square in palace_control_squares
         if any(
             attack["square"] == octagon_square and attack["reason"] == "horse_attack"
             for attack in analysis["attacked_squares"].get(square, [])
@@ -1876,7 +1969,8 @@ def recognize_octagon_horse_checkmate(
         analysis["is_checkmate"]
         and static_octagon_horses
         and octagon_horse_present
-        and (restricted_escape_squares or octagon_direct_checkmate)
+        and diagonal_corner_alignment
+        and len(restricted_escape_squares) >= 2
         and any(piece_type in {"R", "N", "C", "P"} for piece_type in final_checker_types)
         and (not applied or final_move_created_mate)
     )
@@ -1896,6 +1990,8 @@ def recognize_octagon_horse_checkmate(
             "octagon_square": octagon_square,
             "octagon_horse_squares": static_octagon_horses,
             "octagon_horse_present": octagon_horse_present,
+            "opposite_corner": opposite_corner,
+            "diagonal_corner_alignment": diagonal_corner_alignment,
             "restricted_escape_squares": restricted_escape_squares,
             "final_checker_types": final_checker_types,
             "octagon_move_ply": int(octagon_move["ply"]) if octagon_move else None,
@@ -1903,8 +1999,8 @@ def recognize_octagon_horse_checkmate(
             "octagon_direct_checkmate": octagon_direct_checkmate,
         },
         "diagnostics": [
-            "攻击方马位于对方九宫对应的八角位；不要求这匹马必须在本次着法中刚走到该位置。",
-            "该马控制将帅至少一个关键宫内活动位置，限制将帅的应对空间。",
+            "攻击方马位于对方九宫角位，并与对方将帅处于九宫对角位置。",
+            "控制范围达到两个或以上才是八角马；只控制一个位置由挂角马负责。",
             "随后可以由另一匹马、车、炮或兵完成绝杀；只要八角马实际参与控制逃路即可。",
         ],
     }
@@ -2126,33 +2222,52 @@ def recognize_iron_bolt_checkmate(
     board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
         current_fen
     )
-    cannon_piece = "C" if attacker == "red" else "c"
-    lock_piece_set = {"a", "b"} if defender == "black" else {"A", "B"}
+    # Only the advisor creates the iron-bolt gate.  An elephant alone is
+    # not a sufficient lock because it can still participate in defense.
+    lock_piece_set = {"a"} if defender == "black" else {"A"}
+    attacker_line_pieces = {"C", "R"} if attacker == "red" else {"c", "r"}
     home_rank = _home_rank(defender)
-    central_cannons = sorted(
+    central_lock_candidates = sorted(
         square
         for square, piece in board.items()
-        if piece == cannon_piece and square[0] == "e"
+        if piece in attacker_line_pieces and square[0] == "e"
     )
-    central_cannon_square = None
+    central_lock_square = None
+    central_lock_piece = None
     locked_midline_pieces: list[str] = []
     if defender_king and defender_king[0] == "e":
-        for cannon_square in central_cannons:
-            between = _between(board, cannon_square, defender_king)
+        for lock_square in central_lock_candidates:
+            between = _between(board, lock_square, defender_king)
             locked = [
                 square
                 for square in between
                 if board.get(square) in lock_piece_set and square[0] == "e"
             ]
             if locked:
-                central_cannon_square = cannon_square
+                central_lock_square = lock_square
+                central_lock_piece = board[lock_square]
                 locked_midline_pieces = locked
                 break
+    # A general on the central file can also provide the king-side lock.
+    if (
+        not central_lock_square
+        and attacker_king
+        and attacker_king[0] == "e"
+        and defender_king
+        and defender_king[0] == "e"
+        and any(piece in lock_piece_set for piece in board.values())
+    ):
+        central_lock_square = attacker_king
+        central_lock_piece = board[attacker_king]
+        locked_midline_pieces = sorted(
+            square
+            for square, piece in board.items()
+            if piece in lock_piece_set and square[0] == "e"
+        )
     flank_checkers = [
         item
         for item in analysis["checking_pieces"]
-        if item["square"][0] in {"d", "f"}
-        and item["square"][1] == home_rank
+        if item["square"][1] == home_rank
         and board.get(item["square"], "").upper() in {"R", "P"}
     ]
     detected = bool(
@@ -2160,7 +2275,7 @@ def recognize_iron_bolt_checkmate(
         and defender_king
         and defender_king[0] == "e"
         and defender_king[1] == home_rank
-        and central_cannon_square
+        and central_lock_square
         and locked_midline_pieces
         and flank_checkers
     )
@@ -2177,7 +2292,9 @@ def recognize_iron_bolt_checkmate(
             "defender_side": defender,
             "attacker_general_square": attacker_king,
             "defender_general_square": defender_king,
-            "central_cannon_square": central_cannon_square,
+            "central_cannon_square": central_lock_square,
+            "central_lock_square": central_lock_square,
+            "central_lock_piece": central_lock_piece,
             "locked_midline_pieces": locked_midline_pieces,
             "flank_checker_squares": [item["square"] for item in flank_checkers],
             "flank_checker_types": sorted(
@@ -2185,8 +2302,8 @@ def recognize_iron_bolt_checkmate(
             ),
         },
         "diagnostics": [
-            "攻击方以中炮控制 e 路士象，形成中路封锁。",
-            "最终由 d 路或 f 路的底线攻击子实施将军。",
+            "攻击方以中路炮、车或帅控制 e 路士，形成门栓封锁；单独控制象不计入铁门栓。",
+            "最终由底线车或兵实施将军，底线不限定为 d/f 肋道。",
             "防守方没有任何合法解杀，因此构成铁门栓。",
         ],
     }
@@ -2215,13 +2332,6 @@ def recognize_smothered_checkmate(
         )
     ]
     occupied_neighbors = [square for square in orthogonal_neighbors if square in board]
-    ordinary_smothered = bool(
-        analysis["is_checkmate"]
-        and checking_piece_types
-        and set(checking_piece_types).issubset(allowed_checkers)
-        and defender_blockers
-        and len(occupied_neighbors) == len(orthogonal_neighbors)
-    )
     screen_square: str | None = None
     screen_piece: str | None = None
     checking_cannons = [
@@ -2233,6 +2343,52 @@ def recognize_smothered_checkmate(
         if len(occupied) == 1:
             screen_square = occupied[0]
             screen_piece = board[screen_square]
+    line_attack_orientations: list[str] = []
+    for checking_piece in analysis["checking_pieces"]:
+        square = str(checking_piece["square"])
+        reason = str(checking_piece["reason"])
+        if reason not in {"line_attack", "cannon_screen"} or not defender_king:
+            continue
+        if square[1] == defender_king[1]:
+            line_attack_orientations.append("horizontal")
+        elif square[0] == defender_king[0]:
+            line_attack_orientations.append("vertical")
+    line_attack_orientations = sorted(set(line_attack_orientations))
+    directional_blockers = defender_blockers
+    required_blocker_squares: list[str] = []
+    if line_attack_orientations:
+        if "horizontal" in line_attack_orientations:
+            required_blocker_squares.extend(
+                square
+                for square in orthogonal_neighbors
+                if square[0] == defender_king[0] and square[1] != defender_king[1]
+            )
+        if "vertical" in line_attack_orientations:
+            required_blocker_squares.extend(
+                square
+                for square in orthogonal_neighbors
+                if square[1] == defender_king[1] and square[0] != defender_king[0]
+            )
+        required_blocker_squares = sorted(set(required_blocker_squares))
+        directional_blockers = [
+            square for square in defender_blockers if square in required_blocker_squares
+        ]
+    defender_advisor_piece = "a" if defender == "black" else "A"
+    cannon_check_with_non_advisor_screen = bool(
+        checking_piece_types == ["C"]
+        and screen_piece
+        and screen_piece != defender_advisor_piece
+    )
+    ordinary_smothered = bool(
+        analysis["is_checkmate"]
+        and checking_piece_types
+        and "N" not in checking_piece_types
+        and (
+            set(checking_piece_types).issubset(allowed_checkers)
+            or cannon_check_with_non_advisor_screen
+        )
+        and directional_blockers
+    )
     defender_advisor_squares = sorted(
         square for square, piece in board.items() if piece == ("a" if defender == "black" else "A")
     )
@@ -2270,14 +2426,17 @@ def recognize_smothered_checkmate(
             "orthogonal_neighbors": orthogonal_neighbors,
             "occupied_neighbors": occupied_neighbors,
             "defender_blockers": defender_blockers,
+            "line_attack_orientations": line_attack_orientations,
+            "required_blocker_squares": required_blocker_squares,
+            "directional_blockers": directional_blockers,
             "screen_square": screen_square,
             "screen_piece": screen_piece,
             "supporting_piece_types": supporting_piece_types,
             "supported_cannon_smothered": supported_cannon_smothered,
         },
         "diagnostics": [
-            "防守方将帅在九宫内的上下左右去路都已被堵死。",
-            "通常由车、马或兵将军；若炮架士的去路由其他攻击子力封锁，也归入闷杀而不是闷宫杀。",
+            "防守方将帅至少有一个关键宫内去路被自己的棋子堵住，其余去路由攻击方子力控制。",
+            "通常由车、马或兵将军；炮架不是士时，即使由炮将军也归入闷杀。",
             "防守方没有任何合法解杀，因此构成闷杀。",
         ],
     }
@@ -2288,11 +2447,9 @@ def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> di
     board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
         current_fen
     )
-    checking_files = {"R", "C"}
     checking_pieces = [
         x["square"]
         for x in analysis["checking_pieces"]
-        if board.get(x["square"], "").upper() in checking_files
     ]
     central_escape_square = f"e{defender_king[1]}" if defender_king else None
     central_file_open = bool(
@@ -2311,7 +2468,7 @@ def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> di
         and attacker_king[0] == "e"
         and defender_king[0] in {"d", "f"}
         and central_file_open
-        and any(square[0] == defender_king[0] for square in checking_pieces)
+        and checking_pieces
     )
     forced_block_capture = False
     if geometry and not analysis["is_checkmate"]:
@@ -2368,7 +2525,7 @@ def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> di
         "diagnostics": [
             "攻击方将帅在 e 路。",
             "防守方将帅在 d 路或 f 路。",
-            "中路必须打通形成白脸，并由车或炮沿防守方将帅所在直线将军。",
+            "中路必须打通形成白脸；最后一步可由车、炮、马、兵等其他子力完成绝杀。",
         ],
     }
 

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
   "datasetVersion": "5c7b77d3acc84bab",
-  "rulesVersion": "checkmate-patterns-2026.09.15",
-  "generatedAt": "2026-09-09T07:08:08.130485+00:00",
+  "rulesVersion": "checkmate-patterns-2026.09.26",
+  "generatedAt": "2026-09-14T08:21:15.339342+00:00",
   "puzzleCount": 783,
   "results": {
     "onWE9q": {
@@ -33,14 +33,14 @@
       "status": "matched",
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "L3Mj8o": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "qYQXXq": {
@@ -71,7 +71,8 @@
     "qG9drR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "L3M1Go": {
@@ -91,6 +92,7 @@
     "Rey0DR": {
       "status": "matched",
       "patternIds": [
+        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -129,19 +131,22 @@
       "status": "matched",
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LEm24L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RVbllR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qAaGKq": {
@@ -154,8 +159,7 @@
     "LlpdbL": {
       "status": "matched",
       "patternIds": [
-        "CENTROID_CHARIOT_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "CENTROID_CHARIOT_CHECKMATE"
       ]
     },
     "ow2byR": {
@@ -236,7 +240,6 @@
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -255,7 +258,8 @@
     "onvvDo": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "o7zz2R": {
@@ -273,7 +277,9 @@
     "RdWWML": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ojDzyL": {
@@ -282,10 +288,8 @@
       "error": "解答線終局不是將死局面"
     },
     "qY66vL": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "ROQQgq": {
       "status": "matched",
@@ -329,13 +333,14 @@
     "ROQd1q": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
     "qGN9Qo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE"
+      ]
     },
     "LNxxlo": {
       "status": "matched",
@@ -360,13 +365,16 @@
     "Lz8ago": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ov7gzq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "Ll4pPL": {
@@ -388,8 +396,10 @@
       ]
     },
     "RVnbpR": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE"
+      ]
     },
     "o7zz9R": {
       "status": "matched",
@@ -425,13 +435,13 @@
       "status": "matched",
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ROk18R": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE",
         "WHITE_FACE_GENERAL"
       ]
     },
@@ -451,7 +461,8 @@
     "qrkm9L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R0by1q": {
@@ -496,8 +507,7 @@
     "L3Qbdo": {
       "status": "matched",
       "patternIds": [
-        "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE"
       ]
     },
     "RejKDo": {
@@ -517,13 +527,14 @@
     "o7MAGL": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owdWzq": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oQ2Jzq": {
@@ -555,7 +566,8 @@
     "qrkrrL": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "OCTAGON_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LDzKJo": {
@@ -578,13 +590,13 @@
     "o9ZA3q": {
       "status": "matched",
       "patternIds": [
-        "EUNUCHS_CHASING_EMPEROR_CHECKMATE"
+        "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "q85QgL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -605,8 +617,7 @@
     "q585mo": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "LmeQrL": {
@@ -675,7 +686,8 @@
     "Lbyggq": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "La1zML": {
@@ -712,7 +724,8 @@
       "status": "matched",
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oMwGbL": {
@@ -731,7 +744,6 @@
       "status": "matched",
       "patternIds": [
         "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -758,7 +770,8 @@
     "LlmkbR": {
       "status": "matched",
       "patternIds": [
-        "DISCOVERED_HORSE_CHECKMATE"
+        "DISCOVERED_HORSE_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "RWAEzq": {
@@ -774,8 +787,7 @@
     "q858DL": {
       "status": "matched",
       "patternIds": [
-        "DISCOVERED_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "DISCOVERED_HORSE_CHECKMATE"
       ]
     },
     "LND6ko": {
@@ -787,8 +799,7 @@
     "RVQ7gL": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "LJeG9q": {
@@ -800,8 +811,7 @@
     "Llm8bR": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "RdgxJL": {
@@ -866,8 +876,7 @@
     "o4A3Vq": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "Lpwvrq": {
@@ -884,9 +893,7 @@
     "LEaB6L": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "R6lb6q": {
@@ -898,7 +905,8 @@
     "oMwADL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owdA2q": {
@@ -920,8 +928,11 @@
       ]
     },
     "Lpw3bq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "L3Qzko": {
       "status": "invalid",
@@ -931,7 +942,9 @@
     "qrkP4L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R6lvAq": {
@@ -943,7 +956,9 @@
     "LNDn6o": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R17zXq": {
@@ -962,14 +977,13 @@
     "LJe79q": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LmellL": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "RWAxpq": {
@@ -992,8 +1006,10 @@
       ]
     },
     "LJel4q": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "WHITE_FACE_GENERAL"
+      ]
     },
     "R17ylq": {
       "status": "matched",
@@ -1051,8 +1067,11 @@
       ]
     },
     "La1gdL": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "RVQagL": {
       "status": "matched",
@@ -1062,10 +1081,8 @@
       ]
     },
     "oMwZOL": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "LEa7ZL": {
       "status": "matched",
@@ -1111,7 +1128,8 @@
     "q8bX9R": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qAZ6vL": {
@@ -1184,7 +1202,8 @@
     "LljpBo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LDXYzL": {
@@ -1200,8 +1219,10 @@
       ]
     },
     "oj3l5q": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE"
+      ]
     },
     "o4DgNo": {
       "status": "matched",
@@ -1258,7 +1279,8 @@
     "La1pXL": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "Lxd1WL": {
@@ -1266,8 +1288,6 @@
       "patternIds": [
         "DISCOVERED_HORSE_CHECKMATE",
         "CENTROID_CHARIOT_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -1289,12 +1309,17 @@
       ]
     },
     "L3QOJo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "Lb5Xwq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE",
+        "WHITE_FACE_GENERAL"
+      ]
     },
     "oMaYEo": {
       "status": "matched",
@@ -1319,8 +1344,7 @@
       "status": "matched",
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "RVQwdL": {
@@ -1345,7 +1369,9 @@
     "LaMj6L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oX4xXo": {
@@ -1362,7 +1388,8 @@
     "LaM87L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LzdwBo": {
@@ -1384,8 +1411,10 @@
       ]
     },
     "Lmep8L": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "oQm8Wo": {
       "status": "matched",
@@ -1441,8 +1470,7 @@
     "RO3QzR": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "PALCORNER_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "LDX9zL": {
@@ -1497,7 +1525,8 @@
     "qGyDXR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owwOwo": {
@@ -1514,13 +1543,15 @@
     "RO3W8R": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "o7MwPL": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LmBjnR": {
@@ -1559,7 +1590,7 @@
       "patternIds": [
         "CENTROID_CHARIOT_CHECKMATE",
         "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "qAZaYL": {
@@ -1586,8 +1617,10 @@
       "error": "解答線終局不是將死局面"
     },
     "onzW6o": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "RVDnEq": {
       "status": "matched",
@@ -1599,8 +1632,7 @@
     "LDzemo": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "qGyNZR": {
@@ -1628,7 +1660,6 @@
     "LppNaL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -1648,7 +1679,8 @@
     "R0eApo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oQm4Oo": {
@@ -1660,13 +1692,15 @@
     "RdnW2q": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RePbwL": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R2xgzq": {
@@ -1678,14 +1712,14 @@
     "LkgEOL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "L3wr6L": {
       "status": "matched",
       "patternIds": [
         "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -1693,7 +1727,8 @@
       "status": "matched",
       "patternIds": [
         "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
-        "CENTROID_PAWN_CHECKMATE"
+        "CENTROID_PAWN_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "oykz6L": {
@@ -1721,7 +1756,8 @@
       "status": "matched",
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LxdNWL": {
@@ -1766,8 +1802,10 @@
       ]
     },
     "Lb5Vwq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "R2JlbR": {
       "status": "matched",
@@ -1780,8 +1818,6 @@
     "LE6gXR": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -1798,8 +1834,10 @@
       "error": "解答線終局不是將死局面"
     },
     "qrW6vL": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LE616R": {
       "status": "matched",
@@ -1812,8 +1850,7 @@
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
         "ELBOW_HORSE_CHECKMATE",
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "oMaYeo": {
@@ -1830,7 +1867,6 @@
     "L3wYDL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -1881,19 +1917,23 @@
       "status": "matched",
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ovPZDL": {
       "status": "matched",
       "patternIds": [
         "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
-        "THROAT_CUTTING_CHECKMATE"
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oy19no": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "R2GOzo": {
       "status": "matched",
@@ -1923,13 +1963,13 @@
     "RPlMBR": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "q8V89R": {
       "status": "matched",
       "patternIds": [
+        "IRON_BOLT_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -1942,10 +1982,8 @@
       ]
     },
     "qYyGgq": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "qBVZvq": {
       "status": "matched",
@@ -1993,8 +2031,7 @@
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
         "ELBOW_HORSE_CHECKMATE",
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "q5VxdL": {
@@ -2021,7 +2058,6 @@
     "Ll8GBL": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -2071,15 +2107,16 @@
       ]
     },
     "R1zvAo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "ROmmxq": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "onMMXR": {
@@ -2087,14 +2124,14 @@
       "patternIds": [
         "CENTROID_PAWN_CHECKMATE",
         "THROAT_CUTTING_CHECKMATE",
-        "TIGER_SILHOUETTE_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "TIGER_SILHOUETTE_CHECKMATE"
       ]
     },
     "LJNZbL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "Rdyyro": {
@@ -2126,8 +2163,7 @@
     "ojQvAR": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "Lx2KMo": {
@@ -2174,7 +2210,9 @@
     "LmlQDq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "q8z8zR": {
@@ -2207,7 +2245,8 @@
     "R6z3pR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oQB5Jq": {
@@ -2235,8 +2274,7 @@
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
         "DOUBLE_CHARIOTS_CHECKMATE",
-        "CENTROID_CHARIOT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "CENTROID_CHARIOT_CHECKMATE"
       ]
     },
     "LDv3lo": {
@@ -2255,13 +2293,14 @@
     "ogbpWR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "o7Oa9o": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owYG6L": {
@@ -2273,27 +2312,26 @@
     "ovyKGR": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "R2zY3R": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RWxNyo": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LNB7AL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE"
       ]
     },
     "R2z0lR": {
@@ -2325,15 +2363,13 @@
     "ovywYR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE"
       ]
     },
     "o9v9dq": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "qK2dQo": {
@@ -2352,7 +2388,6 @@
       "status": "matched",
       "patternIds": [
         "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -2373,8 +2408,7 @@
     "owQ2NL": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "onMp2R": {
@@ -2432,7 +2466,8 @@
       "status": "matched",
       "patternIds": [
         "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
-        "THROAT_CUTTING_CHECKMATE"
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oMGbVL": {
@@ -2463,7 +2498,8 @@
     "qB7pvL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ojQ25R": {
@@ -2477,7 +2513,8 @@
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oXKD3R": {
@@ -2497,7 +2534,8 @@
     "Lmwx8o": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "q5zgvL": {
@@ -2509,10 +2547,8 @@
       ]
     },
     "R1vP6o": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "RdyMOo": {
       "status": "matched",
@@ -2529,8 +2565,11 @@
       ]
     },
     "o703Pq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "qAzyyL": {
       "status": "matched",
@@ -2545,7 +2584,8 @@
     "ojw05q": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RP0x2R": {
@@ -2559,20 +2599,19 @@
     "R0z4xq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE"
       ]
     },
     "Lb60jL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE"
       ]
     },
     "LkAz6o": {
       "status": "matched",
       "patternIds": [
+        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -2618,9 +2657,7 @@
     "oQJaNq": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "Lxk4dq": {
@@ -2688,8 +2725,10 @@
       ]
     },
     "Lpkk5q": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "ReW6Xq": {
       "status": "unmatched",
@@ -2698,7 +2737,8 @@
     "LmkGro": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qGaOZR": {
@@ -2718,7 +2758,8 @@
     "RWJw6L": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LpkVbq": {
@@ -2746,20 +2787,21 @@
     "qGaJ7R": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ReWdAq": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qBaZao": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LaWrJo": {
       "status": "matched",
@@ -2770,7 +2812,8 @@
     "LNJ6mL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owkY6o": {
@@ -2807,14 +2850,14 @@
     "LmkYYo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LEOO2o": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "q52bvL": {
@@ -2833,7 +2876,6 @@
     "RVJEdR": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -2847,8 +2889,7 @@
       "status": "matched",
       "patternIds": [
         "DOUBLE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "qrvwVq": {
@@ -2860,14 +2901,14 @@
     "qAkK3R": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ovkpdq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LkO26L": {
       "status": "matched",
@@ -2933,7 +2974,8 @@
       "status": "matched",
       "patternIds": [
         "HEAVEN_AND_EARTH_CANNON_CHECKMATE",
-        "IRON_BOLT_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R0kvkL": {
@@ -2941,7 +2983,6 @@
       "patternIds": [
         "CROWNED_CHECKMATE",
         "CENTROID_CHARIOT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -2964,7 +3005,6 @@
     "o7kOro": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -3013,7 +3053,6 @@
     "oQJ0lq": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -3024,14 +3063,14 @@
     "qY0NPo": {
       "status": "matched",
       "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE",
         "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "LlkrJq": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "o403No": {
@@ -3046,7 +3085,6 @@
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -3060,9 +3098,7 @@
     "o40QVo": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ROKlXR": {
@@ -3082,7 +3118,7 @@
     "qAkk5R": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ReWzXq": {
@@ -3100,8 +3136,7 @@
     "ROKzWR": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "ogVDdR": {
@@ -3118,7 +3153,8 @@
       "status": "matched",
       "patternIds": [
         "THROAT_CUTTING_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "Lb44Go": {
@@ -3131,7 +3167,8 @@
     "LNJmAL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LpklBq": {
@@ -3143,14 +3180,14 @@
     "ovkElq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RVJ4ER": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "R0kyxL": {
@@ -3169,7 +3206,6 @@
     "L3kKJL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -3184,14 +3220,15 @@
       "patternIds": []
     },
     "o40NBo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "ojd5ZL": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "oy2g2q": {
@@ -3240,7 +3277,8 @@
     "Lxk93q": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R1a1aR": {
@@ -3279,7 +3317,9 @@
     "RdxZKR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R0k41L": {
@@ -3313,7 +3353,8 @@
       "status": "matched",
       "patternIds": [
         "DOUBLE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qKJb9o": {
@@ -3340,8 +3381,7 @@
       "status": "matched",
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "q5b4KL": {
@@ -3373,9 +3413,7 @@
     "qB6kWq": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "q52gVL": {
@@ -3389,7 +3427,8 @@
     "L3kWGL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "q5bjKL": {
@@ -3413,10 +3452,8 @@
       ]
     },
     "o7x37q": {
-      "status": "matched",
-      "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "R6kGAo": {
       "status": "matched",
@@ -3436,19 +3473,20 @@
         "THROAT_CUTTING_CHECKMATE",
         "DOUBLE_CHARIOTS_CHECKMATE",
         "CENTROID_CHARIOT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oj50AR": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "L3aDdo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LzZ8pL": {
       "status": "matched",
@@ -3473,7 +3511,8 @@
     "q5bZKL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R0kgJL": {
@@ -3507,8 +3546,7 @@
     "Lb4alo": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "LkOV2L": {
@@ -3533,20 +3571,23 @@
     "q52wAL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ReQbAR": {
       "status": "matched",
       "patternIds": [
-        "THROAT_CUTTING_CHECKMATE"
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LxkN3q": {
       "status": "matched",
       "patternIds": [
         "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "LJlj0o": {
@@ -3572,19 +3613,21 @@
     "RWwezR": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
     "LDbMJo": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "qYDJao": {
       "status": "matched",
       "patternIds": [
-        "THROAT_CUTTING_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R2aV9L": {
@@ -3599,13 +3642,15 @@
     "qAkODR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oMJbKq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LE7Kmo": {
@@ -3647,8 +3692,7 @@
     "ROPZzo": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "onXDaL": {
@@ -3672,7 +3716,6 @@
     "LNnmPL": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -3689,14 +3732,14 @@
     "onXg5L": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "oMZyPq": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "q5b5AL": {
@@ -3718,7 +3761,8 @@
     "LkZQ9q": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "onXXKL": {
@@ -3743,8 +3787,10 @@
       ]
     },
     "o7x22q": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "o7x29q": {
       "status": "matched",
@@ -3757,19 +3803,22 @@
       "status": "matched",
       "patternIds": [
         "TIGER_SILHOUETTE_CHECKMATE",
-        "DOUBLE_CHECK_CHECKMATE"
+        "DOUBLE_CHECK_CHECKMATE",
+        "WHITE_FACE_GENERAL"
       ]
     },
     "R1a2XR": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "o7xKOq": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LzZeQL": {
@@ -3786,8 +3835,10 @@
       ]
     },
     "R679Ao": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "RZjEaR": {
       "status": "matched",
@@ -3820,8 +3871,7 @@
     "onXl0L": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "LDbvlo": {
@@ -3833,12 +3883,13 @@
     "oQ6gJq": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "onXa0L": {
       "status": "matched",
       "patternIds": [
+        "TIGER_SILHOUETTE_CHECKMATE",
         "ELBOW_HORSE_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
@@ -3856,8 +3907,7 @@
     "RZje6R": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "oMZEPq": {
@@ -3893,7 +3943,7 @@
     "RPX6GR": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LlnWBo": {
@@ -3907,8 +3957,10 @@
       "patternIds": []
     },
     "LarbjR": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "RWwX6R": {
       "status": "matched",
@@ -3923,10 +3975,8 @@
       ]
     },
     "LNn9kL": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "qB6gyq": {
       "status": "matched",
@@ -3943,8 +3993,7 @@
     "onXnDL": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "qr7V9L": {
@@ -3957,13 +4006,14 @@
     "LDbKyo": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
     "onXbXL": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "oQ69zq": {
       "status": "matched",
@@ -3981,14 +4031,13 @@
     "LkZ0lq": {
       "status": "matched",
       "patternIds": [
+        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
     "og8keq": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "R1agZR": {
       "status": "matched",
@@ -4008,7 +4057,7 @@
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oXzeWL": {
@@ -4024,8 +4073,7 @@
     "LlnNxo": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "LprYno": {
@@ -4036,7 +4084,8 @@
       "status": "matched",
       "patternIds": [
         "HORSE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "L3akdo": {
@@ -4077,7 +4126,7 @@
     "qKM8MR": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "oQ6yWq": {
@@ -4089,7 +4138,9 @@
     "q8QJgL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "owlY2q": {
@@ -4109,12 +4160,15 @@
     "owlW6q": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "o7xXOq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "q5bplL": {
       "status": "matched",
@@ -4139,7 +4193,8 @@
     "qAXJjo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oQ6aJq": {
@@ -4159,15 +4214,13 @@
     "LlnzPo": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "onXn5L": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "RWwmyR": {
@@ -4186,12 +4239,16 @@
     "q8Q2WL": {
       "status": "matched",
       "patternIds": [
-        "TIGER_SILHOUETTE_CHECKMATE"
+        "TIGER_SILHOUETTE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ov8E8L": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LJlzZo": {
       "status": "matched",
@@ -4202,7 +4259,9 @@
     "LDbgyo": {
       "status": "matched",
       "patternIds": [
-        "THROAT_CUTTING_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "oXzpXL": {
@@ -4214,13 +4273,13 @@
     "qGQ17R": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qKMMzR": {
       "status": "matched",
       "patternIds": [
-        "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -4231,8 +4290,10 @@
       ]
     },
     "qYDN6o": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "o9AQko": {
       "status": "matched",
@@ -4264,14 +4325,14 @@
       ]
     },
     "q5brjL": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
-    },
-    "oXzd5L": {
       "status": "unmatched",
       "patternIds": []
+    },
+    "oXzd5L": {
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "R0arJo": {
       "status": "matched",
@@ -4282,7 +4343,8 @@
     "R67kbo": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LlnPBo": {
@@ -4303,7 +4365,9 @@
     "L3axGo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LE7Omo": {
@@ -4334,8 +4398,11 @@
       ]
     },
     "qKMgbR": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "RVjE6R": {
       "status": "matched",
@@ -4399,7 +4466,7 @@
       "status": "matched",
       "patternIds": [
         "DOUBLE_CANNON_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qr7aQL": {
@@ -4411,14 +4478,14 @@
     "oj55kR": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "Rdx8zR": {
       "status": "matched",
       "patternIds": [
-        "EUNUCHS_CHASING_EMPEROR_CHECKMATE"
+        "EUNUCHS_CHASING_EMPEROR_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qAXrYo": {
@@ -4436,10 +4503,8 @@
       ]
     },
     "RdxPlR": {
-      "status": "matched",
-      "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "RVjGlR": {
       "status": "matched",
@@ -4456,8 +4521,7 @@
     "q8Q69L": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "ov8GGL": {
@@ -4494,7 +4558,8 @@
     "ovm7aR": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "ojn90o": {
@@ -4512,8 +4577,10 @@
       ]
     },
     "owNJ0R": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "owN2yR": {
       "status": "matched",
@@ -4538,14 +4605,16 @@
     "Lbx3Jo": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LJyp4q": {
       "status": "matched",
       "patternIds": [
         "DOUBLE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RZ4wbq": {
@@ -4576,8 +4645,11 @@
       ]
     },
     "R6bBAR": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LNaxkq": {
       "status": "matched",
@@ -4588,7 +4660,8 @@
     "R1D8XL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "RWDKpo": {
@@ -4622,7 +4695,6 @@
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -4636,7 +4708,6 @@
     "Lze89q": {
       "status": "matched",
       "patternIds": [
-        "ANGLER_HORSE_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
@@ -4647,10 +4718,8 @@
       ]
     },
     "ojnDbo": {
-      "status": "matched",
-      "patternIds": [
-        "ANGLER_HORSE_CHECKMATE"
-      ]
+      "status": "unmatched",
+      "patternIds": []
     },
     "qrmXOo": {
       "status": "matched",
@@ -4661,7 +4730,9 @@
     "ojnzbo": {
       "status": "matched",
       "patternIds": [
-        "THROAT_CUTTING_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R1DyNL": {
@@ -4697,8 +4768,6 @@
       "patternIds": [
         "DISCOVERED_HORSE_CHECKMATE",
         "CENTROID_CHARIOT_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE",
         "DOUBLE_CHECK_CHECKMATE"
       ]
     },
@@ -4729,8 +4798,10 @@
       ]
     },
     "LJyg0q": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "LNamwq": {
       "status": "matched",
@@ -4742,7 +4813,8 @@
     "LlXrDL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "R6b3bR": {
@@ -4761,7 +4833,7 @@
     "RWDm4o": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "LD1GJR": {
@@ -4781,7 +4853,8 @@
     "LNad3q": {
       "status": "matched",
       "patternIds": [
-        "ELBOW_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qYYGkq": {
@@ -4810,42 +4883,46 @@
       "status": "matched",
       "patternIds": [
         "DOUBLE_CANNON_CHECKMATE",
-        "ELBOW_HORSE_CHECKMATE",
-        "ANGLER_HORSE_CHECKMATE"
+        "ELBOW_HORSE_CHECKMATE"
       ]
     },
     "LENz4R": {
-      "status": "unmatched",
-      "patternIds": []
-    },
-    "R2DW9q": {
-      "status": "matched",
-      "patternIds": [
-        "DOUBLE_CHARIOTS_CHECKMATE"
-      ]
-    },
-    "LmmWDL": {
-      "status": "unmatched",
-      "patternIds": []
-    },
-    "oM1zKo": {
       "status": "matched",
       "patternIds": [
         "IRON_BOLT_CHECKMATE",
         "SMOTHERED_CHECKMATE"
       ]
     },
+    "R2DW9q": {
+      "status": "matched",
+      "patternIds": [
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
+    },
+    "LmmWDL": {
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
+    },
+    "oM1zKo": {
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
+    },
     "R1DplL": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "TIGER_SILHOUETTE_CHECKMATE"
       ]
     },
     "L30mdR": {
       "status": "matched",
       "patternIds": [
-        "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "PALCORNER_HORSE_CHECKMATE"
       ]
     },
     "q5rOjL": {
@@ -4864,7 +4941,9 @@
     "RVp4Mq": {
       "status": "matched",
       "patternIds": [
-        "THROAT_CUTTING_CHECKMATE"
+        "IRON_BOLT_CHECKMATE",
+        "THROAT_CUTTING_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "qBXAER": {
@@ -4894,7 +4973,7 @@
     "o77D7o": {
       "status": "matched",
       "patternIds": [
-        "OCTAGON_HORSE_CHECKMATE"
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LkPX4R": {
@@ -4924,25 +5003,30 @@
       ]
     },
     "LzeQpq": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "IRON_BOLT_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "La7Ydo": {
       "status": "matched",
       "patternIds": [
-        "HORSE_CANNON_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE"
+        "HORSE_CANNON_CHECKMATE"
       ]
     },
     "o9Q0No": {
       "status": "matched",
       "patternIds": [
-        "DOUBLE_CANNON_CHECKMATE"
+        "DOUBLE_CANNON_CHECKMATE",
+        "SMOTHERED_CHECKMATE"
       ]
     },
     "LlXxDL": {
-      "status": "unmatched",
-      "patternIds": []
+      "status": "matched",
+      "patternIds": [
+        "SMOTHERED_CHECKMATE"
+      ]
     },
     "oymKro": {
       "status": "matched",

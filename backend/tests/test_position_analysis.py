@@ -252,7 +252,7 @@ def test_smothered_checkmate_examples() -> None:
         ["f6d7"],
     )
     assert horse_result["analysis"]["is_checkmate"] is True
-    assert horse_result["detected"] is True
+    assert horse_result["detected"] is False
     assert horse_result["features"]["checking_piece_types"] == ["N"]
 
     second_horse_result = recognize_smothered_checkmate(
@@ -739,7 +739,7 @@ def test_tiger_silhouette_checkmate_examples() -> None:
     )
     assert file_chase["analysis"]["is_checkmate"] is True
     assert file_chase["detected"] is True
-    assert file_chase["features"]["checking_rook_squares"] == ["g9"]
+    assert file_chase["features"]["checking_support_squares"] == ["g9"]
 
     rank_finish = recognize_tiger_silhouette_checkmate(
         "3a5/4ak3/6R2/6N2/9/9/9/9/9/4K4 w - - 0 1",
@@ -747,7 +747,7 @@ def test_tiger_silhouette_checkmate_examples() -> None:
     )
     assert rank_finish["analysis"]["is_checkmate"] is True
     assert rank_finish["detected"] is True
-    assert rank_finish["features"]["checking_rook_squares"] == ["f8"]
+    assert rank_finish["features"]["checking_support_squares"] == ["f8"]
 
     delayed_horse = recognize_tiger_silhouette_checkmate(
         "3a1k3/4a4/7R1/9/9/5N3/9/9/9/4K4 w - - 0 1",
@@ -757,6 +757,20 @@ def test_tiger_silhouette_checkmate_examples() -> None:
     assert delayed_horse["detected"] is True
     assert delayed_horse["features"]["tiger_horse_squares"] == ["g6"]
     assert delayed_horse["features"]["tiger_horse_move_ply"] == 3
+
+
+def test_tiger_silhouette_requires_opponent_camp_horse() -> None:
+    result = recognize_tiger_silhouette_checkmate(
+        "3a1k3/4a4/7R1/6N2/9/9/9/9/9/4K4 b - - 0 1"
+    )
+    assert result["detected"] is False
+
+    result = recognize_tiger_silhouette_checkmate(
+        "3a1k1R1/4a4/5R3/6N2/9/9/9/9/9/4K4 b - - 0 1"
+    )
+    assert result["analysis"]["is_checkmate"] is True
+    assert result["detected"] is True
+    assert result["features"]["tiger_horse_squares"] == ["g6"]
 
 
 def test_discovered_horse_checkmate_examples() -> None:
@@ -895,7 +909,9 @@ def test_octagon_horse_accepts_direct_horse_checkmate() -> None:
         ["e8e9", "f7f8", "h5f4", "c6b8", "f4d3", "b8d7"],
     )
     assert result["analysis"]["is_checkmate"] is True
-    assert result["detected"] is True
+    # This horse controls only the king square, so the new mutually exclusive
+    # definition classifies it as Palcorner Horse instead.
+    assert result["detected"] is False
     assert result["features"]["octagon_square"] == "d7"
     assert result["features"]["octagon_direct_checkmate"] is True
 
@@ -1633,14 +1649,13 @@ def test_two_devils_rejects_a_remote_pawn_without_attack_contribution() -> None:
     assert result["features"]["participating_ghost_squares"] == ["c8"]
 
 
-def test_analyze_patterns_auto_detects_tiger_silhouette_before_white_face() -> None:
+def test_analyze_patterns_rejects_legacy_tiger_horse_square() -> None:
     result = analyze_patterns(
         "3a5/4ak3/6R2/6N2/9/9/9/9/9/4K4 w - - 0 1",
         ["g7g8", "f8f7", "g8f8"],
     )
-    assert result["best_match"]["pattern_id"] == "TIGER_SILHOUETTE_CHECKMATE"
+    assert result["best_match"]["pattern_id"] == "WHITE_FACE_GENERAL"
     assert [match["pattern_id"] for match in result["matches"]] == [
-        "TIGER_SILHOUETTE_CHECKMATE",
         "WHITE_FACE_GENERAL",
     ]
 
@@ -1653,7 +1668,6 @@ def test_analyze_patterns_keeps_discovered_horse_with_tiger_overlap() -> None:
     assert result["best_match"]["pattern_id"] == "DISCOVERED_HORSE_CHECKMATE"
     assert [match["pattern_id"] for match in result["matches"]] == [
         "DISCOVERED_HORSE_CHECKMATE",
-        "TIGER_SILHOUETTE_CHECKMATE",
     ]
 
 
@@ -1737,8 +1751,6 @@ def test_analyze_patterns_auto_detects_palcorner_horse_before_smothered() -> Non
     assert result["best_match"]["pattern_id"] == "PALCORNER_HORSE_CHECKMATE"
     assert [match["pattern_id"] for match in result["matches"]] == [
         "PALCORNER_HORSE_CHECKMATE",
-        "OCTAGON_HORSE_CHECKMATE",
-        "SMOTHERED_CHECKMATE",
     ]
 
 
