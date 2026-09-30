@@ -76,6 +76,12 @@ class RecognitionState(ApiModel):
     fen: str
     side_moves: dict[str, int] = Field(default_factory=lambda: {"red": 0, "black": 0})
     piece_identity: dict[str, str] = Field(default_factory=dict)
+    # Kept with the immutable game snapshot so undo, reconnect and the
+    # browser-to-server request boundary all use the same repetition history.
+    repetition_positions: list[dict[str, object]] = Field(default_factory=list)
+    repetition_actions: list[dict[str, object]] = Field(default_factory=list)
+    chase_latches: list[list[str]] = Field(default_factory=list)
+    repetition_decision: dict[str, object] = Field(default_factory=dict)
     current_shapes: dict[str, list[str]] = Field(default_factory=dict)
     opening_memory: OpeningMemory = Field(default_factory=OpeningMemory)
     classification: Classification = Field(default_factory=Classification)
@@ -100,10 +106,41 @@ class AdvanceRequest(ApiModel):
     ucci_move: str
 
 
+class LiveGameEvent(ApiModel):
+    """One auditable rule, tactic, or move-purpose finding for a played move."""
+
+    id: str
+    source: Literal["rule", "tactical_category", "move_purpose"]
+    label_zh: str
+    squares: list[str] = Field(default_factory=list)
+    detail: str
+
+
+class LiveGameReport(ApiModel):
+    """Unified referee report generated only after a legal move is accepted."""
+
+    rules_version: str
+    ply: int
+    side: Side
+    ucci: str
+    legal: bool = True
+    events: list[LiveGameEvent] = Field(default_factory=list)
+
+
+class LiveGameReportRequest(ApiModel):
+    """Stable snapshot data for an asynchronous post-move report."""
+
+    before_fen: str
+    ucci_move: str
+    ply: int
+    repetition_decision: dict[str, object] = Field(default_factory=dict)
+
+
 class AdvanceResponse(ApiModel):
     move: MoveRecord
     state: RecognitionState
     legal_moves: list[str]
+    live_report: LiveGameReport | None = None
 
 
 class AnalyzeRequest(ApiModel):
@@ -149,6 +186,61 @@ class PositionAnalysisResponse(ApiModel):
     legal_moves: list[str]
     checking_pieces: list[dict[str, str]]
     attacked_squares: dict[str, list[dict[str, str]]]
+
+
+class TacticAnalysisRequest(ApiModel):
+    """A legal move line to annotate with short-range tactical motifs."""
+
+    fen: str
+    ucci_moves: list[str] = Field(default_factory=list)
+
+
+class TacticOccurrence(ApiModel):
+    id: Literal["escape", "protect", "sacrifice", "block", "seal", "trap", "pin"]
+    label_zh: str
+    squares: list[str] = Field(default_factory=list)
+    detail: str
+
+
+class TacticMoveAnnotation(ApiModel):
+    ply: int
+    side: Side
+    ucci: str
+    occurrences: list[TacticOccurrence] = Field(default_factory=list)
+
+
+class TacticAnalysisResponse(ApiModel):
+    rules_version: str
+    annotations: list[TacticMoveAnnotation] = Field(default_factory=list)
+
+
+class TacticalCategoryAnalysisRequest(ApiModel):
+    """A legal line to evaluate against the nine tactical categories."""
+
+    fen: str
+    ucci_moves: list[str] = Field(default_factory=list)
+
+
+class TacticalCategoryOccurrence(ApiModel):
+    id: Literal[
+        "exchange", "fork", "skewer", "discovered_attack", "remove_defender",
+        "trap", "pin", "cannon_pawn_breakthrough",
+    ]
+    label_zh: str
+    squares: list[str] = Field(default_factory=list)
+    detail: str
+
+
+class TacticalCategoryMoveAnnotation(ApiModel):
+    ply: int
+    side: Side
+    ucci: str
+    occurrences: list[TacticalCategoryOccurrence] = Field(default_factory=list)
+
+
+class TacticalCategoryAnalysisResponse(ApiModel):
+    rules_version: str
+    annotations: list[TacticalCategoryMoveAnnotation] = Field(default_factory=list)
 
 
 class PatternAnalysisRequest(ApiModel):

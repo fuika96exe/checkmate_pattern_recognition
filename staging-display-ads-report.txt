@@ -1,0 +1,81 @@
+Staging Display Ads Review
+Checked prefix: https://staging.xiangqi.com/
+
+Checked pages
+
+1. /computer
+   Existing right-side 300x250 and bottom 728x90 ads are present and reasonable.
+   Action: No new screenshot saved.
+
+2. /puzzle
+   Existing right-side 300x250 and bottom 728x90 ads are present and reasonable.
+   Action: No new screenshot saved.
+
+3. /play
+   Existing right-side 300x250 and bottom 728x90 ads are present and reasonable.
+   Action: No new screenshot saved.
+
+4. /watch
+   Existing right-side 300x250 ad is present. The empty-state area below the main content has room for a new 728x90 banner.
+   Action: Saved staging-watch-728x90.png with a red proposed placement.
+
+5. /lessons
+   No ad was visible. This is a scrollable lesson list with many entries.
+   Recommendation: Insert a 728x90 banner between lesson groups, approximately after every 5 lessons.
+   Action: Saved staging-lessons-728x90.png with a red proposed placement.
+
+Summary
+The saved screenshots show only new recommended ad placements. Existing reasonable placements were not saved again.
+
+Authenticated review
+
+6. /my-games
+   Existing right-side 300x250 and bottom 728x90 ads are present and reasonable.
+   Action: No new screenshot saved.
+
+7. /profile
+   Existing top 320x50 and right-side 300x250 ads are present.
+   Action: No new screenshot saved.
+
+8. /settings
+   Existing right-side 300x250 ad is present. Settings is not a good place for another ad.
+   Action: No new screenshot saved.
+
+9. /subscription
+   Existing right-side 300x250 and bottom 728x90 ads are present and reasonable.
+   Action: No new screenshot saved.
+
+10. /@/vincentyang/game-history
+    Existing right-side 300x250 ad is present. The page contains 10 game rows.
+    Recommendation: Insert a 728x90 banner after every 5 games.
+    Action: Saved staging-game-history-728x90.png with a red proposed placement.
+
+Batch review notes
+
+11. /tournaments
+    One active tournament and a past-tournament section were visible. Existing right-side 300x250 ad is reasonable; no new slot added.
+
+12. /chat and /chat/:code
+    Chat workspace is interaction-focused. Existing right-side 300x250 ad is reasonable; no new slot added.
+
+13. /inbox
+    Existing top 320x50 and right-side 300x250 ads are present; no new slot added.
+
+14. /notifications
+    Notification list is scrollable, but inserting ads would interrupt personal notices. Existing right-side 300x250 ad is reasonable; no new slot added.
+
+15. /clubs
+    Club grid is compact and readable with the existing right-side 300x250 ad. No new slot added.
+
+16. /@/vincentyang/missions
+    Mission cards are arranged as a focused task flow. Existing right-side 300x250 ad is reasonable; no new slot added.
+
+17. /verify
+    Verification utility page has no visible ad. No new slot recommended because this is a short account-flow page.
+
+18. /game/:id, /editor, /analysis/board
+    These are focused game/board workspaces. Existing right-side 300x250 ad is reasonable; no new slot added.
+
+Routes requiring concrete parameters
+
+The following route patterns need a real token, FEN, game ID, tournament ID, club ID, inbox ID, folder ID, or content type before they can be verified precisely: /confirm/:token, /resetpassword/:id, /account/:action, /watch/*, /review/*, /puzzle/*, /editor/:fen/*, /note/*, /leaders/:mode, /leaders/:mode?/:country?, /tournament/:id, /inbox/:id, /inbox/:id/:type, /@/:username/saved/:contentType, /@/:username/saved/:contentType/:folderId, /@/:username/stats/:type, /club/:id, and /profile:section.

@@ -29,9 +29,17 @@ from .models import (
     PuzzleLineRequest,
     PuzzleLineResponse,
     PuzzleTimelineEntry,
+    TacticAnalysisRequest,
+    TacticAnalysisResponse,
+    TacticalCategoryAnalysisRequest,
+    TacticalCategoryAnalysisResponse,
+    LiveGameReport,
+    LiveGameReportRequest,
 )
-from .service import advance, analyze, create_initial, inspect
+from .service import advance, analyze, analyze_live_game_report, create_initial, inspect
 from .patterns import CHECKMATE_RULES_VERSION, analyze_patterns
+from .tactics import TACTIC_RULES_VERSION, analyze_tactics
+from .tactical_categories import CATEGORY_RULES_VERSION, analyze_tactical_categories
 
 
 ROOT = Path(os.environ.get("XIANGQI_DATA_DIR", Path(__file__).resolve().parents[1]))
@@ -145,6 +153,46 @@ async def api_inspect(request: InspectRequest) -> InspectResponse:
 async def api_analyze_position(request: PositionAnalysisRequest) -> PositionAnalysisResponse:
     try:
         return PositionAnalysisResponse.model_validate(position_analysis(request.fen))
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/live-game/advance", response_model=AdvanceResponse)
+async def api_live_game_advance(request: AdvanceRequest) -> AdvanceResponse:
+    """Advance one legal move and return its consolidated referee report."""
+    try:
+        return advance(request.state, request.ucci_move, include_live_report=True)
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/analyze-live-report", response_model=LiveGameReport)
+def api_analyze_live_report(request: LiveGameReportRequest) -> LiveGameReport:
+    """CPU-bound tactical report, intentionally served apart from moving."""
+    try:
+        return analyze_live_game_report(request)
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/analyze-tactics", response_model=TacticAnalysisResponse)
+async def api_analyze_tactics(request: TacticAnalysisRequest) -> TacticAnalysisResponse:
+    try:
+        return TacticAnalysisResponse(
+            rules_version=TACTIC_RULES_VERSION,
+            annotations=analyze_tactics(request.fen, request.ucci_moves),
+        )
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/analyze-tactical-categories", response_model=TacticalCategoryAnalysisResponse)
+async def api_analyze_tactical_categories(request: TacticalCategoryAnalysisRequest) -> TacticalCategoryAnalysisResponse:
+    try:
+        return TacticalCategoryAnalysisResponse(
+            rules_version=CATEGORY_RULES_VERSION,
+            annotations=analyze_tactical_categories(request.fen, request.ucci_moves),
+        )
     except Exception as exc:
         raise _as_http_error(exc) from exc
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 
 from .board import START_FEN, build_piece_identity, parse_fen
+from .repetition import position_key, qualifying_chase_pairs
 from .models import (
     ChoiceOccurrence,
     Classification,
@@ -2451,9 +2452,15 @@ def initial_state() -> RecognitionState:
     shapes = detect_current_shapes(START_FEN)
     memory = OpeningMemory()
     memory.fen = START_FEN
+    identities = build_piece_identity(START_FEN)
     return RecognitionState(
         fen=START_FEN,
-        piece_identity=build_piece_identity(START_FEN),
+        piece_identity=identities,
+        repetition_positions=[{"ply": 0, "key": position_key(START_FEN)}],
+        chase_latches=[list(pair) for pair in sorted(
+            qualifying_chase_pairs(START_FEN, identities, "red")
+            | qualifying_chase_pairs(START_FEN, identities, "black")
+        )],
         current_shapes=shapes,
         opening_memory=memory,
         classification=resolve_classification(memory, shapes),
@@ -2483,6 +2490,10 @@ def update_recognition(
         fen=next_fen,
         side_moves=side_moves,
         piece_identity=dict(previous.piece_identity),
+        repetition_positions=list(previous.repetition_positions),
+        repetition_actions=list(previous.repetition_actions),
+        chase_latches=[list(pair) for pair in previous.chase_latches],
+        repetition_decision=dict(previous.repetition_decision),
         current_shapes=shapes,
         opening_memory=memory,
         classification=classification,
@@ -2565,9 +2576,15 @@ def inspect_position(
     diagnostics = list(classification.diagnostics)
     diagnostics.append("FEN 檢視模式：形成先後由 RecognitionState／memory preset 決定")
     classification.diagnostics = diagnostics
+    identities = build_piece_identity(fen)
     return RecognitionState(
         fen=fen,
-        piece_identity=build_piece_identity(fen),
+        piece_identity=identities,
+        repetition_positions=[{"ply": 0, "key": position_key(fen)}],
+        chase_latches=[list(pair) for pair in sorted(
+            qualifying_chase_pairs(fen, identities, "red")
+            | qualifying_chase_pairs(fen, identities, "black")
+        )],
         current_shapes=shapes,
         opening_memory=memory,
         classification=classification,

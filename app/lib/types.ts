@@ -27,6 +27,14 @@ export interface RecognitionState {
   fen: string;
   sideMoves: Record<Side, number>;
   pieceIdentity: Record<string, string>;
+  repetitionDecision: {
+    status: "none" | "watch" | "warning" | "must_change" | "draw";
+    repeatCount: number;
+    occurrenceCount: number;
+    redClassification: "idle" | "chase" | "check";
+    blackClassification: "idle" | "chase" | "check";
+    restrictedSide: Side | null;
+  };
   currentShapes: Record<Side, string[]>;
   openingMemory: { red: SideMemory; black: SideMemory; baseMatchupId: string | null };
   classification: {
@@ -58,7 +66,22 @@ export interface MoveRecord {
 }
 
 export interface PositionResponse { state: RecognitionState; legalMoves: string[] }
-export interface AdvanceResponse extends PositionResponse { move: MoveRecord }
+export interface LiveGameEvent {
+  id: string;
+  source: "rule" | "tactical_category" | "move_purpose";
+  labelZh: string;
+  squares: string[];
+  detail: string;
+}
+export interface LiveGameReport {
+  rulesVersion: string;
+  ply: number;
+  side: Side;
+  ucci: string;
+  legal: boolean;
+  events: LiveGameEvent[];
+}
+export interface AdvanceResponse extends PositionResponse { move: MoveRecord; liveReport: LiveGameReport | null }
 
 export interface MemoryPreset {
   redChoicePath: string[];
@@ -121,6 +144,16 @@ export type PatternId =
 export interface PatternMatch { patternId: PatternId; patternNameZh: string; detected: boolean; causal: boolean; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; features: Record<string, unknown>; diagnostics: string[]; }
 
 export interface PatternAnalysis { requestedPatternId: PatternId | null; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; bestMatch: PatternMatch | null; matches: PatternMatch[]; }
+
+export type TacticId = "escape" | "protect" | "sacrifice" | "block" | "seal" | "trap" | "pin";
+export interface TacticOccurrence { id: TacticId; labelZh: string; squares: string[]; detail: string; }
+export interface TacticMoveAnnotation { ply: number; side: Side; ucci: string; occurrences: TacticOccurrence[]; }
+export interface TacticAnalysis { rulesVersion: string; annotations: TacticMoveAnnotation[]; }
+
+export type TacticalCategoryId = "exchange" | "fork" | "skewer" | "discovered_attack" | "remove_defender" | "trap" | "pin" | "cannon_pawn_breakthrough";
+export interface TacticalCategoryOccurrence { id: TacticalCategoryId; labelZh: string; squares: string[]; detail: string; }
+export interface TacticalCategoryMoveAnnotation { ply: number; side: Side; ucci: string; occurrences: TacticalCategoryOccurrence[]; }
+export interface TacticalCategoryAnalysis { rulesVersion: string; annotations: TacticalCategoryMoveAnnotation[]; }
 
 export interface PuzzleRecord {
   key: string;

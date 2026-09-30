@@ -9,17 +9,21 @@ import { Tab, TabList } from "@fluentui/react-tabs";
 import { webLightTheme } from "@fluentui/react-theme";
 import { ArrowResetRegular, ChevronLeftRegular, ChevronRightRegular } from "@fluentui/react-icons";
 import { api } from "../lib/api";
-import type { MoveRecord, RecognitionState } from "../lib/types";
+import type { LiveGameReport, MoveRecord, RecognitionState } from "../lib/types";
 import { TestCaseLab } from "./TestCaseLab";
 import { PuzzleBrowser } from "./PuzzleBrowser";
 import { XiangqiBoard } from "./XiangqiBoard";
 import { WhiteFaceGeneralLab } from "./WhiteFaceGeneralLab";
 import { NotationImportLab } from "./NotationImportLab";
+import { TacticsLab } from "./TacticsLab";
+import { TacticalCategoriesLab } from "./TacticalCategoriesLab";
 
 interface Snapshot {
   state: RecognitionState;
   legalMoves: string[];
   move?: MoveRecord;
+  liveReport?: LiveGameReport | null;
+  reportStatus?: "pending" | "ready" | "failed";
 }
 
 const SYSTEM_LABELS: Record<string, string> = {
@@ -91,8 +95,10 @@ export function Workbench() {
   }, []);
 
   useEffect(() => {
-    setHydrated(true);
     let active = true;
+    const hydrationTimer = window.setTimeout(() => {
+      if (active) setHydrated(true);
+    }, 0);
     void api.initial().then((response) => {
       if (!active) return;
       setSnapshots([{ state: response.state, legalMoves: response.legalMoves }]);
@@ -103,7 +109,7 @@ export function Workbench() {
       setError(reason instanceof Error ? reason.message : "無法連接辨認服務");
       setBusy(false);
     });
-    return () => { active = false; };
+    return () => { active = false; window.clearTimeout(hydrationTimer); };
   }, []);
 
   async function play(move: string) {
@@ -112,14 +118,43 @@ export function Workbench() {
     try {
       const result = await api.advance(current.state, move);
       const base = snapshots.slice(0, index + 1);
-      const next = [...base, { state: result.state, legalMoves: result.legalMoves, move: result.move }];
+      const reportKey = `${result.state.ply}:${result.state.fen}`;
+      const next = [...base, { state: result.state, legalMoves: result.legalMoves, move: result.move, liveReport: null, reportStatus: "pending" as const }];
       setSnapshots(next); setIndex(next.length - 1);
+      // Deliberately do not await tactical analysis: the legal move, updated
+      // board, and repetition decision should remain responsive even when a
+      // dense position needs more time to inspect.
+      void api.analyzeLiveReport(
+        current.state.fen,
+        move,
+        result.state.ply,
+        result.state.repetitionDecision,
+      ).then((report) => {
+        setSnapshots((existing) => existing.map((snapshot) => (
+          `${snapshot.state.ply}:${snapshot.state.fen}` === reportKey
+            ? { ...snapshot, liveReport: report, reportStatus: "ready" as const }
+            : snapshot
+        )));
+      }).catch(() => {
+        setSnapshots((existing) => existing.map((snapshot) => (
+          `${snapshot.state.ply}:${snapshot.state.fen}` === reportKey
+            ? { ...snapshot, reportStatus: "failed" as const }
+            : snapshot
+        )));
+      });
     } catch (reason) { setError(reason instanceof Error ? reason.message : "走子失敗"); }
     finally { setBusy(false); }
   }
 
   const moveHistory = snapshots.slice(1).map((item) => item.move).filter(Boolean) as MoveRecord[];
   const currentMove = index > 0 ? snapshots[index].move : undefined;
+  const liveReport = index > 0 ? snapshots[index].liveReport : null;
+  const repetition = current?.state.repetitionDecision;
+  const repetitionLabel = repetition?.status === "must_change" ? "需变着"
+    : repetition?.status === "warning" ? "重复警告"
+      : repetition?.status === "draw" ? "和棋"
+        : repetition?.status === "watch" ? "发现重复"
+          : "未重复";
 
   return (
     <FluentProvider theme={webLightTheme} className="app-provider">
@@ -131,7 +166,7 @@ export function Workbench() {
       <nav className="app-tabs" aria-label="主要功能">
         {hydrated ? (
           <TabList selectedValue={tab} onTabSelect={(_, data) => setTab(String(data.value))}>
-            <Tab value="game">棋局工作台</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
+            <Tab value="game">棋局工作台</Tab><Tab value="categories">战术分类</Tab><Tab value="tactics">手法识别</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
           </TabList>
         ) : <div className="app-tabs-placeholder" aria-hidden="true" />}
       </nav>
@@ -142,6 +177,10 @@ export function Workbench() {
           <NotationImportLab />
         ) : !current ? (
           <div className="loading-state"><Spinner label="正在啟動辨認服務" /></div>
+        ) : tab === "categories" ? (
+          <TacticalCategoriesLab />
+        ) : tab === "tactics" ? (
+          <TacticsLab />
         ) : tab === "patterns" ? (
           <WhiteFaceGeneralLab />
         ) : tab === "puzzles" ? (
@@ -191,6 +230,37 @@ export function Workbench() {
                 <div className="panel-heading compact"><div><span className="eyebrow">FEN OBSERVATION</span><h2>目前棋形</h2></div><Badge appearance="outline">ply {current.state.ply}</Badge></div>
                 <div className="shape-row"><span>紅</span><div>{current.state.currentShapes.red.length ? current.state.currentShapes.red.map((shape) => <code key={shape}>{shape}</code>) : <em>無已知棋形</em>}</div></div>
                 <div className="shape-row"><span>黑</span><div>{current.state.currentShapes.black.length ? current.state.currentShapes.black.map((shape) => <code key={shape}>{shape}</code>) : <em>無已知棋形</em>}</div></div>
+              </section>
+
+              <section className="panel repetition-card">
+                <div className="panel-heading compact"><div><span className="eyebrow">REPETITION ADJUDICATION</span><h2>重复局面／长将长捉</h2></div><Badge appearance="outline">{repetitionLabel}</Badge></div>
+                <div className="shape-row"><span>出现</span><div>{repetition?.occurrenceCount ?? 1} 次同局面</div></div>
+                <div className="shape-row"><span>红方</span><div>{repetition?.redClassification ?? "idle"}</div></div>
+                <div className="shape-row"><span>黑方</span><div>{repetition?.blackClassification ?? "idle"}</div></div>
+                {repetition?.restrictedSide && <div className="shape-row"><span>责任方</span><div>{repetition.restrictedSide === "red" ? "红方必须变着" : "黑方必须变着"}</div></div>}
+              </section>
+
+              <section className="panel live-report-card">
+                <div className="panel-heading compact">
+                  <div><span className="eyebrow">LIVE REFEREE REPORT</span><h2>本手对局报告</h2></div>
+                  <Badge appearance="outline">{liveReport ? `ply ${liveReport.ply}` : "等待落子"}</Badge>
+                </div>
+                {!liveReport && snapshots[index]?.reportStatus === "pending" ? <div className="empty-state"><Spinner size="tiny" /> 正在后台分析本手的战术与走子目的…</div>
+                  : !liveReport && snapshots[index]?.reportStatus === "failed" ? <div className="empty-state">本手已走完，但报告分析失败；不影响棋局继续进行。</div>
+                  : !liveReport ? <div className="empty-state">每次合法落子后，会在这里汇总棋规、战术与走子目的。</div>
+                  : liveReport.events.length === 0 ? <div className="empty-state">本手合法，未触发目前已定义的棋规、战术或走子目的标签。</div>
+                    : <div className="move-list live-report-list">
+                      {liveReport.events.map((event, eventIndex) => (
+                        <div className="shape-row" key={`${event.source}-${event.id}-${eventIndex}`}>
+                          <span>{event.source === "rule" ? "棋规" : event.source === "tactical_category" ? "战术" : "目的"}</span>
+                          <div>
+                            <strong>{event.labelZh}</strong>
+                            <small>{event.detail}</small>
+                            {event.squares.length > 0 && <code>{event.squares.join(" · ")}</code>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>}
               </section>
 
               <section className="panel history-card">
