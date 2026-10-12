@@ -6,12 +6,7 @@ lab instead of treating the label as an engine evaluation.
 """
 from __future__ import annotations
 
-from .board import apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
-from .tactics import (
-    _fen, _is_side, _other, _piece_label,
-    _pins_created_by, _pin_relationships, _piece_value, _trapped_pieces,
-    _unsafe_captures,
-)
+from .board import FILES, apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
 
 CATEGORY_RULES_VERSION = "nine-tactics-draft-0.1"
 LABELS = {
@@ -19,6 +14,259 @@ LABELS = {
     "discovered_attack": "闪击", "remove_defender": "消除保护",
     "trap": "围困", "pin": "牵制", "cannon_pawn_breakthrough": "炮兵突破",
 }
+PIECE_NAMES = {"R": "车", "C": "炮", "N": "马", "B": "相", "A": "仕", "K": "帅", "P": "兵"}
+MATERIAL_VALUES = {"R": 9, "N": 4, "C": 4, "B": 2, "A": 2, "P": 1}
+PIN_PIECES = {"R", "N", "C"}
+
+
+# These are deliberately local rule primitives.  The categories tab and the
+# move-purpose tab share only objective board operations (legal moves, attack
+# maps and FEN parsing); changing either tab's tactical policy must not silently
+# change the other one.
+def _other(side: str) -> str:
+    return "black" if side == "red" else "red"
+
+
+def _is_side(piece: str | None, side: str) -> bool:
+    return bool(piece) and (piece.isupper() if side == "red" else piece.islower())
+
+
+def _fen(board: dict[str, str], side: str) -> str:
+    ranks: list[str] = []
+    for rank in range(9, -1, -1):
+        empty = 0
+        encoded = ""
+        for file_name in FILES:
+            piece = board.get(f"{file_name}{rank}")
+            if piece:
+                if empty:
+                    encoded += str(empty)
+                    empty = 0
+                encoded += piece
+            else:
+                empty += 1
+        if empty:
+            encoded += str(empty)
+        ranks.append(encoded)
+    return f"{'/'.join(ranks)} {'w' if side == 'red' else 'b'} - - 0 1"
+
+
+def _piece_label(board: dict[str, str], square: str) -> str:
+    piece = board.get(square, "")
+    side = "红" if piece.isupper() else "黑"
+    return f"{side}{PIECE_NAMES.get(piece.upper(), '子')} {square}"
+
+
+def _has_crossed_river(piece: str, square: str, side: str) -> bool:
+    if piece.upper() != "P":
+        return True
+    rank = int(square[1])
+    return rank >= 5 if side == "red" else rank <= 4
+
+
+def _piece_value(piece: str, square: str, side: str) -> int:
+    if piece.upper() == "P":
+        return 2 if _has_crossed_river(piece, square, side) else 1
+    return MATERIAL_VALUES.get(piece.upper(), 0)
+
+
+def _is_chase_target(board: dict[str, str], square: str, owner: str) -> bool:
+    """Uncrossed pawns/soldiers are not tactical chase targets."""
+    piece = board.get(square, "")
+    return piece.upper() != "P" or _has_crossed_river(piece, square, owner)
+
+
+def _unsafe_captures(board: dict[str, str], victim: str, owner: str) -> list[str]:
+    """Enemy sources that can take victim without an immediate legal recapture."""
+    enemy_fen = _fen(board, _other(owner))
+    unsafe: list[str] = []
+    for capture in legal_moves(enemy_fen):
+        if capture[2:] != victim:
+            continue
+        after_capture = apply_move(enemy_fen, capture)
+        if not any(reply[2:] == victim for reply in legal_moves(after_capture)):
+            unsafe.append(capture[:2])
+    return sorted(unsafe)
+
+
+def _forcing_trap_capture(board: dict[str, str], victim: str, owner: str) -> bool:
+    """Whether an enemy capture makes this destination tactically losing.
+
+    A protected rook is still chased by a horse or cannon: even after the
+    recapture, exchanging a 4-point minor for a 9-point rook wins material.
+    Other targets retain the stricter immediate-recapture rule.
+    """
+    target = board.get(victim, "")
+    enemy_fen = _fen(board, _other(owner))
+    unsafe_sources = set(_unsafe_captures(board, victim, owner))
+    for capture in legal_moves(enemy_fen):
+        if capture[2:] != victim:
+            continue
+        attacker = board.get(capture[:2], "").upper()
+        if capture[:2] in unsafe_sources or (target.upper() == "R" and attacker in {"N", "C"}):
+            return True
+    return False
+
+
+def _is_minor_for_two_guards_sacrifice(
+    before: dict[str, str], after_fen: str, source: str, target: str,
+) -> bool:
+    """Horse/cannon for both advisors or elephants is a sacrifice, not 交换."""
+    if (
+        before.get(source, "").upper() not in {"N", "C"}
+        or before.get(target, "").upper() not in {"A", "B"}
+    ):
+        return False
+    after = parse_fen(after_fen)
+    for reply in legal_moves(after_fen):
+        if reply[2:] != target or after.get(reply[:2], "").upper() not in {"A", "B"}:
+            continue
+        after_reply = apply_move(after_fen, reply)
+        if any(recapture[2:] == target for recapture in legal_moves(after_reply)):
+            return True
+    return False
+
+
+def _is_protected(board: dict[str, str], victim: str, owner: str) -> bool:
+    enemy_fen = _fen(board, _other(owner))
+    for capture in legal_moves(enemy_fen):
+        if capture[2:] == victim and any(reply[2:] == victim for reply in legal_moves(apply_move(enemy_fen, capture))):
+            return True
+    return False
+
+
+def _has_effective_defender(board: dict[str, str], victim: str, owner: str) -> bool:
+    """Category-local defence check, including targets blocked by the pin."""
+    piece = board.get(victim)
+    if not _is_side(piece, owner):
+        return False
+    trial = dict(board)
+    trial[victim] = piece.lower() if owner == "red" else piece.upper()
+    return any(move[2:] == victim for move in legal_moves(_fen(trial, owner)))
+
+
+def _has_geometric_defender(board: dict[str, str], victim: str, owner: str) -> bool:
+    """Whether a friendly piece geometrically covers ``victim``.
+
+    A line relation is described from the defender's point of view, even if
+    the side is currently in check and therefore cannot play that defensive
+    move *this turn*.  Requiring a legal reply in that situation would erase a
+    real defender and manufacture a false pin or skewer.
+    """
+    return bool(board.get(victim)) and any(
+        entry["square"] != victim
+        for entry in attacked_squares(board, owner).get(victim, [])
+    )
+
+
+def _trapped_pieces(board: dict[str, str], side: str) -> set[str]:
+    """Category-local definition of 困: every legal exit loses immediately."""
+    position = _fen(board, side)
+    enemy = _other(side)
+    enemy_attacks = attacked_squares(board, enemy)
+    grouped: dict[str, list[str]] = {}
+    for move in legal_moves(position):
+        grouped.setdefault(move[:2], []).append(move)
+    trapped: set[str] = set()
+    for source, moves in grouped.items():
+        if not _has_crossed_river(board.get(source, ""), source, side):
+            continue
+        if source in enemy_attacks and _is_protected(board, source, side) and not _forcing_trap_capture(board, source, side):
+            continue
+        for move in moves:
+            after = apply_move(position, move)
+            after_board = parse_fen(after)
+            destination = move[2:]
+            if destination not in attacked_squares(after_board, enemy) or not _forcing_trap_capture(after_board, destination, side):
+                break
+        else:
+            trapped.add(source)
+    return trapped
+
+
+def _is_pin_piece(piece: str | None) -> bool:
+    return bool(piece) and piece.upper() in PIN_PIECES
+
+
+def _pins(board: dict[str, str], attacker_side: str) -> set[tuple[str, str, str]]:
+    """Relative pins: same-line R/N/C relations with an undefended rear."""
+    rook = "R" if attacker_side == "red" else "r"
+    enemy = _other(attacker_side)
+    found: set[tuple[str, str, str]] = set()
+    for attacker, piece in board.items():
+        if piece != rook:
+            continue
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            x, y = FILES.index(attacker[0]) + dx, int(attacker[1]) + dy
+            occupied: list[str] = []
+            while 0 <= x < 9 and 0 <= y <= 9:
+                square = f"{FILES[x]}{y}"
+                if square in board:
+                    occupied.append(square)
+                x += dx
+                y += dy
+            if len(occupied) >= 2:
+                first, second = occupied[:2]
+                if (_is_side(board[first], enemy) and _is_side(board[second], enemy)
+                    and _is_pin_piece(board[attacker]) and _is_pin_piece(board[first]) and _is_pin_piece(board[second])
+                    and not _has_geometric_defender(board, second, enemy)):
+                    found.add((attacker, first, second))
+    return found
+
+
+def _absolute_pins(board: dict[str, str], attacker_side: str) -> set[tuple[str, str, str]]:
+    """Absolute pins to the general; the blocker may be any piece type."""
+    enemy = _other(attacker_side)
+    found: set[tuple[str, str, str]] = set()
+    for attacker, piece in board.items():
+        if not _is_side(piece, attacker_side) or piece.upper() not in {"R", "C"}:
+            continue
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            x, y = FILES.index(attacker[0]) + dx, int(attacker[1]) + dy
+            occupied: list[str] = []
+            while 0 <= x < 9 and 0 <= y <= 9:
+                square = f"{FILES[x]}{y}"
+                if square in board:
+                    occupied.append(square)
+                x += dx
+                y += dy
+            required = 2 if piece.upper() == "R" else 3
+            if len(occupied) < required:
+                continue
+            blocker, general = (occupied[0], occupied[1]) if piece.upper() == "R" else (occupied[1], occupied[2])
+            if (_is_side(board[blocker], enemy) and board[blocker].upper() != "K"
+                and _is_side(board[general], enemy) and board[general].upper() == "K"):
+                found.add((attacker, blocker, general))
+    return found
+
+
+def _protection_pins(board: dict[str, str], side: str) -> set[tuple[str, str, str]]:
+    enemy_fen = _fen(board, _other(side))
+    found: set[tuple[str, str, str]] = set()
+    for capture in legal_moves(enemy_fen):
+        victim = capture[2:]
+        if not _is_side(board.get(victim), side):
+            continue
+        after_capture = apply_move(enemy_fen, capture)
+        for recapture in legal_moves(after_capture):
+            protector = recapture[:2]
+            if recapture[2:] == victim and protector != victim and board.get(protector, "").upper() in {"R", "C"} and _is_pin_piece(board.get(victim)) and _is_pin_piece(board.get(capture[:2])):
+                found.add((protector, victim, capture[:2]))
+    return found
+
+
+def _same_straight_line(*squares: str) -> bool:
+    return len({square[0] for square in squares}) == 1 or len({square[1] for square in squares}) == 1
+
+
+def _pins_created_by(board: dict[str, str], mover_side: str) -> tuple[set[tuple[str, str, str]], set[tuple[str, str, str]]]:
+    line_pins = _pins(board, mover_side) | _absolute_pins(board, mover_side)
+    # Cross-line protection is defence, not a pin relation.
+    return line_pins, set()
+
+
+def _pin_relationships(line_pins: set[tuple[str, str, str]], protection_pins: set[tuple[str, str, str]]) -> set[tuple[str, str]]:
+    return {tuple(sorted((first, second))) for _, first, second in line_pins} | {(protector, victim) for protector, victim, _ in protection_pins}
 
 
 def _captures(fen: str, side: str | None = None) -> list[str]:
@@ -42,6 +290,95 @@ def _is_safe_capture(fen: str, capture: str, side: str) -> bool:
         return False
     after_capture = apply_move(position, capture)
     return not any(reply[2:] == capture[2:] for reply in legal_moves(after_capture))
+
+
+def _is_unanswerable_flash_capture(board: dict[str, str], capture: str, side: str) -> bool:
+    """Whether a newly opened capture is a concrete gain rather than a trade.
+
+    A flash attack must survive the opponent's immediate answer.  Keep the
+    legal-recapture check, then conservatively reject a target square still
+    covered by an enemy line or piece after the virtual capture.  This avoids
+    promoting mutually protected rook/cannon contact into a 闪击 label.
+    """
+    position = _fen(board, side)
+    if not _is_safe_capture(position, capture, side):
+        return False
+    # If the newly attacked piece can immediately take the newly active
+    # attacker, the contact is a mutual exchange.  It is not a forcing flash
+    # attack even though the attacker would have a capture on the next turn.
+    enemy_position = _fen(board, _other(side))
+    if f"{capture[2:]}{capture[:2]}" in legal_moves(enemy_position):
+        return False
+    after_capture = parse_fen(apply_move(position, capture))
+    return not bool(attacked_squares(after_capture, _other(side)).get(capture[2:]))
+
+
+def _gives_check(board: dict[str, str], side: str) -> bool:
+    enemy_general = next(
+        (square for square, piece in board.items()
+         if _is_side(piece, _other(side)) and piece.upper() == "K"),
+        None,
+    )
+    return bool(enemy_general and attacked_squares(board, side).get(enemy_general))
+
+
+def _breakthrough_gain(position: str, cannon_capture: str, side: str) -> bool:
+    """A breakthrough wins an undefended piece, or trades a cannon for a rook."""
+    board = parse_fen(position)
+    target = board.get(cannon_capture[2:], "")
+    if target.upper() == "K" or not _is_side(target, _other(side)):
+        return False
+    return target.upper() == "R" or _is_safe_capture(position, cannon_capture, side)
+
+
+def _pawn_sacrifice_breakthrough(board: dict[str, str], pawn_move: str, side: str, cannon_square: str | None = None) -> tuple[str, str] | None:
+    """Find the cannon gain after an enemy capture of an uncrossed pawn."""
+    pawn_source, pawn_target = pawn_move[:2], pawn_move[2:]
+    if board.get(pawn_source, "").upper() != "P" or _has_crossed_river(board[pawn_source], pawn_source, side):
+        return None
+    pawn_position = _fen(board, side)
+    if pawn_move not in legal_moves(pawn_position):
+        return None
+    after_pawn = apply_move(pawn_position, pawn_move)
+    for reply in legal_moves(after_pawn):
+        if reply[2:] != pawn_target:
+            continue
+        after_reply = apply_move(after_pawn, reply)
+        reply_board = parse_fen(after_reply)
+        for cannon_capture in legal_moves(after_reply):
+            cannon = cannon_capture[:2]
+            if (cannon_square is not None and cannon != cannon_square) or reply_board.get(cannon, "").upper() != "C":
+                continue
+            if _breakthrough_gain(after_reply, cannon_capture, side):
+                return reply, cannon_capture
+    return None
+
+
+def _pawn_breakthrough_check(board: dict[str, str], pawn_target: str, side: str) -> str | None:
+    """A pawn screen is a breakthrough when its capture would expose check."""
+    enemy = _other(side)
+    pseudo_pawn_capturers = [
+        entry["square"] for entry in attacked_squares(board, enemy).get(pawn_target, [])
+        if board.get(entry["square"], "").upper() == "P"
+    ]
+    if not pseudo_pawn_capturers or any(move[2:] == pawn_target for move in legal_moves(_fen(board, enemy))):
+        return None
+    enemy_general = next((square for square, piece in board.items() if _is_side(piece, enemy) and piece.upper() == "K"), None)
+    if not enemy_general:
+        return None
+    for capturer in pseudo_pawn_capturers:
+        # Build the geometrically possible pawn capture without requiring it
+        # to be legal; legality is exactly what this rule is explaining.
+        virtual = dict(board)
+        pawn = virtual.pop(capturer)
+        virtual[pawn_target] = pawn
+        cannon_attackers = [
+            entry["square"] for entry in attacked_squares(virtual, side).get(enemy_general, [])
+            if virtual.get(entry["square"], "").upper() == "C"
+        ]
+        if cannon_attackers:
+            return cannon_attackers[0]
+    return None
 
 
 def _defense_relations(board: dict[str, str], side: str) -> set[tuple[str, str]]:
@@ -81,7 +418,13 @@ def _line_follow_ups(board: dict[str, str], side: str) -> list[tuple[str, str, s
     """
     result: list[tuple[str, str, str, str]] = []
     enemy = _other(side)
-    protected_now = {victim for _, victim in _defense_relations(board, enemy)}
+    # This is a positional line relation, so count geometric guards too.  A
+    # checked side may have no legal move other than answering check, while
+    # its horse/cannon still protects the rear target for pin/skewer purposes.
+    protected_now = {
+        victim for victim, piece in board.items()
+        if _is_side(piece, enemy) and _has_geometric_defender(board, victim, enemy)
+    }
     position = _fen(board, side)
     files = "abcdefghi"
 
@@ -101,13 +444,38 @@ def _line_follow_ups(board: dict[str, str], side: str) -> list[tuple[str, str, s
             without_front = dict(board)
             without_front.pop(front)
             virtual_position = _fen(without_front, side)
-            protected_after_front_leaves = {victim for _, victim in _defense_relations(without_front, enemy)}
+            protected_after_front_leaves = {
+                victim for victim, candidate in without_front.items()
+                if _is_side(candidate, enemy) and _has_geometric_defender(without_front, victim, enemy)
+            }
             x, y = files.index(front[0]) + dx, int(front[1]) + dy
             while 0 <= x < 9 and 0 <= y <= 9:
                 rear = f"{files[x]}{y}"
                 if _is_side(without_front.get(rear), enemy) and f"{source}{rear}" in legal_moves(virtual_position):
                     kind = "pin" if front in protected_now else "skewer"
-                    if kind == "pin" or rear not in protected_after_front_leaves:
+                    # The front and rear of a line tactic are tactical
+                    # targets.  An uncrossed pawn/soldier is deliberately
+                    # excluded from both roles: its opening restriction is
+                    # ordinary movement, not a 串打 or 牵制 opportunity.
+                    valid_line_targets = (
+                        _is_chase_target(board, front, enemy)
+                        and _is_chase_target(board, rear, enemy)
+                    )
+                    # A material pin is deliberately limited to rook, horse
+                    # and cannon.  Pawns (including uncrossed pawns),
+                    # elephants and advisors may sit on the line, but do not
+                    # turn that geometry into a 牵制 relation.
+                    pin_material = all(
+                        _is_pin_piece(board.get(square))
+                        for square in (source, front, rear)
+                    )
+                    if (
+                        valid_line_targets
+                        and (
+                            (kind == "pin" and pin_material and rear not in protected_now)
+                            or (kind == "skewer" and rear not in protected_after_front_leaves)
+                        )
+                    ):
                         result.append((kind, source, front, rear))
                     # The closest legal rear attack is the tactical follow-up;
                     # do not jump over it to manufacture a second relation.
@@ -139,22 +507,30 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             replies = [reply for reply in _captures(after_fen) if reply[2:] == target]
             own_value = _piece_value(moving_piece, source, side)
             taken_value = _piece_value(captured_piece, target, enemy)
-            if replies and abs(own_value - taken_value) <= 2:
+            if (replies and abs(own_value - taken_value) <= 2
+                    and not _is_minor_for_two_guards_sacrifice(before, after_fen, source, target)):
                 add("exchange", [source, target, replies[0][:2]], f"{_piece_label(before, source)} 吃掉 {_piece_label(before, target)}；对方可用 {replies[0]} 合法回吃，构成可验证的交换。")
 
         # 捉双：走后同一枚刚移动的棋子同时有两项“可安全吃到”的
-        # 非将目标，并且本手至少新增其中一项攻击。另一个目标可以在
+        # 车、马、炮目标，并且本手至少新增其中一项攻击。另一个目标可以在
         # 走前已受攻击；例如车横移后保留左炮攻击、并新增右炮攻击，
-        # 仍然是本手形成的捉双。受保护、吃后立即会被合法回吃的棋子
-        # 不算一个“捉”目标。
+        # 仍然是本手形成的捉双。将军兼捉子按将军处理，不标作捉双；
+        # 兵、士、象也不构成捉双目标。
         before_position = _fen(before, side)
         before_safe_targets = {
             item[2:] for item in _captures(before_position)
-            if item[:2] == source and _is_safe_capture(before_position, item, side)
+            if item[:2] == source
+            and before[item[2:]].upper() in {"R", "N", "C"}
+            and _is_chase_target(before, item[2:], enemy)
+            and _is_safe_capture(before_position, item, side)
         }
-        after_by_mover = [item for item in _captures(after_fen, side) if item[:2] == target and after[item[2:]].upper() != "K"]
-        fork_targets = sorted({item[2:] for item in after_by_mover if _is_safe_capture(after_fen, item, side)})
-        if len(fork_targets) >= 2 and set(fork_targets) - before_safe_targets:
+        after_by_mover = [item for item in _captures(after_fen, side) if item[:2] == target and after[item[2:]].upper() in {"R", "N", "C"}]
+        fork_targets = sorted({
+            item[2:] for item in after_by_mover
+            if _is_chase_target(after, item[2:], enemy) and _is_safe_capture(after_fen, item, side)
+        })
+        if (not _gives_check(after, side)
+                and len(fork_targets) >= 2 and set(fork_targets) - before_safe_targets):
             add("fork", [target, *fork_targets], f"{_piece_label(after, target)} 本手后新增同时攻击 {', '.join(fork_targets)} 两个目标；两项吃子均可安全完成，无法被立即合法回吃。")
 
         # 串打／牵制：攻击前子后，若其离开线路会让后子受攻击。
@@ -177,6 +553,20 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
         newly_opened = [
             candidate for candidate in _new_captures(before, after_fen, side)
             if candidate[:2] != target
+            # The line is not tactically usable if the opponent can first
+            # safely remove the newly active attacker on its current square.
+            # Checking whether the later capture is safe is insufficient:
+            # the opponent moves next and may pre-empt it.
+            and not _unsafe_captures(after, candidate[:2], side)
+            # A flash attack must create a usable gain, not just a mutually
+            # protected rook/cannon exchange.
+            and _is_unanswerable_flash_capture(after, candidate, side)
+            # An uncrossed pawn/soldier is not a tactical chase target.  Its
+            # normal opening restriction should not manufacture a 闪击.
+            and not (
+                after.get(candidate[2:], "").upper() == "P"
+                and not _has_crossed_river(after[candidate[2:]], candidate[2:], enemy)
+            )
             and any(entry["square"] == candidate[:2] for entry in after_geometric_attacks.get(candidate[2:], []))
             and not any(entry["square"] == candidate[:2] for entry in before_geometric_attacks.get(candidate[2:], []))
         ]
@@ -189,6 +579,8 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
         # 另算消除保护；被保护目标本身被吃则属于交换／得子。
         before_defenses = _defense_relations(before, enemy)
         after_defenses = _defense_relations(after, enemy)
+        defended_after = {victim for _, victim in after_defenses}
+        attacked_after = {capture[2:] for capture in _captures(after_fen, side)}
         removed_defenses = sorted(
             (defender, victim)
             for defender, victim in before_defenses - after_defenses
@@ -198,9 +590,14 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             # The defender itself must be the piece captured by this move.
             # No capture means no 消除保护 label.
             and defender == target and not _is_side(after.get(defender), enemy)
+            # The target must lose every defender and become actively
+            # attackable.  Merely taking one of several guards is not
+            # 消除保护.
+            and victim not in defended_after
+            and victim in attacked_after
         )
         for defender, victim in removed_defenses:
-            add("remove_defender", [defender, victim, source, target], f"本手吃掉守子 {_piece_label(before, defender)}；它原本保护 {_piece_label(before, victim)} 的这条防守关系已被消除。")
+            add("remove_defender", [defender, victim, source, target], f"本手吃掉守子 {_piece_label(before, defender)}；{victim} 已无其他有效保护，并转为我方可直接攻击的目标。")
 
         # 围困：目标的每一条合法走法都会立即安全失子，并且当前有己子直接捉它。
         # “困”可以早于“围”形成；本手若给一个早已被困的子新增直接捉子，
@@ -214,7 +611,7 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             new_hunters = [capture for capture in hunters if capture[:2] not in before_hunters]
             if hunters and (victim not in before_traps or new_hunters):
                 hunter = new_hunters[0] if new_hunters else hunters[0]
-                add("trap", [victim, hunter[:2]], f"{_piece_label(after, victim)} 的每个合法去处都会被安全吃掉，且 {hunter[:2]} 正直接捉住它；满足“围”与“困”两个条件。")
+                add("trap", [victim, hunter[:2]], f"{_piece_label(after, victim)} 的每个合法去处都会遭受得子攻击，且 {hunter[:2]} 正直接捉住它；满足“围”与“困”两个条件。")
 
         # 牵制：沿用旧页面的“同线约束 + 合法回吃约束”，但只报告新关系。
         before_lines, before_protections = _pins_created_by(before, side)
@@ -232,12 +629,32 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
                 detail = f"{rook} 是 {first} 的合法回吃保护；敌方 {second} 若吃 {first}，会被 {rook} 合法回吃。"
             add("pin", [rook, first, second], detail)
 
-        # 炮兵突破：兵的本手造成一门己炮新增合法吃子，或改变炮架后打开攻击。
+        # 炮兵突破：炮以未过河兵／卒作诱饵。若对方吃兵，吃兵的子会
+        # 成为炮架或移走原屏障，令炮能吃到无保护子；受保护的车也算，
+        # 因为炮换车仍是得子。炮先就位、下一步才挺兵同样算作该手法。
+        breakthrough: tuple[str, str, str] | None = None
         if moving_piece.upper() == "P":
-            cannon_captures = [candidate for candidate in _new_captures(before, after_fen, side) if after.get(candidate[:2], "").upper() == "C"]
-            if cannon_captures:
-                cannon = cannon_captures[0]
-                add("cannon_pawn_breakthrough", [source, target, cannon[:2], cannon[2:]], f"兵从 {source} 到 {target} 改变炮线／炮架，使 {cannon[:2]} 新取得 {cannon} 的合法攻击；炮兵协同形成突破。")
+            plan = _pawn_sacrifice_breakthrough(before, move, side)
+            if plan:
+                reply, cannon_capture = plan
+                breakthrough = (move, reply, cannon_capture)
+            else:
+                checking_cannon = _pawn_breakthrough_check(after, target, side)
+                if checking_cannon:
+                    add("cannon_pawn_breakthrough", [source, target, checking_cannon], f"兵／卒从 {source} 挺至 {target} 成为炮架，形成将军；对方兵／卒虽可几何攻击该兵，却不能合法吃掉它。")
+        elif moving_piece.upper() == "C":
+            for pawn_move in legal_moves(_fen(after, side)):
+                pawn_source, pawn_target = pawn_move[:2], pawn_move[2:]
+                if pawn_target[0] != target[0]:
+                    continue
+                plan = _pawn_sacrifice_breakthrough(after, pawn_move, side, target)
+                if plan:
+                    reply, cannon_capture = plan
+                    breakthrough = (pawn_move, reply, cannon_capture)
+                    break
+        if breakthrough:
+            pawn_move, reply, cannon_capture = breakthrough
+            add("cannon_pawn_breakthrough", [pawn_move[:2], pawn_move[2:], reply[:2], cannon_capture[:2], cannon_capture[2:]], f"预备 {pawn_move} 弃兵／卒；若对方 {reply} 吃兵，{cannon_capture[:2]} 即可走 {cannon_capture} 吃掉目标，构成炮兵突破。")
 
         annotations.append({"ply": ply, "side": side, "ucci": move, "occurrences": occurrences})
         current = after_fen

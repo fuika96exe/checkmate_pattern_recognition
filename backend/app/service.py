@@ -30,10 +30,11 @@ from .tactics import TACTIC_RULES_VERSION, analyze_tactics
 
 
 def _live_game_report(
-    before_fen: str,
     next_fen: str,
     move: MoveRecord,
     repetition: dict[str, object],
+    purpose: list[dict[str, object]],
+    categories: list[dict[str, object]],
 ) -> LiveGameReport:
     """Merge post-move referee facts with auditable short-horizon findings."""
     events: list[LiveGameEvent] = []
@@ -66,14 +67,19 @@ def _live_game_report(
         identifier, label, detail = repetition_labels[status]
         add(identifier, label, detail)
 
-    purpose = analyze_tactics(before_fen, [move.ucci])[0]["occurrences"]
     for occurrence in purpose:
         events.append(LiveGameEvent(
             source="move_purpose",
             **occurrence,  # type: ignore[arg-type]
         ))
-    categories = analyze_tactical_categories(before_fen, [move.ucci])[0]["occurrences"]
+    # The purpose and tactical-category engines are intentionally separate,
+    # but a shared identifier (for example ``pin``) describes the same event.
+    # Keep both views in their dedicated laboratory tabs while presenting just
+    # one, non-duplicated fact in the live referee report.
+    purpose_ids = {str(occurrence["id"]) for occurrence in purpose}
     for occurrence in categories:
+        if str(occurrence["id"]) in purpose_ids:
+            continue
         events.append(LiveGameEvent(
             source="tactical_category",
             **occurrence,  # type: ignore[arg-type]
@@ -95,17 +101,35 @@ def analyze_live_game_report(request: LiveGameReportRequest) -> LiveGameReport:
     as soon as a legal move and its referee decision are known, while the
     heavier tactical analysis continues in a background HTTP request.
     """
-    side = side_to_move(request.before_fen)
-    next_fen = apply_move(request.before_fen, request.ucci_move)
+    if request.target_index > len(request.ucci_moves):
+        raise ValueError("报告目标步超出所提供的棋谱范围")
+
+    # This is intentionally the same full-line invocation used by the two
+    # laboratory tabs.  Several purposes depend on what a preceding ply
+    # created, so analysing only the final move gives a different answer.
+    purpose_line = analyze_tactics(request.initial_fen, request.ucci_moves)
+    category_line = analyze_tactical_categories(request.initial_fen, request.ucci_moves)
+    current = request.initial_fen
+    for ucci in request.ucci_moves[:request.target_index - 1]:
+        current = apply_move(current, ucci)
+    side = side_to_move(current)
+    ucci = request.ucci_moves[request.target_index - 1]
+    next_fen = apply_move(current, ucci)
     move = MoveRecord(
         ply=request.ply,
         side=side,
-        ucci=request.ucci_move,
-        chinese_notation=chinese_notation(request.before_fen, request.ucci_move),
-        from_square=request.ucci_move[:2],
-        to_square=request.ucci_move[2:],
+        ucci=ucci,
+        chinese_notation=chinese_notation(current, ucci),
+        from_square=ucci[:2],
+        to_square=ucci[2:],
     )
-    return _live_game_report(request.before_fen, next_fen, move, request.repetition_decision)
+    return _live_game_report(
+        next_fen,
+        move,
+        request.repetition_decision,
+        purpose_line[request.target_index - 1]["occurrences"],  # type: ignore[arg-type]
+        category_line[request.target_index - 1]["occurrences"],  # type: ignore[arg-type]
+    )
 
 
 def create_initial() -> InitialResponse:
@@ -176,7 +200,16 @@ def advance(
     # Replay/import and opening-recognition batches deliberately skip this
     # costly optional annotation pass.  The legacy live endpoint can opt in;
     # the workbench uses the asynchronous report endpoint instead.
-    report = _live_game_report(previous.fen, next_fen, move, decision) if include_live_report else None
+    report = (
+        analyze_live_game_report(LiveGameReportRequest(
+            initial_fen=previous.fen,
+            ucci_moves=[ucci],
+            target_index=1,
+            ply=next_state.ply,
+            repetition_decision=decision,
+        ))
+        if include_live_report else None
+    )
     return AdvanceResponse(
         move=move,
         state=next_state,

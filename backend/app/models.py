@@ -128,10 +128,15 @@ class LiveGameReport(ApiModel):
 
 
 class LiveGameReportRequest(ApiModel):
-    """Stable snapshot data for an asynchronous post-move report."""
+    """A stable whole-line snapshot for an asynchronous post-move report.
 
-    before_fen: str
-    ucci_move: str
+    ``target_index`` is one-based within ``ucci_moves``.  ``ply`` remains the
+    board's absolute ply so reports also work after loading a FEN mid-game.
+    """
+
+    initial_fen: str
+    ucci_moves: list[str]
+    target_index: int = Field(ge=1)
     ply: int
     repetition_decision: dict[str, object] = Field(default_factory=dict)
 

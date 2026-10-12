@@ -9,7 +9,7 @@ import { Tab, TabList } from "@fluentui/react-tabs";
 import { webLightTheme } from "@fluentui/react-theme";
 import { ArrowResetRegular, ChevronLeftRegular, ChevronRightRegular } from "@fluentui/react-icons";
 import { api } from "../lib/api";
-import type { LiveGameReport, MoveRecord, RecognitionState } from "../lib/types";
+import type { LiveGameReport, MemoryPreset, MoveRecord, RecognitionState } from "../lib/types";
 import { TestCaseLab } from "./TestCaseLab";
 import { PuzzleBrowser } from "./PuzzleBrowser";
 import { XiangqiBoard } from "./XiangqiBoard";
@@ -55,6 +55,10 @@ const SYSTEM_LABELS: Record<string, string> = {
   double_proper_horses: "雙正馬",
 };
 
+const EMPTY_MEMORY: MemoryPreset = {
+  redChoicePath: [], blackChoicePath: [], blackComposite: null, redWing: null, blackWing: null,
+};
+
 function ChoicePath({ side, state }: { side: "red" | "black"; state: RecognitionState }) {
   const memory = state.openingMemory[side];
   const items = [...memory.choicePath, ...memory.compositeSystems, ...memory.formedShapes];
@@ -81,14 +85,23 @@ export function Workbench() {
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
   const [language, setLanguage] = useState<"zh" | "en">("en");
+  const [fenDraft, setFenDraft] = useState("");
 
   const current = snapshots[index];
+
+  // Keep the debug FEN in sync with the board being viewed.  This also makes
+  // stepping backward and forward through the move list a quick way to copy
+  // the exact position that triggered a label.
+  useEffect(() => {
+    if (current) setFenDraft(current.state.fen);
+  }, [current?.state.fen]);
 
   const reset = useCallback(async () => {
     setBusy(true); setError("");
     try {
       const response = await api.initial();
       setSnapshots([{ state: response.state, legalMoves: response.legalMoves }]);
+      setFenDraft(response.state.fen);
       setIndex(0);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "無法連接辨認服務"); }
     finally { setBusy(false); }
@@ -102,6 +115,7 @@ export function Workbench() {
     void api.initial().then((response) => {
       if (!active) return;
       setSnapshots([{ state: response.state, legalMoves: response.legalMoves }]);
+      setFenDraft(response.state.fen);
       setIndex(0);
       setBusy(false);
     }).catch((reason: unknown) => {
@@ -125,8 +139,9 @@ export function Workbench() {
       // board, and repetition decision should remain responsive even when a
       // dense position needs more time to inspect.
       void api.analyzeLiveReport(
-        current.state.fen,
-        move,
+        base[0].state.fen,
+        next.slice(1).map((item) => item.move?.ucci).filter((ucci): ucci is string => Boolean(ucci)),
+        next.length - 1,
         result.state.ply,
         result.state.repetitionDecision,
       ).then((report) => {
@@ -144,6 +159,21 @@ export function Workbench() {
       });
     } catch (reason) { setError(reason instanceof Error ? reason.message : "走子失敗"); }
     finally { setBusy(false); }
+  }
+
+  async function loadFen(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const fen = fenDraft.trim();
+    if (!fen) { setError("请输入完整 FEN 后再载入。"); return; }
+    setBusy(true); setError("");
+    try {
+      const response = await api.inspect(fen, EMPTY_MEMORY);
+      setSnapshots([{ state: response.state, legalMoves: response.legalMoves }]);
+      setFenDraft(response.state.fen);
+      setIndex(0);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "FEN 无法载入，请检查格式。");
+    } finally { setBusy(false); }
   }
 
   const moveHistory = snapshots.slice(1).map((item) => item.move).filter(Boolean) as MoveRecord[];
@@ -200,7 +230,24 @@ export function Workbench() {
                 </div>
               </div>
               <XiangqiBoard fen={current.state.fen} legalMoves={current.legalMoves} lastMove={currentMove} disabled={busy} onMove={play} />
-              <div className="fen-strip"><span>FEN</span><code>{current.state.fen}</code></div>
+              <form className="fen-strip fen-editor" onSubmit={loadFen}>
+                <label htmlFor="workbench-fen">FEN</label>
+                <div className="fen-editor-field">
+                  <textarea
+                    id="workbench-fen"
+                    value={fenDraft}
+                    onChange={(event) => setFenDraft(event.target.value)}
+                    rows={2}
+                    disabled={busy}
+                    spellCheck={false}
+                    aria-label="输入 FEN 局面"
+                  />
+                  <div className="fen-editor-actions">
+                    <small>贴入完整 FEN 后载入，即可从该局面继续走子。</small>
+                    <Button type="submit" appearance="primary" disabled={busy}>载入局面</Button>
+                  </div>
+                </div>
+              </form>
             </section>
 
             <aside className="analysis-column">

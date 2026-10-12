@@ -21,6 +21,15 @@ def _other(side: str) -> str:
     return "black" if side == "red" else "red"
 
 
+def _is_in_check(board: dict[str, str], side: str) -> bool:
+    general = next(
+        (square for square, piece in board.items()
+         if _is_side(piece, side) and piece.upper() == "K"),
+        None,
+    )
+    return bool(general and attacked_squares(board, _other(side)).get(general))
+
+
 def _is_side(piece: str | None, side: str) -> bool:
     return bool(piece) and (piece.isupper() if side == "red" else piece.islower())
 
@@ -52,7 +61,59 @@ def _meaningful_attackers(board: dict[str, str], square: str, by_side: str) -> l
 
 
 def _sacrifice_eligible(piece: str, square: str, side: str) -> bool:
-    return piece.upper() in {"R", "N", "C"} or (piece.upper() == "P" and _has_crossed_river(piece, square, side))
+    """Ordinary sacrifices are limited to rook, horse and cannon."""
+    return piece.upper() in {"R", "N", "C"}
+
+
+def _sacrifice_attackers(board: dict[str, str], square: str, by_side: str) -> list[dict[str, str]]:
+    """Attackers relevant to a sacrifice; advisors and elephants are excluded."""
+    return [
+        entry for entry in attacked_squares(board, by_side).get(square, [])
+        if board.get(entry["square"], "").upper() in {"R", "N", "C", "P"}
+    ]
+
+
+def _sacrifice_material_loss(board: dict[str, str], square: str, owner: str) -> int:
+    return max(
+        (_capture_material_loss(board, square, owner, entry["square"])
+         for entry in _sacrifice_attackers(board, square, _other(owner))),
+        default=0,
+    )
+
+
+def _minor_for_two_guards_sacrifice(
+    before: dict[str, str], after_fen: str, source: str, target: str, side: str,
+) -> list[str]:
+    """Return guard recaptures in a horse/cannon-for-two-guards sacrifice.
+
+    A horse or cannon taking one advisor/elephant, being taken by the other,
+    and then allowing a friendly recapture is strategically a sacrifice.  It
+    must not be flattened into an ordinary equal-value exchange merely because
+    the last guard can be recaptured.
+    """
+    if (
+        before.get(source, "").upper() not in {"N", "C"}
+        or before.get(target, "").upper() not in {"A", "B"}
+    ):
+        return []
+    after = parse_fen(after_fen)
+    guard_replies: list[str] = []
+    for reply in legal_moves(after_fen):
+        if reply[2:] != target or after.get(reply[:2], "").upper() not in {"A", "B"}:
+            continue
+        after_reply = apply_move(after_fen, reply)
+        if any(recapture[2:] == target for recapture in legal_moves(after_reply)):
+            guard_replies.append(reply)
+    return guard_replies
+
+
+def _is_crossing_pawn_move(before: dict[str, str], after: dict[str, str], source: str, target: str, side: str) -> bool:
+    return (
+        before.get(source, "").upper() == "P"
+        and after.get(target, "").upper() == "P"
+        and not _has_crossed_river(before[source], source, side)
+        and _has_crossed_river(after[target], target, side)
+    )
 
 
 def _has_uncrossed_pawn_attacker(board: dict[str, str], square: str, by_side: str) -> bool:
@@ -105,7 +166,8 @@ def _escape_material_loss(board: dict[str, str], square: str, owner: str) -> int
     """Worst net loss among direct attacking exchanges on this piece."""
     return max(
         (_capture_material_loss(board, square, owner, entry["square"])
-         for entry in _direct_escape_attackers(board, square, _other(owner))),
+         for entry in _direct_escape_attackers(board, square, _other(owner))
+         if not _is_reciprocal_trade(board, square, entry["square"], owner)),
         default=0,
     )
 
@@ -127,6 +189,16 @@ def _fen(board: dict[str, str], side: str) -> str:
             encoded += str(empty)
         ranks.append(encoded)
     return f"{'/'.join(ranks)} {'w' if side == 'red' else 'b'} - - 0 1"
+
+
+def _is_reciprocal_trade(board: dict[str, str], victim: str, attacker: str, owner: str) -> bool:
+    """Whether the allegedly chased piece can immediately capture its attacker.
+
+    A mutual rook/cannon contact is a兑子 relation, not a one-sided 捉.  This
+    is checked before material-loss calculation because the defender can elect
+    to take first instead of passively allowing the proposed capture.
+    """
+    return f"{victim}{attacker}" in legal_moves(_fen(board, owner))
 
 
 def _ray(board: dict[str, str], source: str, dx: int, dy: int) -> list[str]:
@@ -227,17 +299,52 @@ def _is_protected(board: dict[str, str], victim: str, owner: str) -> bool:
     return False
 
 
+def _has_effective_defender(board: dict[str, str], victim: str, owner: str) -> bool:
+    """Whether a named friendly piece can legally defend ``victim``.
+
+    Unlike ``_is_protected``, this does not require an enemy attack to exist
+    *right now*.  That matters for a rear pin target: the front pinned piece
+    can still be blocking the attack line, while another friendly piece is
+    already capable of defending the rear target.
+    """
+    piece = board.get(victim)
+    if not _is_side(piece, owner):
+        return False
+    trial = dict(board)
+    trial[victim] = piece.lower() if owner == "red" else piece.upper()
+    return any(move[2:] == victim for move in legal_moves(_fen(trial, owner)))
+
+
+def _has_geometric_defender(board: dict[str, str], victim: str, owner: str) -> bool:
+    """A defender remains relevant to a line pin even while its side is checked."""
+    return bool(board.get(victim)) and any(
+        entry["square"] != victim
+        for entry in attacked_squares(board, owner).get(victim, [])
+    )
+
+
 def _piece_protects(board: dict[str, str], protector: str, side: str) -> set[str]:
-    """Victims for which one specified piece is a legal recapturing protector."""
-    enemy = _other(side)
+    """Friendly pieces that this exact piece can legally defend.
+
+    Each friendly candidate is temporarily made an enemy target.  This asks
+    whether ``protector`` could take it while preserving its own general.  It
+    deliberately does *not* require an enemy attacker to exist already:
+    protection is a relationship on the current board, not a label that first
+    appears only when an opponent begins a chase.  A lower-value defender does
+    not count as a tactical protector for a higher-value target: exchanging it
+    still leaves the attacking side ahead.
+    """
     result: set[str] = set()
-    enemy_fen = _fen(board, enemy)
-    for capture in legal_moves(enemy_fen):
-        victim = capture[2:]
-        if victim == protector or not _is_side(board.get(victim), side):
+    if not _is_side(board.get(protector), side):
+        return result
+    for victim, piece in board.items():
+        if victim == protector or not _is_side(piece, side) or piece.upper() == "K":
             continue
-        after_capture = apply_move(enemy_fen, capture)
-        if any(move[:2] == protector and move[2:] == victim for move in legal_moves(after_capture)):
+        if _piece_value(board[protector], protector, side) < _piece_value(piece, victim, side):
+            continue
+        trial = dict(board)
+        trial[victim] = piece.lower() if side == "red" else piece.upper()
+        if f"{protector}{victim}" in legal_moves(_fen(trial, side)):
             result.add(victim)
     return result
 
@@ -316,7 +423,7 @@ def _trap_detail(board: dict[str, str], victim: str, side: str) -> str:
 
 
 def _pins(board: dict[str, str], rook_side: str) -> set[tuple[str, str, str]]:
-    """Relative 牵制: only rook, horse, and cannon material participates."""
+    """Relative 牵制: a same-line R/N/C rear target must be undefended."""
     rook = "R" if rook_side == "red" else "r"
     enemy = _other(rook_side)
     found: set[tuple[str, str, str]] = set()
@@ -340,6 +447,7 @@ def _pins(board: dict[str, str], rook_side: str) -> set[tuple[str, str, str]]:
                 and _is_pin_piece(board[rook_square])
                 and _is_pin_piece(board[first])
                 and _is_pin_piece(board[second])
+                and not _has_geometric_defender(board, second, enemy)
             ):
                 found.add((rook_square, first, second))
     return found
@@ -420,13 +528,9 @@ def _pins_created_by(board: dict[str, str], mover_side: str) -> tuple[set[tuple[
     # the blocker may be a pawn, advisor, elephant, etc., because leaving the
     # line exposes an illegal check on the general.
     line_pins = _pins(board, mover_side) | _absolute_pins(board, mover_side)
-    protection_pins = {
-        pin for pin in _protection_pins(board, _other(mover_side))
-        # A protector sitting on the same attacker-victim file/rank is already
-        # covered by the mover's two-enemy-piece line pin, not a second pin.
-        if not _same_straight_line(*pin)
-    }
-    return line_pins, protection_pins
+    # A cross-line protection relationship is not a 牵制.  It is a normal
+    # defence relation, even if losing it would cost material.
+    return line_pins, set()
 
 
 def _pin_relationships(line_pins: set[tuple[str, str, str]], protection_pins: set[tuple[str, str, str]]) -> set[tuple[str, str]]:
@@ -445,6 +549,7 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         side = side_to_move(current)
         enemy = _other(side)
         before = parse_fen(current)
+        was_in_check = _is_in_check(before, side)
         before_enemy_attacks = attacked_squares(before, enemy)
         before_enemy_rook_blocks = _rook_blocks(before, enemy)
         before_enemy_line_blocks = _line_piece_blocks(before, enemy)
@@ -463,6 +568,10 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         prior_attacker_squares = {entry["square"] for entry in direct_attackers}
         before_escape_loss = _escape_material_loss(before, move[:2], side)
         after_escape_loss = _escape_material_loss(after, moved_to, side)
+        # Imported FENs do not include the preceding move.  Therefore an
+        # escape is recognised from the current effective chase itself; the
+        # material calculation excludes mutual trades, so merely facing an
+        # exchange still cannot manufacture an “escape” label.
         if (direct_attackers
                 and before_escape_loss > after_escape_loss
                 # Capturing the attacker resolves the threat tactically, but
@@ -472,8 +581,23 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
 
         protected_before = _piece_protects(before, move[:2], side)
         protected_after = _piece_protects(after, moved_to, side)
-        protected = sorted(victim for victim in protected_after - protected_before if not _is_protected(before, victim, side))
-        if protected:
+        # “保” means that the target itself newly gains its first defender.
+        # Adding a second defender to a piece that was already protected does
+        # not create another protect label.
+        already_defended = {
+            victim
+            for protector, piece in before.items()
+            if _is_side(piece, side)
+            for victim in _piece_protects(before, protector, side)
+        }
+        protected = sorted(
+            victim for victim in (protected_after - protected_before) - already_defended
+            # The target must already be in a materially losing chase before
+            # this move.  Opening an unrelated new attack and discovering an
+            # old defender is not a “保” move.
+            if _escape_material_loss(before, victim, side) > 0
+        )
+        if protected and not was_in_check:
             add("protect", [moved_to, *protected], f"{_piece_label(after, moved_to)} 走后可在对方吃掉 {', '.join(protected)} 时合法回吃。")
 
         # A move may uncover another friendly piece's protection, such as
@@ -483,22 +607,53 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         for victim, piece in after.items():
             if not _is_side(piece, side) or victim == moved_to:
                 continue
-            if _is_protected(before, victim, side) or not _is_protected(after, victim, side):
+            if _escape_material_loss(before, victim, side) <= 0:
                 continue
-            protectors = sorted(
+            before_protectors = {
+                square for square, candidate in before.items()
+                if _is_side(candidate, side) and victim in _piece_protects(before, square, side)
+            }
+            if before_protectors:
+                continue
+            newly_available_protectors = sorted(
                 square for square, candidate in after.items()
-                if _is_side(candidate, side) and victim in _piece_protects(after, square, side)
+                if _is_side(candidate, side)
+                and square != moved_to
+                and victim in _piece_protects(after, square, side)
+                and square not in before_protectors
             )
-            if protectors:
-                uncovered_protection.append((victim, protectors))
-        for victim, protectors in uncovered_protection:
-            add("protect", [moved_to, victim, *protectors], f"本手让开后，{', '.join(protectors)} 才能在对方吃掉 {victim} 时合法回吃；{victim} 因此新获得保护。")
+            if newly_available_protectors:
+                uncovered_protection.append((victim, newly_available_protectors))
+        if not was_in_check:
+            for victim, protectors in uncovered_protection:
+                add("protect", [moved_to, victim, *protectors], f"本手让开后，{', '.join(protectors)} 才能在对方吃掉 {victim} 时合法回吃；{victim} 因此新获得保护。")
 
         unsafe_capturers = _unsafe_captures(after, moved_to, side)
-        sacrifice_capturers = [entry["square"] for entry in _direct_escape_attackers(after, moved_to, enemy)]
-        sacrifice_loss = _escape_material_loss(after, moved_to, side)
-        if sacrifice_loss > 0 and _sacrifice_eligible(after.get(moved_to, ""), moved_to, side):
+        sacrifice_capturers = [entry["square"] for entry in _sacrifice_attackers(after, moved_to, enemy)]
+        sacrifice_loss = _sacrifice_material_loss(after, moved_to, side)
+        guard_recaptures = _minor_for_two_guards_sacrifice(before, after_fen, move[:2], moved_to, side)
+        crossing_pawn = _is_crossing_pawn_move(before, after, move[:2], moved_to, side)
+        if guard_recaptures:
+            add("sacrifice", [move[:2], moved_to, *[reply[:2] for reply in guard_recaptures]], f"{_piece_label(before, move[:2])} 吃掉 {_piece_label(before, moved_to)} 后，另一枚士／象可用 {', '.join(guard_recaptures)} 回吃；即使己方随后还能回吃，马／炮换双士／双象仍按弃子处理。")
+        elif crossing_pawn and sacrifice_capturers:
+            add("sacrifice", [moved_to, *sacrifice_capturers], f"兵／卒本手越过河界后立即受到 {', '.join(sacrifice_capturers)} 攻击，构成弃兵。")
+        elif sacrifice_loss > 0 and _sacrifice_eligible(after.get(moved_to, ""), moved_to, side):
             add("sacrifice", [moved_to, *sacrifice_capturers], f"本手走到 {moved_to} 后，对方 {', '.join(sacrifice_capturers)} 可吃掉该子；按立即回吃计算，己方净亏 {sacrifice_loss} 分。")
+
+        # A forced check response can consciously leave another major/minor
+        # piece to be taken.  It is not ordinary “protect” or “block”: the
+        # move's primary purpose is saving the general, and the abandoned
+        # piece is the resulting sacrifice.
+        if was_in_check:
+            forced_abandoned = [
+                (square, capturers)
+                for square, piece in after.items()
+                if square != moved_to and _is_side(piece, side)
+                and _sacrifice_eligible(piece, square, side)
+                and (capturers := _unsafe_captures(after, square, side))
+            ]
+            for square, capturers in forced_abandoned:
+                add("sacrifice", [square, *capturers], f"本手为保护将／帅而应将，留下 {_piece_label(after, square)} 可被 {', '.join(capturers)} 安全吃掉，构成弃子。")
 
         # A move can also abandon a *different* friendly piece by opening a
         # new, safe enemy capture on it.  This is distinct from the moved
@@ -525,13 +680,19 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
             and _escape_material_loss(after, square, side) > 0
         )
         if abandoned:
-            attackers = sorted({entry["square"] for square in abandoned for entry in _direct_escape_attackers(after, square, enemy)})
             losses = {square: _escape_material_loss(after, square, side) for square in abandoned}
-            add("sacrifice", [*abandoned, *attackers], f"上一手后 {', '.join(abandoned)} 刚受到 {', '.join(attackers)} 攻击；本手 {move} 未化解，预期净亏 {sum(losses.values())} 分。")
+            # The defender gets one reply only.  Several pieces may be under
+            # attack, but the immediate outcome is the single largest loss,
+            # never the sum of every simultaneously threatened piece.
+            most_valuable = min(square for square, loss in losses.items() if loss == max(losses.values()))
+            attackers = sorted(entry["square"] for entry in _direct_escape_attackers(after, most_valuable, enemy))
+            add("sacrifice", [most_valuable, *attackers], f"上一手后 {most_valuable} 刚受到 {', '.join(attackers)} 攻击；本手 {move} 未化解。双方本回合只能应对一子，预期最大净亏 {losses[most_valuable]} 分。")
 
         before_rook_routes = _rook_reachable(before, enemy)
         after_rook_routes = _rook_reachable(after, enemy)
         for rook, before_targets in before_rook_routes.items():
+            if was_in_check:
+                continue
             # A blocker that can be safely captured is a sacrifice, not a
             # durable route block.
             if unsafe_capturers:
@@ -547,6 +708,8 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
                 break
 
         for rook_square, ray_distance in _rook_blocks(after, enemy).items():
+            if was_in_check:
+                continue
             # Keep the legacy "first obstruction" branch consistent with the
             # route-difference branch above: a piece the rook can safely take
             # is a sacrifice, rather than a lasting block.
@@ -604,6 +767,7 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         previous_new_attacks = {
             square for square, piece in after.items()
             if _is_side(piece, next_side)
+            and _sacrifice_eligible(piece, square, next_side)
             and _escape_material_loss(after, square, next_side) > 0
             and _escape_material_loss(before, square, next_side) <= 0
         }
