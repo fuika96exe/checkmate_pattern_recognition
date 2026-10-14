@@ -17,6 +17,7 @@ import { WhiteFaceGeneralLab } from "./WhiteFaceGeneralLab";
 import { NotationImportLab } from "./NotationImportLab";
 import { TacticsLab } from "./TacticsLab";
 import { TacticalCategoriesLab } from "./TacticalCategoriesLab";
+import { CapturingTacticsLab } from "./CapturingTacticsLab";
 
 interface Snapshot {
   state: RecognitionState;
@@ -196,7 +197,7 @@ export function Workbench() {
       <nav className="app-tabs" aria-label="主要功能">
         {hydrated ? (
           <TabList selectedValue={tab} onTabSelect={(_, data) => setTab(String(data.value))}>
-            <Tab value="game">棋局工作台</Tab><Tab value="categories">战术分类</Tab><Tab value="tactics">手法识别</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
+            <Tab value="game">棋局工作台</Tab><Tab value="categories">战术分类</Tab><Tab value="tactics">手法识别</Tab><Tab value="patterns">殺法測試</Tab><Tab value="puzzles">棋题浏览器</Tab><Tab value="capturing">吃子战术标注</Tab><Tab value="tests">案例測試</Tab><Tab value="importer">棋譜導入測試</Tab>
           </TabList>
         ) : <div className="app-tabs-placeholder" aria-hidden="true" />}
       </nav>
@@ -215,6 +216,8 @@ export function Workbench() {
           <WhiteFaceGeneralLab />
         ) : tab === "puzzles" ? (
           <PuzzleBrowser />
+        ) : tab === "capturing" ? (
+          <CapturingTacticsLab />
         ) : tab === "tests" ? (
           <TestCaseLab currentFen={current.state.fen} />
         ) : (
