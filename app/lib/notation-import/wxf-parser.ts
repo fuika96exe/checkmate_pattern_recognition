@@ -3,6 +3,9 @@ import { stripComments } from './preprocessor.ts';
 import type { ImportResult } from './types.ts';
 
 const FILES = 'abcdefghi';
+const WXF_MOVE_PATTERN = '([+~-])?([KAEBHNRCPkaebhnrcp])([1-9+~-])?([.+-])([1-9])';
+const WXF_MOVE_REGEX = new RegExp(`^${WXF_MOVE_PATTERN}$`);
+const WXF_DETECTION_REGEX = new RegExp(`\\b${WXF_MOVE_PATTERN}\\b`);
 
 const PIECE_LETTER_MAP: Record<string, string> = {
   K: 'K',
@@ -30,7 +33,7 @@ export function isWXF(text: string): boolean {
     text.includes('FORMAT  WXF') ||
     text.includes('FORMAT WXF') ||
     text.includes('[Format "WXF"]') ||
-    /\b[CHRPBEAKchrpbeak][1-9][.+-][1-9]\b/.test(text)
+    WXF_DETECTION_REGEX.test(text)
   );
 }
 
@@ -48,10 +51,16 @@ function matchWXFMove(
   const isRed = side === 'red';
   if (isRed !== (piece === piece.toUpperCase())) return false;
 
-  const match = token.match(/^([+-~])?([A-Za-z])([1-9])?([.+-])([1-9])$/);
+  const match = token.match(WXF_MOVE_REGEX);
   if (!match) return false;
 
-  const [, prefix, letter, fileDigit, action, targetDigit] = match;
+  const [, leadingPrefix, letter, selector, action, targetDigit] = match;
+  const fileDigit = selector && /^[1-9]$/.test(selector) ? selector : undefined;
+  // PlayOK puts the front/rear marker after the piece (p-+1, e+-1).
+  // Keep accepting the existing prefix form (-p+1, +e-1) as well.
+  const trailingPrefix = selector && !fileDigit ? selector : undefined;
+  if (leadingPrefix && trailingPrefix) return false;
+  const prefix = leadingPrefix || trailingPrefix;
   const expectedPiece = PIECE_LETTER_MAP[letter];
   if (!expectedPiece || expectedPiece.toLowerCase() !== piece.toLowerCase()) {
     return false;
@@ -77,9 +86,11 @@ function matchWXFMove(
         const rb = parseInt(b[1], 10);
         return isRed ? rb - ra : ra - rb;
       });
+    if (sameCol.length < 2) return false;
     const idx = sameCol.indexOf(from);
     if (prefix === '+' && idx !== 0) return false;
     if (prefix === '-' && idx !== sameCol.length - 1) return false;
+    if (prefix === '~' && (sameCol.length !== 3 || idx !== 1)) return false;
   }
 
   const targetNum = parseInt(targetDigit, 10);
@@ -136,7 +147,7 @@ export function parseWXF(text: string): ImportResult {
     .replace(/\b\d+\.\s*/g, ' ')
     .split(/\s+/)
     .map((t) => t.trim())
-    .filter((t) => t && /^[+-~]?[A-Za-z][1-9]?[.+-][1-9]$/.test(t));
+    .filter((t) => WXF_MOVE_REGEX.test(t));
 
   const moves: string[] = [];
   const chineseMoves: string[] = [];

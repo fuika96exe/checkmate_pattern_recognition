@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { importXiangqiGame } from '../app/lib/notation-import/index.ts';
 
@@ -362,6 +363,78 @@ test('Case 5: PlayOK 对局 (playok.com WXF)', () => {
   assert.equal(result.chineseMoves[2], '马八进七');
   assert.equal(result.chineseMoves[3], '马2进3');
   assert.equal(result.result, '1-0');
+});
+
+test('PlayOK WXF tandem moves preserve all 96 plies and resolve front/rear pieces', () => {
+  const text = readFileSync(new URL('./fixtures/playok-wxf-tandem.txt', import.meta.url), 'utf8');
+  const result = importXiangqiGame(text);
+
+  assert.equal(result.success, true, result.error);
+  assert.equal(result.format, 'wxf');
+  assert.equal(result.moves.length, 96);
+  assert.equal(result.chineseMoves.length, 96);
+  assert.equal(result.title, 'pro1234 vs ahy9675g');
+  assert.equal(result.result, '0-1');
+  assert.equal(result.moves[79], 'e6e5', '40... p-+1 moves the rear black pawn');
+  assert.equal(result.moves[80], 'c6d6', '41. P7.6 must remain a red move');
+  assert.equal(result.moves[81], 'e4e3', '41... p++1 moves the front black pawn');
+  assert.equal(result.moves[83], 'e5e4', '42... p-+1 moves the rear black pawn');
+  assert.equal(result.moves[93], 'c5a7', '47... e+-1 moves the front black elephant');
+});
+
+test('WXF tandem prefix and suffix forms resolve to the same complete game', () => {
+  const text = readFileSync(new URL('./fixtures/playok-wxf-tandem.txt', import.meta.url), 'utf8');
+  const prefixText = text.replace(/([A-Za-z])([+~-])([.+-][1-9])/g, '$2$1$3');
+  const suffixResult = importXiangqiGame(text);
+  const prefixResult = importXiangqiGame(prefixText);
+
+  assert.equal(suffixResult.success, true, suffixResult.error);
+  assert.equal(prefixResult.success, true, prefixResult.error);
+  assert.equal(prefixResult.moves.length, 96);
+  assert.deepEqual(prefixResult.moves, suffixResult.moves);
+  assert.deepEqual(prefixResult.chineseMoves, suffixResult.chineseMoves);
+});
+
+test('WXF front/rear markers select the correct red cannon in either form', () => {
+  const opening = '1. C2.5 h2+3 2. C8-1 h8+7 3. C8.5 p1+1';
+  for (const [token, expected] of [
+    ['C+.4', 'e2f2'],
+    ['+C.4', 'e2f2'],
+    ['+C5.4', 'e2f2'],
+    ['C-.4', 'e1f1'],
+    ['-C.4', 'e1f1'],
+    ['-C5.4', 'e1f1'],
+  ]) {
+    const result = importXiangqiGame(`${opening} 4. ${token}`);
+    assert.equal(result.success, true, `${token}: ${result.error}`);
+    assert.equal(result.moves.length, 7);
+    assert.equal(result.moves[6], expected, token);
+  }
+});
+
+test('WXF tandem markers cannot select a lone piece or a missing middle piece', () => {
+  for (const token of ['P-+1', 'P++1', 'P~+1']) {
+    const result = importXiangqiGame(token);
+    assert.equal(result.format, 'wxf', token);
+    assert.equal(result.success, false, token);
+    assert.equal(result.failedMoveIndex, 0, token);
+    assert.equal(result.moves.length, 0, token);
+  }
+
+  const result = importXiangqiGame('1. C2.5 h2+3 2. C8-1 h8+7 3. C8.5 p1+1 4. C~.4');
+  assert.equal(result.success, false);
+  assert.equal(result.failedMoveIndex, 6);
+});
+
+test('WXF middle markers select the middle pawn of three tandem pawns', () => {
+  const redMoves = ['P7+1', 'P7+1', 'P7.6', 'P6.5', 'P3+1', 'P3+1', 'P3.4', 'P4+1', 'P4.5'];
+  const opening = redMoves.map((move, i) => `${i + 1}. ${move} ${i % 2 === 0 ? 'h2+3' : 'h3-2'}`).join(' ');
+  for (const token of ['P~.4', '~P.4']) {
+    const result = importXiangqiGame(`${opening} 10. ${token}`);
+    assert.equal(result.success, true, `${token}: ${result.error}`);
+    assert.equal(result.moves.length, 19);
+    assert.equal(result.moves[18], 'e5f5', token);
+  }
 });
 
 test('Case 6: 用户初始样例 1 (PGN with same-column bishops 相三进五, fullwidth digits, 1-0)', () => {
