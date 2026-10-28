@@ -32,6 +32,8 @@ class ChoiceOccurrence(ApiModel):
     lock_group: str | None = None
     eligible_for_name: bool = True
     suppressed_by: str | None = None
+    # Stable identity for replacing a moving rook's earlier descriptor.
+    source_piece_id: str | None = None
 
 
 class SideMemory(ApiModel):
@@ -80,6 +82,10 @@ class RecognitionState(ApiModel):
     # browser-to-server request boundary all use the same repetition history.
     repetition_positions: list[dict[str, object]] = Field(default_factory=list)
     repetition_actions: list[dict[str, object]] = Field(default_factory=list)
+    # The immutable first position for replaying the complete line through
+    # the authoritative cycle-rule evaluator.  ``fen`` changes after every
+    # ply, so it cannot serve this purpose.
+    repetition_initial_fen: str | None = None
     chase_latches: list[list[str]] = Field(default_factory=list)
     repetition_decision: dict[str, object] = Field(default_factory=dict)
     current_shapes: dict[str, list[str]] = Field(default_factory=dict)

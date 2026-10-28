@@ -27,12 +27,21 @@ export interface RecognitionState {
   fen: string;
   sideMoves: Record<Side, number>;
   pieceIdentity: Record<string, string>;
+  repetitionInitialFen: string | null;
+  repetitionActions: Array<{
+    ply: number;
+    side: Side;
+    isCheck: boolean;
+    chasePairs: [string, string][];
+    chaseTargetIds: string[];
+    pinnedRookChaseTargetIds: string[];
+  }>;
   repetitionDecision: {
     status: "none" | "watch" | "warning" | "must_change" | "draw";
     repeatCount: number;
     occurrenceCount: number;
-    redClassification: "idle" | "chase" | "check";
-    blackClassification: "idle" | "chase" | "check";
+    redClassification: "idle" | "chase" | "pinned_rook_chase" | "check";
+    blackClassification: "idle" | "chase" | "pinned_rook_chase" | "check";
     restrictedSide: Side | null;
   };
   currentShapes: Record<Side, string[]>;

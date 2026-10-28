@@ -23,6 +23,120 @@ def test_capturing_last_defender_that_exposes_an_attacked_target_is_removal() ->
     assert "remove_defender" in _labels(fen, "h6h7")
 
 
+def test_same_kind_reciprocal_contact_is_not_removing_protection() -> None:
+    # Ng5 protects the black rook e6.  After Rg4xg5, Red's other rook e4 attacks
+    # e6, but the black rook can legally reply e6xe4: rook-versus-rook
+    # mutual contact is an exchange opportunity, not 消除保护.
+    fen = "4k4/9/9/4r4/6n2/4R1R2/9/9/9/4K4 w - - 0 1"
+    assert "remove_defender" not in _labels(fen, "g4g5")
+
+
+def test_lak8xo_potential_cannon_reply_is_not_an_exchange() -> None:
+    # The old cached record called ...Ci1xf1 an exchange merely because f3-f1
+    # was geometrically imaginable.  The line never completes a concrete,
+    # valid recapture, so it has no 交换 label.
+    fen = "3akab2/9/4b1n2/p3p3p/3n5/2PN3N1/P3PR3/4B4/4KCr2/2BA1A2c w - - 6 23"
+    line = ["e1d1", "i0i1", "d0e1", "i1f1", "e1d2"]
+    assert all(
+        "exchange" not in {item["id"] for item in annotation["occurrences"]}
+        for annotation in analyze_tactical_categories(fen, line)
+    )
+
+
+def test_rdajlo_pawn_relation_is_not_removing_protection() -> None:
+    # The former label treated the pawn i3 as a protected tactical target
+    # after ...Rg3xd3.  Pawn/soldier protection is outside 消除保护, and Red
+    # has no concrete recapture of that black rook in this line.
+    fen = "3akar2/4n4/4R4/p3p3p/3P5/9/2c1p3P/2C6/9/2BAKAB2 w - - 3 22"
+    line = ["c2d2", "e3e2", "d2d3", "g9g3", "c0e2", "g3d3", "e7e6", "d3d5", "e6e4"]
+    assert all(
+        "remove_defender" not in {item["id"] for item in annotation["occurrences"]}
+        for annotation in analyze_tactical_categories(fen, line)
+    )
+
+
+def test_qkmp8r_horse_for_rook_gain_is_not_effective_protection() -> None:
+    # Before ...Cc0xc6, Black's horse d5 can already take the red rook e7.
+    # Nc6 can recapture that horse, but a horse-for-rook trade still wins
+    # material, so Nc6 is not an effective protector to be "removed".
+    fen = "3a1k3/4a4/4R4/p1p5p/9/1NP2n3/P3P3P/3A5/3K1p3/2BA1cc2 w - - 1 26"
+    line = ["b4c6", "f4d5", "d2e1", "f0c0", "d1d2", "c0c6", "e7e6"]
+    assert all(
+        "remove_defender" not in {item["id"] for item in annotation["occurrences"]}
+        for annotation in analyze_tactical_categories(fen, line)
+    )
+
+
+def test_advisor_or_elephant_move_does_not_create_discovered_attack() -> None:
+    # In qAbADL, Bc0-e2 uncovers the cannon g2-c2 line.  This is an
+    # elephant move, so it is ordinary development rather than 闪击.
+    fen = "2b1kab2/4a4/4c3r/p7p/2p6/3nC1B2/P1n1PR2P/2N1C4/9/2BAKA3 w - - 4 18"
+    line = ["f0e1", "d4c2", "e2g2", "e9d9", "c0e2"]
+    labels = {
+        item["id"]
+        for item in analyze_tactical_categories(fen, line)[4]["occurrences"]
+    }
+    assert "discovered_attack" not in labels
+
+
+def test_user_regressions_reject_non_tactical_labels() -> None:
+    cases = [
+        # Cannon through an advisor to the general is not a 牵制 target.
+        ("2bak1b1r/4a4/c1n1c1n2/p1p4Rp/1r4p2/P3PR3/2P3P1P/N2CC1N2/9/2BAKAB2 b - - 0 11", ["c7e6", "e2e6"], "pin"),
+        # The pawn advance can also be captured by non-pawn pieces.
+        ("4ka3/2c1a4/2n1C1n2/p1N5p/6p2/2P1p2r1/P5PcP/3R2N2/9/2BAKAB2 b - - 0 21", ["e8d7", "c6a7", "h4h8", "e7c7"], "cannon_pawn_breakthrough"),
+        # A horse trading for a lower-value piece is not 交换.
+        ("2bakab2/1r7/4c1n1c/p3p4/2p3p2/5R2C/P1n1P1P1P/2N1BC2N/4A4/2B1KA3 b - - 3 14", ["c3e2", "c0e2"], "exchange"),
+        # A protected horse is not a fork target.
+        ("2bak4/4a4/4b4/p1p5p/9/2c3r2/P3P3P/4C1NR1/4A4/1c2KAC2 w - - 0 24", ["e0d0", "c4c0"], "fork"),
+    ]
+    for fen, line, forbidden in cases:
+        assert all(
+            forbidden not in {item["id"] for item in annotation["occurrences"]}
+            for annotation in analyze_tactical_categories(fen, line)
+        )
+
+
+def test_two_separate_black_pieces_can_form_a_fork() -> None:
+    # ...Cb6-h6 simultaneously leaves the black rook attacking Rb4 and the
+    # moved black cannon attacking Rh0.  This is 捉双 even though the two
+    # attacks originate from different black pieces.
+    # The supplied board must have Black to move; with ``w`` this black-cannon
+    # move is necessarily illegal.
+    fen = "1rbak4/4a4/4b1n2/pc6p/6pc1/1R1N1r3/P3P1P1P/4BC2N/4A4/4KABR1 b - - 9 17"
+    labels = _labels(fen, "b6h6")
+    assert "fork" in labels
+
+
+def test_horse_for_crossed_pawn_is_not_an_exchange() -> None:
+    # ...Ne7xe3 only trades a 4-point horse for a crossed 2-point pawn; the
+    # value loss is not an equal exchange even though the capture is concrete.
+    fen = "r1bakab1r/9/2c1c4/p1N1n1p1p/2p6/1CP6/P3p1P1P/B5N2/9/R2AKABR1 w - - 0 11"
+    line = ["g2e3", "e7e3", "a0b0"]
+    assert all(
+        "exchange" not in {item["id"] for item in annotation["occurrences"]}
+        for annotation in analyze_tactical_categories(fen, line)
+    )
+
+
+def test_capturing_an_advisor_defender_is_not_removal() -> None:
+    # The advisor d8 protects Nc7.  Although Nf7xd8 leaves the horse exposed
+    # to Rc6, 消除保护 only recognises rook/horse/cannon defenders.
+    fen = "3k5/3a5/2n2N3/2R6/9/9/9/9/9/4K4 w - - 0 1"
+    assert "remove_defender" not in _labels(fen, "f7d8")
+
+
+def test_removing_protection_of_pawns_is_not_remove_defender() -> None:
+    # ...Rh9-h6 is met by Rh4xh6.  The rook had guarded black pawns e6/i6,
+    # but a pawn/soldier is not a 消除保护 target.
+    fen = "2bak2r1/4a4/n2cb4/p1p1p2Cp/3r5/1R4PR1/P3P3P/2N1B4/4A4/3AK1B2 b - - 4 20"
+    labels = {
+        item["id"]
+        for item in analyze_tactical_categories(fen, ["h9h6", "h4h6"])[1]["occurrences"]
+    }
+    assert "remove_defender" not in labels
+
+
 def test_capturing_the_protected_target_is_not_removal_of_defender() -> None:
     # Here h7 protects c7, but Red takes c7 itself.  This must not be labelled
     # as 消除保护 merely because the h7 -> c7 relation disappears with c7.
@@ -35,15 +149,23 @@ def test_horse_for_two_elephants_is_not_an_exchange() -> None:
     assert "exchange" not in _labels(fen, "c6e7")
 
 
-def test_check_with_a_pawn_target_is_not_fork_or_line_tactic() -> None:
-    # Rc7-e7 checks the general.  The apparent h-file relation is not a
-    # pin/skewer because Ng7 geometrically protects Rh9, even though Black
-    # must answer check before it can move that knight.
+def test_check_with_a_safe_major_piece_target_is_fork_not_line_tactic() -> None:
+    # Rc7-e7 checks the general and also safely attacks Rh9, so it is a
+    # 捉双 under the check-plus-piece rule.  The apparent h-file relation is
+    # still not a pin/skewer because Ng7 geometrically protects Rh9.
     fen = "1r1aka1r1/9/2R1b1n2/p7p/6p2/2P1p4/P5PcP/Bc2C1N2/9/3AKABR1 w - - 0 1"
     labels = _labels(fen, "c7e7")
-    assert "fork" not in labels
+    assert "fork" in labels
     assert "skewer" not in labels
     assert "pin" not in labels
+
+
+def test_check_and_safe_major_piece_attack_is_a_fork() -> None:
+    # ...Ra1xe1+ checks the red general and simultaneously attacks Ne2.
+    # The black horse f3 protects the checking rook, so the knight capture
+    # cannot be met by an immediate legal recapture.
+    fen = "4k4/9/9/9/9/9/5n3/4N4/r3A4/4K4 b - - 0 1"
+    assert "fork" in _labels(fen, "a1e1")
 
 
 def test_protected_second_target_does_not_create_a_fork() -> None:
@@ -66,6 +188,14 @@ def test_existing_safe_target_can_be_part_of_a_new_fork() -> None:
     assert "fork" in _labels(fen, "h5d5")
 
 
+def test_two_new_attacks_from_two_pieces_are_a_fork() -> None:
+    # Ra1-b1 newly attacks Nb3 and simultaneously clears one cannon screen:
+    # Ca0 can then take Na4 through Pa2.  The two targets are attacked by
+    # different red pieces but are created by the same move.
+    fen = "4k4/9/9/9/4p4/n8/1n7/p8/R8/C3K4 w - - 0 1"
+    assert "fork" in _labels(fen, "a1b1")
+
+
 def test_cannon_skewer_tracks_front_and_rear_targets_not_the_screen() -> None:
     # Red cannon f7 attacks the unprotected c7 horse through e7 as a screen.
     # If c7 leaves, b7 becomes the next unprotected target; e7 is only a
@@ -80,6 +210,25 @@ def test_protected_rear_target_is_not_pin_even_when_front_is_protected() -> None
     fen = "3k5/2r6/1cn1c4/9/9/9/9/5C3/9/4K4 w - - 0 1"
     labels = _labels(fen, "f2f7")
     assert "pin" not in labels
+    assert "skewer" not in labels
+
+
+def test_cannon_rook_cannon_line_is_not_a_pin() -> None:
+    # Ca0 attacks the protected Ra3, with a black cannon behind it.  Taking
+    # the rook is already a profitable cannon-for-rook exchange, so this is
+    # not a 牵制 even though Ca5 could recapture along the line afterwards.
+    fen = "4k4/9/9/9/cn2p4/9/r8/9/p8/1C2K4 w - - 0 1"
+    assert "pin" not in _labels(fen, "b0a0")
+
+
+def test_rook_line_relation_is_not_a_skewer() -> None:
+    # After ...Ce7-e6, Rf4-e4 aligns a rook with e6/e9.  A rook line is not
+    # the cannon 串打 category, even though the absolute pin still exists.
+    fen = "2bakabn1/r8/1c2c4/p5C1p/6p2/4nR3/P5P1P/1CN3N2/4A4/2BAK1B2 b - - 1 14"
+    labels = {
+        item["id"]
+        for item in analyze_tactical_categories(fen, ["e7e6", "f4e4"])[1]["occurrences"]
+    }
     assert "skewer" not in labels
 
 
@@ -172,6 +321,25 @@ def test_reciprocal_rook_capture_is_an_exchange_not_a_discovered_attack() -> Non
     assert "discovered_attack" not in _labels(fen, "b5e5")
 
 
+def test_exchange_requires_the_actual_immediate_recapture() -> None:
+    # Red's a4xa5 merely offers a possible rook trade.  It becomes an
+    # exchange only when Black actually replies a6xa5 on the same square.
+    fen = "4k4/9/9/r8/r3p4/R8/9/9/9/4K4 w - - 0 1"
+    first = analyze_tactical_categories(fen, ["a4a5"])[0]
+    assert "exchange" not in {item["id"] for item in first["occurrences"]}
+
+    reply = analyze_tactical_categories(fen, ["a4a5", "a6a5"])[1]
+    assert "exchange" in {item["id"] for item in reply["occurrences"]}
+
+
+def test_baseline_rook_through_advisor_is_not_a_pin() -> None:
+    # Rg9 attacks the black advisor on f9 before the general on e9.  A
+    # bottom-rank rook against a guard is ordinary pressure, not 牵制.
+    fen = "1r1akabn1/9/bcn3C2/p3p1p1p/5r3/7R1/P1P1P1P1P/2N1C1N2/4A4/R1B1KAB2 b - - 0 11"
+    result = analyze_tactical_categories(fen, ["b7b2", "h4h9", "c7d5", "h9g9"])[3]
+    assert "pin" not in {item["id"] for item in result["occurrences"]}
+
+
 def test_reciprocal_rooks_after_h7i7_are_not_a_discovered_attack() -> None:
     # h7-i7 opens Black's h9 rook line to the red rook on h6.  But h6-h9
     # is an immediate legal recapture, so the rooks merely face a trade.
@@ -199,6 +367,17 @@ def test_new_hunter_completes_a_preexisting_trap() -> None:
     # Rook a1-i1 newly attacks that horse, completing the required 围 + 困.
     fen = "2bak3n/4a4/4b1P2/9/9/9/9/9/R8/3K5 w - - 0 1"
     assert "trap" in _labels(fen, "a1i1")
+
+
+def test_forced_check_response_is_not_a_piece_trap() -> None:
+    # In oQ2DNq, ...Cc3-c0 checks the red general.  Rc1 has moves in the
+    # position itself, but Red must answer the check; that temporary global
+    # restriction is not 围困 of the rook.
+    fen = "4kabr1/2r1a4/4b1nc1/p5p1p/4C4/2N3P2/P1c1n3P/1C7/2R6/2BAKABR1 w - - 1 15"
+    assert "trap" not in {
+        item["id"]
+        for item in analyze_tactical_categories(fen, ["c4e3", "c3c0"])[1]["occurrences"]
+    }
 
 
 def test_live_game_advance_returns_an_auditable_report() -> None:

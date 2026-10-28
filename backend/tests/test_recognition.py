@@ -10,6 +10,7 @@ from app.recognizer import (
     _add_composite,
     _add_shape,
     _detect_flat_cannon_exchange,
+    _replace_rook_style,
     resolve_classification,
 )
 from app.service import advance, create_initial, inspect
@@ -26,6 +27,14 @@ def test_cannon_move_uses_standard_chinese_notation() -> None:
     result = advance(create_initial().state, "h2e2")
     assert result.move.chinese_notation == "炮二平五"
     assert result.state.classification.display_name == "中炮"
+
+
+def test_advance_uses_browser_case_for_repetition_action_fields() -> None:
+    result = advance(create_initial().state, "h2e2")
+    action = result.state.repetition_actions[-1]
+    assert action["isCheck"] is False
+    assert action["chaseTargetIds"] == []
+    assert "chase_target_ids" not in action
 
 
 def test_red_palace_corner_cannon_has_no_winged_main_name() -> None:
@@ -76,8 +85,27 @@ def test_opposite_physical_cannon_sides_is_opposite_side_cannons() -> None:
     state = create_initial().state
     state = advance(state, "h2e2").state
     state = advance(state, "b7e7").state
-    assert state.classification.display_name == "列炮"
+    assert state.classification.display_name == "列炮局"
     assert state.classification.base_matchup_id == "opposite_side_cannons"
+
+
+@pytest.mark.parametrize(
+    ("moves", "expected_template", "expected_name"),
+    (
+        (("h2e2", "b7e7", "a3a4", "h9i7"), "big_lie_shou_cannon", "大列手炮局"),
+        (("b2e2", "h7e7", "a3a4", "b9a7"), "big_lie_shou_cannon", "大列手炮局"),
+        (("h2e2", "b7e7", "a3a4", "h9g7"), "small_lie_shou_cannon", "小列手炮局"),
+        (("b2e2", "h7e7", "a3a4", "b9c7"), "small_lie_shou_cannon", "小列手炮局"),
+    ),
+)
+def test_lie_shou_cannon_horse_variants_and_mirrors(
+    moves: tuple[str, ...], expected_template: str, expected_name: str,
+) -> None:
+    state = create_initial().state
+    for move in moves:
+        state = advance(state, move).state
+    assert state.classification.template_id == expected_template
+    assert state.classification.display_name == expected_name
 
 
 def test_symmetric_three_seven_pawns_is_opposing_pawns() -> None:
@@ -117,6 +145,17 @@ def test_red_seven_pawn_keeps_its_name_after_opening_history() -> None:
     assert "advance_seven_pawn" in state.current_shapes["red"]
     assert "advance_three_pawn" not in state.current_shapes["red"]
     assert "進七兵" in state.classification.display_name
+
+
+def test_two_headed_snake_replaces_individual_pawn_names() -> None:
+    state = create_initial().state
+    for move in ("h2e2", "a6a5", "g3g4", "a5a4", "c3c4"):
+        state = advance(state, move).state
+
+    assert "two_headed_snake" in state.current_shapes["red"]
+    assert state.classification.red_modifiers == ["two_headed_snake"]
+    assert "進三兵" not in state.classification.display_name
+    assert "進七兵" not in state.classification.display_name
 
 
 def test_right_three_step_tiger_waits_for_rook_shift() -> None:
@@ -175,6 +214,33 @@ def test_mutually_exclusive_shape_groups_keep_first_formation() -> None:
     assert suppressed.id == "five_nine_cannon"
     assert not suppressed.eligible_for_name
     assert suppressed.suppressed_by == "river_cannon"
+
+
+def test_same_rook_replaces_its_earlier_style_with_its_latest_style() -> None:
+    memory = SideMemory()
+    _replace_rook_style(
+        memory, "straight_rook", 1, wing="right", source_piece_id="r:2"
+    )
+    _replace_rook_style(
+        memory, "cross_river_rook", 2, wing="right", source_piece_id="r:2"
+    )
+
+    assert [(item.id, item.source_piece_id) for item in memory.formed_shapes] == [
+        ("cross_river_rook", "r:2")
+    ]
+
+
+def test_screen_horse_family_hides_straight_rook_modifier() -> None:
+    memory = OpeningMemory()
+    _add_choice(memory.red, "central_cannon", 1)
+    _add_composite(memory.black, "screen_horse", 2)
+    _add_shape(memory.black, "straight_rook", 3, wing="right", source="move")
+    _add_shape(memory.black, "slow_rook", 4, source="memory")
+
+    classification = resolve_classification(memory, {"red": [], "black": []})
+
+    assert classification.display_name == "中炮對屏風馬"
+    assert classification.black_modifiers == []
 
 
 def test_classification_components_drive_modifier_display() -> None:
@@ -236,6 +302,14 @@ def test_same_side_cannon_templates_cover_slow_and_horizontal_rook() -> None:
         horizontal = advance(horizontal, move).state
     assert horizontal.classification.display_name == "順炮直車對橫車"
     assert horizontal.classification.template_id == "same_side_straight_vs_horizontal"
+
+
+def test_initial_same_side_cannons_are_named_shun_pao_not_slow_rook() -> None:
+    state = create_initial().state
+    state = advance(state, "h2e2").state
+    state = advance(state, "h7e7").state
+
+    assert state.classification.display_name == "顺炮局"
 
 
 def test_same_side_cannon_templates_cover_horizontal_vs_straight_rook() -> None:
@@ -448,14 +522,14 @@ def test_elephant_vs_horse_matchups() -> None:
     state = create_initial().state
     state = advance(state, "g0e2").state
     state = advance(state, "b9c7").state
-    assert state.classification.display_name == "飛相(其他)對進右馬"
+    assert state.classification.display_name == "飛相對進右馬"
     assert state.classification.template_id == "elephant_vs_right_proper_horse"
 
     # 4. Red left 相 (c0e2, c) + Black left 馬 (h9g7, left) -> 飛相(其他)對進右馬
     state = create_initial().state
     state = advance(state, "c0e2").state
     state = advance(state, "h9g7").state
-    assert state.classification.display_name == "飛相(其他)對進右馬"
+    assert state.classification.display_name == "飛相對進右馬"
 
 
 def test_elephant_pawn_vs_horse_matchups() -> None:
@@ -508,14 +582,14 @@ def test_elephant_vs_palcorner_cannon_matchups() -> None:
     state = create_initial().state
     state = advance(state, "g0e2").state
     state = advance(state, "b7d7").state
-    assert state.classification.display_name == "飛相(其他)對右士角炮"
+    assert state.classification.display_name == "飛相對右士角炮"
     assert state.classification.template_id == "elephant_vs_right_palcorner_cannon"
 
     # 4. Red E7+5 (c0e2, c) + Black C8=6 (h7f7, left/h -> g) -> 飛相(其他)對右士角炮
     state = create_initial().state
     state = advance(state, "c0e2").state
     state = advance(state, "h7f7").state
-    assert state.classification.display_name == "飛相(其他)對右士角炮"
+    assert state.classification.display_name == "飛相對右士角炮"
 
 
 def test_elephant_horse_vs_palcorner_cannon_matchups() -> None:
@@ -602,14 +676,14 @@ def test_elephant_vs_central_cannon_matchups() -> None:
     state = create_initial().state
     state = advance(state, "g0e2").state
     state = advance(state, "h7e7").state
-    assert state.classification.display_name == "飛相(轉其他)對左中炮"
+    assert state.classification.display_name == "飛相對左中炮"
     assert state.classification.template_id == "elephant_vs_left_central_cannon"
 
     # 2. Red E7+5 (c0e2, c) + Black C2=5 (b7e7, right/b) -> 飛相(轉其他)對左中炮
     state = create_initial().state
     state = advance(state, "c0e2").state
     state = advance(state, "b7e7").state
-    assert state.classification.display_name == "飛相(轉其他)對左中炮"
+    assert state.classification.display_name == "飛相對左中炮"
 
     # 3. Red E3+5 (g0e2, g) + Black C2=5 (b7e7, right/b) -> 飛相對右中炮 (opposite wing)
     state = create_initial().state
@@ -627,7 +701,7 @@ def test_elephant_vs_central_cannon_matchups() -> None:
     # 4. FEN diagnostics test: Red flies right elephant, Black Left Cannon in center
     fen = "rnbakab1r/9/1c2c4/p1p1p1p1p/9/9/P1P1P1P1P/4B4/9/RNBAKA1NR w - - 0 1"
     result = inspect(InspectRequest(fen=fen, memory_preset=MemoryPreset()))
-    assert result.state.classification.display_name == "飛相(轉其他)對左中炮"
+    assert result.state.classification.display_name == "飛相對左中炮"
 
 
 def test_elephant_vs_cross_palace_cannon_matchups() -> None:
@@ -635,21 +709,21 @@ def test_elephant_vs_cross_palace_cannon_matchups() -> None:
     state = create_initial().state
     state = advance(state, "g0e2").state
     state = advance(state, "h7d7").state
-    assert state.classification.display_name == "飛相(其他)對左過宮炮"
+    assert state.classification.display_name == "飛相對左過宮炮"
     assert state.classification.template_id == "elephant_vs_left_cross_palace_cannon"
 
     # 2. Red E7+5 (c0e2, c) + Black C2=6 (b7f7, right) -> 飛相(其他)對左過宮炮
     state = create_initial().state
     state = advance(state, "c0e2").state
     state = advance(state, "b7f7").state
-    assert state.classification.display_name == "飛相(其他)對左過宮炮"
+    assert state.classification.display_name == "飛相對左過宮炮"
 
     # 3. FEN diagnostics test: Red flies right elephant, Black Left Cannon in Cross Palace
     # Left CPC FEN: black left cannon at d7, other cannon at b7.
     # black row 3 (rank 7): column b is c, column d is c -> 1c1c5
     fen = "rnbakab1r/9/1c1c5/p1p1p1p1p/9/9/P1P1P1P1P/4B4/9/RNBAKA1NR w - - 0 1"
     result = inspect(InspectRequest(fen=fen, memory_preset=MemoryPreset()))
-    assert result.state.classification.display_name == "飛相(其他)對左過宮炮"
+    assert result.state.classification.display_name == "飛相對左過宮炮"
 
 
 def test_elephant_horse_vs_cross_palace_cannon_matchups() -> None:
@@ -711,7 +785,7 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = create_initial().state
     state = advance(state, "g0e2").state
     state = advance(state, "g6g5").state
-    assert state.classification.display_name == "飛相(其他)對進7卒"
+    assert state.classification.display_name == "飛相對進7卒"
     assert state.classification.template_id == "elephant_vs_same_side_pawn"
 
     # A37: Red E3+5 (g0e2) + Black P7+1 (g6g5) + Red H8+7 (b0c2, opposite horse) -> 飛相進左馬對進7卒
@@ -877,14 +951,14 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = create_initial().state
     state = advance(state, "h2e2").state
     state = advance(state, "a9a8").state
-    assert state.classification.display_name == "中炮局(對其他)"
+    assert state.classification.display_name == "中炮局"
     assert state.classification.template_id == "central_cannon_vs_rare_openings"
 
     # B01: Red C2=5 (h2e2) + Black H2+3 (b9c7, opposite side horse) -> 中炮對進右馬(其他)
     state = create_initial().state
     state = advance(state, "h2e2").state
     state = advance(state, "b9c7").state
-    assert state.classification.display_name == "中炮對進右馬(其他)"
+    assert state.classification.display_name == "中炮對進右馬"
     assert state.classification.template_id == "central_cannon_vs_opposite_side_proper_horse"
 
     # B02: Red C2=5 (h2e2) + Black H2+3 (b9c7) + Red H2+3 (h0g2) + Black P3+1 (c6c5) + Red R1=2 (i0h0) + Black A6+5 (d9e8, advisor) -> 中炮對進右馬先上士
@@ -922,14 +996,14 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = create_initial().state
     state = advance(state, "h2e2").state
     state = advance(state, "h9g7").state
-    assert state.classification.display_name == "中炮對進左馬(其他)"
+    assert state.classification.display_name == "中炮對進左馬"
     assert state.classification.template_id == "central_cannon_vs_same_side_proper_horse"
 
     # B01 Symmetric: Red C8=5 (b2e2) + Black H8+7 (h9g7, opposite side horse) -> 中炮對進右馬(其他)
     state = create_initial().state
     state = advance(state, "b2e2").state
     state = advance(state, "h9g7").state
-    assert state.classification.display_name == "中炮對進右馬(其他)"
+    assert state.classification.display_name == "中炮對進右馬"
     assert state.classification.template_id == "central_cannon_vs_opposite_side_proper_horse"
 
     # B02 Symmetric: Red C8=5 (b2e2) + Black H8+7 (h9g7) + Red H8+7 (b0c2) + Black P7+1 (g6g5) + Red R9=8 (a0b0) + Black A4+5 (f9e8, advisor) -> 中炮對進右馬先上士
@@ -967,7 +1041,7 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = create_initial().state
     state = advance(state, "b2e2").state
     state = advance(state, "b9c7").state
-    assert state.classification.display_name == "中炮對進左馬(其他)"
+    assert state.classification.display_name == "中炮對進左馬"
     assert state.classification.template_id == "central_cannon_vs_same_side_proper_horse"
 
     # B32: Red C2=5 (h2e2) + Black H2+3 (b9c7) + Red P7+1 (c3c4) + Black C8=6 (h7f7) + Red H8+7 (b0c2) -> 中炮急進左馬對反宮馬
@@ -1006,7 +1080,7 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = advance(state, "a9b9").state
     state = advance(state, "a0b0").state
     state = advance(state, "b7b3").state
-    assert state.classification.display_name == "五七炮互進三兵對反宮馬——(紅其他對)黑右炮過河"
+    assert state.classification.display_name == "五七炮互進三兵對反宮馬——黑右炮過河"
     assert state.classification.template_id == "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon"
 
     # B56: ... + Red P7+1 (c3c4) + Black P3+1 (c5c4) + Red P3+1 (g4g5) -> 五七炮互進三兵對反宮馬——紅棄雙兵對黑右炮過河
@@ -1032,7 +1106,7 @@ def test_opening_matchups_a35_to_a53() -> None:
     state = advance(state, "i9h9").state
     state = advance(state, "i0h0").state
     state = advance(state, "h7h3").state
-    assert state.classification.display_name == "五七炮互進三兵對反宮馬——(紅其他對)黑右炮過河"
+    assert state.classification.display_name == "五七炮互進三兵對反宮馬——黑右炮過河"
     assert state.classification.template_id == "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon"
 
     # B56 Symmetric: ... + Red P3+1 (g3g4) + Black P7+1 (g5g4) + Red P7+1 (c4c5) -> 五七炮互進三兵對反宮馬——紅棄雙兵對黑右炮過河
@@ -1048,26 +1122,26 @@ def test_c20_to_c49_matchups() -> None:
     state = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "b0c2", "c6c5"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车七路马(其他)对屏风马两头蛇"
+    assert state.classification.display_name == "中炮过河车七路马对屏风马两头蛇"
     assert state.classification.template_id == "central_cannon_pawn_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake"
 
     # C20 Symmetric
     state = create_initial().state
     for m in ["b2e2", "b9c7", "b0c2", "a9b9", "a0b0", "c6c5", "b0b6", "h9g7", "h0g2", "g6g5"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车七路马(其他)对屏风马两头蛇"
+    assert state.classification.display_name == "中炮过河车七路马对屏风马两头蛇"
 
     # C21 Standard
     state = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "b0c2", "c6c5", "a0a1"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车七路马对屏风马两头蛇——红左横车(对黑其他)"
+    assert state.classification.display_name == "中炮过河车七路马对屏风马两头蛇——红左横车"
 
     # C22 Standard
     state_c22 = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "b0c2", "c6c5", "a0a1", "b7b6", "h6h4", "c9e7"]:
         state_c22 = advance(state_c22, m).state
-    assert state_c22.classification.display_name == "中炮过河车七路马对屏风马两头蛇——红left横车(其他)对黑高右炮".replace("left", "左")
+    assert state_c22.classification.display_name == "中炮过河车七路马对屏风马两头蛇——红left横车对黑高右炮".replace("left", "左")
 
     # C23 (3rd Pawn Exchange)
     state_c23 = advance(state_c22, "g3g4").state
@@ -1081,7 +1155,7 @@ def test_c20_to_c49_matchups() -> None:
     state = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "c3c4"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车互进七兵对屏风马(其他)"
+    assert state.classification.display_name == "中炮过河车互进七兵对屏风马"
 
     # C31 Standard (A6+5)
     state_c31 = advance(state, "f9e8").state
@@ -1103,13 +1177,13 @@ def test_c20_to_c49_matchups() -> None:
     state = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "c3c4", "g7f5"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车互进七兵(其他)对屏风马左马盘河"
+    assert state.classification.display_name == "中炮过河车互进七兵对屏风马左马盘河"
 
     state = advance(state, "b0c2").state # C36
-    assert state.classification.display_name == "中炮过河车互进七兵对屏风马左马盘河——红七路马(对黑其他)"
+    assert state.classification.display_name == "中炮过河车互进七兵对屏风马左马盘河——红七路马"
 
     state = advance(state, "c9e7").state # C37
-    assert state.classification.display_name == "中炮过河车互进七兵对屏风马左马盘河——红七路马(其他)对黑飞右象"
+    assert state.classification.display_name == "中炮过河车互进七兵对屏风马左马盘河——红七路马对黑飞右象"
 
     # C38
     state_c38 = advance(state, "b2b3").state
@@ -1123,20 +1197,20 @@ def test_c20_to_c49_matchups() -> None:
     state = create_initial().state
     for m in ["h2e2", "h9g7", "h0g2", "i9h9", "i0h0", "g6g5", "h0h6", "b9c7", "c3c4", "h7i7"]:
         state = advance(state, m).state
-    assert state.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车(其他)"
+    assert state.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车"
 
     # C41
     state_c41 = advance(state, "h6g6").state
     state_c41 = advance(state_c41, "i7i8").state
-    assert state_c41.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——(红其他对)黑退边炮"
+    assert state_c41.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——黑退边炮"
 
     # C42
     state_c42 = advance(state_c41, "b0c2").state
-    assert state_c42.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮(其他)"
+    assert state_c42.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮"
 
     # C43
     state_c43 = advance(state_c42, "d9e8").state
-    assert state_c43.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红七路马(其他)对黑退边炮上右士"
+    assert state_c43.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮上右士"
 
     # C44
     state_c44 = advance(state_c42, "d9e8").state
@@ -1146,7 +1220,7 @@ def test_c20_to_c49_matchups() -> None:
     # C45
     state_c45 = advance(state_c41, "b2a2").state
     state_c45 = advance(state_c45, "d9e8").state
-    assert state_c45.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红左边炮对黑退边炮上右士(其他)"
+    assert state_c45.classification.display_name == "中炮过河车互进七兵对屏风马平炮兑车——红左边炮对黑退边炮上右士"
 
     # C46
     state_c46 = advance(state_c45, "a0a1").state

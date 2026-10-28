@@ -18,10 +18,9 @@ from app.board import (
     apply_move,
     build_piece_identity,
     move_piece_identity,
-    position_analysis,
     side_to_move,
 )
-from app.repetition import adjudicate, chase_events, position_key, qualifying_chase_pairs
+from app.repetition import adjudicate, assess_move, position_key
 
 
 UCI_MOVE = re.compile(r"([a-i])(10|[1-9])")
@@ -43,7 +42,6 @@ def _extension_cycle(case: dict) -> list[str]:
 def replay(case: dict) -> tuple[str, str | None]:
     fen = case["fen"]
     identities = build_piece_identity(fen)
-    latches = qualifying_chase_pairs(fen, identities, "red") | qualifying_chase_pairs(fen, identities, "black")
     positions = [{"ply": 0, "key": position_key(fen)}]
     actions: list[dict] = []
 
@@ -57,25 +55,12 @@ def replay(case: dict) -> tuple[str, str | None]:
     for ply, external_move in enumerate(moves, start=1):
         move = to_ucci(external_move)
         side = side_to_move(fen)
-        moved_piece_id = identities.get(move[:2])
-        previous_identities = identities
         try:
             next_fen = apply_move(fen, move)
         except Exception as exc:
             return "error", f"{external_move} -> {move}: {exc}"
         identities = move_piece_identity(identities, move[:2], move[2:])
-        targets, pinned_rook_targets, latches = chase_events(
-            fen, previous_identities, next_fen, identities, side, moved_piece_id, latches
-        )
-        actions.append(
-            {
-                "ply": ply,
-                "side": side,
-                "is_check": position_analysis(next_fen)["is_check"],
-                "chase_target_ids": targets,
-                "pinned_rook_chase_target_ids": pinned_rook_targets,
-            }
-        )
+        actions.append(assess_move(next_fen, identities, side).as_action(ply, side))
         fen = next_fen
         positions.append({"ply": ply, "key": position_key(fen)})
         decision = adjudicate(positions, actions)
@@ -96,23 +81,18 @@ def annotate_moves(case: dict) -> list[str]:
     """Return the baseline label for every supplied (not extended) WXF move."""
     fen = case["fen"]
     identities = build_piece_identity(fen)
-    latches = qualifying_chase_pairs(fen, identities, "red") | qualifying_chase_pairs(fen, identities, "black")
     annotations: list[str] = []
     for external_move in case["moves_uci"]:
         move = to_ucci(external_move)
         side = side_to_move(fen)
-        moved_piece_id = identities.get(move[:2])
-        previous_identities = identities
         next_fen = apply_move(fen, move)
         identities = move_piece_identity(identities, move[:2], move[2:])
-        targets, pinned_rook_targets, latches = chase_events(
-            fen, previous_identities, next_fen, identities, side, moved_piece_id, latches
-        )
-        if position_analysis(next_fen)["is_check"]:
+        assessment = assess_move(next_fen, identities, side)
+        if assessment.is_check:
             label = "Check"
-        elif pinned_rook_targets:
+        elif assessment.pinned_rook_chase_target_ids:
             label = "PinnedRookChase"
-        elif targets:
+        elif assessment.chase_target_ids:
             label = "Chase"
         else:
             label = "Idle"

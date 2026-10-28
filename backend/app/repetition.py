@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from collections import Counter
 from dataclasses import dataclass
 
-from .board import BoardError, apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
+from .board import legal_moves, parse_fen, position_analysis
 
 
 SEVERITY = {"idle": 0, "chase": 1, "pinned_rook_chase": 2, "check": 3}
@@ -13,9 +12,6 @@ def position_key(fen: str) -> str:
     """The rules repeat a position, not a move sequence or FEN clocks."""
     parts = fen.split()
     return f"{parts[0]} {parts[1]}"
-
-
-PIECE_VALUE = {"R": 9, "N": 4, "C": 4, "B": 2, "A": 2, "P": 1, "K": 99}
 
 
 def _is_red(piece: str) -> bool:
@@ -36,82 +32,6 @@ def _allowed_chaser(piece: str, square: str) -> bool:
 def _ignored_target(piece: str, square: str) -> bool:
     """An uncrossed pawn is not a target that can create a chase offence."""
     return piece.upper() == "P" and not _crossed_river(square, piece)
-
-
-def _capture_is_profitable(
-    fen: str, source: str, target: str, attacker: str, victim: str
-) -> bool:
-    """Use the immediate material exchange to filter ordinary protected pieces.
-
-    This deliberately stops at the first recapture, but the recapture must be
-    a *legal* move.  A geometrically attacking protector that is pinned to its
-    general is a fake protector and cannot make an exchange unprofitable.
-    """
-    # For equally valued pieces, first give the defender its immediate legal
-    # response.  If it can simply take the attacking piece now, the move is a
-    # sacrifice/offer, not a chase.  A reply that exposes the defender's
-    # general is absent from legal_moves(), so fake responses are excluded.
-    if PIECE_VALUE[victim.upper()] == PIECE_VALUE[attacker.upper()]:
-        if any(move[2:] == source for move in legal_moves(fen)):
-            return False
-
-    parts = fen.split()
-    # `fen` is the position after the candidate move, so its side-to-move is
-    # the defender.  Reconstruct the same board with the attacking side to
-    # move in order to test the hypothetical capture legally.
-    parts[1] = "w" if _is_red(attacker) else "b"
-    capture_fen = " ".join(parts)
-    try:
-        after_capture = apply_move(capture_fen, f"{source}{target}")
-    except BoardError:
-        # A pinned attacker or a pseudo-attack cannot create a real chase.
-        return False
-    recaptured = any(move[2:] == target for move in legal_moves(after_capture))
-    if not recaptured:
-        return True
-    return PIECE_VALUE[victim.upper()] > PIECE_VALUE[attacker.upper()]
-
-
-def qualifying_chase_pairs(
-    fen: str, identities: dict[str, str], side: str
-) -> set[tuple[str, str]]:
-    """Return (attacker ID, victim ID) pairs eligible for chase accounting."""
-    board = parse_fen(fen)
-    attacks = attacked_squares(board, side)
-    pairs: set[tuple[str, str]] = set()
-    for target, sources in attacks.items():
-        victim = board.get(target)
-        victim_id = identities.get(target)
-        if victim is None or victim_id is None or _is_red(victim) == (side == "red"):
-            continue
-        if victim.upper() == "K" or _ignored_target(victim, target):
-            continue
-        for source_info in sources:
-            source = source_info["square"]
-            attacker = board.get(source)
-            attacker_id = identities.get(source)
-            if attacker is None or attacker_id is None:
-                continue
-            # Allowed chasers never create a prohibited perpetual-chase event.
-            if _allowed_chaser(attacker, source):
-                continue
-            if _capture_is_profitable(fen, source, target, attacker, victim):
-                pairs.add((attacker_id, victim_id))
-    return pairs
-
-
-def _is_lower_value_attacker(
-    fen: str, identities: dict[str, str], pair: tuple[str, str]
-) -> bool:
-    board = parse_fen(fen)
-    pieces_by_id = {identity: board[square] for square, identity in identities.items() if square in board}
-    attacker = pieces_by_id.get(pair[0])
-    victim = pieces_by_id.get(pair[1])
-    return (
-        attacker is not None
-        and victim is not None
-        and PIECE_VALUE[attacker.upper()] < PIECE_VALUE[victim.upper()]
-    )
 
 
 def forced_rook_pins(
@@ -155,59 +75,79 @@ def forced_rook_pins(
     return result
 
 
-def chase_events(
-    previous_fen: str,
-    previous_identities: dict[str, str],
-    next_fen: str,
-    next_identities: dict[str, str],
-    side: str,
-    moved_piece_id: str | None,
-    latches: set[tuple[str, str]],
-) -> tuple[list[str], list[str], set[tuple[str, str]]]:
-    """Return newly re-established chase victims and updated relation latches.
+def _fen_for_side(fen: str, side: str) -> str:
+    """Use the same board with *side* to move, without exploring a variation."""
+    parts = fen.split()
+    parts[1] = "w" if side == "red" else "b"
+    return " ".join(parts)
 
-    A persistent attack is not repeatedly a chase.  Every move refreshes the
-    complete set of ordered attacker/victim relations: a relation disappears
-    when either participant moves away or a screen changes, and can only be a
-    new chase if that same ordered pair is later re-established.  Relations
-    that merely remain true through unrelated moves do not create events.
+
+@dataclass(frozen=True)
+class MoveRuleAssessment:
+    """The self-contained rule facts produced by one completed move.
+
+    The evaluator intentionally considers only the resulting board and the
+    immediately available legal capture. It never plays that capture, scores
+    material, or follows a recapture line. Repetition adjudication consumes
+    these facts later, after it has assembled a cycle of positions.
     """
-    before = qualifying_chase_pairs(previous_fen, previous_identities, side)
-    after = qualifying_chase_pairs(next_fen, next_identities, side)
-    all_after = (
-        qualifying_chase_pairs(next_fen, next_identities, "red")
-        | qualifying_chase_pairs(next_fen, next_identities, "black")
-    )
-    prior_latches = set(latches)
-    updated_latches = prior_latches & all_after
-    events = {
-        pair for pair in after
-        if pair not in before
-        and pair not in updated_latches
-        # A stationary third piece must not turn a broken A→B relation into a
-        # newly counted B→A chase merely by exposing B's attack.  If B itself
-        # moved (as in a cannon or horse escaping and counter-chasing), it is
-        # a genuine new B→A chase and must be retained.
-        and (
-            (pair[1], pair[0]) not in prior_latches
-            or pair[0] == moved_piece_id
-            # A lower-value piece newly pursuing a higher-value piece remains
-            # a chase even when the earlier relationship pointed the other
-            # way: cannon/horse → rook is materially profitable after a
-            # recapture and must not be suppressed as a mere counter-attack.
-            or _is_lower_value_attacker(next_fen, next_identities, pair)
-        )
-    }
-    updated_latches.update(events)
-    pins = forced_rook_pins(next_fen, next_identities, side)
+
+    is_check: bool
+    chase_pairs: tuple[tuple[str, str], ...]
+    pinned_rook_chase_target_ids: tuple[str, ...]
+
+    @property
+    def chase_target_ids(self) -> tuple[str, ...]:
+        return tuple(sorted({victim_id for _, victim_id in self.chase_pairs}))
+
+    def as_action(self, ply: int, side: str) -> dict[str, object]:
+        return {
+            "ply": ply,
+            "side": side,
+            "is_check": self.is_check,
+            "chase_pairs": [list(pair) for pair in self.chase_pairs],
+            "chase_target_ids": list(self.chase_target_ids),
+            "pinned_rook_chase_target_ids": list(self.pinned_rook_chase_target_ids),
+        }
+
+
+def assess_move(after_fen: str, identities: dict[str, str], side: str) -> MoveRuleAssessment:
+    """Classify the just-completed move with a one-ply, non-mutating rule.
+
+    ``after_fen`` is the position after ``side`` moved. The only hypothetical
+    position is the same board with ``side`` to move, which asks whether that
+    side has an *immediate legal capture* of an opposing piece. No capture is
+    applied and no reply, exchange valuation, or deeper line is calculated.
+    """
+    board = parse_fen(after_fen)
+    capture_moves = legal_moves(_fen_for_side(after_fen, side))
+    pairs: set[tuple[str, str]] = set()
+    for move in capture_moves:
+        source, target = move[:2], move[2:]
+        attacker = board.get(source)
+        victim = board.get(target)
+        if attacker is None or victim is None or _is_red(attacker) != (side == "red"):
+            continue
+        if _is_red(victim) == (side == "red") or victim.upper() == "K" or _ignored_target(victim, target):
+            continue
+        if _allowed_chaser(attacker, source):
+            continue
+        attacker_id = identities.get(source)
+        victim_id = identities.get(target)
+        if attacker_id is not None and victim_id is not None:
+            pairs.add((attacker_id, victim_id))
+
+    pins = forced_rook_pins(after_fen, identities, side)
     pinned_rook_targets = {
         victim_id
-        for attacker_id, victim_id in events
-        # The horse establishes the permitted pin; another friendly piece
-        # must be the one that effectively chases the constrained rook.
+        for attacker_id, victim_id in pairs
         if victim_id in pins and attacker_id != pins[victim_id]
     }
-    return sorted({victim_id for _, victim_id in events}), sorted(pinned_rook_targets), updated_latches
+    return MoveRuleAssessment(
+        is_check=position_analysis(after_fen)["is_check"],
+        chase_pairs=tuple(sorted(pairs)),
+        pinned_rook_chase_target_ids=tuple(sorted(pinned_rook_targets)),
+    )
 
 
 @dataclass(frozen=True)
@@ -275,7 +215,7 @@ def adjudicate(positions: list[dict], actions: list[dict]) -> dict:
             cycle=cycle, start_ply=positions[start_index]["ply"],
         )
 
-    if red_score != black_score:
+    if red_score != black_score and occurrence_count >= 4:
         side = "red" if red_score > black_score else "black"
         return _decision(
             "must_change",

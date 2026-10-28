@@ -24,7 +24,8 @@ from .models import (
 )
 from .notation import chinese_notation
 from .recognizer import initial_state, inspect_position, update_recognition
-from .repetition import adjudicate, chase_events, position_key
+from .cycle_rules import CycleRuleResult, evaluate_cycle
+from .repetition import position_key
 from .tactical_categories import CATEGORY_RULES_VERSION, analyze_tactical_categories
 from .tactics import TACTIC_RULES_VERSION, analyze_tactics
 
@@ -60,7 +61,7 @@ def _live_game_report(
     status = repetition.get("status", "none")
     repetition_labels = {
         "watch": ("repetition_watch", "重复局面提示", "本手形成重复局面的观察点，尚未构成长将／长捉裁决。"),
-        "warning": ("repetition_warning", "重复警告", "重复线路中存在将军或追捉行为，需继续结合完整历史观察。"),
+        "warning": ("repetition_warning", "重复局面警告", "该局面已出现三次；若再次出现相同局面，将按循环规则裁决。"),
         "draw": ("repetition_draw", "和棋", "完整重复历史已满足当前规则的和棋裁决。"),
     }
     if status in repetition_labels:
@@ -137,6 +138,57 @@ def create_initial() -> InitialResponse:
     return InitialResponse(state=state, legal_moves=legal_moves(START_FEN))
 
 
+def _cycle_actions(result: CycleRuleResult) -> list[dict[str, object]]:
+    """Adapt the pure evaluator trace to the stable browser API shape."""
+    return [
+        {
+            "ply": move.ply,
+            "side": move.side,
+            "isCheck": move.kind == "check",
+            "chasePairs": [list(pair) for pair in move.chase_pairs],
+            "chaseTargetIds": sorted({victim for _, victim in move.chase_pairs}),
+            "pinnedRookChaseTargetIds": (
+                sorted({victim for _, victim in move.chase_pairs})
+                if move.kind == "pinned_rook_chase" else []
+            ),
+        }
+        for move in result.moves
+    ]
+
+
+def _cycle_decision(
+    result: CycleRuleResult, positions: list[dict[str, object]],
+) -> dict[str, object]:
+    """Expose a cycle-rule result through the existing repetition contract."""
+    current = positions[-1]
+    matching = [item for item in positions if item["key"] == current["key"]]
+    occurrence_count = len(matching)
+    status = {
+        "red_must_change": "must_change",
+        "black_must_change": "must_change",
+        "draw": "draw",
+        "warning": "warning",
+        "watch": "watch",
+        "none": "none",
+    }[result.verdict]
+    restricted_side = (
+        "red" if result.verdict == "red_must_change"
+        else "black" if result.verdict == "black_must_change"
+        else None
+    )
+    return {
+        "status": status,
+        "repeatCount": max(0, occurrence_count - 1),
+        "occurrenceCount": occurrence_count,
+        "cycleStartPly": None,
+        "redClassification": result.red_kind,
+        "blackClassification": result.black_kind,
+        "restrictedSide": restricted_side,
+        "restrictedPositionKeys": [item["key"] for item in matching] if restricted_side else [],
+        "reason": result.reason,
+    }
+
+
 def advance(
     previous: RecognitionState,
     ucci: str,
@@ -149,21 +201,10 @@ def advance(
     next_fen = apply_move(previous.fen, ucci)
     next_state = update_recognition(previous, next_fen, side, ucci)
     previous_identities = previous.piece_identity or build_piece_identity(previous.fen)
-    moved_piece_id = previous_identities.get(ucci[:2])
     next_state.piece_identity = move_piece_identity(
         previous_identities,
         ucci[:2],
         ucci[2:],
-    )
-    prior_latches = {tuple(pair) for pair in previous.chase_latches if len(pair) == 2}
-    chase_target_ids, pinned_rook_chase_target_ids, next_latches = chase_events(
-        previous.fen,
-        previous_identities,
-        next_fen,
-        next_state.piece_identity,
-        side,
-        moved_piece_id,
-        prior_latches,
     )
     positions = list(previous.repetition_positions)
     if not positions:
@@ -171,23 +212,20 @@ def advance(
         # introduced.  Start a safe history at that snapshot rather than
         # guessing unseen moves.
         positions = [{"ply": previous.ply, "key": position_key(previous.fen)}]
-    actions = list(previous.repetition_actions)
-    actions.append(
-        {
-            "ply": next_state.ply,
-            "side": side,
-            "is_check": position_analysis(next_fen)["is_check"],
-            "chase_target_ids": chase_target_ids,
-            "pinned_rook_chase_target_ids": pinned_rook_chase_target_ids,
-        }
-    )
     positions.append({"ply": next_state.ply, "key": position_key(next_fen)})
-    decision = adjudicate(positions, actions)
-    if decision["status"] == "must_change" and decision["restricted_side"] == side:
+    initial_fen = previous.repetition_initial_fen or previous.fen
+    moves = list(next_state.opening_memory.moves)
+    rule_result = evaluate_cycle(initial_fen, moves)
+    actions = _cycle_actions(rule_result)
+    decision = _cycle_decision(rule_result, positions)
+    if decision["status"] == "must_change" and decision["restrictedSide"] == side:
         raise ValueError("此着会形成长将／长捉重复，请选择其他着法")
     next_state.repetition_positions = positions
     next_state.repetition_actions = actions
-    next_state.chase_latches = [list(pair) for pair in sorted(next_latches)]
+    next_state.repetition_initial_fen = initial_fen
+    # Kept empty for snapshot compatibility. The evaluator owns its own
+    # cross-ply latch state while replaying the complete immutable line.
+    next_state.chase_latches = []
     next_state.repetition_decision = decision
     move = MoveRecord(
         ply=next_state.ply,

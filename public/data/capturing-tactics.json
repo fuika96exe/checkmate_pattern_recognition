@@ -1,6 +1,6 @@
 {
  "schemaVersion": "1.0",
- "rulesVersion": "nine-tactics-draft-0.1",
+ "rulesVersion": "nine-tactics-draft-0.9",
  "labels": {
   "exchange": "交换",
   "fork": "捉双",
@@ -19,22 +19,22 @@
  "source": "All_Capturing_Puzzles_2026-10-14_10-18-45.csv",
  "seed": 20260702,
  "eligibleRows": 3136,
- "generatedAt": "2026-10-14T10:35:01.523439+00:00",
+ "generatedAt": "2026-10-20T11:07:16.288750+00:00",
  "puzzleCount": 500,
  "summary": {
-  "unmatched": 258,
+  "unmatched": 254,
   "invalid": 0,
   "gain_small": 36,
+  "fork": 56,
   "gain_none": 70,
   "gain_big": 394,
-  "exchange": 64,
-  "skewer": 30,
-  "pin": 55,
-  "trap": 30,
-  "remove_defender": 100,
-  "cannon_pawn_breakthrough": 15,
+  "pin": 50,
+  "exchange": 62,
+  "remove_defender": 94,
   "discovered_attack": 46,
-  "fork": 21
+  "skewer": 29,
+  "trap": 29,
+  "cannon_pawn_breakthrough": 14
  },
  "puzzles": [
   {
@@ -52,8 +52,10 @@
     "e0e1"
    ],
    "url": "https://play.xiangqi.com/puzzle/qrm96o/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "Crbnk1b2/4a4/3c1a3/R3p1p2/2pN3np/C5P2/P1P1P3P/2N1B4/2c1A4/4KAB2 w - - 11 23",
     "Crbnk1b2/4a4/3c1a3/R3p1p2/2pN3np/4C1P2/P1P1P3P/2N1B4/2c1A4/4KAB2 b - - 12 23",
@@ -110,7 +112,17 @@
      "ply": 6,
      "ucci": "c0d0",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d0",
+        "d5"
+       ],
+       "detail": "黑车 d0 将军的同时攻击 d5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -273,7 +285,7 @@
    "url": "https://play.xiangqi.com/puzzle/qAa2Kq/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "fork"
    ],
    "fens": [
     "2bak4/3Ra4/2n1b2cr/p1N1p3p/6p2/2P4R1/P3Pr2P/4B1N2/3CA4/3AK3c b - - 9 19",
@@ -310,30 +322,41 @@
      "ply": 4,
      "ucci": "e7g8",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g8",
+        "h7",
+        "i7"
+       ],
+       "detail": "红马 g8 将军的同时攻击 h7, i7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
      "ucci": "e9f9",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f9",
+        "g2",
+        "h4"
+       ],
+       "detail": "黑帅 f9 本手后新增同时攻击 g2, h4 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     },
     {
      "ply": 6,
      "ucci": "e2g4",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e2",
-        "g4",
-        "g3"
-       ],
-       "detail": "红相 e2 吃掉 黑兵 g4；对方可用 g3g4 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 7,
@@ -352,16 +375,6 @@
      "ucci": "g3g2",
      "solver": false,
      "occurrences": [
-      {
-       "id": "skewer",
-       "label_zh": "串打",
-       "squares": [
-        "g2",
-        "g4",
-        "g8"
-       ],
-       "detail": "黑车 g2 正攻击未受保护的 g4；若 g4 离开线路，后方未受保护的 g8 会立即受到攻击，构成串打。"
-      },
       {
        "id": "trap",
        "label_zh": "围困",
@@ -419,7 +432,6 @@
    "url": "https://play.xiangqi.com/puzzle/oM0bbE/P",
    "status": "matched",
    "tactics": [
-    "skewer",
     "pin"
    ],
    "fens": [
@@ -440,16 +452,6 @@
      "ucci": "f4e4",
      "solver": true,
      "occurrences": [
-      {
-       "id": "skewer",
-       "label_zh": "串打",
-       "squares": [
-        "e4",
-        "e6",
-        "e9"
-       ],
-       "detail": "红车 e4 正攻击未受保护的 e6；若 e6 离开线路，后方未受保护的 e9 会立即受到攻击，构成串打。"
-      },
       {
        "id": "pin",
        "label_zh": "牵制",
@@ -534,6 +536,12 @@
      "ply": 2,
      "ucci": "e7e2",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 3,
+     "ucci": "g0e2",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -543,15 +551,9 @@
         "e2",
         "g0"
        ],
-       "detail": "黑炮 e7 吃掉 红炮 e2；对方可用 g0e2 合法回吃，构成可验证的交换。"
+       "detail": "黑炮 e7 先吃 e2，本手 g0e2 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 3,
-     "ucci": "g0e2",
-     "solver": false,
-     "occurrences": []
     },
     {
      "ply": 4,
@@ -569,6 +571,12 @@
      "ply": 6,
      "ucci": "f3f0",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 7,
+     "ucci": "e1f0",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -578,25 +586,7 @@
         "f0",
         "e1"
        ],
-       "detail": "黑车 f3 吃掉 红车 f0；对方可用 e1f0 合法回吃，构成可验证的交换。"
-      }
-     ]
-    },
-    {
-     "ply": 7,
-     "ucci": "e1f0",
-     "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f0",
-        "f9",
-        "e1",
-        "f0"
-       ],
-       "detail": "本手吃掉守子 黑车 f0；f9 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "黑车 f3 先吃 f0，本手 e1f0 明确反吃落点，交换实际完成。"
       }
      ]
     }
@@ -762,6 +752,7 @@
    "url": "https://play.xiangqi.com/puzzle/LkAO9o/P",
    "status": "matched",
    "tactics": [
+    "remove_defender",
     "exchange"
    ],
    "fens": [
@@ -787,14 +778,15 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
+       "id": "remove_defender",
+       "label_zh": "消除保护",
        "squares": [
-        "b2",
         "d2",
-        "e1"
+        "d0",
+        "b2",
+        "d2"
        ],
-       "detail": "黑车 b2 吃掉 红车 d2；对方可用 e1d2 合法回吃，构成可验证的交换。"
+       "detail": "本手吃掉守子 红车 d2；d0 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -802,24 +794,24 @@
      "ply": 3,
      "ucci": "e1d2",
      "solver": false,
-     "occurrences": []
-    },
-    {
-     "ply": 4,
-     "ucci": "d7d4",
-     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
        "label_zh": "交换",
        "squares": [
-        "d7",
-        "d4",
-        "d0"
+        "b2",
+        "d2",
+        "e1"
        ],
-       "detail": "黑炮 d7 吃掉 红马 d4；对方可用 d0d4 合法回吃，构成可验证的交换。"
+       "detail": "黑车 b2 先吃 d2，本手 e1d2 明确反吃落点，交换实际完成。"
       }
      ]
+    },
+    {
+     "ply": 4,
+     "ucci": "d7d4",
+     "solver": true,
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -830,11 +822,11 @@
        "id": "exchange",
        "label_zh": "交换",
        "squares": [
-        "d0",
+        "d7",
         "d4",
-        "d5"
+        "d0"
        ],
-       "detail": "红炮 d0 吃掉 黑炮 d4；对方可用 d5d4 合法回吃，构成可验证的交换。"
+       "detail": "黑炮 d7 先吃 d4，本手 d0d4 明确反吃落点，交换实际完成。"
       }
      ]
     },
@@ -842,7 +834,18 @@
      "ply": 6,
      "ucci": "d5d4",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "d0",
+        "d4",
+        "d5"
+       ],
+       "detail": "红炮 d0 先吃 d4，本手 d5d4 明确反吃落点，交换实际完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -957,10 +960,7 @@
    "url": "https://play.xiangqi.com/puzzle/oQ2DNq/P",
    "status": "matched",
    "tactics": [
-    "exchange",
-    "trap",
-    "remove_defender",
-    "pin"
+    "fork"
    ],
    "fens": [
     "4kabr1/2r1a4/4b1nc1/p5p1p/4C4/2N3P2/P1c1n3P/1C7/2R6/2BAKABR1 w - - 1 15",
@@ -1004,23 +1004,13 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
-        "c3",
         "c0",
         "c1"
        ],
-       "detail": "黑炮 c3 吃掉 红相 c0；对方可用 c1c0 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "trap",
-       "label_zh": "围困",
-       "squares": [
-        "c1",
-        "c8"
-       ],
-       "detail": "红车 c1 的每个合法去处都会遭受得子攻击，且 c8 正直接捉住它；满足“围”与“困”两个条件。"
+       "detail": "黑炮 c0 将军的同时攻击 c1；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -1030,15 +1020,14 @@
      "solver": false,
      "occurrences": [
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
+       "id": "exchange",
+       "label_zh": "交换",
        "squares": [
+        "c3",
         "c0",
-        "c8",
-        "c1",
-        "c0"
+        "c1"
        ],
-       "detail": "本手吃掉守子 黑炮 c0；c8 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "黑炮 c3 先吃 c0，本手 c1c0 明确反吃落点，交换实际完成。"
       }
      ]
     },
@@ -1046,29 +1035,7 @@
      "ply": 4,
      "ucci": "c8c0",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c0",
-        "d0",
-        "c8",
-        "c0"
-       ],
-       "detail": "本手吃掉守子 红车 c0；d0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "c0",
-        "d0",
-        "e0"
-       ],
-       "detail": "绝对牵制：d0 一旦离开 c0 与将／帅 e0 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -1118,8 +1085,7 @@
    "url": "https://play.xiangqi.com/puzzle/oQBJzq/P",
    "status": "matched",
    "tactics": [
-    "exchange",
-    "pin"
+    "exchange"
    ],
    "fens": [
     "2bak1b1r/4a4/c1n1c1n2/p1p4Rp/1r4p2/P3PR3/2P3P1P/N2CC1N2/9/2BAKAB2 b - - 0 11",
@@ -1140,28 +1106,7 @@
      "ply": 2,
      "ucci": "e2e6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e2",
-        "e6",
-        "g7"
-       ],
-       "detail": "红炮 e2 吃掉 黑马 e6；对方可用 g7e6 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "e6",
-        "e8",
-        "e9"
-       ],
-       "detail": "绝对牵制：e8 一旦离开 e6 与将／帅 e9 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -1172,11 +1117,11 @@
        "id": "exchange",
        "label_zh": "交换",
        "squares": [
-        "g7",
+        "e2",
         "e6",
-        "h6"
+        "g7"
        ],
-       "detail": "黑马 g7 吃掉 红炮 e6；对方可用 h6e6 合法回吃，构成可验证的交换。"
+       "detail": "红炮 e2 先吃 e6，本手 g7e6 明确反吃落点，交换实际完成。"
       }
      ]
     },
@@ -1184,7 +1129,18 @@
      "ply": 4,
      "ucci": "h6e6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "g7",
+        "e6",
+        "h6"
+       ],
+       "detail": "黑马 g7 先吃 e6，本手 h6e6 明确反吃落点，交换实际完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -1232,10 +1188,8 @@
     "g7e6"
    ],
    "url": "https://play.xiangqi.com/puzzle/ogzydR/P",
-   "status": "matched",
-   "tactics": [
-    "cannon_pawn_breakthrough"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "4ka3/2c1a4/2n1C1n2/p1N5p/6p2/2P1p2r1/P5PcP/3R2N2/9/2BAKAB2 b - - 0 21",
     "4ka3/2c6/2naC1n2/p1N5p/6p2/2P1p2r1/P5PcP/3R2N2/9/2BAKAB2 w - - 1 22",
@@ -1267,20 +1221,7 @@
      "ply": 4,
      "ucci": "e7c7",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "cannon_pawn_breakthrough",
-       "label_zh": "炮兵突破",
-       "squares": [
-        "c4",
-        "c5",
-        "c8",
-        "c7",
-        "g7"
-       ],
-       "detail": "预备 c4c5 弃兵／卒；若对方 c8c5 吃兵，c7 即可走 c7g7 吃掉目标，构成炮兵突破。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -1327,18 +1268,7 @@
      "ply": 1,
      "ucci": "c3e2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c3",
-        "e2",
-        "c0"
-       ],
-       "detail": "黑马 c3 吃掉 红相 e2；对方可用 c0e2 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -1350,20 +1280,7 @@
      "ply": 3,
      "ucci": "e7c7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "cannon_pawn_breakthrough",
-       "label_zh": "炮兵突破",
-       "squares": [
-        "c5",
-        "c4",
-        "e2",
-        "c7",
-        "c2"
-       ],
-       "detail": "预备 c5c4 弃兵／卒；若对方 e2c4 吃兵，c7 即可走 c7c2 吃掉目标，构成炮兵突破。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -1709,6 +1626,7 @@
    "url": "https://play.xiangqi.com/puzzle/LxN175/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "exchange"
    ],
    "fens": [
@@ -1758,7 +1676,17 @@
      "ply": 6,
      "ucci": "f5e5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e5",
+        "e4"
+       ],
+       "detail": "红车 e5 将军的同时攻击 e4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -1772,14 +1700,13 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
-        "e5",
         "e7",
-        "c5"
+        "e4"
        ],
-       "detail": "红车 e5 吃掉 黑车 e7；对方可用 c5e7 合法回吃，构成可验证的交换。"
+       "detail": "红车 e7 将军的同时攻击 e4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -1787,7 +1714,18 @@
      "ply": 9,
      "ucci": "g9e7",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "e5",
+        "e7",
+        "g9"
+       ],
+       "detail": "红车 e5 先吃 e7，本手 g9e7 明确反吃落点，交换实际完成。"
+      }
+     ]
     }
    ],
    "material": {
@@ -1835,7 +1773,7 @@
    "url": "https://play.xiangqi.com/puzzle/RPWWvL/P",
    "status": "matched",
    "tactics": [
-    "remove_defender"
+    "fork"
    ],
    "fens": [
     "2R1Rab2/r4k3/4n4/p4r2p/4p4/7n1/P1P3c1P/N3C1N1B/9/2BAKA3 w - - 3 22",
@@ -1854,48 +1792,13 @@
      "ply": 1,
      "ucci": "e9e7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "f9",
-        "e9",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑马 e7；f9 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
      "ucci": "h4g2",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "f0",
-        "h4",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 红马 g2；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "i3",
-        "h4",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 红马 g2；i3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -1919,7 +1822,18 @@
      "ply": 6,
      "ucci": "g3e3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e3",
+        "a2",
+        "e7"
+       ],
+       "detail": "黑炮 e3 将军的同时攻击 a2, e7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -2064,7 +1978,19 @@
      "ply": 7,
      "ucci": "f2i2",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "i2",
+        "i7",
+        "f2",
+        "i2"
+       ],
+       "detail": "本手吃掉守子 黑炮 i2；i7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     }
    ],
    "material": {
@@ -2196,18 +2122,7 @@
      "ply": 3,
      "ucci": "h3c3",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "h3",
-        "c3",
-        "d5"
-       ],
-       "detail": "红炮 h3 吃掉 黑马 c3；对方可用 d5c3 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 4,
@@ -2300,6 +2215,16 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d1",
+        "c0",
+        "g4"
+       ],
+       "detail": "红帅 d1 本手后新增同时攻击 c0, g4 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      },
+      {
        "id": "skewer",
        "label_zh": "串打",
        "squares": [
@@ -2369,6 +2294,7 @@
    "url": "https://play.xiangqi.com/puzzle/RWDwNo/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "remove_defender"
    ],
    "fens": [
@@ -2394,7 +2320,17 @@
      "ply": 2,
      "ucci": "g2g1",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g1",
+        "b7"
+       ],
+       "detail": "黑车 g1 将军的同时攻击 b7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -2418,7 +2354,19 @@
      "ply": 6,
      "ucci": "g6e6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e6",
+        "d7",
+        "e5",
+        "f7"
+       ],
+       "detail": "黑车 e6 本手后新增同时攻击 d7, e5, f7 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -2487,8 +2435,7 @@
    "status": "matched",
    "tactics": [
     "pin",
-    "remove_defender",
-    "exchange"
+    "remove_defender"
    ],
    "fens": [
     "2bak4/4a4/n3b4/p3p1p1p/5r1r1/3Nn1P2/PR5cP/4BC3/4AN3/2BAK2R1 b - - 7 21",
@@ -2503,18 +2450,7 @@
      "ply": 1,
      "ucci": "e4f2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e4",
-        "f2",
-        "e1"
-       ],
-       "detail": "黑马 e4 吃掉 红炮 f2；对方可用 e1f2 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -2530,17 +2466,6 @@
         "h5"
        ],
        "detail": "红车 h0 攻击 h3；h3 当前有有效保护，但它离开线路会使后方 h5 受攻击，构成牵制。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f5",
-        "f2",
-        "d4",
-        "f5"
-       ],
-       "detail": "本手吃掉守子 黑车 f5；f2 已无其他有效保护，并转为我方可直接攻击的目标。"
       },
       {
        "id": "pin",
@@ -2565,16 +2490,6 @@
      "ucci": "e1f2",
      "solver": true,
      "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e1",
-        "f2",
-        "f5"
-       ],
-       "detail": "红仕 e1 吃掉 黑马 f2；对方可用 f5f2 合法回吃，构成可验证的交换。"
-      },
       {
        "id": "remove_defender",
        "label_zh": "消除保护",
@@ -2632,8 +2547,10 @@
     "h0h6"
    ],
    "url": "https://play.xiangqi.com/puzzle/La7a6o/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "r3kab2/4a4/c1ncb1n2/pR2p3p/2p1r4/3C2p1P/P1P1P4/2N1B1C1N/4A4/4KABR1 w - - 0 17",
     "r3kab2/4a4/c1ncb1C2/pR2p3p/2p1r4/3C2p1P/P1P1P4/2N1B3N/4A4/4KABR1 b - - 0 17",
@@ -2646,16 +2563,6 @@
      "ucci": "g2g7",
      "solver": false,
      "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "g2",
-        "g7",
-        "d7"
-       ],
-       "detail": "红炮 g2 吃掉 黑马 g7；对方可用 d7g7 合法回吃，构成可验证的交换。"
-      },
       {
        "id": "pin",
        "label_zh": "牵制",
@@ -2672,7 +2579,18 @@
      "ply": 2,
      "ucci": "d7g7",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "g2",
+        "g7",
+        "d7"
+       ],
+       "detail": "红炮 g2 先吃 g7，本手 d7g7 明确反吃落点，交换实际完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -2765,7 +2683,6 @@
    "url": "https://play.xiangqi.com/puzzle/oXz0kL/P",
    "status": "matched",
    "tactics": [
-    "exchange",
     "discovered_attack"
    ],
    "fens": [
@@ -2789,6 +2706,12 @@
      "ply": 2,
      "ucci": "f4b4",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 3,
+     "ucci": "c2b4",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -2798,15 +2721,9 @@
         "b4",
         "c2"
        ],
-       "detail": "黑车 f4 吃掉 红车 b4；对方可用 c2b4 合法回吃，构成可验证的交换。"
+       "detail": "黑车 f4 先吃 b4，本手 c2b4 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 3,
-     "ucci": "c2b4",
-     "solver": false,
-     "occurrences": []
     },
     {
      "ply": 4,
@@ -2890,10 +2807,8 @@
     "f4a4"
    ],
    "url": "https://play.xiangqi.com/puzzle/L3z0Gq/P",
-   "status": "matched",
-   "tactics": [
-    "pin"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "4kab2/4a4/1c2bc2n/p3p1p2/1nr5p/3N1RP2/P3P3P/3CC1N2/4A4/2BAK1B2 w - - 2 17",
     "4kab2/4a4/1c2bc2n/p3C1p2/1nr5p/3N1RP2/P3P3P/3C2N2/4A4/2BAK1B2 b - - 0 17",
@@ -2936,18 +2851,7 @@
      "ply": 4,
      "ucci": "c4c0",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "c0",
-        "d0",
-        "e0"
-       ],
-       "detail": "绝对牵制：d0 一旦离开 c0 与将／帅 e0 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -3022,19 +2926,7 @@
      "ply": 5,
      "ucci": "b5a7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "a7",
-        "a3",
-        "b5",
-        "a7"
-       ],
-       "detail": "本手吃掉守子 红炮 a7；a3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -3068,10 +2960,8 @@
     "g3g4"
    ],
    "url": "https://play.xiangqi.com/puzzle/LxmyKR/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bakar2/2r2n1R1/1cn3c1b/p1p5p/6R2/4Cp3/P1P1P1P1P/2N1C1N2/9/2BAKAB2 w - - 9 13",
     "2bakar2/2r2n1R1/1cn3c1b/p1p5p/4C1R2/5p3/P1P1P1P1P/2N1C1N2/9/2BAKAB2 b - - 10 13",
@@ -3089,37 +2979,13 @@
      "ply": 2,
      "ucci": "i7g5",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g5",
-        "g3",
-        "i7",
-        "g5"
-       ],
-       "detail": "本手吃掉守子 红车 g5；g3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
      "ucci": "g3g4",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "discovered_attack",
-       "label_zh": "闪击",
-       "squares": [
-        "g3",
-        "g4",
-        "g2",
-        "f4"
-       ],
-       "detail": "g3 移开至 g4 后，红马 g2 新获得 g2f4 的合法攻击线。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -3193,19 +3059,7 @@
      "ply": 3,
      "ucci": "d3d4",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "d4",
-        "d0",
-        "d3",
-        "d4"
-       ],
-       "detail": "本手吃掉守子 红炮 d4；d0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -3256,18 +3110,7 @@
      "ply": 1,
      "ucci": "d4c2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "d4",
-        "c2",
-        "c0"
-       ],
-       "detail": "黑马 d4 吃掉 红马 c2；对方可用 c0c2 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -3413,16 +3256,6 @@
         "f9"
        ],
        "detail": "绝对牵制：d9 一旦离开 a9 与将／帅 f9 的线路，就会直接暴露将军，故该离线走法不合法。"
-      },
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "c9",
-        "d9",
-        "f9"
-       ],
-       "detail": "绝对牵制：d9 一旦离开 c9 与将／帅 f9 的线路，就会直接暴露将军，故该离线走法不合法。"
       }
      ]
     },
@@ -3442,7 +3275,18 @@
      "ply": 5,
      "ucci": "b3b9",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "b9",
+        "a9",
+        "c7"
+       ],
+       "detail": "黑车 b9 本手后新增同时攻击 a9, c7 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     }
    ],
    "material": {
@@ -3569,18 +3413,7 @@
      "ply": 5,
      "ucci": "e4e2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e4",
-        "e2",
-        "g0"
-       ],
-       "detail": "黑炮 e4 吃掉 红炮 e2；对方可用 g0e2 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 6,
@@ -3604,18 +3437,7 @@
      "ply": 9,
      "ucci": "c6c5",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c6",
-        "c5",
-        "d5"
-       ],
-       "detail": "黑兵 c6 吃掉 红兵 c5；对方可用 d5c5 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -3921,10 +3743,8 @@
     "g6e6"
    ],
    "url": "https://play.xiangqi.com/puzzle/RV5w9b/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bak4/4a4/4b4/p3C1r1p/1r1NR4/2R6/P5pcP/9/5Cn2/2BAKABN1 b - - 2 25",
     "2bak4/4a4/4b4/p3C1r1p/3rR4/2R6/P5pcP/9/5Cn2/2BAKABN1 w - - 0 26",
@@ -3942,19 +3762,7 @@
      "ply": 2,
      "ucci": "e5d5",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "d5",
-        "d9",
-        "e5",
-        "d5"
-       ],
-       "detail": "本手吃掉守子 黑车 d5；d9 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -4120,7 +3928,6 @@
    "url": "https://play.xiangqi.com/puzzle/RZJV6R/P",
    "status": "matched",
    "tactics": [
-    "remove_defender",
     "pin"
    ],
    "fens": [
@@ -4142,19 +3949,7 @@
      "ply": 2,
      "ucci": "f3f1",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f1",
-        "e3",
-        "f3",
-        "f1"
-       ],
-       "detail": "本手吃掉守子 红马 f1；e3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -4183,18 +3978,7 @@
      "ply": 5,
      "ucci": "c5c9",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "c9",
-        "d9",
-        "e9"
-       ],
-       "detail": "绝对牵制：d9 一旦离开 c9 与将／帅 e9 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -4263,7 +4047,18 @@
      "ply": 3,
      "ucci": "e1f2",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f2",
+        "e3",
+        "g2"
+       ],
+       "detail": "红仕 f2 本手后新增同时攻击 e3, g2 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     },
     {
      "ply": 4,
@@ -4275,19 +4070,7 @@
      "ply": 5,
      "ucci": "e2g2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "g9",
-        "e2",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 黑炮 g2；g9 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -4317,10 +4100,8 @@
     "c5c7"
    ],
    "url": "https://play.xiangqi.com/puzzle/oM1wDo/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2baka1n1/9/2n1b3r/p1R1p1p1p/2c6/1N7/P1r1P1P1P/4Cc1CN/8R/2BAKAB2 w - - 4 15",
     "2baka1n1/9/2n1b3r/p1R1p1p1p/2c6/1N7/P1r1P1P1P/2C2c1CN/8R/2BAKAB2 b - - 5 15",
@@ -4348,16 +4129,6 @@
      "solver": false,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c2",
-        "c5",
-        "c3"
-       ],
-       "detail": "红炮 c2 吃掉 黑炮 c5；对方可用 c3c5 合法回吃，构成可验证的交换。"
-      },
-      {
        "id": "remove_defender",
        "label_zh": "消除保护",
        "squares": [
@@ -4374,37 +4145,13 @@
      "ply": 4,
      "ucci": "f6c6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c6",
-        "c5",
-        "f6",
-        "c6"
-       ],
-       "detail": "本手吃掉守子 红车 c6；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
      "ucci": "c5c7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c7",
-        "a6",
-        "c5",
-        "c7"
-       ],
-       "detail": "本手吃掉守子 黑马 c7；a6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -4454,7 +4201,8 @@
    "url": "https://play.xiangqi.com/puzzle/o7xwBq/P",
    "status": "matched",
    "tactics": [
-    "discovered_attack"
+    "discovered_attack",
+    "fork"
    ],
    "fens": [
     "1rbak2RC/4a4/n2cb1n2/p1p1p3p/9/P1P5P/4P4/2r3C2/4A4/3RKA3 b - - 5 26",
@@ -4475,7 +4223,18 @@
      "ply": 1,
      "ucci": "e8f9",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f9",
+        "g2",
+        "h9"
+       ],
+       "detail": "黑仕 f9 本手后新增同时攻击 g2, h9 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     },
     {
      "ply": 2,
@@ -4519,6 +4278,15 @@
      "solver": true,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "h9",
+        "d7"
+       ],
+       "detail": "红车 h9 将军的同时攻击 d7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
+      {
        "id": "discovered_attack",
        "label_zh": "闪击",
        "squares": [
@@ -4542,6 +4310,16 @@
      "ucci": "h9h2",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "h2",
+        "c2",
+        "d7"
+       ],
+       "detail": "红车 h2 将军的同时攻击 c2, d7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "discovered_attack",
        "label_zh": "闪击",
@@ -4612,18 +4390,7 @@
      "ply": 1,
      "ucci": "g2e3",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "g2",
-        "e3",
-        "e7"
-       ],
-       "detail": "红马 g2 吃掉 黑兵 e3；对方可用 e7e3 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -4663,8 +4430,10 @@
     "g0e2"
    ],
    "url": "https://play.xiangqi.com/puzzle/o7P87q/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "9/3k5/9/9/3c5/3r5/4R4/3C5/4A4/2B1KAB2 w - - 13 60",
     "9/3k5/9/9/3C5/3r5/4R4/9/4A4/2B1KAB2 b - - 0 60",
@@ -4676,6 +4445,12 @@
      "ply": 1,
      "ucci": "d2d5",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 2,
+     "ucci": "d4d5",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -4685,15 +4460,9 @@
         "d5",
         "d4"
        ],
-       "detail": "红炮 d2 吃掉 黑炮 d5；对方可用 d4d5 合法回吃，构成可验证的交换。"
+       "detail": "红炮 d2 先吃 d5，本手 d4d5 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 2,
-     "ucci": "d4d5",
-     "solver": true,
-     "occurrences": []
     },
     {
      "ply": 3,
@@ -4733,7 +4502,8 @@
    "url": "https://play.xiangqi.com/puzzle/R2zajR/P",
    "status": "matched",
    "tactics": [
-    "remove_defender",
+    "fork",
+    "exchange",
     "pin"
    ],
    "fens": [
@@ -4759,15 +4529,13 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
         "e4",
-        "e5",
-        "b4",
-        "e4"
+        "e5"
        ],
-       "detail": "本手吃掉守子 红兵 e4；e5 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "黑炮 e4 将军的同时攻击 e5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -4787,6 +4555,12 @@
      "ply": 5,
      "ucci": "g5e4",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 6,
+     "ucci": "e7e4",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -4796,15 +4570,8 @@
         "e4",
         "e7"
        ],
-       "detail": "红马 g5 吃掉 黑炮 e4；对方可用 e7e4 合法回吃，构成可验证的交换。"
-      }
-     ]
-    },
-    {
-     "ply": 6,
-     "ucci": "e7e4",
-     "solver": true,
-     "occurrences": [
+       "detail": "红马 g5 先吃 e4，本手 e7e4 明确反吃落点，交换实际完成。"
+      },
       {
        "id": "pin",
        "label_zh": "牵制",
@@ -4873,7 +4640,6 @@
    "url": "https://play.xiangqi.com/puzzle/ROY18q/P",
    "status": "matched",
    "tactics": [
-    "exchange",
     "remove_defender"
    ],
    "fens": [
@@ -4892,16 +4658,6 @@
      "ucci": "c5c4",
      "solver": false,
      "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c5",
-        "c4",
-        "e2"
-       ],
-       "detail": "黑兵 c5 吃掉 红兵 c4；对方可用 e2c4 合法回吃，构成可验证的交换。"
-      },
       {
        "id": "cannon_pawn_breakthrough",
        "label_zh": "炮兵突破",
@@ -4934,16 +4690,6 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e3",
-        "f5",
-        "e5"
-       ],
-       "detail": "红马 e3 吃掉 黑马 f5；对方可用 e5f5 合法回吃，构成可验证的交换。"
-      },
-      {
        "id": "remove_defender",
        "label_zh": "消除保护",
        "squares": [
@@ -4960,37 +4706,13 @@
      "ply": 5,
      "ucci": "e5e6",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e6",
-        "e2",
-        "e5",
-        "e6"
-       ],
-       "detail": "本手吃掉守子 红炮 e6；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 6,
      "ucci": "f5h4",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "h4",
-        "c4",
-        "f5",
-        "h4"
-       ],
-       "detail": "本手吃掉守子 黑炮 h4；c4 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 7,
@@ -5042,10 +4764,8 @@
     "d7c7"
    ],
    "url": "https://play.xiangqi.com/puzzle/q5bgPL/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bak2r1/4a4/n2cb4/p1p1p2Cp/3r5/1R4PR1/P3P3P/2N1B4/4A4/3AK1B2 b - - 4 20",
     "2bak4/4a4/n2cb4/p1p1p2rp/3r5/1R4PR1/P3P3P/2N1B4/4A4/3AK1B2 w - - 0 21",
@@ -5063,30 +4783,7 @@
      "ply": 2,
      "ucci": "h4h6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "h6",
-        "e6",
-        "h4",
-        "h6"
-       ],
-       "detail": "本手吃掉守子 黑车 h6；e6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "h6",
-        "i6",
-        "h4",
-        "h6"
-       ],
-       "detail": "本手吃掉守子 黑车 h6；i6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -5122,10 +4819,8 @@
     "f5f7"
    ],
    "url": "https://play.xiangqi.com/puzzle/RP0VvR/P",
-   "status": "matched",
-   "tactics": [
-    "pin"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "1r1akabn1/9/bcn3C2/p3p1p1p/5r3/7R1/P1P1P1P1P/2N1C1N2/4A4/R1B1KAB2 b - - 0 11",
     "1r1akabn1/9/b1n3C2/p3p1p1p/5r3/7R1/P1P1P1P1P/1cN1C1N2/4A4/R1B1KAB2 w - - 1 12",
@@ -5168,18 +4863,7 @@
      "ply": 4,
      "ucci": "h9g9",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "g9",
-        "f9",
-        "e9"
-       ],
-       "detail": "绝对牵制：f9 一旦离开 g9 与将／帅 e9 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -5221,10 +4905,8 @@
     "a2c3"
    ],
    "url": "https://play.xiangqi.com/puzzle/q5bYPL/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "4k1b2/4a4/4ban2/2pccNp1p/p1P1C4/4P1P2/n7P/N2CB4/4A4/4KAB2 w - - 0 28",
     "4k1b2/4a4/4ban2/2PccNp1p/p3C4/4P1P2/n7P/N2CB4/4A4/4KAB2 b - - 0 28",
@@ -5238,36 +4920,13 @@
      "ply": 1,
      "ucci": "c5c6",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c5",
-        "c6",
-        "e6"
-       ],
-       "detail": "红兵 c5 吃掉 黑兵 c6；对方可用 e6c6 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
      "ucci": "d6f6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f6",
-        "e4",
-        "d6",
-        "f6"
-       ],
-       "detail": "本手吃掉守子 红马 f6；e4 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -5319,8 +4978,8 @@
    "url": "https://play.xiangqi.com/puzzle/ogbybR/P",
    "status": "matched",
    "tactics": [
-    "discovered_attack",
-    "exchange"
+    "fork",
+    "discovered_attack"
    ],
    "fens": [
     "2bakab2/9/6n2/p3p1p1p/2P6/1r6P/P3c4/4BCN2/4A4/RcCAK1B2 b - - 0 19",
@@ -5345,6 +5004,16 @@
      "solver": true,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f1",
+        "b1",
+        "e3"
+       ],
+       "detail": "红炮 f1 本手后新增同时攻击 b1, e3 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      },
+      {
        "id": "discovered_attack",
        "label_zh": "闪击",
        "squares": [
@@ -5367,6 +5036,12 @@
      "ply": 4,
      "ucci": "g2e3",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 5,
+     "ucci": "b3e3",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -5376,15 +5051,9 @@
         "e3",
         "b3"
        ],
-       "detail": "红马 g2 吃掉 黑炮 e3；对方可用 b3e3 合法回吃，构成可验证的交换。"
+       "detail": "红马 g2 先吃 e3，本手 b3e3 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 5,
-     "ucci": "b3e3",
-     "solver": false,
-     "occurrences": []
     },
     {
      "ply": 6,
@@ -5440,8 +5109,10 @@
     "c4c6"
    ],
    "url": "https://play.xiangqi.com/puzzle/qB6eaq/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "1r1aka3/9/b3ccn1b/pC2p3p/3n5/2C6/P1P1P1P1P/2N3N2/9/1RBAKAB2 w - - 5 12",
     "1r1aka3/9/b3ccn1b/pC2p3p/3n5/2C3P2/P1P1P3P/2N3N2/9/1RBAKAB2 b - - 6 12",
@@ -5469,6 +5140,12 @@
      "ply": 3,
      "ucci": "b0b6",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 4,
+     "ucci": "d5b6",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -5478,37 +5155,9 @@
         "b6",
         "d5"
        ],
-       "detail": "红车 b0 吃掉 黑车 b6；对方可用 d5b6 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "b6",
-        "a6",
-        "b0",
-        "b6"
-       ],
-       "detail": "本手吃掉守子 黑车 b6；a6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "b6",
-        "e6",
-        "b0",
-        "b6"
-       ],
-       "detail": "本手吃掉守子 黑车 b6；e6 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "红车 b0 先吃 b6，本手 d5b6 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 4,
-     "ucci": "d5b6",
-     "solver": true,
-     "occurrences": []
     },
     {
      "ply": 5,
@@ -5723,18 +5372,7 @@
      "ply": 3,
      "ucci": "g9e7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "g9",
-        "e7",
-        "g6"
-       ],
-       "detail": "黑相 g9 吃掉 红炮 e7；对方可用 g6e7 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 4,
@@ -5812,10 +5450,8 @@
     "b6i6"
    ],
    "url": "https://play.xiangqi.com/puzzle/LNl78m/P",
-   "status": "matched",
-   "tactics": [
-    "exchange"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2b1ka3/4a4/4b4/pcn3rC1/4p4/2R3N2/P7P/4B4/4A4/2BAK4 b - - 10 26",
     "2b1ka3/4a4/4b4/pc4rC1/4p4/2Rn2N2/P7P/4B4/4A4/2BAK4 w - - 11 27",
@@ -5835,6 +5471,12 @@
      "ply": 2,
      "ucci": "h6b6",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 3,
+     "ucci": "g6b6",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -5844,15 +5486,9 @@
         "b6",
         "g6"
        ],
-       "detail": "红炮 h6 吃掉 黑炮 b6；对方可用 g6b6 合法回吃，构成可验证的交换。"
+       "detail": "红炮 h6 先吃 b6，本手 g6b6 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 3,
-     "ucci": "g6b6",
-     "solver": false,
-     "occurrences": []
     },
     {
      "ply": 4,
@@ -5945,7 +5581,18 @@
      "ply": 5,
      "ucci": "d3d1",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d1",
+        "c1",
+        "h7"
+       ],
+       "detail": "红车 d1 本手后新增同时攻击 c1, h7 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     }
    ],
    "material": {
@@ -5968,11 +5615,8 @@
     "f5g7"
    ],
    "url": "https://play.xiangqi.com/puzzle/q5bldL/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender",
-    "pin"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "3k1ab2/4a4/8n/p3p1p1p/2r1cN3/6P2/P7P/4B1r2/1R2A4/2BAKR3 w - - 2 23",
     "3k1ab2/4a4/8n/p3p1p1p/2r1cN3/6P2/P7P/4B1r2/3RA4/2BAKR3 b - - 3 23",
@@ -6004,29 +5648,7 @@
      "ply": 4,
      "ucci": "c5c0",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c0",
-        "e2",
-        "c5",
-        "c0"
-       ],
-       "detail": "本手吃掉守子 红相 c0；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "c0",
-        "d0",
-        "e0"
-       ],
-       "detail": "绝对牵制：d0 一旦离开 c0 与将／帅 e0 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -6060,10 +5682,8 @@
     "c7b5"
    ],
    "url": "https://play.xiangqi.com/puzzle/LmmlnL/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "4kabn1/4a4/2n1b4/p2C4p/5Np2/9/P5P1P/9/4A4/2B1KAB2 b - - 0 20",
     "4kab2/4a4/2n1b1n2/p2C4p/5Np2/9/P5P1P/9/4A4/2B1KAB2 w - - 1 21",
@@ -6081,19 +5701,7 @@
      "ply": 2,
      "ucci": "f5g7",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g7",
-        "i6",
-        "f5",
-        "g7"
-       ],
-       "detail": "本手吃掉守子 黑马 g7；i6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -6127,10 +5735,8 @@
     "b2b7"
    ],
    "url": "https://play.xiangqi.com/puzzle/RPEEvo/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bakr3/4a4/2n1b4/p5p1p/4P4/9/Pr1nN1P1P/RCNR5/9/2BAKAB2 b - - 3 16",
     "2bakr3/4a4/2n1b4/p5p1p/4P4/9/P2nN1P1P/RrNR5/9/2BAKAB2 w - - 0 17",
@@ -6169,19 +5775,7 @@
      "ply": 2,
      "ucci": "d2d3",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "d3",
-        "b2",
-        "d2",
-        "d3"
-       ],
-       "detail": "本手吃掉守子 黑马 d3；b2 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -6288,7 +5882,7 @@
    "url": "https://play.xiangqi.com/puzzle/Lze5Qq/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "fork"
    ],
    "fens": [
     "2bak2r1/4a4/c1n1b1n2/p3p1p1p/7c1/3N1NP2/P3P3P/C3C4/9/2BAKABR1 b - - 3 13",
@@ -6311,14 +5905,13 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
-        "h0",
         "h9",
-        "g7"
+        "g5"
        ],
-       "detail": "红车 h0 吃掉 黑车 h9；对方可用 g7h9 合法回吃，构成可验证的交换。"
+       "detail": "红车 h9 将军的同时攻击 g5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -6326,7 +5919,18 @@
      "ply": 3,
      "ucci": "g7h9",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "h0",
+        "h9",
+        "g7"
+       ],
+       "detail": "红车 h0 先吃 h9，本手 g7h9 明确反吃落点，交换实际完成。"
+      }
+     ]
     },
     {
      "ply": 4,
@@ -6386,10 +5990,8 @@
     "e1d2"
    ],
    "url": "https://play.xiangqi.com/puzzle/LaK8Xo/P",
-   "status": "matched",
-   "tactics": [
-    "exchange"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "3akab2/9/4b1n2/p3p3p/3n5/2PN3N1/P3PR3/4B4/4KCr2/2BA1A2c w - - 6 23",
     "3akab2/9/4b1n2/p3p3p/3n5/2PN3N1/P3PR3/4B4/3K1Cr2/2BA1A2c b - - 7 23",
@@ -6421,18 +6023,7 @@
      "ply": 4,
      "ucci": "i1f1",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "i1",
-        "f1",
-        "f3"
-       ],
-       "detail": "黑炮 i1 吃掉 红炮 f1；对方可用 f3f1 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -6633,10 +6224,8 @@
     "e6e4"
    ],
    "url": "https://play.xiangqi.com/puzzle/RdAJlo/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "3akar2/4n4/4R4/p3p3p/3P5/9/2c1p3P/2C6/9/2BAKAB2 w - - 3 22",
     "3akar2/4n4/4R4/p3p3p/3P5/9/2c1p3P/3C5/9/2BAKAB2 b - - 4 22",
@@ -6684,19 +6273,7 @@
      "ply": 6,
      "ucci": "g3d3",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "d3",
-        "i3",
-        "g3",
-        "d3"
-       ],
-       "detail": "本手吃掉守子 红炮 d3；i3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 7,
@@ -6762,10 +6339,8 @@
     "f7f9"
    ],
    "url": "https://play.xiangqi.com/puzzle/q5kVAR/P",
-   "status": "matched",
-   "tactics": [
-    "exchange"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "4kab1C/4aP3/2r5b/p8/9/4pp3/P8/c4A3/9/1R1AK4 b - - 7 39",
     "4kab1C/4aP3/5r2b/p8/9/4pp3/P8/c4A3/9/1R1AK4 w - - 8 40",
@@ -6797,6 +6372,12 @@
      "ply": 4,
      "ucci": "f8f9",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 5,
+     "ucci": "f7f9",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -6806,15 +6387,9 @@
         "f9",
         "f7"
        ],
-       "detail": "红兵 f8 吃掉 黑仕 f9；对方可用 f7f9 合法回吃，构成可验证的交换。"
+       "detail": "红兵 f8 先吃 f9，本手 f7f9 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 5,
-     "ucci": "f7f9",
-     "solver": false,
-     "occurrences": []
     }
    ],
    "material": {
@@ -6854,7 +6429,6 @@
    "url": "https://play.xiangqi.com/puzzle/LlnePo/P",
    "status": "matched",
    "tactics": [
-    "exchange",
     "fork"
    ],
    "fens": [
@@ -6878,18 +6452,7 @@
      "ply": 2,
      "ucci": "c6e7",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "c6",
-        "e7",
-        "c9"
-       ],
-       "detail": "红马 c6 吃掉 黑炮 e7；对方可用 c9e7 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -6900,11 +6463,11 @@
        "id": "exchange",
        "label_zh": "交换",
        "squares": [
-        "g9",
+        "c6",
         "e7",
-        "e5"
+        "g9"
        ],
-       "detail": "黑相 g9 吃掉 红马 e7；对方可用 e5e7 合法回吃，构成可验证的交换。"
+       "detail": "红马 c6 先吃 e7，本手 g9e7 明确反吃落点，交换实际完成。"
       }
      ]
     },
@@ -7028,19 +6591,7 @@
      "ply": 5,
      "ucci": "b3a3",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "a3",
-        "a4",
-        "b3",
-        "a3"
-       ],
-       "detail": "本手吃掉守子 红兵 a3；a4 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -7090,6 +6641,7 @@
    "url": "https://play.xiangqi.com/puzzle/RZjKaR/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "remove_defender"
    ],
    "fens": [
@@ -7111,7 +6663,18 @@
      "ply": 2,
      "ucci": "f7f2",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f2",
+        "c6",
+        "g2"
+       ],
+       "detail": "黑车 f2 本手后新增同时攻击 c6, g2 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -7307,8 +6870,10 @@
     "h0h1"
    ],
    "url": "https://play.xiangqi.com/puzzle/RVrrbR/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "2baka2r/9/2n1b1c2/p1p1P1p1p/2n6/6P2/cCr1N3P/4C1N2/9/1RBAKABR1 w - - 1 12",
     "2baka2r/9/2n1b1c2/p1p1P1p1p/2nN5/6P2/cCr5P/4C1N2/9/1RBAKABR1 b - - 2 12",
@@ -7349,15 +6914,14 @@
      "solver": false,
      "occurrences": [
       {
-       "id": "discovered_attack",
-       "label_zh": "闪击",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
-        "e6",
         "e7",
-        "e2",
-        "e9"
+        "b3",
+        "c7"
        ],
-       "detail": "e6 移开至 e7 后，红炮 e2 新获得 e2e9 的合法攻击线。"
+       "detail": "红兵 e7 将军的同时攻击 b3, c7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       },
       {
        "id": "trap",
@@ -7382,16 +6946,6 @@
      "solver": false,
      "occurrences": [
       {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "b0",
-        "b3",
-        "c5"
-       ],
-       "detail": "红车 b0 吃掉 黑车 b3；对方可用 c5b3 合法回吃，构成可验证的交换。"
-      },
-      {
        "id": "remove_defender",
        "label_zh": "消除保护",
        "squares": [
@@ -7408,7 +6962,18 @@
      "ply": 6,
      "ucci": "c5b3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "exchange",
+       "label_zh": "交换",
+       "squares": [
+        "b0",
+        "b3",
+        "c5"
+       ],
+       "detail": "红车 b0 先吃 b3，本手 c5b3 明确反吃落点，交换实际完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -7526,10 +7091,8 @@
     "g1g7"
    ],
    "url": "https://play.xiangqi.com/puzzle/ReWarq/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2baka1r1/9/1Nn1b1n2/p2r4p/4p4/9/P1P1P1p1P/2N6/7C1/1RBAKABR1 w - - 2 16",
     "2baka1r1/9/1Nn1b1n2/p2r4p/4p4/9/P1P1P1p1P/2N6/6C2/1RBAKABR1 b - - 3 16",
@@ -7547,19 +7110,7 @@
      "ply": 2,
      "ucci": "h9h0",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "h0",
-        "g0",
-        "h9",
-        "h0"
-       ],
-       "detail": "本手吃掉守子 红车 h0；g0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -7607,7 +7158,8 @@
    "url": "https://play.xiangqi.com/puzzle/q8aAxL/P",
    "status": "matched",
    "tactics": [
-    "remove_defender",
+    "exchange",
+    "fork",
     "pin"
    ],
    "fens": [
@@ -7633,24 +7185,18 @@
      "ply": 2,
      "ucci": "f5e7",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "c5",
-        "f5",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑相 e7；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
      "ucci": "g9e7",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 4,
+     "ucci": "e2e7",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -7660,25 +7206,17 @@
         "e7",
         "e2"
        ],
-       "detail": "黑相 g9 吃掉 红马 e7；对方可用 e2e7 合法回吃，构成可验证的交换。"
-      }
-     ]
-    },
-    {
-     "ply": 4,
-     "ucci": "e2e7",
-     "solver": true,
-     "occurrences": [
+       "detail": "黑相 g9 先吃 e7，本手 e2e7 明确反吃落点，交换实际完成。"
+      },
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
         "e7",
         "c5",
-        "e2",
-        "e7"
+        "h3"
        ],
-       "detail": "本手吃掉守子 黑相 e7；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "红炮 e7 将军的同时攻击 c5, h3；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -7721,6 +7259,16 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c8",
+        "c4",
+        "h3"
+       ],
+       "detail": "黑炮 c8 本手后新增同时攻击 c4, h3 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
+      },
+      {
        "id": "skewer",
        "label_zh": "串打",
        "squares": [
@@ -7736,29 +7284,7 @@
      "ply": 8,
      "ucci": "h3h9",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "h9",
-        "f9",
-        "h3",
-        "h9"
-       ],
-       "detail": "本手吃掉守子 黑车 h9；f9 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "pin",
-       "label_zh": "牵制",
-       "squares": [
-        "h9",
-        "f9",
-        "e9"
-       ],
-       "detail": "绝对牵制：f9 一旦离开 h9 与将／帅 e9 的线路，就会直接暴露将军，故该离线走法不合法。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 9,
@@ -7826,6 +7352,7 @@
    "url": "https://play.xiangqi.com/puzzle/R0NGGq/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "discovered_attack"
    ],
    "fens": [
@@ -7848,6 +7375,15 @@
      "ucci": "e2e4",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e4",
+        "f1"
+       ],
+       "detail": "红炮 e4 将军的同时攻击 f1；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "discovered_attack",
        "label_zh": "闪击",
@@ -7982,10 +7518,8 @@
     "e7e6"
    ],
    "url": "https://play.xiangqi.com/puzzle/qKMp8R/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "3a1k3/4a4/4R4/p1p5p/9/1NP2n3/P3P3P/3A5/3K1p3/2BA1cc2 w - - 1 26",
     "3a1k3/4a4/4R4/p1N5p/9/2P2n3/P3P3P/3A5/3K1p3/2BA1cc2 b - - 0 26",
@@ -8031,19 +7565,7 @@
      "ply": 6,
      "ucci": "c0c6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c6",
-        "e7",
-        "c0",
-        "c6"
-       ],
-       "detail": "本手吃掉守子 红马 c6；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 7,
@@ -8128,6 +7650,12 @@
      "ply": 2,
      "ucci": "c7e6",
      "solver": true,
+     "occurrences": []
+    },
+    {
+     "ply": 3,
+     "ucci": "d4e6",
+     "solver": false,
      "occurrences": [
       {
        "id": "exchange",
@@ -8137,15 +7665,9 @@
         "e6",
         "d4"
        ],
-       "detail": "黑马 c7 吃掉 红炮 e6；对方可用 d4e6 合法回吃，构成可验证的交换。"
+       "detail": "黑马 c7 先吃 e6，本手 d4e6 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 3,
-     "ucci": "d4e6",
-     "solver": false,
-     "occurrences": []
     },
     {
      "ply": 4,
@@ -8169,6 +7691,12 @@
      "ply": 7,
      "ucci": "e4e7",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 8,
+     "ucci": "c9e7",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -8176,17 +7704,10 @@
        "squares": [
         "e4",
         "e7",
-        "g9"
+        "c9"
        ],
-       "detail": "红炮 e4 吃掉 黑炮 e7；对方可用 g9e7 合法回吃，构成可验证的交换。"
-      }
-     ]
-    },
-    {
-     "ply": 8,
-     "ucci": "c9e7",
-     "solver": true,
-     "occurrences": [
+       "detail": "红炮 e4 先吃 e7，本手 c9e7 明确反吃落点，交换实际完成。"
+      },
       {
        "id": "skewer",
        "label_zh": "串打",
@@ -8257,10 +7778,8 @@
     "c0e2"
    ],
    "url": "https://play.xiangqi.com/puzzle/qAbADL/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2b1kab2/4a4/4c3r/p7p/2p6/3nC1B2/P1n1PR2P/2N1C4/9/2BAKA3 w - - 4 18",
     "2b1kab2/4a4/4c3r/p7p/2p6/3nC1B2/P1n1PR2P/2N1C4/4A4/2BAK4 b - - 5 18",
@@ -8280,19 +7799,7 @@
      "ply": 2,
      "ucci": "d4c2",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c2",
-        "a3",
-        "d4",
-        "c2"
-       ],
-       "detail": "本手吃掉守子 红马 c2；a3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -8310,19 +7817,7 @@
      "ply": 5,
      "ucci": "c0e2",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "discovered_attack",
-       "label_zh": "闪击",
-       "squares": [
-        "c0",
-        "e2",
-        "g2",
-        "c2"
-       ],
-       "detail": "c0 移开至 e2 后，红炮 g2 新获得 g2c2 的合法攻击线。"
-      }
-     ]
+     "occurrences": []
     }
    ],
    "material": {
@@ -8477,8 +7972,10 @@
     "f4i4"
    ],
    "url": "https://play.xiangqi.com/puzzle/RWJl2L/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "4kabr1/4a4/2n1bc2n/p1p1p1p1p/9/5R3/2r3P1c/BRN1CC2N/4A4/3AK1B2 w - - 2 14",
     "4kabr1/4a4/2n1Cc2n/p1p1p1p1p/9/5R3/2r3P1c/BRN2C2N/4A4/3AK1B2 b - - 0 14",
@@ -8490,6 +7987,12 @@
      "ply": 1,
      "ucci": "e2e7",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 2,
+     "ucci": "g9e7",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -8499,15 +8002,9 @@
         "e7",
         "g9"
        ],
-       "detail": "红炮 e2 吃掉 黑相 e7；对方可用 g9e7 合法回吃，构成可验证的交换。"
+       "detail": "红炮 e2 先吃 e7，本手 g9e7 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 2,
-     "ucci": "g9e7",
-     "solver": true,
-     "occurrences": []
     },
     {
      "ply": 3,
@@ -8649,8 +8146,10 @@
     "e4e5"
    ],
    "url": "https://play.xiangqi.com/puzzle/Ll4wJL/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "2b1ka3/4aN3/4b4/4p4/p8/4P3p/c8/4B4/9/3AKAB2 w - - 0 32",
     "2b1ka3/4a4/4b4/4N4/p8/4P3p/c8/4B4/9/3AKAB2 b - - 0 32",
@@ -8670,7 +8169,17 @@
      "ply": 2,
      "ucci": "a3e3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e3",
+        "e6"
+       ],
+       "detail": "黑炮 e3 将军的同时攻击 e6；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -8781,6 +8290,15 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g2",
+        "h0"
+       ],
+       "detail": "黑马 g2 将军的同时攻击 h0；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
+      {
        "id": "discovered_attack",
        "label_zh": "闪击",
        "squares": [
@@ -8796,33 +8314,11 @@
        "label_zh": "消除保护",
        "squares": [
         "g2",
-        "f0",
-        "e3",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 红马 g2；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
         "h0",
         "e3",
         "g2"
        ],
        "detail": "本手吃掉守子 红马 g2；h0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "i3",
-        "e3",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 红马 g2；i3 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     }
@@ -8897,18 +8393,7 @@
      "ply": 3,
      "ucci": "b9b0",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "b9",
-        "b0",
-        "c2"
-       ],
-       "detail": "黑车 b9 吃掉 红车 b0；对方可用 c2b0 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 4,
@@ -9049,8 +8534,10 @@
     "a8i8"
    ],
    "url": "https://play.xiangqi.com/puzzle/LJKK4R/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "exchange"
+   ],
    "fens": [
     "2bcka1R1/r8/4b4/p3nRp2/6r2/2P4N1/P3P3P/4B4/9/2BAKA3 b - - 19 26",
     "2bcka1R1/r8/4b4/p4Rp2/6r2/2Pn3N1/P3P3P/4B4/9/2BAKA3 w - - 20 27",
@@ -9076,6 +8563,12 @@
      "ply": 3,
      "ucci": "d4e2",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 4,
+     "ucci": "c0e2",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -9085,15 +8578,9 @@
         "e2",
         "c0"
        ],
-       "detail": "黑马 d4 吃掉 红相 e2；对方可用 c0e2 合法回吃，构成可验证的交换。"
+       "detail": "黑马 d4 先吃 e2，本手 c0e2 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 4,
-     "ucci": "c0e2",
-     "solver": true,
-     "occurrences": []
     },
     {
      "ply": 5,
@@ -9148,18 +8635,7 @@
      "ply": 1,
      "ucci": "e4e1",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "exchange",
-       "label_zh": "交换",
-       "squares": [
-        "e4",
-        "e1",
-        "d0"
-       ],
-       "detail": "黑炮 e4 吃掉 红马 e1；对方可用 d0e1 合法回吃，构成可验证的交换。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -9170,11 +8646,11 @@
        "id": "exchange",
        "label_zh": "交换",
        "squares": [
-        "f0",
+        "e4",
         "e1",
-        "b1"
+        "f0"
        ],
-       "detail": "红仕 f0 吃掉 黑炮 e1；对方可用 b1e1 合法回吃，构成可验证的交换。"
+       "detail": "黑炮 e4 先吃 e1，本手 f0e1 明确反吃落点，交换实际完成。"
       }
      ]
     },
@@ -9216,7 +8692,8 @@
    "url": "https://play.xiangqi.com/puzzle/ojzEAo/P",
    "status": "matched",
    "tactics": [
-    "pin"
+    "pin",
+    "fork"
    ],
    "fens": [
     "2b1ka3/9/3ab4/p1RNn3p/9/3r5/P3N3P/3C1A3/5K3/2BA3c1 w - - 3 34",
@@ -9263,6 +8740,15 @@
      "ucci": "h6f6",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f6",
+        "d6"
+       ],
+       "detail": "黑炮 f6 将军的同时攻击 d6；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "pin",
        "label_zh": "牵制",
@@ -9329,7 +8815,7 @@
    "url": "https://play.xiangqi.com/puzzle/RdD5rR/P",
    "status": "matched",
    "tactics": [
-    "remove_defender"
+    "exchange"
    ],
    "fens": [
     "2bak4/1C2a4/n3b4/R7p/6p1c/P8/4P1r2/2p1BrN1R/9/3AKAB2 w - - 5 39",
@@ -9352,24 +8838,18 @@
      "ply": 2,
      "ucci": "g3g2",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "f0",
-        "g3",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 红马 g2；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
      "ucci": "i2g2",
      "solver": false,
+     "occurrences": []
+    },
+    {
+     "ply": 4,
+     "ucci": "f2g2",
+     "solver": true,
      "occurrences": [
       {
        "id": "exchange",
@@ -9379,44 +8859,15 @@
         "g2",
         "f2"
        ],
-       "detail": "红车 i2 吃掉 黑车 g2；对方可用 f2g2 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g2",
-        "f2",
-        "i2",
-        "g2"
-       ],
-       "detail": "本手吃掉守子 黑车 g2；f2 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "红车 i2 先吃 g2，本手 f2g2 明确反吃落点，交换实际完成。"
       }
      ]
-    },
-    {
-     "ply": 4,
-     "ucci": "f2g2",
-     "solver": true,
-     "occurrences": []
     },
     {
      "ply": 5,
      "ucci": "a6i6",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "i6",
-        "i5",
-        "a6",
-        "i6"
-       ],
-       "detail": "本手吃掉守子 黑兵 i6；i5 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 6,
@@ -9583,6 +9034,17 @@
        "detail": "红车 b0 吃掉 黑车 b9；对方可用 c7b9 合法回吃，构成可验证的交换。"
       },
       {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "b9",
+        "c9",
+        "b0",
+        "b9"
+       ],
+       "detail": "本手吃掉守子 黑车 b9；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
        "id": "pin",
        "label_zh": "牵制",
        "squares": [
@@ -9660,7 +9122,7 @@
    "url": "https://play.xiangqi.com/puzzle/qAP45o/P",
    "status": "matched",
    "tactics": [
-    "remove_defender"
+    "fork"
    ],
    "fens": [
     "1Rb1ka3/4a4/4b4/p7p/6p2/2c6/P3P3P/6c1C/4C2r1/2BAKAB2 b - - 1 18",
@@ -9681,19 +9143,7 @@
      "ply": 2,
      "ucci": "e1e7",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "c9",
-        "e1",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑相 e7；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -9705,7 +9155,17 @@
      "ply": 4,
      "ucci": "b9c9",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c9",
+        "c4"
+       ],
+       "detail": "红车 c9 将军的同时攻击 c4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -9930,17 +9390,6 @@
      "solver": false,
      "occurrences": [
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e5",
-        "e6",
-        "e7",
-        "e5"
-       ],
-       "detail": "本手吃掉守子 红兵 e5；e6 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
        "id": "pin",
        "label_zh": "牵制",
        "squares": [
@@ -10021,7 +9470,19 @@
      "ply": 3,
      "ucci": "c7d9",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d9",
+        "d0",
+        "c7",
+        "d9"
+       ],
+       "detail": "本手吃掉守子 红炮 d9；d0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     }
    ],
    "material": {
@@ -10175,7 +9636,19 @@
      "ply": 1,
      "ucci": "f1g1",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g1",
+        "e1",
+        "f1",
+        "g1"
+       ],
+       "detail": "本手吃掉守子 红炮 g1；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 2,
@@ -10610,6 +10083,17 @@
        "label_zh": "消除保护",
        "squares": [
         "g7",
+        "e8",
+        "f5",
+        "g7"
+       ],
+       "detail": "本手吃掉守子 黑马 g7；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g7",
         "f9",
         "f5",
         "g7"
@@ -10864,6 +10348,7 @@
    "url": "https://play.xiangqi.com/puzzle/qAZEKL/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "exchange",
     "trap"
    ],
@@ -10921,7 +10406,17 @@
      "ply": 4,
      "ucci": "b1b9",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "b9",
+        "b0"
+       ],
+       "detail": "红车 b9 将军的同时攻击 b0；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -12278,8 +11773,10 @@
     "d3d1"
    ],
    "url": "https://play.xiangqi.com/puzzle/RWw8yR/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "2bak4/4ar1N1/4b1P2/p7p/9/9/P2rPn2P/4BA3/3NK2R1/R8 b - - 10 26",
     "2baka3/5r1N1/4b1P2/p7p/9/9/P2rPn2P/4BA3/3NK2R1/R8 w - - 11 27",
@@ -12325,7 +11822,30 @@
      "ply": 6,
      "ucci": "h8f8",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f8",
+        "e8",
+        "h8",
+        "f8"
+       ],
+       "detail": "本手吃掉守子 黑车 f8；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f8",
+        "f9",
+        "h8",
+        "f8"
+       ],
+       "detail": "本手吃掉守子 黑车 f8；f9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -12917,6 +12437,7 @@
    "status": "matched",
    "tactics": [
     "discovered_attack",
+    "fork",
     "skewer"
    ],
    "fens": [
@@ -12967,6 +12488,15 @@
      "ucci": "e2i2",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "i2",
+        "i4"
+       ],
+       "detail": "黑车 i2 将军的同时攻击 i4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "discovered_attack",
        "label_zh": "闪击",
@@ -13180,8 +12710,7 @@
    "status": "matched",
    "tactics": [
     "pin",
-    "discovered_attack",
-    "remove_defender"
+    "discovered_attack"
    ],
    "fens": [
     "2bak1b2/4ar3/2n1c2Rn/p1p1p3p/8P/4P4/PrcR4C/2N1B1p2/C3A4/4KAB2 b - - 3 19",
@@ -13238,17 +12767,6 @@
         "b3"
        ],
        "detail": "g3 移开至 g9 后，红炮 i3 新获得 i3b3 的合法攻击线。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g9",
-        "i7",
-        "g3",
-        "g9"
-       ],
-       "detail": "本手吃掉守子 黑相 g9；i7 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -13926,8 +13444,10 @@
     "f4f6"
    ],
    "url": "https://play.xiangqi.com/puzzle/ow3EW6/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "3aka3/9/Nr2b4/P3R3p/6b2/5R3/3rc4/3NB3n/4A4/2B1KA3 w - - 9 33",
     "3aka3/9/Nr2b4/P7p/6b2/5R3/3rR4/3NB3n/4A4/2B1KA3 b - - 0 33",
@@ -13945,7 +13465,19 @@
      "ply": 2,
      "ucci": "d3e3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "e3",
+        "e2",
+        "d3",
+        "e3"
+       ],
+       "detail": "本手吃掉守子 红车 e3；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -14528,6 +14060,17 @@
        "label_zh": "消除保护",
        "squares": [
         "c8",
+        "c9",
+        "c6",
+        "c8"
+       ],
+       "detail": "本手吃掉守子 黑车 c8；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c8",
         "i8",
         "c6",
         "c8"
@@ -14597,17 +14140,6 @@
         "d5"
        ],
        "detail": "红马 f5 吃掉 黑相 e7；对方可用 d5e7 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "g5",
-        "f5",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑相 e7；g5 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -15409,6 +14941,7 @@
    "status": "matched",
    "tactics": [
     "pin",
+    "fork",
     "remove_defender"
    ],
    "fens": [
@@ -15449,13 +14982,35 @@
      "ply": 3,
      "ucci": "d4f5",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f5",
+        "e7",
+        "d4",
+        "f5"
+       ],
+       "detail": "本手吃掉守子 黑马 f5；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 4,
      "ucci": "d3c1",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c1",
+        "a0"
+       ],
+       "detail": "黑马 c1 将军的同时攻击 a0；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -15564,6 +15119,28 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g7",
+        "e8",
+        "a7",
+        "g7"
+       ],
+       "detail": "本手吃掉守子 黑马 g7；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g7",
+        "f9",
+        "a7",
+        "g7"
+       ],
+       "detail": "本手吃掉守子 黑马 g7；f9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
        "id": "trap",
        "label_zh": "围困",
        "squares": [
@@ -15620,8 +15197,10 @@
     "g3g2"
    ],
    "url": "https://play.xiangqi.com/puzzle/oQ6rNq/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "2baka1r1/9/2n1b1Rc1/p1p1p3p/4P4/2P6/Pc1r2p1P/1CN1C4/4N4/R1BAKAB2 b - - 2 12",
     "2baka1r1/9/2n1b1Rc1/p1p1p3p/4P4/2P6/Pcr3p1P/1CN1C4/4N4/R1BAKAB2 w - - 3 13",
@@ -15653,7 +15232,19 @@
      "ply": 4,
      "ucci": "g7i7",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "i7",
+        "e7",
+        "g7",
+        "i7"
+       ],
+       "detail": "本手吃掉守子 黑炮 i7；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -16289,19 +15880,7 @@
      "ply": 1,
      "ucci": "c3c4",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c4",
-        "d4",
-        "c3",
-        "c4"
-       ],
-       "detail": "本手吃掉守子 黑兵 c4；d4 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -16971,7 +16550,8 @@
    "url": "https://play.xiangqi.com/puzzle/onmOBR/P",
    "status": "matched",
    "tactics": [
-    "pin"
+    "pin",
+    "fork"
    ],
    "fens": [
     "3k1ab2/4a4/b8/8p/r8/2P1C4/4P3r/N3C4/4A4/2B1KA1Rc w - - 0 34",
@@ -17015,7 +16595,17 @@
      "ply": 4,
      "ucci": "a0c0",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c0",
+        "c2"
+       ],
+       "detail": "黑车 c0 将军的同时攻击 c2；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -17476,8 +17066,10 @@
     "e8g7"
    ],
    "url": "https://play.xiangqi.com/puzzle/qrXG4R/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "1r1akab2/4n2R1/2ncb4/pc2p3p/2p2rp2/6PN1/P1P1P3P/2NCB1C2/R8/3AKAB2 b - - 25 13",
     "1r1akab2/4n2R1/2ncb4/pc2p3p/2p2r3/6pN1/P1P1P3P/2NCB1C2/R8/3AKAB2 w - - 0 14",
@@ -17520,7 +17112,19 @@
      "ply": 4,
      "ucci": "f8f5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f5",
+        "c5",
+        "f8",
+        "f5"
+       ],
+       "detail": "本手吃掉守子 黑车 f5；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -17630,8 +17234,10 @@
     "e2c4"
    ],
    "url": "https://play.xiangqi.com/puzzle/Lkgg2L/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "1Cbak4/4a4/4Nc3/p7p/5np2/2R6/P3P3P/3CB1N2/4A2r1/3A1K2c w - - 1 26",
     "1Cbak4/4a4/4Nc3/p7p/5np2/2R6/P3P3P/3CBAN2/7r1/3A1K2c b - - 2 26",
@@ -17679,7 +17285,18 @@
      "ply": 6,
      "ucci": "f5e3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e3",
+        "c4",
+        "g2"
+       ],
+       "detail": "黑马 e3 将军的同时攻击 c4, g2；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -18452,8 +18069,10 @@
     "h3h4"
    ],
    "url": "https://play.xiangqi.com/puzzle/oQ6XOq/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "3aka1r1/rC7/1cn1b4/pC2p3p/2p6/5NP2/PnPNP2cP/9/9/R1BAKABR1 b - - 14 13",
     "3aka1r1/rC7/c1n1b4/pC2p3p/2p6/5NP2/PnPNP2cP/9/9/R1BAKABR1 w - - 15 14",
@@ -18471,7 +18090,19 @@
      "ply": 2,
      "ucci": "b8b3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "b3",
+        "c5",
+        "b8",
+        "b3"
+       ],
+       "detail": "本手吃掉守子 黑马 b3；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -19112,7 +18743,8 @@
    "tactics": [
     "pin",
     "skewer",
-    "remove_defender"
+    "remove_defender",
+    "fork"
    ],
    "fens": [
     "5a3/3ka4/3cR3b/2Rc1C2p/6r2/4P4/P5P1P/4B4/3r2N2/4KA3 b - - 20 45",
@@ -19259,6 +18891,15 @@
      "ucci": "d8d9",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d9",
+        "d6"
+       ],
+       "detail": "红车 d9 将军的同时攻击 d6；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "pin",
        "label_zh": "牵制",
@@ -19918,7 +19559,8 @@
    "url": "https://play.xiangqi.com/puzzle/RW7PpR/P",
    "status": "matched",
    "tactics": [
-    "skewer"
+    "skewer",
+    "remove_defender"
    ],
    "fens": [
     "3ak1b2/9/2c1b4/p3p1p2/5r1np/6P2/P3P3P/3CB1N2/3rA4/1RB1KA1R1 w - - 2 24",
@@ -19962,7 +19604,30 @@
      "ply": 4,
      "ucci": "c2g2",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g2",
+        "e1",
+        "c2",
+        "g2"
+       ],
+       "detail": "本手吃掉守子 红马 g2；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g2",
+        "f0",
+        "c2",
+        "g2"
+       ],
+       "detail": "本手吃掉守子 红马 g2；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -21095,7 +20760,8 @@
    "url": "https://play.xiangqi.com/puzzle/R6zObR/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "exchange",
+    "remove_defender"
    ],
    "fens": [
     "3ak4/4a4/3rb4/p3p3p/2b6/P1CnP1R1P/9/3RB4/4Ar3/4KAB2 b - - 10 24",
@@ -21144,6 +20810,28 @@
         "e8"
        ],
        "detail": "红车 d2 吃掉 黑车 d7；对方可用 e8d7 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d7",
+        "d9",
+        "d2",
+        "d7"
+       ],
+       "detail": "本手吃掉守子 黑车 d7；d9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d7",
+        "e7",
+        "d2",
+        "d7"
+       ],
+       "detail": "本手吃掉守子 黑车 d7；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -21266,19 +20954,7 @@
      "ply": 1,
      "ucci": "g6e7",
      "solver": false,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "g5",
-        "g6",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑相 e7；g5 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 2,
@@ -21402,7 +21078,8 @@
    "status": "matched",
    "tactics": [
     "trap",
-    "pin"
+    "pin",
+    "remove_defender"
    ],
    "fens": [
     "4kab2/4a4/4bnn1c/4pCp1p/p1p6/3r2P2/P1P1P3P/2N1BC3/1c2AN1R1/2BAK4 w - - 3 14",
@@ -21477,6 +21154,17 @@
         "f1"
        ],
        "detail": "黑车 f6 攻击 f2；f2 当前有有效保护，但它离开线路会使后方 f1 受攻击，构成牵制。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f6",
+        "f2",
+        "f4",
+        "f6"
+       ],
+       "detail": "本手吃掉守子 红炮 f6；f2 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -21786,6 +21474,28 @@
         "h3"
        ],
        "detail": "黑车 f5 吃掉 红车 f4；对方可用 h3f4 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f4",
+        "f0",
+        "f5",
+        "f4"
+       ],
+       "detail": "本手吃掉守子 红车 f4；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f4",
+        "g4",
+        "f5",
+        "f4"
+       ],
+       "detail": "本手吃掉守子 红车 f4；g4 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -21960,8 +21670,11 @@
     "b6c8"
    ],
    "url": "https://play.xiangqi.com/puzzle/LxdG0L/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork",
+    "remove_defender"
+   ],
    "fens": [
     "2bak1br1/4a4/6nc1/p1p1n3p/3NC1p2/2P6/Pr4P1c/2NC5/9/1RBAKABR1 w - - 0 13",
     "2bak1br1/4a4/6nc1/pNp1n3p/4C1p2/2P6/Pr4P1c/2NC5/9/1RBAKABR1 b - - 1 13",
@@ -21981,7 +21694,17 @@
      "ply": 2,
      "ucci": "b3e3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e3",
+        "e5"
+       ],
+       "detail": "黑车 e3 将军的同时攻击 e5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -21993,7 +21716,19 @@
      "ply": 4,
      "ucci": "e3e5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "e5",
+        "e1",
+        "e3",
+        "e5"
+       ],
+       "detail": "本手吃掉守子 红炮 e5；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -22574,8 +22309,10 @@
     "f0e0"
    ],
    "url": "https://play.xiangqi.com/puzzle/qKXYG9/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "3a1kb2/4a4/b3c4/6p1C/4n4/2p2NP2/P7P/B4N3/9/2BAKA3 w - - 2 31",
     "3a1kb2/4a4/b3c4/6p1C/4n4/2p2NP2/P7P/B4N3/4A4/2BAK4 b - - 3 31",
@@ -22597,7 +22334,17 @@
      "ply": 2,
      "ucci": "e5d3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d3",
+        "f4"
+       ],
+       "detail": "黑马 d3 将军的同时攻击 f4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -22972,6 +22719,17 @@
         "d7"
        ],
        "detail": "本手吃掉守子 黑车 d7；d9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d7",
+        "e7",
+        "c7",
+        "d7"
+       ],
+       "detail": "本手吃掉守子 黑车 d7；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -23108,7 +22866,19 @@
      "ply": 5,
      "ucci": "f4f8",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f8",
+        "f0",
+        "f4",
+        "f8"
+       ],
+       "detail": "本手吃掉守子 红炮 f8；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     }
    ],
    "material": {
@@ -24253,7 +24023,8 @@
    "url": "https://play.xiangqi.com/puzzle/Re87QL/P",
    "status": "matched",
    "tactics": [
-    "skewer"
+    "skewer",
+    "remove_defender"
    ],
    "fens": [
     "2b1kabn1/4a4/1C2c4/c3C1p1p/pn1r5/4RNP2/2P1P3P/N8/4A4/2BAK1B2 b - - 8 21",
@@ -24299,7 +24070,19 @@
      "ply": 4,
      "ucci": "c4c7",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c7",
+        "e8",
+        "c4",
+        "c7"
+       ],
+       "detail": "本手吃掉守子 黑马 c7；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -24315,6 +24098,17 @@
         "f4"
        ],
        "detail": "黑炮 a6 吃掉 红炮 e6；对方可用 f4e6 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "e6",
+        "e1",
+        "a6",
+        "e6"
+       ],
+       "detail": "本手吃掉守子 红炮 e6；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
       },
       {
        "id": "pin",
@@ -24843,7 +24637,19 @@
      "ply": 5,
      "ucci": "h4b4",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "b4",
+        "g4",
+        "h4",
+        "b4"
+       ],
+       "detail": "本手吃掉守子 红车 b4；g4 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 6,
@@ -24903,8 +24709,10 @@
     "f3e3"
    ],
    "url": "https://play.xiangqi.com/puzzle/qre124/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "3a5/5k3/9/9/1Cb1Nc3/9/P4pp2/3AB4/4K1n2/2BA5 b - - 23 55",
     "3a5/5k3/9/9/1Cb1N4/5c3/P4pp2/3AB4/4K1n2/2BA5 w - - 24 56",
@@ -24924,7 +24732,17 @@
      "ply": 2,
      "ucci": "e5g6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g6",
+        "f4"
+       ],
+       "detail": "红马 g6 将军的同时攻击 f4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -24974,10 +24792,8 @@
     "a0a5"
    ],
    "url": "https://play.xiangqi.com/puzzle/LlmaPR/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bak1r2/4aP3/4b4/pr4C1p/9/2p2R1N1/2nR4P/4B4/4A4/c1BA1K3 b - - 19 28",
     "2bak1r2/4aP3/4b4/p3r1C1p/9/2p2R1N1/2nR4P/4B4/4A4/c1BA1K3 w - - 20 29",
@@ -24999,19 +24815,7 @@
      "ply": 2,
      "ucci": "f4c4",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c4",
-        "c3",
-        "f4",
-        "c4"
-       ],
-       "detail": "本手吃掉守子 黑兵 c4；c3 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -25083,8 +24887,10 @@
     "e3f5"
    ],
    "url": "https://play.xiangqi.com/puzzle/R1DY7L/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "4kabr1/4a4/1cn1b1n2/p5p1p/4C4/2pr2P2/P3N2cP/1C2B1N2/9/R2AKABR1 w - - 0 12",
     "4kabr1/4a4/1cn1b1n2/p5p1p/4C4/2Nr2P2/P6cP/1C2B1N2/9/R2AKABR1 b - - 0 12",
@@ -25127,7 +24933,19 @@
      "ply": 4,
      "ucci": "h9h0",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "h0",
+        "g0",
+        "h9",
+        "h0"
+       ],
+       "detail": "本手吃掉守子 红车 h0；g0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -26082,7 +25900,8 @@
    "url": "https://play.xiangqi.com/puzzle/RdpMdl/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "exchange",
+    "fork"
    ],
    "fens": [
     "2b1ka3/4a4/2n1b2r1/p7p/4r4/2PN5/4cR2P/3CB1R2/4A4/2BAK4 w - - 2 21",
@@ -26127,6 +25946,15 @@
         "e0"
        ],
        "detail": "黑车 h0 吃掉 红车 f0；对方可用 e0f0 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f0",
+        "f5"
+       ],
+       "detail": "黑车 f0 将军的同时攻击 f5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -26290,11 +26118,33 @@
        "label_zh": "消除保护",
        "squares": [
         "g2",
+        "e1",
+        "c2",
+        "g2"
+       ],
+       "detail": "本手吃掉守子 红马 g2；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g2",
         "e3",
         "c2",
         "g2"
        ],
        "detail": "本手吃掉守子 红马 g2；e3 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g2",
+        "f0",
+        "c2",
+        "g2"
+       ],
+       "detail": "本手吃掉守子 红马 g2；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -26348,7 +26198,8 @@
    "url": "https://play.xiangqi.com/puzzle/oyk6rL/P",
    "status": "matched",
    "tactics": [
-    "pin"
+    "pin",
+    "remove_defender"
    ],
    "fens": [
     "3ak1br1/4a4/1c2b1nc1/3rp1p1p/pnpN5/6P2/P1P1P3P/N1C1C4/3R3R1/2BAKAB2 b - - 21 11",
@@ -26449,7 +26300,19 @@
      "ply": 6,
      "ucci": "h1d1",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d1",
+        "d7",
+        "h1",
+        "d1"
+       ],
+       "detail": "本手吃掉守子 黑车 d1；d7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -28102,8 +27965,7 @@
    "url": "https://play.xiangqi.com/puzzle/ogMJeL/P",
    "status": "matched",
    "tactics": [
-    "exchange",
-    "remove_defender"
+    "exchange"
    ],
    "fens": [
     "1r2kab2/4a2NR/4b2r1/p8/1cp3p2/4C4/PR2c4/4B4/4A4/4KAB2 b - - 6 25",
@@ -28134,17 +27996,6 @@
         "e9"
        ],
        "detail": "红马 h8 吃掉 黑仕 f9；对方可用 e9f9 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f9",
-        "e8",
-        "h8",
-        "f9"
-       ],
-       "detail": "本手吃掉守子 黑仕 f9；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -29199,6 +29050,17 @@
        "detail": "本手吃掉守子 黑车 e4；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
       },
       {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "e4",
+        "e7",
+        "f4",
+        "e4"
+       ],
+       "detail": "本手吃掉守子 黑车 e4；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
        "id": "pin",
        "label_zh": "牵制",
        "squares": [
@@ -29816,7 +29678,8 @@
    "url": "https://play.xiangqi.com/puzzle/R6aazL/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "exchange",
+    "remove_defender"
    ],
    "fens": [
     "4kabr1/4a4/3cb1n2/p3p1N1p/2rn5/3R2P2/P3P3P/N1C1B1Cc1/9/2BAKA1R1 w - - 3 15",
@@ -29853,6 +29716,17 @@
         "e2"
        ],
        "detail": "黑车 c5 吃掉 红车 c4；对方可用 e2c4 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c4",
+        "g4",
+        "c5",
+        "c4"
+       ],
+       "detail": "本手吃掉守子 红车 c4；g4 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -29882,6 +29756,17 @@
         "g7"
        ],
        "detail": "红车 h0 吃掉 黑车 h9；对方可用 g7h9 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "h9",
+        "g9",
+        "h0",
+        "h9"
+       ],
+       "detail": "本手吃掉守子 黑车 h9；g9 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -30120,7 +30005,6 @@
     "exchange",
     "skewer",
     "discovered_attack",
-    "remove_defender",
     "pin"
    ],
    "fens": [
@@ -30197,17 +30081,6 @@
         "c7"
        ],
        "detail": "c6 移开至 e7 后，红炮 c4 新获得 c4c7 的合法攻击线。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e7",
-        "g5",
-        "c6",
-        "e7"
-       ],
-       "detail": "本手吃掉守子 黑相 e7；g5 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -31743,8 +31616,7 @@
    "url": "https://play.xiangqi.com/puzzle/ReQZvR/P",
    "status": "matched",
    "tactics": [
-    "exchange",
-    "remove_defender"
+    "exchange"
    ],
    "fens": [
     "3a1kb2/4a4/5rn2/p2P2R1p/1r2c2c1/P1R6/2P5P/N3C4/4A4/2BK1AB2 w - - 7 29",
@@ -31781,17 +31653,6 @@
         "f0"
        ],
        "detail": "黑炮 e5 吃掉 红仕 e1；对方可用 f0e1 合法回吃，构成可验证的交换。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e1",
-        "f0",
-        "e5",
-        "e1"
-       ],
-       "detail": "本手吃掉守子 红仕 e1；f0 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -32212,7 +32073,8 @@
    "url": "https://play.xiangqi.com/puzzle/oggpAo/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "exchange",
+    "remove_defender"
    ],
    "fens": [
     "2b1ka3/4a4/4b4/p1RNn3p/9/3r5/P3N3P/3CB4/4AK3/2cA3c1 b - - 3 31",
@@ -32241,6 +32103,17 @@
         "h0"
        ],
        "detail": "红相 e2 吃掉 黑炮 c0；对方可用 h0c0 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c0",
+        "c9",
+        "e2",
+        "c0"
+       ],
+       "detail": "本手吃掉守子 黑炮 c0；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -32495,8 +32368,10 @@
     "e1f0"
    ],
    "url": "https://play.xiangqi.com/puzzle/L3aPJo/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "2b1kab1C/4a4/9/p1p2R3/4P4/6p2/P1Pnr4/4B4/9/2BAKA3 w - - 10 33",
     "2b1kab1C/4a4/9/p1p2R3/4P4/6p2/P1Pnr4/4B4/4A4/2BAK4 b - - 11 33",
@@ -32530,7 +32405,17 @@
      "ply": 4,
      "ucci": "i3i0",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "i0",
+        "i9"
+       ],
+       "detail": "黑车 i0 将军的同时攻击 i9；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -32580,7 +32465,8 @@
    "url": "https://play.xiangqi.com/puzzle/onmQAR/P",
    "status": "matched",
    "tactics": [
-    "trap"
+    "trap",
+    "remove_defender"
    ],
    "fens": [
     "3ak1b2/r3a4/1Rn1bc2n/p1C1p1p1p/3R5/2N6/5r3/2C1B4/9/3AKAB2 b - - 3 24",
@@ -32648,7 +32534,19 @@
      "ply": 4,
      "ucci": "b7c7",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c7",
+        "d9",
+        "b7",
+        "c7"
+       ],
+       "detail": "本手吃掉守子 黑马 c7；d9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -33067,7 +32965,8 @@
    "url": "https://play.xiangqi.com/puzzle/on92AR/P",
    "status": "matched",
    "tactics": [
-    "pin"
+    "pin",
+    "remove_defender"
    ],
    "fens": [
     "r1b1kab2/4a4/3cc3n/p2NC1p1p/9/1n1rP4/P5P1P/B3C1N2/9/1R1AKABR1 w - - 3 14",
@@ -33111,7 +33010,19 @@
      "ply": 4,
      "ucci": "e4e6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "e6",
+        "e2",
+        "e4",
+        "e6"
+       ],
+       "detail": "本手吃掉守子 红炮 e6；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -33540,6 +33451,7 @@
    "status": "matched",
    "tactics": [
     "exchange",
+    "remove_defender",
     "cannon_pawn_breakthrough"
    ],
    "fens": [
@@ -33571,6 +33483,17 @@
         "g7"
        ],
        "detail": "红车 f4 吃掉 黑车 f5；对方可用 g7f5 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f5",
+        "c5",
+        "f4",
+        "f5"
+       ],
+       "detail": "本手吃掉守子 黑车 f5；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -34015,8 +33938,8 @@
    "status": "matched",
    "tactics": [
     "skewer",
-    "remove_defender",
-    "pin"
+    "pin",
+    "remove_defender"
    ],
    "fens": [
     "2bak1b1r/4a4/4cc2n/p1p5p/6r2/4Pn1NP/P1PR5/3CBN1C1/4A4/R3KAB2 w - - 0 14",
@@ -34049,17 +33972,6 @@
         "g0"
        ],
        "detail": "黑车 g5 正攻击未受保护的 g4；若 g4 离开线路，后方未受保护的 g0 会立即受到攻击，构成串打。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e2",
-        "g4",
-        "f4",
-        "e2"
-       ],
-       "detail": "本手吃掉守子 红相 e2；g4 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -34462,19 +34374,7 @@
      "ply": 4,
      "ucci": "f7f0",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "f0",
-        "e1",
-        "f7",
-        "f0"
-       ],
-       "detail": "本手吃掉守子 红仕 f0；e1 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 5,
@@ -34596,17 +34496,6 @@
         "g6"
        ],
        "detail": "黑车 g5 本手后新增同时攻击 g2, g6 两个目标；两项吃子均可安全完成，无法被立即合法回吃。"
-      },
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "g5",
-        "g6",
-        "b5",
-        "g5"
-       ],
-       "detail": "本手吃掉守子 红兵 g5；g6 已无其他有效保护，并转为我方可直接攻击的目标。"
       }
      ]
     },
@@ -35008,7 +34897,8 @@
    "url": "https://play.xiangqi.com/puzzle/R6b4bR/P",
    "status": "matched",
    "tactics": [
-    "fork"
+    "fork",
+    "remove_defender"
    ],
    "fens": [
     "2bak4/4a4/4b1n2/1r2p1p1p/p6r1/2R2N3/P1c5P/2C1B4/4A4/3RKAB2 b - - 0 27",
@@ -35054,7 +34944,19 @@
      "ply": 4,
      "ucci": "c4c3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c3",
+        "c9",
+        "c4",
+        "c3"
+       ],
+       "detail": "本手吃掉守子 黑炮 c3；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -35099,7 +35001,19 @@
      "ply": 6,
      "ucci": "d5c3",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "c3",
+        "c9",
+        "d5",
+        "c3"
+       ],
+       "detail": "本手吃掉守子 黑车 c3；c9 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -35188,7 +35102,19 @@
      "ply": 3,
      "ucci": "d7d5",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d5",
+        "d0",
+        "d7",
+        "d5"
+       ],
+       "detail": "本手吃掉守子 红车 d5；d0 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 4,
@@ -35772,6 +35698,17 @@
        "detail": "红车 f7 攻击 e7；e7 当前有有效保护，但它离开线路会使后方 c7 受攻击，构成牵制。"
       },
       {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "f7",
+        "e7",
+        "f1",
+        "f7"
+       ],
+       "detail": "本手吃掉守子 黑车 f7；e7 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
        "id": "pin",
        "label_zh": "牵制",
        "squares": [
@@ -36047,7 +35984,7 @@
    "url": "https://play.xiangqi.com/puzzle/LxWWgq/P",
    "status": "matched",
    "tactics": [
-    "remove_defender"
+    "fork"
    ],
    "fens": [
     "2c1ka3/1R7/n2a1c3/6n2/2pN5/9/2P6/3C1Cr2/4A4/4KA3 b - - 10 35",
@@ -36098,15 +36035,13 @@
      "solver": true,
      "occurrences": [
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
+       "id": "fork",
+       "label_zh": "捉双",
        "squares": [
         "d7",
-        "e8",
-        "f6",
-        "d7"
+        "c9"
        ],
-       "detail": "本手吃掉守子 黑仕 d7；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+       "detail": "红马 d7 将军的同时攻击 c9；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -37107,7 +37042,19 @@
      "ply": 3,
      "ucci": "f5d4",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d4",
+        "e2",
+        "f5",
+        "d4"
+       ],
+       "detail": "本手吃掉守子 红马 d4；e2 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 4,
@@ -37576,6 +37523,15 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g5",
+        "h5"
+       ],
+       "detail": "红车 g5 将军的同时攻击 h5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
+      {
        "id": "discovered_attack",
        "label_zh": "闪击",
        "squares": [
@@ -37654,8 +37610,10 @@
     "h9h8"
    ],
    "url": "https://play.xiangqi.com/puzzle/R11k6R/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "2bakabr1/9/2n6/PN2p1p1p/7r1/4c3P/R5P2/4B3N/4A4/4KAB1R b - - 1 24",
     "2bakabr1/9/2n6/PN2p1p1p/1r7/4c3P/R5P2/4B3N/4A4/4KAB1R w - - 2 25",
@@ -37689,7 +37647,17 @@
      "ply": 4,
      "ucci": "d7f6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f6",
+        "e4"
+       ],
+       "detail": "红马 f6 将军的同时攻击 e4；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -38988,6 +38956,15 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c2",
+        "c3"
+       ],
+       "detail": "黑车 c2 将军的同时攻击 c3；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
+      {
        "id": "discovered_attack",
        "label_zh": "闪击",
        "squares": [
@@ -39192,8 +39169,10 @@
     "c7d5"
    ],
    "url": "https://play.xiangqi.com/puzzle/RPEmeo/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "remove_defender"
+   ],
    "fens": [
     "2baka2r/9/1cn1b1c1n/p3p3p/3r2p2/2R2NP2/P3P3P/C1N1B2C1/9/2BAKA1R1 b - - 8 11",
     "2bak3r/4a4/1cn1b1c1n/p3p3p/3r2p2/2R2NP2/P3P3P/C1N1B2C1/9/2BAKA1R1 w - - 9 12",
@@ -39211,7 +39190,19 @@
      "ply": 2,
      "ucci": "f4d5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "d5",
+        "g5",
+        "f4",
+        "d5"
+       ],
+       "detail": "本手吃掉守子 黑车 d5；g5 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 3,
@@ -39434,7 +39425,17 @@
      "ply": 1,
      "ucci": "e3e2",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e2",
+        "c2"
+       ],
+       "detail": "黑车 e2 将军的同时攻击 c2；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 2,
@@ -39599,8 +39600,10 @@
     "e7c5"
    ],
    "url": "https://play.xiangqi.com/puzzle/oMZdkq/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "3k1ab2/4a4/4c3n/p3p1p1p/2r6/3N2P2/P3P3P/4B1r2/1R2A4/2BAKR3 b - - 1 21",
     "3k1ab2/4a4/8n/p3p1p1p/2r6/3N2P2/P3c3P/4B1r2/1R2A4/2BAKR3 w - - 0 22",
@@ -39645,7 +39648,17 @@
      "ply": 4,
      "ucci": "d4e6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e6",
+        "c5"
+       ],
+       "detail": "红马 e6 将军的同时攻击 c5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -39896,10 +39909,8 @@
     "i9h9"
    ],
    "url": "https://play.xiangqi.com/puzzle/q8x3yq/P",
-   "status": "matched",
-   "tactics": [
-    "remove_defender"
-   ],
+   "status": "unmatched",
+   "tactics": [],
    "fens": [
     "2bak1b1r/4a4/2n1cc3/p1p1p3p/2r2np2/1NC6/P3P1P1P/1C2B1N2/2R6/1R1AKAB2 b - - 3 12",
     "2bak1b1r/4a4/2n1cc3/p1p1p3p/2r3p2/1NC6/P3n1P1P/1C2B1N2/2R6/1R1AKAB2 w - - 0 13",
@@ -39919,19 +39930,7 @@
      "ply": 2,
      "ucci": "c4c6",
      "solver": true,
-     "occurrences": [
-      {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "c6",
-        "c5",
-        "c4",
-        "c6"
-       ],
-       "detail": "本手吃掉守子 黑兵 c6；c5 已无其他有效保护，并转为我方可直接攻击的目标。"
-      }
-     ]
+     "occurrences": []
     },
     {
      "ply": 3,
@@ -40516,6 +40515,17 @@
        "label_zh": "消除保护",
        "squares": [
         "g7",
+        "e8",
+        "f5",
+        "g7"
+       ],
+       "detail": "本手吃掉守子 黑马 g7；e8 已无其他有效保护，并转为我方可直接攻击的目标。"
+      },
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g7",
         "f9",
         "f5",
         "g7"
@@ -41053,7 +41063,8 @@
    "url": "https://play.xiangqi.com/puzzle/RePOnL/P",
    "status": "matched",
    "tactics": [
-    "fork"
+    "fork",
+    "remove_defender"
    ],
    "fens": [
     "3aka3/3r5/b7b/p3p3p/3n1Rc2/6NN1/P6cP/2C1B4/4A4/3AK1B2 w - - 2 25",
@@ -41111,7 +41122,19 @@
      "ply": 6,
      "ucci": "i7g5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "remove_defender",
+       "label_zh": "消除保护",
+       "squares": [
+        "g5",
+        "g4",
+        "i7",
+        "g5"
+       ],
+       "detail": "本手吃掉守子 红车 g5；g4 已无其他有效保护，并转为我方可直接攻击的目标。"
+      }
+     ]
     },
     {
      "ply": 7,
@@ -41873,7 +41896,6 @@
    "status": "matched",
    "tactics": [
     "exchange",
-    "remove_defender",
     "pin"
    ],
    "fens": [
@@ -41930,17 +41952,6 @@
        "detail": "黑兵 e3 吃掉 红相 e2；对方可用 g0e2 合法回吃，构成可验证的交换。"
       },
       {
-       "id": "remove_defender",
-       "label_zh": "消除保护",
-       "squares": [
-        "e2",
-        "c4",
-        "e3",
-        "e2"
-       ],
-       "detail": "本手吃掉守子 红相 e2；c4 已无其他有效保护，并转为我方可直接攻击的目标。"
-      },
-      {
        "id": "pin",
        "label_zh": "牵制",
        "squares": [
@@ -41994,6 +42005,7 @@
    "url": "https://play.xiangqi.com/puzzle/LE6aZR/P",
    "status": "matched",
    "tactics": [
+    "fork",
     "discovered_attack"
    ],
    "fens": [
@@ -42016,6 +42028,15 @@
      "ucci": "e3c3",
      "solver": true,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c3",
+        "c7"
+       ],
+       "detail": "黑炮 c3 将军的同时攻击 c7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "discovered_attack",
        "label_zh": "闪击",
@@ -42764,6 +42785,15 @@
      "solver": false,
      "occurrences": [
       {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f6",
+        "f7"
+       ],
+       "detail": "黑车 f6 将军的同时攻击 f7；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
+      {
        "id": "trap",
        "label_zh": "围困",
        "squares": [
@@ -42890,8 +42920,10 @@
     "c2e1"
    ],
    "url": "https://play.xiangqi.com/puzzle/q85DWL/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "1R1akab2/n8/4br3/p1P1N1p2/8p/6B2/c3P1n1P/4Br3/2C1N4/3AKA2R w - - 0 27",
     "1R1akab2/n8/4br3/p1P1N1p2/8p/6B2/c3P1n1P/2N1Br3/2C6/3AKA2R b - - 1 27",
@@ -42934,7 +42966,17 @@
      "ply": 4,
      "ucci": "f2e2",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e2",
+        "c2"
+       ],
+       "detail": "黑车 e2 将军的同时攻击 c2；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -42993,7 +43035,17 @@
      "ply": 1,
      "ucci": "e4f4",
      "solver": false,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f4",
+        "f9"
+       ],
+       "detail": "黑车 f4 将军的同时攻击 f9；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 2,
@@ -43637,6 +43689,15 @@
         "c6"
        ],
        "detail": "黑炮 c5 吃掉 红相 c0；对方可用 c6c0 合法回吃，构成可验证的交换。"
+      },
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "c0",
+        "c6"
+       ],
+       "detail": "黑炮 c0 将军的同时攻击 c6；将帅与该车、马或炮构成捉双，吃子可安全完成。"
       }
      ]
     },
@@ -44000,6 +44061,15 @@
      "ucci": "e6f4",
      "solver": false,
      "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "f4",
+        "g2"
+       ],
+       "detail": "黑马 f4 将军的同时攻击 g2；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      },
       {
        "id": "discovered_attack",
        "label_zh": "闪击",
@@ -45243,7 +45313,8 @@
    "url": "https://play.xiangqi.com/puzzle/qAD6yo/P",
    "status": "matched",
    "tactics": [
-    "discovered_attack"
+    "discovered_attack",
+    "fork"
    ],
    "fens": [
     "4ka3/1r1ca4/9/pNR2P2p/9/4C4/r5c1P/4B4/4A4/4KAB2 b - - 9 40",
@@ -45290,7 +45361,17 @@
      "ply": 4,
      "ucci": "b6d7",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "d7",
+        "b8"
+       ],
+       "detail": "红马 d7 将军的同时攻击 b8；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -45659,7 +45740,8 @@
    "url": "https://play.xiangqi.com/puzzle/RZjb8R/P",
    "status": "matched",
    "tactics": [
-    "exchange"
+    "exchange",
+    "fork"
    ],
    "fens": [
     "3ak1br1/9/b1nac4/p1R1p3p/3N5/9/P3c1P1P/4BC3/4A4/1rC1KAB1R b - - 10 17",
@@ -45716,7 +45798,17 @@
      "ply": 4,
      "ucci": "c6e6",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "e6",
+        "e3"
+       ],
+       "detail": "红车 e6 将军的同时攻击 e3；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 5,
@@ -46077,8 +46169,10 @@
     "e2e1"
    ],
    "url": "https://play.xiangqi.com/puzzle/RPAJ2o/P",
-   "status": "unmatched",
-   "tactics": [],
+   "status": "matched",
+   "tactics": [
+    "fork"
+   ],
    "fens": [
     "5a3/5k3/4R4/p8/5N2p/9/P8/5K2c/3CA4/2BA2r2 w - - 1 55",
     "5a3/5k3/4R4/p8/5N2p/9/P2C5/5K2c/4A4/2BA2r2 b - - 2 55",
@@ -46124,7 +46218,17 @@
      "ply": 6,
      "ucci": "g2g5",
      "solver": true,
-     "occurrences": []
+     "occurrences": [
+      {
+       "id": "fork",
+       "label_zh": "捉双",
+       "squares": [
+        "g5",
+        "f5"
+       ],
+       "detail": "黑车 g5 将军的同时攻击 f5；将帅与该车、马或炮构成捉双，吃子可安全完成。"
+      }
+     ]
     },
     {
      "ply": 7,

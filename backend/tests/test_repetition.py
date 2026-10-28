@@ -1,5 +1,5 @@
 from backend.app.board import apply_move, build_piece_identity
-from backend.app.repetition import adjudicate, classify_cycle, forced_rook_pins, position_key
+from backend.app.repetition import assess_move, adjudicate, classify_cycle, forced_rook_pins, position_key
 
 
 def _positions(count: int) -> list[dict]:
@@ -29,11 +29,17 @@ def test_position_key_ignores_fen_clocks_but_keeps_side_to_move() -> None:
     assert position_key(f"{board} w - - 0 1") != position_key(f"{board} b - - 0 1")
 
 
-def test_third_occurrence_blocks_only_higher_ranked_check_side() -> None:
+def test_third_occurrence_warns_before_blocking_higher_ranked_check_side() -> None:
     decision = adjudicate(_positions(3), _actions([IDLE, CHECK], [IDLE, IDLE]))
+    assert decision["status"] == "warning"
+    assert decision["restricted_side"] is None
+    assert decision["occurrence_count"] == 3
+
+
+def test_fourth_occurrence_blocks_only_higher_ranked_check_side() -> None:
+    decision = adjudicate(_positions(4), _actions([IDLE, IDLE, CHECK], [IDLE, IDLE, IDLE]))
     assert decision["status"] == "must_change"
     assert decision["restricted_side"] == "red"
-    assert decision["occurrence_count"] == 3
 
 
 def test_chase_tracks_a_moving_piece_by_identity_not_square() -> None:
@@ -66,7 +72,7 @@ def test_equal_behaviour_warns_on_third_and_draws_on_fourth_occurrence() -> None
 def test_pinned_rook_chase_outranks_an_ordinary_chase() -> None:
     pinned = {"is_check": False, "chase_target_ids": ["black-rook:1"], "pinned_rook_chase_target_ids": ["black-rook:1"]}
     ordinary = {"is_check": False, "chase_target_ids": ["red-rook:1"]}
-    decision = adjudicate(_positions(3), _actions([pinned, pinned], [ordinary, ordinary]))
+    decision = adjudicate(_positions(4), _actions([pinned, pinned, pinned], [ordinary, ordinary, ordinary]))
     assert decision["status"] == "must_change"
     assert decision["restricted_side"] == "red"
 
@@ -80,3 +86,25 @@ def test_wocao_horse_pin_requires_the_rook_to_be_its_only_capture() -> None:
     identities = build_piece_identity(after_red_rook_move)
     pins = forced_rook_pins(after_red_rook_move, identities, "red")
     assert pins == {identities["f8"]: identities["g8"]}
+
+
+def test_single_move_assessment_reports_an_immediate_legal_chase() -> None:
+    after_red_move = "3k5/9/9/9/4R4/4n4/9/9/9/4K4 b - - 0 1"
+    identities = build_piece_identity(after_red_move)
+
+    assessment = assess_move(after_red_move, identities, "red")
+
+    assert assessment.is_check is False
+    assert assessment.chase_pairs == ((identities["e5"], identities["e4"]),)
+    assert assessment.chase_target_ids == (identities["e4"],)
+
+
+def test_single_move_assessment_does_not_score_the_following_exchange() -> None:
+    # Red can immediately capture the black rook. Black's horse could then
+    # recapture, but that later reply is deliberately outside this rule.
+    after_red_move = "3k5/9/9/9/4R4/4r4/2n6/9/9/4K4 b - - 0 1"
+    identities = build_piece_identity(after_red_move)
+
+    assessment = assess_move(after_red_move, identities, "red")
+
+    assert (identities["e5"], identities["e4"]) in assessment.chase_pairs

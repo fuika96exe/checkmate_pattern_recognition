@@ -3,7 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 
 from .board import START_FEN, build_piece_identity, parse_fen
-from .repetition import position_key, qualifying_chase_pairs
+from .repetition import position_key
 from .models import (
     ChoiceOccurrence,
     Classification,
@@ -149,6 +149,11 @@ FIVE_CANNON_IDS = (
     "five_nine_cannon",
 )
 
+ROOK_STYLE_IDS = {
+    "horizontal_rook", "straight_rook", "river_rook",
+    "riding_river_rook", "cross_river_rook",
+}
+
 PALCORNER_MOVES = {
     "red": {"h2f2": "right", "b2d2": "left"},
     "black": {"b7d7": "right", "h7f7": "left"},
@@ -216,6 +221,7 @@ def _add_shape(
     wing: str | None = None,
     source: str = "fen",
     lock_group: str | None = None,
+    source_piece_id: str | None = None,
 ) -> bool:
     """Record a first-formed shape, optionally locking a mutually-exclusive group."""
     if _has_shape(side_memory, shape_id):
@@ -243,11 +249,42 @@ def _add_shape(
             wing=wing,
             source=source,
             lock_group=lock_group,
+            source_piece_id=source_piece_id,
         )
     )
     if lock_group:
         side_memory.locks[f"shape:{lock_group}"] = shape_id
     return True
+
+
+def _replace_rook_style(
+    side_memory: SideMemory,
+    shape_id: str,
+    ply: int,
+    *,
+    wing: str,
+    source_piece_id: str | None,
+    source: str = "move",
+) -> None:
+    """Retain only the latest opening descriptor for this physical rook."""
+    if source_piece_id:
+        prior = next(
+            (
+                item for item in reversed(side_memory.formed_shapes)
+                if item.source_piece_id == source_piece_id and item.id in ROOK_STYLE_IDS
+            ),
+            None,
+        )
+        if prior and prior.wing in {"left", "right"}:
+            wing = prior.wing
+        side_memory.formed_shapes[:] = [
+            item for item in side_memory.formed_shapes
+            if not (item.source_piece_id == source_piece_id and item.id in ROOK_STYLE_IDS)
+        ]
+    _add_shape(
+        side_memory, shape_id, ply, wing=wing, source=source,
+        source_piece_id=source_piece_id,
+    )
 
 
 def detect_current_shapes(fen: str) -> dict[str, list[str]]:
@@ -690,6 +727,7 @@ def _promote_shapes(
     ply: int,
     moving_side: str | None,
     ucci: str | None,
+    moving_piece_id: str | None = None,
 ) -> None:
     """Promote position/move evidence into first-formed, persistent shapes."""
     for side in ("red", "black"):
@@ -745,7 +783,8 @@ def _promote_shapes(
             if before.get(from_square) == rook_piece and after.get(to_square) == rook_piece:
                 stage = _river_stage_for_destination(side, to_square)
                 if stage:
-                    _add_shape(side_memory, stage, ply, source="move", lock_group="rook_river_stage")
+                    wing = "left" if from_square[0] == ("a" if side == "red" else "i") else "right"
+                    _replace_rook_style(side_memory, stage, ply, wing=wing, source_piece_id=moving_piece_id)
         elif not ucci:
             for shape_id, current_id in (
                 ("river_rook", "river_rook_shape"),
@@ -758,20 +797,24 @@ def _promote_shapes(
 
         if _detect_flat_cannon_exchange(previous_fen, next_fen, side, ucci, side_memory):
             _add_shape(side_memory, "flat_cannon_exchange", ply, source="move")
+        original_rook_square = (
+            {"red": {"a0", "i0"}, "black": {"i9", "a9"}}[side]
+        )
+        rook_left_home_rank = bool(ucci and ucci[:2] in original_rook_square)
         if {"left_horizontal_rook_move", "right_horizontal_rook_move"}.issubset(facts):
             _add_shape(side_memory, "double_horizontal_rooks", ply, source="move")
-        elif "left_horizontal_rook_move" in facts:
-            _add_shape(side_memory, "horizontal_rook", ply, wing="left", source="move")
-        elif "right_horizontal_rook_move" in facts:
-            _add_shape(side_memory, "horizontal_rook", ply, wing="right", source="move")
+        elif rook_left_home_rank and "left_horizontal_rook_move" in facts:
+            _replace_rook_style(side_memory, "horizontal_rook", ply, wing="left", source_piece_id=moving_piece_id)
+        elif rook_left_home_rank and "right_horizontal_rook_move" in facts:
+            _replace_rook_style(side_memory, "horizontal_rook", ply, wing="right", source_piece_id=moving_piece_id)
         elif "horizontal_rook_left" in current:
             _add_shape(side_memory, "horizontal_rook", ply, wing="left", source="fen")
         elif "horizontal_rook_right" in current:
             _add_shape(side_memory, "horizontal_rook", ply, wing="right", source="fen")
-        if "left_straight_rook_move" in facts:
-            _add_shape(side_memory, "straight_rook", ply, wing="left", source="move")
-        if "right_straight_rook_move" in facts:
-            _add_shape(side_memory, "straight_rook", ply, wing="right", source="move")
+        if rook_left_home_rank and "left_straight_rook_move" in facts:
+            _replace_rook_style(side_memory, "straight_rook", ply, wing="left", source_piece_id=moving_piece_id)
+        if rook_left_home_rank and "right_straight_rook_move" in facts:
+            _replace_rook_style(side_memory, "straight_rook", ply, wing="right", source_piece_id=moving_piece_id)
 
     # 緩開車 is a historical timing fact rather than a current-board shape.
     # It may be promoted after the third move if the red central-cannon system
@@ -948,6 +991,13 @@ def _collect_modifiers(
     )
     if black_horse_composite:
         ids.difference_update(HORSE_MODIFIERS)
+        # A screen-horse system is named from its horse formation and its
+        # subsequent defense.  Its delayed rook development is not a valid
+        # 屏風馬 modifier, even when the historical timing fact was recorded.
+        ids.discard("slow_rook")
+        # A home-rank rook shift is development evidence, not a display name
+        # for the 屏風馬／反宮馬／單提馬 family.
+        ids.discard("straight_rook")
     elif "double_proper_horses" in ids:
         ids.difference_update({"seven_route_horse", "edge_horse_left", "edge_horse_right"})
     elif "seven_route_horse" in ids:
@@ -997,6 +1047,25 @@ def _collect_modifiers(
         "fly_right_elephant",
     ]
     return [shape_id for shape_id in order if shape_id in ids]
+
+
+def _shapes_for_naming(shapes: dict[str, list[str]]) -> dict[str, list[str]]:
+    """Return current geometry with superseded pawn labels removed.
+
+    A two-headed snake is the final formation of both wing pawns/soldiers.
+    The individual advance facts remain in ``current_shapes`` for evidence and
+    matchup analysis, but must not select a stale "進三／七兵" name.
+    """
+    result = {side: list(ids) for side, ids in shapes.items()}
+    for side, ids in result.items():
+        if "two_headed_snake" in ids:
+            superseded = (
+                {"advance_three_pawn", "advance_seven_pawn"}
+                if side == "red"
+                else {"advance_three_soldier", "advance_seven_soldier"}
+            )
+            result[side] = [shape_id for shape_id in ids if shape_id not in superseded]
+    return result
 
 
 def _modifier_text(modifier_ids: list[str]) -> str:
@@ -1072,26 +1141,26 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
     mapping = {
         "r1bakabr1/9/1cn3nc1/p3p2Rp/2p3p2/9/P1P1P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake",
-            "中炮过河车七路马(其他)对屏风马两头蛇"
+            "中炮过河车七路马对屏风马两头蛇"
         ),
         "r1bakabr1/9/1cn3nc1/p3p2Rp/2p3p2/9/P1P1P1P1P/1CN1C1N2/R8/2BAKAB2": (
             "central_cannon_pawn_ranked_chariot_left_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake",
-            "中炮过河车七路马对屏风马两头蛇——红左横车(对黑其他)"
+            "中炮过河车七路马对屏风马两头蛇——红左横车"
         ),
         # Move 12 of C22
         "r1bakabr1/9/2n3nc1/pc2p2Rp/2p3p2/9/P1P1P1P1P/1CN1C1N2/R8/2BAKAB2": (
             "central_cannon_pawn_ranked_chariot_left_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake_high_cannon",
-            "中炮过河车七路马对屏风马两头蛇——红左横车(其他)对黑高右炮"
+            "中炮过河车七路马对屏风马两头蛇——红左横车对黑高右炮"
         ),
         # Move 13 of C22
         "r1bakabr1/9/2n3nc1/pc2p3p/2p3p2/7R1/P1P1P1P1P/1CN1C1N2/R8/2BAKAB2": (
             "central_cannon_pawn_ranked_chariot_left_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake_high_cannon",
-            "中炮过河车七路马对屏风马两头蛇——红左横车(其他)对黑高右炮"
+            "中炮过河车七路马对屏风马两头蛇——红左横车对黑高右炮"
         ),
         # Move 14 of C22
         "r2akabr1/9/2n1b1nc1/pc2p3p/2p3p2/7R1/P1P1P1P1P/1CN1C1N2/R8/2BAKAB2": (
             "central_cannon_pawn_ranked_chariot_left_ranked_chariot_7th_file_horse_vs_screen_horse_double_headed_snake_high_cannon",
-            "中炮过河车七路马对屏风马两头蛇——红左横车(其他)对黑高右炮"
+            "中炮过河车七路马对屏风马两头蛇——红左横车对黑高右炮"
         ),
         "r2akabr1/9/2n1b1nc1/pc2p3p/2p3p2/6PR1/P1P1P3P/1CN1C1N2/R8/2BAKAB2": (
             "central_cannon_pawn_ranked_chariot_left_ranked_chariot_7th_file_horse_with_3rd_pawn_exchange_vs_screen_horse_double_headed_snake_high_cannon",
@@ -1103,7 +1172,7 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1cn3nc1/p1p1p2Rp/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement",
-            "中炮过河车互进七兵对屏风马(其他)"
+            "中炮过河车互进七兵对屏风马"
         ),
         "r1bak1br1/4a4/1cn3nc1/p1p1p2Rp/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_early_advisor",
@@ -1131,19 +1200,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1cn4c1/p1p1p2Rp/5np2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_left_riverbank_horse",
-            "中炮过河车互进七兵(其他)对屏风马left马盘河" # Use Chinese translation exactly: 中炮过河车互进七兵(其他)对屏风马左马盘河
+            "中炮过河车互进七兵对屏风马left马盘河" # Use Chinese translation exactly: 中炮过河车互进七兵对屏风马左马盘河
         ),
         "r1bakabr1/9/1cn4c1/p1p1p2Rp/5np2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_vs_screen_horse_7th_pawn_advancement_left_riverbank_horse",
-            "中炮过河车互进七兵对屏风马左马盘河——红七路马(对黑其他)"
+            "中炮过河车互进七兵对屏风马左马盘河——红七路马"
         ),
         "r2akabr1/9/1cn1b2c1/p1p1p2Rp/5np2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_vs_screen_horse_7th_pawn_advancement_left_riverbank_horse_right_central_elephant",
-            "中炮过河车互进七兵对屏风马左马盘河——红七路马(其他)对黑飞右象"
+            "中炮过河车互进七兵对屏风马左马盘河——红七路马对黑飞右象"
         ),
         "r1baka1r1/9/1cn1b2c1/p1p1p2Rp/5np2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_vs_screen_horse_7th_pawn_advancement_left_riverbank_horse_right_central_elephant",
-            "中炮过河车互进七兵对屏风马左马盘河——红七路马(其他)对黑飞右象"
+            "中炮过河车互进七兵对屏风马左马盘河——红七路马对黑飞右象"
         ),
         "r2akabr1/9/1cn1b2c1/p1p1p2Rp/5np2/2P6/PC2P1P1P/2N1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_with_high_left_cannon_vs_screen_horse_7th_pawn_advancement_left_riverbank_horse_right_central_elephant",
@@ -1163,31 +1232,31 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1cn3n1c/p1p1p2Rp/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange",
-            "中炮过河车互进七兵对屏风马平炮兑车(其他)"
+            "中炮过河车互进七兵对屏风马平炮兑车"
         ),
         "r1bakabr1/9/c1n3nc1/p1p1p2Rp/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange",
-            "中炮过河车互进七兵对屏风马平炮兑车(其他)"
+            "中炮过河车互进七兵对屏风马平炮兑车"
         ),
         "r1bakabr1/8c/1cn3n2/p1p1p1R1p/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_side_cannon_retreating",
-            "中炮过河车互进七兵对屏风马平炮兑车——(红其他对)黑退边炮"
+            "中炮过河车互进七兵对屏风马平炮兑车——黑退边炮"
         ),
         "r1bakabr1/c8/2n3nc1/p1p1p1R1p/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_side_cannon_retreating",
-            "中炮过河车互进七兵对屏风马平炮兑车——(红其他对)黑退边炮"
+            "中炮过河车互进七兵对屏风马平炮兑车——黑退边炮"
         ),
         "r1bakabr1/8c/1cn3n2/p1p1p1R1p/6p2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_side_cannon_retreating",
-            "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮(其他)"
+            "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮"
         ),
         "r1bakabr1/c8/2n3nc1/p1p1p1R1p/6p2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_side_cannon_retreating",
-            "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮(其他)"
+            "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮"
         ),
         "r1b1kabr1/4a3c/1cn3n2/p1p1p1R1p/6p2/2P6/P3P1P1P/1CN1C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_7th_filed_horse_edge_cannon_for_chariot_exchange_right_advisor",
-            "中炮过河车互进七兵对屏风马平炮兑车——红七路马(其他)对黑退边炮上右士"
+            "中炮过河车互进七兵对屏风马平炮兑车——红七路马对黑退边炮上右士"
         ),
         "r1b1kabr1/4a3c/1cn3n2/p1p1p1R1p/6p2/2PN5/P3P1P1P/1C2C1N2/9/R1BAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_left_riverbank_horse_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_right_advisor",
@@ -1195,7 +1264,7 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1b1kabr1/4a3c/1cn3n2/p1p1p1R1p/6p2/2P6/P3P1P1P/C3C1N2/9/RNBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_left_side_cannon_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_right_advisor",
-            "中炮过河车互进七兵对屏风马平炮兑车——红左边炮对黑退边炮上右士(其他)"
+            "中炮过河车互进七兵对屏风马平炮兑车——红左边炮对黑退边炮上右士"
         ),
         "1rb1kabr1/4a3c/1cn3n2/p1p1p1R1p/6p2/2P6/P3P1P1P/C3C1N2/R8/1NBAKAB2": (
             "central_cannon_pawn_ranked_chariot_with_7th_pawn_advancement_left_side_cannon_vs_screen_horse_7th_pawn_advancement_edge_cannon_for_chariot_exchange_right_advisor_right_filed_chariot",
@@ -1239,7 +1308,7 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "1rbakabr1/9/1cn3nc1/p1p1p3p/6p2/9/P1P1P1P1P/N2CC1N2/9/1RBAKABR1": (
             "five_six_cannon_left_side_horse_vs_screen_horse_7th_pawn_right_straight_chariot",
-            "五六炮左边马对屏风马——黑进７卒右直车(其他)"
+            "五六炮左边马对屏风马——黑进７卒右直车"
         ),
         "1rbakabr1/9/2n3nc1/p1p1p3p/6p2/9/PcP1P1P1P/N2CC1N2/9/1RBAKABR1": (
             "five_six_cannon_left_side_horse_vs_screen_horse_7th_pawn_right_straight_chariot_right_ranked_cannon",
@@ -1255,27 +1324,27 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1cn3nc1/p1p1p3p/6p2/9/P1P1P1P1P/N1C1C1N2/9/R1BAKABR1": (
             "57_cannons_others_vs_screen_horse_defense_with_7th_pawn_advancement",
-            "五七炮对屏风马进７卒(其他)"
+            "五七炮对屏风马进７卒"
         ),
         "1rbakab1r/9/1cn3nc1/p3p1p1p/2p6/9/P1P1P1P1P/2N1C1C1N/9/1RBAKAB1R": (
             "57_cannons_others_vs_screen_horse_defense_with_7th_pawn_advancement",
-            "五七炮对屏风马进７卒(其他)"
+            "五七炮对屏风马进７卒"
         ),
         "1rbakabr1/9/1cn3nc1/p1p1p3p/6p2/9/P1P1P1P1P/N1C1C1N2/9/R1BAKABR1": (
             "57_cannons_others_vs_screen_horse_defense_with_7th_pawn_advancement_and_right_filed_chariot",
-            "五七炮对屏风马进７卒——(红其他对)黑右直车"
+            "五七炮对屏风马进７卒——黑右直车"
         ),
         "1rbakabr1/9/1cn3nc1/p3p1p1p/2p6/9/P1P1P1P1P/2N1C1C1N/9/1RBAKAB1R": (
             "57_cannons_others_vs_screen_horse_defense_with_7th_pawn_advancement_and_right_filed_chariot",
-            "五七炮对屏风马进７卒——(红其他对)黑右直车"
+            "五七炮对屏风马进７卒——黑右直车"
         ),
         "1rbakabr1/9/1cn3nc1/p1p1p3p/6p2/9/P1P1P1P1P/N1C1C1N2/9/1RBAKABR1": (
             "57_cannons_left_filed_chariot_vs_screen_horse_defense_with_7th_pawn_advancement_and_right_filed_chariot",
-            "五七炮对屏风马进７卒——红左直车对黑右直车(其他)"
+            "五七炮对屏风马进７卒——红左直车对黑右直车"
         ),
         "1rbakabr1/9/1cn3nc1/p3p1p1p/2p6/9/P1P1P1P1P/2N1C1C1N/9/1RBAKABR1": (
             "57_cannons_left_filed_chariot_vs_screen_horse_defense_with_7th_pawn_advancement_and_right_filed_chariot",
-            "五七炮对屏风马进７卒——红左直车对黑右直车(其他)"
+            "五七炮对屏风马进７卒——红左直车对黑右直车"
         ),
         "1rbakabr1/9/1cn3n2/p1p1p3p/6p2/9/P1P1P1PcP/N1C1C1N2/9/1RBAKABR1": (
             "57_cannons_left_filed_chariot_vs_screen_horse_defense_with_7th_pawn_advancement_right_filed_chariot_and_left_pawn_ranked_cannon",
@@ -1319,19 +1388,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1cn4c1/p1p1p3p/6pn1/1CPN5/P3P1P1P/4C1N2/9/R1BAKAB1R": (
             "central_cannon_with_riverbank_cannon_left_riverbank_horse_others_vs_screen_horse_defense_with_left_riverbank_horse_variation",
-            "中炮巡河炮对屏风马——红左马盘河(其他)对黑左马外盘河"
+            "中炮巡河炮对屏风马——红左马盘河对黑左马外盘河"
         ),
         "1rbakab1r/9/1c4nc1/p3p1p1p/1np6/5NPC1/P1P1P3P/2N1C4/9/R1BAKAB1R": (
             "central_cannon_with_riverbank_cannon_left_riverbank_horse_others_vs_screen_horse_defense_with_left_riverbank_horse_variation",
-            "中炮巡河炮对屏风马——红左马盘河(其他)对黑左马外盘河"
+            "中炮巡河炮对屏风马——红左马盘河对黑左马外盘河"
         ),
         "rnbakabnr/9/1c2c4/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/9/RNBAKABNR": (
             "same_direction_cannons_deferred_chariot_vs_others",
-            "顺炮缓开车对其他"
+            "顺炮局"
         ),
         "rnbakabnr/9/4c2c1/p1p1p1p1p/9/9/P1P1P1P1P/4C2C1/9/RNBAKABNR": (
             "same_direction_cannons_deferred_chariot_vs_others",
-            "顺炮缓开车对其他"
+            "顺炮局"
         ),
         "rnbakabnr/9/1c2c4/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/8R/RNBAKABN1": (
             "same_direction_cannons_ranked_vs_deferred_chariot_including_sdc_rr_vs_rr",
@@ -1351,19 +1420,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabr1/9/1c2c1n2/p1p1p1p1p/9/9/P1P1P1P1P/1C2C1N2/8R/RNBAKAB2": (
             "same_direction_cannons_ranked_chariot_vs_filed_chariot_others",
-            "顺炮横车对直车(其他)"
+            "顺炮横车对直车"
         ),
         "1rbakabnr/9/2n1c2c1/p1p1p1p1p/9/9/P1P1P1P1P/2N1C2C1/R8/2BAKABNR": (
             "same_direction_cannons_ranked_chariot_vs_filed_chariot_others",
-            "顺炮横车对直车(其他)"
+            "顺炮横车对直车"
         ),
         "rnbakab2/8r/1c2c1n2/p1p1p1p1p/9/9/P1P1P1P1P/1C2C1N2/9/RNBAKABR1": (
             "same_direction_cannons_filed_chariot_others_vs_ranked_chariot",
-            "顺炮直车(其他)对横车"
+            "顺炮直车对横车"
         ),
         "2bakabnr/r8/2n1c2c1/p1p1p1p1p/9/9/P1P1P1P1P/2N1C2C1/9/1RBAKABNR": (
             "same_direction_cannons_filed_chariot_others_vs_ranked_chariot",
-            "顺炮直车(其他)对横车"
+            "顺炮直车对横车"
         ),
         "rnbakab2/8r/1c2c1n2/p1p1p1p1p/9/9/P1P1P1P1P/1C2C1N2/4A4/RNB1KABR1": (
             "same_direction_cannons_filed_chariot_with_early_advisor_vs_ranked_chariot",
@@ -1431,11 +1500,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabr1/9/4c1n2/p1p1p1p1p/9/6P2/P1P1P2cP/1C2C1N2/9/RNBAKABR1": (
             "central_cannon_with_3rd_pawn_advancement_others_vs_left_cannon_blockade_with_deferred_opposite_direction_cannon_variation",
-            "中炮进三兵(其他)对左炮封车转列炮"
+            "中炮进三兵对左炮封车转列炮"
         ),
         "1rbakabnr/9/2n1c4/p1p1p1p1p/9/2P6/Pc2P1P1P/2N1C2C1/9/1RBAKABNR": (
             "central_cannon_with_3rd_pawn_advancement_others_vs_left_cannon_blockade_with_deferred_opposite_direction_cannon_variation",
-            "中炮进三兵(其他)对左炮封车转列炮"
+            "中炮进三兵对左炮封车转列炮"
         ),
         "rnbakabr1/9/4c1n2/p1p1p1p1p/9/5NP2/P1P1P2cP/1C2C4/9/RNBAKABR1": (
             "central_cannon_with_3rd_pawn_advancement_right_riverbank_horse_vs_left_cannon_blockade_with_deferred_opposite_direction_cannon_variation",
@@ -1479,19 +1548,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabnr/9/4c2c1/p1p1p1p1p/9/9/P1P1P1P1P/1C2C4/9/RNBAKABNR": (
             "opposite_direction_cannons",
-            "中炮对列炮"
+            "列炮局"
         ),
         "rnbakabnr/9/1c2c4/p1p1p1p1p/9/9/P1P1P1P1P/4C2C1/9/RNBAKABNR": (
             "opposite_direction_cannons",
-            "中炮对列炮"
+            "列炮局"
         ),
         "rnbakabnr/9/1c5c1/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_vs_others",
-            "仙人指路局(对其他)"
+            "仙人指路局"
         ),
         "rnbakabnr/9/1c5c1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_vs_others",
-            "仙人指路局(对其他)"
+            "仙人指路局"
         ),
         "rnbakabnr/9/1c2c4/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_vs_central_cannon",
@@ -1551,11 +1620,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabnr/9/1cn4c1/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_right_horse_advancement",
-            "仙人指路(其他)对进右马"
+            "仙人指路对进右马"
         ),
         "rnbakab1r/9/1c4nc1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_right_horse_advancement",
-            "仙人指路(其他)对进右马"
+            "仙人指路对进右马"
         ),
         "r1bakabnr/9/1cn4c1/p1p1p1p1p/9/6P2/P1P1P3P/1C4NC1/9/RNBAKAB1R": (
             "pawn_with_right_horse_advancement_others_vs_right_horse_advancement",
@@ -1567,11 +1636,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabnr/9/1cn4c1/p1p1p1p1p/9/2P3P2/P3P3P/1C5C1/9/RNBAKABNR": (
             "doubleheaded_snake_pawn_formation_vs_right_horse_advancement_others",
-            "两头蛇对进右马(其他)"
+            "两头蛇对进右马"
         ),
         "rnbakab1r/9/1c4nc1/p1p1p1p1p/9/2P3P2/P3P3P/1C5C1/9/RNBAKABNR": (
             "doubleheaded_snake_pawn_formation_vs_right_horse_advancement_others",
-            "两头蛇对进右马(其他)"
+            "两头蛇对进右马"
         ),
         "r1bakabnr/9/1cn3c2/p1p1p1p1p/9/2P3P2/P3P3P/1C5C1/9/RNBAKABNR": (
             "doubleheaded_snake_pawn_formation_vs_right_horse_advancement_with_thundering_defense_variation",
@@ -1583,11 +1652,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabnr/9/1c4c2/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_thundering_defense",
-            "仙人指路(其他)对卒底炮"
+            "仙人指路对卒底炮"
         ),
         "rnbakabnr/9/2c4c1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_thundering_defense",
-            "仙人指路(其他)对卒底炮"
+            "仙人指路对卒底炮"
         ),
         "rnbakabnr/9/1c4c2/p1p1p1p1p/9/6P2/P1P1P3P/1C2C4/9/RNBAKABNR": (
             "pawn_with_right_central_cannon_vs_thundering_defense",
@@ -1599,11 +1668,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabnr/9/1c4c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2C1/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_others",
-            "仙人指路转左中炮对卒底炮(其他)"
+            "仙人指路转左中炮对卒底炮"
         ),
         "rnbakabnr/9/2c4c1/p1p1p1p1p/9/2P6/P3P1P1P/1C2C4/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_others",
-            "仙人指路转左中炮对卒底炮(其他)"
+            "仙人指路转左中炮对卒底炮"
         ),
         "rnbakabnr/9/4c1c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2C1/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_with_same_direction_cannons_variation",
@@ -1615,27 +1684,27 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabnr/9/1c5c1/p3p1p1p/2p6/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_vs_pawn_with_metamorphosis_to_other_openings",
-            "对兵局(转其他)"
+            "对兵局"
         ),
         "rnbakabnr/9/1c5c1/p1p1p3p/6p2/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_vs_pawn_with_metamorphosis_to_other_openings",
-            "对兵局(转其他)"
+            "对兵局"
         ),
         "rnbakabnr/9/1c5c1/p3p1p1p/2p6/6P2/P1P1P3P/1C4NC1/9/RNBAKAB1R": (
             "pawn_with_right_horse_variation_vs_pawn_others",
-            "对兵互进右马局(红走其他)"
+            "对兵互进右马局"
         ),
         "rnbakabnr/9/1c5c1/p1p1p3p/6p2/2P6/P3P1P1P/1CN4C1/9/R1BAKABNR": (
             "pawn_with_right_horse_variation_vs_pawn_others",
-            "对兵互进右马局(红走其他)"
+            "对兵互进右马局"
         ),
         "r1bakabnr/9/1cn4c1/p3p1p1p/2p6/6P2/P1P1P3P/1C4NC1/9/RNBAKAB1R": (
             "pawn_with_right_horse_variation_others_vs_pawn_with_right_horse_variation",
-            "对兵互进右马局(红走其他)"
+            "对兵互进右马局"
         ),
         "rnbakab1r/9/1c4nc1/p1p1p3p/6p2/2P6/P3P1P1P/1CN4C1/9/R1BAKABNR": (
             "pawn_with_right_horse_variation_others_vs_pawn_with_right_horse_variation",
-            "对兵互进右马局(红走其他)"
+            "对兵互进右马局"
         ),
         "r1bakabnr/9/1cn4c1/p3p1p1p/2p6/6P2/P1P1P3P/1C4NC1/8R/RNBAKAB2": (
             "pawn_with_right_horse_right_ranked_chariot_variation_vs_pawn_with_right_horse_variation",
@@ -1655,11 +1724,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbakabnr/9/1c5c1/p3p1p1p/2p6/6P2/P1P1P3P/2C4C1/9/RNBAKABNR": (
             "pawn_with_thundering_cannon_thundering_defense_variation_vs_pawn_others",
-            "对兵转兵底炮(对其他)"
+            "对兵转兵底炮"
         ),
         "rnbakabnr/9/1c5c1/p1p1p3p/6p2/2P6/P3P1P1P/1C4C2/9/RNBAKABNR": (
             "pawn_with_thundering_cannon_thundering_defense_variation_vs_pawn_others",
-            "对兵转兵底炮(对其他)"
+            "对兵转兵底炮"
         ),
         "rnbakabnr/9/4c2c1/p3p1p1p/2p6/6P2/P1P1P3P/2C4C1/9/RNBAKABNR": (
             "pawn_with_thundering_cannon_thundering_defense_variation_vs_pawn_with_right_central_cannon_variation",
@@ -1679,19 +1748,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rn1akabnr/9/1c2b2c1/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_elephant_opening",
-            "仙人指路(其他)对飞象"
+            "仙人指路对飞象"
         ),
         "rnbaka1nr/9/1c2b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_elephant_opening",
-            "仙人指路(其他)对飞象"
+            "仙人指路对飞象"
         ),
         "rnbaka1nr/9/1c2b2c1/p1p1p1p1p/9/6P2/P1P1P3P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_elephant_opening",
-            "仙人指路(其他)对飞象"
+            "仙人指路对飞象"
         ),
         "rn1akabnr/9/1c2b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C5C1/9/RNBAKABNR": (
             "pawn_others_vs_elephant_opening",
-            "仙人指路(其他)对飞象"
+            "仙人指路对飞象"
         ),
         "rn1akabnr/9/1c2b2c1/p1p1p1p1p/9/6P2/P1P1P3P/1C4NC1/9/RNBAKAB1R": (
             "pawn_with_rt_filed_horse_vs_elephant_opening",
@@ -1727,19 +1796,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rn1akabnr/9/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2C1/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_with_right_central_elephant_others",
-            "仙人指路转左中炮(其他)对卒底炮飞右象"
+            "仙人指路转左中炮对卒底炮飞右象"
         ),
         "rnbaka1nr/9/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C2C4/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_with_right_central_elephant_others",
-            "仙人指路转左中炮(其他)对卒底炮飞右象"
+            "仙人指路转左中炮对卒底炮飞右象"
         ),
         "rn1akabnr/9/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2CN/9/RNBAKAB1R": (
             "pawn_with_left_central_cannon_right_side_horse_variation_vs_thundering_defense_with_right_central_elephant_others",
-            "仙人指路转左中炮对卒底炮飞右象——红右边马(对黑其他)"
+            "仙人指路转左中炮对卒底炮飞右象——红右边马"
         ),
         "rnbaka1nr/9/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/NC2C4/9/R1BAKABNR": (
             "pawn_with_left_central_cannon_right_side_horse_variation_vs_thundering_defense_with_right_central_elephant_others",
-            "仙人指路转左中炮对卒底炮飞右象——红右边马(对黑其他)"
+            "仙人指路转左中炮对卒底炮飞右象——红右边马"
         ),
         "rn1akab1r/9/1c2b1c1n/p1p1p1p1p/9/6P2/P1P1P3P/4C2CN/9/RNBAKAB1R": (
             "pawn_with_left_central_cannon_right_side_horse_variation_vs_thundering_defense_with_right_central_elephant_with_left_side_horse_variation",
@@ -1751,11 +1820,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2C1/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant",
-            "仙人指路转左中炮(其他)对卒底炮飞左象"
+            "仙人指路转左中炮对卒底炮飞左象"
         ),
         "rn1akabnr/9/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C2C4/9/RNBAKABNR": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant",
-            "仙人指路转左中炮(其他)对卒底炮飞左象"
+            "仙人指路转左中炮对卒底炮飞左象"
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/4C2C1/4A4/RNBAK1BNR": (
             "pawn_with_left_central_cannon_and_early_advisor_variation_vs_thundering_defense_with_left_central_elephant",
@@ -1767,27 +1836,27 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/2N1C2C1/9/R1BAKABNR": (
             "pawn_with_left_central_cannon_and_left_file_horse_variation_vs_thundering_defense_with_left_central_elephant_others",
-            "仙人指路转左中炮对卒底炮飞左象——红进左马(对黑其他)"
+            "仙人指路转左中炮对卒底炮飞左象——红进左马"
         ),
         "rn1akabnr/9/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB1R": (
             "pawn_with_left_central_cannon_and_left_file_horse_variation_vs_thundering_defense_with_left_central_elephant_others",
-            "仙人指路转左中炮对卒底炮飞左象——红进左马(对黑其他)"
+            "仙人指路转左中炮对卒底炮飞左象——红进左马"
         ),
         "1nbaka1nr/r8/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/2N1C2C1/9/R1BAKABNR": (
             "pawn_with_left_central_cannon_and_left_file_horse_variation_others_vs_thundering_defense_with_left_central_elephant_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红进左马(其他)对黑右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红进左马对黑右横车"
         ),
         "rn1akabn1/8r/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB1R": (
             "pawn_with_left_central_cannon_and_left_file_horse_variation_others_vs_thundering_defense_with_left_central_elephant_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红进左马(其他)对黑右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红进左马对黑右横车"
         ),
         "1nbaka2r/5n1r1/1c2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/2N1C1NC1/9/1RBAKAB1R": (
             "pawn_with_left_central_cannon_and_left_filed_chariot_variation_others_vs_thundering_defense_with_left_central_elephant_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红左直车(其他)对黑右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红左直车对黑右横车"
         ),
         "r2akabn1/1r1n5/2c1b2c1/p1p1p1p1p/9/2P6/P3P1P1P/1CN1C1N2/9/R1BAKABR1": (
             "pawn_with_left_central_cannon_and_left_filed_chariot_variation_others_vs_thundering_defense_with_left_central_elephant_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红左直车(其他)对黑右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红左直车对黑右横车"
         ),
         "2baka2r/5n1r1/nc2b1c2/p1p1p1p1p/9/6P2/P1P1P3P/2N1C1N1C/9/1RBAKAB1R": (
             "pawn_with_left_central_cannon_and_left_filed_chariot_variation_and_right_riverbank_horse_vs_thundering_defense_with_left_central_elephant_and_right_ranked_chariot_and_1st_pawn_advancement",
@@ -1799,27 +1868,27 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p3p/6p2/6P2/P1P1P3P/2N1C2C1/9/R1BAKABNR": (
             "pawn_with_left_central_cannon_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement",
-            "仙人指路转左中炮对卒底炮飞左象——黑进７卒(其他)"
+            "仙人指路转左中炮对卒底炮飞左象——黑进７卒"
         ),
         "rn1akabnr/9/2c1b2c1/p3p1p1p/2p6/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB1R": (
             "pawn_with_left_central_cannon_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement",
-            "仙人指路转左中炮对卒底炮飞左象——黑进７卒(其他)"
+            "仙人指路转左中炮对卒底炮飞左象——黑进７卒"
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p3p/9/6p2/P1P1P3P/2N1C2CN/9/R1BAKAB1R": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice",
-            "仙人指路转左中炮对卒底炮飞左象——(红其他对)黑连进７卒"
+            "仙人指路转左中炮对卒底炮飞左象——黑连进７卒"
         ),
         "rn1akabnr/9/2c1b2c1/p3p1p1p/9/2p6/P3P1P1P/NC2C1N2/9/R1BAKAB1R": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice",
-            "仙人指路转左中炮对卒底炮飞左象——(红其他对)黑连进７卒"
+            "仙人指路转左中炮对卒底炮飞左象——黑连进７卒"
         ),
         "rnbaka1nr/9/1c2b1c2/p1p1p3p/9/6p2/P1P1P3P/2N1C2C1/9/1RBAKABNR": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice",
-            "仙人指路转左中炮对卒底炮飞左象——(红其他对)黑连进７卒"
+            "仙人指路转左中炮对卒底炮飞左象——黑连进７卒"
         ),
         "rn1akabnr/9/2c1b2c1/p3p1p1p/9/2p6/P3P1P1P/1C2C1N2/9/RNBAKABR1": (
             "pawn_with_left_central_cannon_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice",
-            "仙人指路转左中炮对卒底炮飞左象——(红其他对)黑连进７卒"
+            "仙人指路转左中炮对卒底炮飞左象——黑连进７卒"
         ),
         "rnbaka2r/5n3/1c2b1c2/p1p1p3p/9/6p2/P1P1P3P/2N1C2CN/9/1RBAKAB1R": (
             "pawn_with_left_central_cannon_left_filed_chariot_and_right_side_horse_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice_and_lame_horse_variation",
@@ -1831,11 +1900,11 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "1nbaka1nr/r8/1c2b1c2/p1p1p3p/9/6p2/P1P1P3P/2N1C2CN/9/1RBAKAB1R": (
             "pawn_with_left_central_cannon_left_filed_chariot_and_right_side_horse_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红左直车右边马(其他)对黑连进７卒右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红左直车右边马对黑连进７卒右横车"
         ),
         "rn1akabn1/8r/2c1b2c1/p3p1p1p/9/2p6/P3P1P1P/NC2C1N2/9/R1BAKABR1": (
             "pawn_with_left_central_cannon_left_filed_chariot_and_right_side_horse_others_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice_and_right_ranked_chariot",
-            "仙人指路转左中炮对卒底炮飞左象——红左直车右边马(其他)对黑连进７卒右横车"
+            "仙人指路转左中炮对卒底炮飞左象——红左直车右边马对黑连进７卒右横车"
         ),
         "1nbaka1nr/r8/1c2b1c2/p1p1p3p/9/6p2/P1P1P3P/2N1C2CN/4A4/1RBAK1B1R": (
             "pawn_with_left_central_cannon_left_filed_chariot_and_right_side_horse_with_early_advisor_vs_thundering_defense_with_left_central_elephant_and_7th_pawn_advancement_twice_and_right_ranked_chariot",
@@ -1895,19 +1964,19 @@ def _lookup_c20_c49(memory: OpeningMemory) -> tuple[str, str] | None:
         ),
         "r1bakabr1/9/1c4nc1/4p1p1p/pnp6/6P2/P1P1P3P/N1C1C1N2/R8/2BAKABR1": (
             "57_cannons_3rd_pawn_advancement_left_ranked_chariot_vs_screen_horse_defense_with_1st_and_3rd_pawn_advancement_and_right_riverbank_horse_variation",
-            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车(对黑其他)"
+            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车"
         ),
         "1rbakab1r/9/1cn4c1/p1p1p4/6pnp/2P6/P3P1P1P/2N1C1C1N/8R/1RBAKAB2": (
             "57_cannons_3rd_pawn_advancement_left_ranked_chariot_vs_screen_horse_defense_with_1st_and_3rd_pawn_advancement_and_right_riverbank_horse_variation",
-            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车(对黑其他)"
+            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车"
         ),
         "r1baka1r1/9/1c2b1nc1/4p1p1p/pnp6/6P2/P1P1P3P/N1C1C1N2/R8/2BAKABR1": (
             "57_cannons_3rd_pawn_advancement_left_ranked_chariot_vs_screen_horse_defense_with_1st_and_3rd_pawn_advancement_right_riverbank_horse_variation_with_left_central_elephant_subvariation",
-            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车(其他)对黑飞左象"
+            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车对黑飞左象"
         ),
         "1r1akab1r/9/1cn1b2c1/p1p1p4/6pnp/2P6/P3P1P1P/2N1C1C1N/8R/1RBAKAB2": (
             "57_cannons_3rd_pawn_advancement_left_ranked_chariot_vs_screen_horse_defense_with_1st_and_3rd_pawn_advancement_right_riverbank_horse_variation_with_left_central_elephant_subvariation",
-            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车(其他)对黑飞左象"
+            "五七炮互进三兵对屏风马边卒右马外盘河——红左横车对黑飞左象"
         ),
         "r1baka1r1/9/1c2b1nc1/4p1p1p/pnp6/5NP2/P1P1P3P/N1C1C4/R8/2BAKABR1": (
             "57_cannons_3rd_pawn_advancement_left_ranked_chariot_right_riverbank_horse_vs_screen_horse_defense_with_1st_and_3rd_pawn_advancement_right_riverbank_horse_variation_with_left_central_elephant_subvariation",
@@ -1992,14 +2061,33 @@ def _specific_template(
     base_id: str | None,
     shapes: dict[str, list[str]] = None,
 ) -> tuple[str | None, str | None]:
+    raw_red_shapes = set(shapes["red"]) if shapes else set()
+    raw_black_shapes = set(shapes["black"]) if shapes else set()
+
+    # 列手炮（双方中炮来源相对）的名称由黑方第二步马的去向决定；
+    # 必须先于 FEN 对照表判断，避免泛化的列炮条目抢先命中。
+    if base_id == "opposite_side_cannons":
+        black_cannon = _central_choice(memory.black)
+        if black_cannon:
+            opposite_wing_edge_horse = (
+                (black_cannon.origin_file == "b" and "edge_horse_left" in raw_black_shapes)
+                or (black_cannon.origin_file == "h" and "edge_horse_right" in raw_black_shapes)
+            )
+            if opposite_wing_edge_horse:
+                return "big_lie_shou_cannon", "大列手炮局"
+            opposite_wing_proper_horse = (
+                (black_cannon.origin_file == "b" and "proper_horse_left" in raw_black_shapes)
+                or (black_cannon.origin_file == "h" and "proper_horse_right" in raw_black_shapes)
+            )
+            if opposite_wing_proper_horse:
+                return "small_lie_shou_cannon", "小列手炮局"
+
     lookup = _lookup_c20_c49(memory)
     if lookup:
         return lookup
 
     red_shapes = set(red_modifiers)
     black_shapes = set(black_modifiers)
-    raw_red_shapes = set(shapes["red"]) if shapes else set()
-    raw_black_shapes = set(shapes["black"]) if shapes else set()
 
     red_elephant = next((item for item in memory.red.choice_path if item.id == "fly_elephant"), None)
     black_elephant = next((item for item in memory.black.choice_path if item.id == "fly_elephant"), None)
@@ -2023,7 +2111,7 @@ def _specific_template(
                     return "elephant_pawn3_vs_right_proper_horse", "飛相進三兵對進右馬"
                 elif (red_elephant.wing == "g" and "advance_seven_pawn" in raw_red_shapes) or (red_elephant.wing == "c" and "advance_three_pawn" in raw_red_shapes):
                     return "elephant_pawn7_vs_right_proper_horse", "飛相進七兵對進右馬"
-                return "elephant_vs_right_proper_horse", "飛相(其他)對進右馬"
+                return "elephant_vs_right_proper_horse", "飛相對進右馬"
 
     if red_elephant and black_id == "palcorner_cannon":
         black_cannon = next((item for item in memory.black.choice_path if item.id == "palcorner_cannon"), None)
@@ -2055,7 +2143,7 @@ def _specific_template(
                 if (red_elephant.wing == "g" and "advance_seven_pawn" in raw_red_shapes) or (red_elephant.wing == "c" and "advance_three_pawn" in raw_red_shapes):
                     return "elephant_pawn7_vs_right_palcorner_cannon", "飛相進七兵對右士角炮"
                 
-                return "elephant_vs_right_palcorner_cannon", "飛相(其他)對右士角炮"
+                return "elephant_vs_right_palcorner_cannon", "飛相對右士角炮"
 
     if red_id == "fly_elephant" and black_id == "central_cannon":
         black_cannon = next((item for item in memory.black.choice_path if item.id == "central_cannon"), None)
@@ -2063,7 +2151,7 @@ def _specific_template(
             if red_elephant.wing is None:
                 return None, None
             if (red_elephant.wing == "g" and (black_cannon.origin_file == "h" or "central_cannon_from_h_file" in raw_black_shapes)) or (red_elephant.wing == "c" and (black_cannon.origin_file == "b" or "central_cannon_from_b_file" in raw_black_shapes)):
-                return "elephant_vs_left_central_cannon", "飛相(轉其他)對左中炮"
+                return "elephant_vs_left_central_cannon", "飛相對左中炮"
             else:
                 # 飛相對右中炮 (A29)
                 return "elephant_vs_right_central_cannon", "飛相對右中炮"
@@ -2091,7 +2179,7 @@ def _specific_template(
                         # Otherwise: A32
                         return "elephant_proper_horse_filed_chariot_vs_left_cross_palace_cannon_7pawn", "飛相進右馬對左過宮炮(紅直車對黑進7卒)"
                     return "elephant_right_proper_horse_vs_left_cross_palace_cannon", "飛相進右馬對左過宮炮"
-                return "elephant_vs_left_cross_palace_cannon", "飛相(其他)對左過宮炮"
+                return "elephant_vs_left_cross_palace_cannon", "飛相對左過宮炮"
             else:
                 # 飛相對右過宮炮 (A35)
                 return "elephant_vs_right_cross_palace_cannon", "飛相對右過宮炮"
@@ -2110,7 +2198,7 @@ def _specific_template(
                 if (red_elephant.wing == "g" and "proper_horse_left" in raw_red_shapes) or (red_elephant.wing == "c" and "proper_horse_right" in raw_red_shapes):
                     return "elephant_left_proper_horse_vs_same_side_pawn", "飛相進左馬對進7卒"
                 # Default A36
-                return "elephant_vs_same_side_pawn", "飛相(其他)對進7卒"
+                return "elephant_vs_same_side_pawn", "飛相對進7卒"
             # Opposite side (A39)
             else:
                 return "elephant_vs_opposite_side_pawn", "飛相對進3卒"
@@ -2204,7 +2292,7 @@ def _specific_template(
                 if black_horse and black_horse.wing:
                     # Same physical side -> B05
                     if (red_cannon.origin_file == "h" and black_horse.wing == "left") or (red_cannon.origin_file == "b" and black_horse.wing == "right"):
-                        return "central_cannon_vs_same_side_proper_horse", "中炮對進左馬(其他)"
+                        return "central_cannon_vs_same_side_proper_horse", "中炮對進左馬"
                     # Opposite physical side -> B01, B02, B03, B04
                     elif (red_cannon.origin_file == "h" and black_horse.wing == "right") or (red_cannon.origin_file == "b" and black_horse.wing == "left"):
                         # Check for B02: early advisor
@@ -2218,7 +2306,7 @@ def _specific_template(
                         if (red_cannon.origin_file == "h" and "edge_cannon_right" in raw_black_shapes) or (red_cannon.origin_file == "b" and "edge_cannon_left" in raw_black_shapes):
                             return "central_cannon_vs_opposite_side_proper_horse_three_step_tiger", "中炮對右三步虎"
                         # Default B01
-                        return "central_cannon_vs_opposite_side_proper_horse", "中炮對進右馬(其他)"
+                        return "central_cannon_vs_opposite_side_proper_horse", "中炮對進右馬"
             elif black_id == "palcorner_cannon":
                 black_horse = next((item for item in memory.black.choice_path if item.id == "proper_horse_opening"), None)
                 black_cannon = next((item for item in memory.black.choice_path if item.id == "palcorner_cannon"), None)
@@ -2233,7 +2321,7 @@ def _specific_template(
             elif black_id is None and len(raw_black_shapes) > 0:
                 # Default B00
                 if len(memory.red.choice_path) == 1:
-                    return "central_cannon_vs_rare_openings", "中炮局(對其他)"
+                    return "central_cannon_vs_rare_openings", "中炮局"
 
     if red_id == "five_seven_cannon":
         red_cannon = next((item for item in memory.red.choice_path if item.id == "central_cannon"), None)
@@ -2242,18 +2330,24 @@ def _specific_template(
             if black_sh:
                     if red_cannon.origin_file == "h":
                         if _has_shape(memory.black, "fly_left_elephant"):
-                            has_mutual_3pawn = _has_shape(memory.red, "advance_three_pawn") and _has_shape(memory.black, "advance_three_soldier")
+                            has_mutual_3pawn = (
+                                "advance_three_pawn" in raw_red_shapes
+                                and "advance_three_soldier" in raw_black_shapes
+                            )
                             if has_mutual_3pawn and _has_shape(memory.red, "edge_horse_left") and "cannon_at_b3" in raw_black_shapes:
                                 if "pawn_seven_at_starting_rank" in raw_red_shapes:
-                                    return "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon", "五七炮互進三兵對反宮馬——(紅其他對)黑右炮過河"
+                                    return "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon", "五七炮互進三兵對反宮馬——黑右炮過河"
                                 else:
                                     return "five_seven_cannon_vs_sandwiched_horse_double_pawn_sacrifice", "五七炮互進三兵對反宮馬——紅棄雙兵對黑右炮過河"
                     elif red_cannon.origin_file == "b":
                         if _has_shape(memory.black, "fly_right_elephant"):
-                            has_mutual_7pawn = _has_shape(memory.red, "advance_seven_pawn") and _has_shape(memory.black, "advance_seven_soldier")
+                            has_mutual_7pawn = (
+                                "advance_seven_pawn" in raw_red_shapes
+                                and "advance_seven_soldier" in raw_black_shapes
+                            )
                             if has_mutual_7pawn and _has_shape(memory.red, "edge_horse_right") and "cannon_at_h3" in raw_black_shapes:
                                 if "pawn_three_at_starting_rank" in raw_red_shapes:
-                                    return "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon", "五七炮互進三兵對反宮馬——(紅其他對)黑右炮過河"
+                                    return "five_seven_cannon_vs_sandwiched_horse_right_ranked_cannon", "五七炮互進三兵對反宮馬——黑右炮過河"
                                 else:
                                     return "five_seven_cannon_vs_sandwiched_horse_double_pawn_sacrifice", "五七炮互進三兵對反宮馬——紅棄雙兵對黑右炮過河"
 
@@ -2342,8 +2436,9 @@ def resolve_classification(memory: OpeningMemory, shapes: dict[str, list[str]]) 
             state = "可命名" if item.eligible_for_name else f"被 {item.suppressed_by} 抑制"
             evidence.append(f"{prefix}{item.id} 於第 {item.formed_at_ply} ply 形成（{state}）")
 
-    red_shapes = set(shapes["red"])
-    black_shapes = set(shapes["black"])
+    naming_shapes = _shapes_for_naming(shapes)
+    red_shapes = set(naming_shapes["red"])
+    black_shapes = set(naming_shapes["black"])
     pawn_matchup = (
         "advance_three_pawn" in red_shapes
         and "advance_seven_soldier" in black_shapes
@@ -2357,13 +2452,22 @@ def resolve_classification(memory: OpeningMemory, shapes: dict[str, list[str]]) 
     }:
         memory.base_matchup_id = "opposing_pawns"
 
-    base_id = memory.base_matchup_id
+    # A historical 对兵局 remains evidence, but once either side is a
+    # two-headed snake it is no longer the displayed final formation.
+    base_id = (
+        None
+        if not pawn_matchup and memory.base_matchup_id == "opposing_pawns"
+        else memory.base_matchup_id
+    )
     if base_id != "opposing_pawns":
         cannon_matchup = _cannon_matchup(memory, shapes)
         if cannon_matchup:
             base_id = cannon_matchup
             memory.base_matchup_id = cannon_matchup
-        elif base_id not in {"same_side_cannons", "opposite_side_cannons"}:
+        elif (
+            memory.base_matchup_id != "opposing_pawns"
+            and base_id not in {"same_side_cannons", "opposite_side_cannons"}
+        ):
             base_id = None
             memory.base_matchup_id = None
 
@@ -2374,7 +2478,7 @@ def resolve_classification(memory: OpeningMemory, shapes: dict[str, list[str]]) 
         red_modifiers,
         black_modifiers,
         base_id,
-        shapes,
+        naming_shapes,
     )
 
     red_text = _compose_side("red", red_id, red_label, red_modifiers)
@@ -2457,10 +2561,10 @@ def initial_state() -> RecognitionState:
         fen=START_FEN,
         piece_identity=identities,
         repetition_positions=[{"ply": 0, "key": position_key(START_FEN)}],
-        chase_latches=[list(pair) for pair in sorted(
-            qualifying_chase_pairs(START_FEN, identities, "red")
-            | qualifying_chase_pairs(START_FEN, identities, "black")
-        )],
+        repetition_initial_fen=START_FEN,
+        # Retained as an empty field so older snapshots still deserialize.
+        # Repetition now stores an independent assessment for every move.
+        chase_latches=[],
         current_shapes=shapes,
         opening_memory=memory,
         classification=resolve_classification(memory, shapes),
@@ -2482,7 +2586,10 @@ def update_recognition(
     side_moves = dict(previous.side_moves)
     side_moves[side] = side_moves.get(side, 0) + 1
     _promote_direct_choices(memory, side, shapes, ucci, ply, side_moves[side])
-    _promote_shapes(memory, previous.fen, next_fen, shapes, ply, side, ucci)
+    _promote_shapes(
+        memory, previous.fen, next_fen, shapes, ply, side, ucci,
+        previous.piece_identity.get(ucci[:2]) if previous.piece_identity else None,
+    )
     _promote_composites(memory, next_fen, shapes, ply, side)
     classification = resolve_classification(memory, shapes)
     return RecognitionState(
@@ -2492,6 +2599,7 @@ def update_recognition(
         piece_identity=dict(previous.piece_identity),
         repetition_positions=list(previous.repetition_positions),
         repetition_actions=list(previous.repetition_actions),
+        repetition_initial_fen=previous.repetition_initial_fen,
         chase_latches=[list(pair) for pair in previous.chase_latches],
         repetition_decision=dict(previous.repetition_decision),
         current_shapes=shapes,
@@ -2581,10 +2689,8 @@ def inspect_position(
         fen=fen,
         piece_identity=identities,
         repetition_positions=[{"ply": 0, "key": position_key(fen)}],
-        chase_latches=[list(pair) for pair in sorted(
-            qualifying_chase_pairs(fen, identities, "red")
-            | qualifying_chase_pairs(fen, identities, "black")
-        )],
+        repetition_initial_fen=fen,
+        chase_latches=[],
         current_shapes=shapes,
         opening_memory=memory,
         classification=classification,

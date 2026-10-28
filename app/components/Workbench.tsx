@@ -60,6 +60,65 @@ const EMPTY_MEMORY: MemoryPreset = {
   redChoicePath: [], blackChoicePath: [], blackComposite: null, redWing: null, blackWing: null,
 };
 
+type RepetitionLanguage = "en" | "zh-CN" | "zh-TW" | "vi";
+
+const REPETITION_COPY: Record<RepetitionLanguage, {
+  languageLabel: string;
+  labels: Record<RecognitionState["repetitionDecision"]["status"], string>;
+  warningTitle: string;
+  warningBody: string;
+  blockedTitle: string;
+  blockedBody: string;
+  drawTitle: string;
+  drawBody: string;
+  restart: string;
+}> = {
+  en: {
+    languageLabel: "Language",
+    labels: { none: "No repetition", watch: "Repeated position", warning: "Repetition warning", must_change: "Different move required", draw: "Draw" },
+    warningTitle: "Repeated position detected",
+    warningBody: "This position has occurred three times. Repeating it once more will result in a draw.",
+    blockedTitle: "A different move is required",
+    blockedBody: "This move would repeat the position. Please make a different move.",
+    drawTitle: "Draw by repetition",
+    drawBody: "The same position has occurred four times.",
+    restart: "New game",
+  },
+  "zh-CN": {
+    languageLabel: "语言",
+    labels: { none: "未重复", watch: "发现重复", warning: "重复警告", must_change: "需要变着", draw: "和棋" },
+    warningTitle: "检测到重复局面",
+    warningBody: "该局面已出现三次。若再次出现相同局面，本局将判和。",
+    blockedTitle: "需要变着",
+    blockedBody: "此着会再次形成重复局面，请选择其他走法。",
+    drawTitle: "重复和棋",
+    drawBody: "相同局面已出现四次。",
+    restart: "重新开始",
+  },
+  "zh-TW": {
+    languageLabel: "語言",
+    labels: { none: "未重複", watch: "發現重複", warning: "重複警告", must_change: "需要變著", draw: "和棋" },
+    warningTitle: "偵測到重複局面",
+    warningBody: "此局面已出現三次。若再次出現相同局面，本局將判和。",
+    blockedTitle: "需要變著",
+    blockedBody: "此著會再次形成重複局面，請選擇其他走法。",
+    drawTitle: "重複和棋",
+    drawBody: "相同局面已出現四次。",
+    restart: "重新開始",
+  },
+  vi: {
+    languageLabel: "Ngôn ngữ",
+    labels: { none: "Không lặp lại", watch: "Phát hiện lặp lại", warning: "Cảnh báo lặp lại", must_change: "Cần đi nước khác", draw: "Hòa" },
+    warningTitle: "Đã phát hiện thế cờ lặp lại",
+    warningBody: "Thế cờ này đã xuất hiện ba lần. Nếu lặp lại thêm một lần nữa, ván đấu sẽ được xử hòa.",
+    blockedTitle: "Bạn cần đi nước khác",
+    blockedBody: "Nước đi này sẽ lặp lại thế cờ. Vui lòng chọn một nước đi khác.",
+    drawTitle: "Hòa do lặp lại thế cờ",
+    drawBody: "Cùng một thế cờ đã xuất hiện bốn lần.",
+    restart: "Ván mới",
+  },
+};
+
 function ChoicePath({ side, state }: { side: "red" | "black"; state: RecognitionState }) {
   const memory = state.openingMemory[side];
   const items = [...memory.choicePath, ...memory.compositeSystems, ...memory.formedShapes];
@@ -85,20 +144,26 @@ export function Workbench() {
   const [hydrated, setHydrated] = useState(false);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState("");
+  const [ruleNotice, setRuleNotice] = useState<"blocked" | null>(null);
   const [language, setLanguage] = useState<"zh" | "en">("en");
+  const [repetitionLanguage, setRepetitionLanguage] = useState<RepetitionLanguage>("zh-CN");
   const [fenDraft, setFenDraft] = useState("");
 
   const current = snapshots[index];
+  const currentFen = current?.state.fen;
 
   // Keep the debug FEN in sync with the board being viewed.  This also makes
   // stepping backward and forward through the move list a quick way to copy
   // the exact position that triggered a label.
   useEffect(() => {
-    if (current) setFenDraft(current.state.fen);
-  }, [current?.state.fen]);
+    const timer = window.setTimeout(() => {
+      if (currentFen) setFenDraft(currentFen);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [currentFen]);
 
   const reset = useCallback(async () => {
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setRuleNotice(null);
     try {
       const response = await api.initial();
       setSnapshots([{ state: response.state, legalMoves: response.legalMoves }]);
@@ -129,7 +194,7 @@ export function Workbench() {
 
   async function play(move: string) {
     if (!current) return;
-    setBusy(true); setError("");
+    setBusy(true); setError(""); setRuleNotice(null);
     try {
       const result = await api.advance(current.state, move);
       const base = snapshots.slice(0, index + 1);
@@ -158,7 +223,14 @@ export function Workbench() {
             : snapshot
         )));
       });
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "走子失敗"); }
+    } catch (reason) {
+      const message = reason instanceof Error ? reason.message : "走子失敗";
+      if (message === "此着会形成长将／长捉重复，请选择其他着法") {
+        setRuleNotice("blocked");
+      } else {
+        setError(message);
+      }
+    }
     finally { setBusy(false); }
   }
 
@@ -181,11 +253,9 @@ export function Workbench() {
   const currentMove = index > 0 ? snapshots[index].move : undefined;
   const liveReport = index > 0 ? snapshots[index].liveReport : null;
   const repetition = current?.state.repetitionDecision;
-  const repetitionLabel = repetition?.status === "must_change" ? "需变着"
-    : repetition?.status === "warning" ? "重复警告"
-      : repetition?.status === "draw" ? "和棋"
-        : repetition?.status === "watch" ? "发现重复"
-          : "未重复";
+  const repetitionCopy = REPETITION_COPY[repetitionLanguage];
+  const repetitionLabel = repetitionCopy.labels[repetition?.status ?? "none"];
+  const isDraw = repetition?.status === "draw";
 
   return (
     <FluentProvider theme={webLightTheme} className="app-provider">
@@ -232,7 +302,11 @@ export function Workbench() {
                   <Button icon={<ArrowResetRegular />} disabled={busy} onClick={reset}>重設</Button>
                 </div>
               </div>
-              <XiangqiBoard fen={current.state.fen} legalMoves={current.legalMoves} lastMove={currentMove} disabled={busy} onMove={play} />
+              <XiangqiBoard fen={current.state.fen} legalMoves={current.legalMoves} lastMove={currentMove} disabled={busy || isDraw} onMove={play} />
+              {isDraw && <section className="game-result" role="status">
+                <span>GAME OVER</span><strong>{repetitionCopy.drawTitle}</strong><p>{repetitionCopy.drawBody}</p>
+                <Button appearance="primary" onClick={reset}>{repetitionCopy.restart}</Button>
+              </section>}
               <form className="fen-strip fen-editor" onSubmit={loadFen}>
                 <label htmlFor="workbench-fen">FEN</label>
                 <div className="fen-editor-field">
@@ -284,10 +358,15 @@ export function Workbench() {
 
               <section className="panel repetition-card">
                 <div className="panel-heading compact"><div><span className="eyebrow">REPETITION ADJUDICATION</span><h2>重复局面／长将长捉</h2></div><Badge appearance="outline">{repetitionLabel}</Badge></div>
+                <label className="native-field repetition-language"><span>{repetitionCopy.languageLabel}</span><select value={repetitionLanguage} onChange={(event) => setRepetitionLanguage(event.target.value as RepetitionLanguage)}><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option><option value="vi">Tiếng Việt</option></select></label>
                 <div className="shape-row"><span>出现</span><div>{repetition?.occurrenceCount ?? 1} 次同局面</div></div>
+                {current.state.repetitionActions.at(-1) && <div className="shape-row"><span>本手</span><div>{current.state.repetitionActions.at(-1)!.isCheck ? "将军" : current.state.repetitionActions.at(-1)!.chaseTargetIds.length ? `捉 ${current.state.repetitionActions.at(-1)!.chaseTargetIds.length} 子` : "闲着"}</div></div>}
                 <div className="shape-row"><span>红方</span><div>{repetition?.redClassification ?? "idle"}</div></div>
                 <div className="shape-row"><span>黑方</span><div>{repetition?.blackClassification ?? "idle"}</div></div>
                 {repetition?.restrictedSide && <div className="shape-row"><span>责任方</span><div>{repetition.restrictedSide === "red" ? "红方必须变着" : "黑方必须变着"}</div></div>}
+                {repetition?.status === "warning" && <div className="rule-notice warning" role="status"><strong>{repetitionCopy.warningTitle}</strong><p>{repetitionCopy.warningBody}</p></div>}
+                {repetition?.status === "must_change" && <div className="rule-notice blocked" role="alert"><strong>{repetitionCopy.blockedTitle}</strong><p>{repetitionCopy.blockedBody}</p></div>}
+                {ruleNotice === "blocked" && <div className="rule-notice blocked" role="alert"><strong>{repetitionCopy.blockedTitle}</strong><p>{repetitionCopy.blockedBody}</p></div>}
               </section>
 
               <section className="panel live-report-card">
