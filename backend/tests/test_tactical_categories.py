@@ -79,6 +79,40 @@ def test_advisor_or_elephant_move_does_not_create_discovered_attack() -> None:
     assert "discovered_attack" not in labels
 
 
+def test_horse_leg_release_is_a_discovered_attack() -> None:
+    # Pc3 blocks Nc2's leg toward the black rook on b4.  Pushing the pawn
+    # opens that exact horse attack.
+    fen = "4k4/9/9/9/4p4/1r7/2P6/2N6/9/4K4 w - - 0 1"
+    assert "discovered_attack" in _labels(fen, "c3c4")
+
+
+def test_same_kind_reciprocal_horses_are_not_a_fork() -> None:
+    # Pushing c3 opens Nc2's attacks on Nb4 and Nd4, but either black horse
+    # can immediately capture Nc2.  This is reciprocal contact, not 捉双.
+    fen = "4k4/9/9/9/4p4/1n1np4/2P6/2N6/9/4K4 w - - 0 1"
+    assert "fork" not in _labels(fen, "c3c4")
+
+
+def test_rook_line_flash_requires_an_unprotected_major_target() -> None:
+    fen = "4k4/9/9/9/4p4/n8/9/9/C8/R3K4 w - - 0 1"
+    assert "discovered_attack" in _labels(fen, "a1b1")
+
+    # The crossed black pawn on b4 protects Na4, so the same rook line is
+    # ordinary pressure, not a flash attack.
+    protected = "4k4/9/9/9/4p4/np7/9/9/C8/R3K4 w - - 0 1"
+    assert "discovered_attack" not in _labels(protected, "a1b1")
+
+
+def test_cannon_checking_partner_flash_needs_a_valid_mover_target() -> None:
+    # Ra2-b2 leaves one screen for Ca0 to check Ka9 and newly attacks Nb5.
+    fen = "k8/9/9/9/1n2p4/P8/9/R8/9/C3K4 w - - 0 1"
+    assert "discovered_attack" in _labels(fen, "a2b2")
+
+    # Rb7 protects Nb5, so it is not a valid cannon-partner flash target.
+    protected = "k8/9/1r7/9/1n2p4/P8/9/R8/9/C3K4 w - - 0 1"
+    assert "discovered_attack" not in _labels(protected, "a2b2")
+
+
 def test_user_regressions_reject_non_tactical_labels() -> None:
     cases = [
         # Cannon through an advisor to the general is not a 牵制 target.
@@ -321,7 +355,7 @@ def test_reciprocal_rook_capture_is_an_exchange_not_a_discovered_attack() -> Non
     assert "discovered_attack" not in _labels(fen, "b5e5")
 
 
-def test_exchange_requires_the_actual_immediate_recapture() -> None:
+def test_exchange_requires_an_actual_recapture_within_three_plies() -> None:
     # Red's a4xa5 merely offers a possible rook trade.  It becomes an
     # exchange only when Black actually replies a6xa5 on the same square.
     fen = "4k4/9/9/r8/r3p4/R8/9/9/9/4K4 w - - 0 1"
@@ -330,6 +364,14 @@ def test_exchange_requires_the_actual_immediate_recapture() -> None:
 
     reply = analyze_tactical_categories(fen, ["a4a5", "a6a5"])[1]
     assert "exchange" in {item["id"] for item in reply["occurrences"]}
+
+
+def test_exchange_can_recapture_after_intervening_moves_within_three_plies() -> None:
+    # o777Ko: Black's Nxd2 is answered by Bxc2 three plies later, after an
+    # intervening cannon capture and advisor move.
+    fen = "2bakab1r/9/2n1c1c2/p1p2R2p/9/1rPnp1P2/P3P3P/BCN1C1N2/9/2RAKAB2 b - - 12 11"
+    annotations = analyze_tactical_categories(fen, ["d4c2", "e2e4", "f9e8", "c0c2"])
+    assert "exchange" in {item["id"] for item in annotations[-1]["occurrences"]}
 
 
 def test_baseline_rook_through_advisor_is_not_a_pin() -> None:

@@ -330,6 +330,70 @@ def _is_unanswerable_flash_capture(board: dict[str, str], capture: str, side: st
     return not bool(attacked_squares(after_capture, _other(side)).get(capture[2:]))
 
 
+def _general_square(board: dict[str, str], side: str) -> str | None:
+    return next(
+        (square for square, piece in board.items() if _is_side(piece, side) and piece.upper() == "K"),
+        None,
+    )
+
+
+def _new_check_by_piece(
+    before: dict[str, str], after: dict[str, str], side: str, piece_kind: str,
+) -> str | None:
+    """Return a newly checking friendly piece of the requested kind."""
+    general = _general_square(after, _other(side))
+    if not general:
+        return None
+    after_attackers = [
+        entry["square"]
+        for entry in attacked_squares(after, side).get(general, [])
+        if after.get(entry["square"], "").upper() == piece_kind
+    ]
+    before_attackers = {
+        entry["square"]
+        for entry in attacked_squares(before, side).get(general, [])
+        if before.get(entry["square"], "").upper() == piece_kind
+    }
+    return next((square for square in after_attackers if square not in before_attackers), None)
+
+
+def _horse_leg(horse: str, destination: str) -> str | None:
+    """Return the horse-leg square for a legal horse-shaped attack."""
+    file_delta = ord(destination[0]) - ord(horse[0])
+    rank_delta = int(destination[1]) - int(horse[1])
+    if (abs(file_delta), abs(rank_delta)) not in {(1, 2), (2, 1)}:
+        return None
+    if abs(file_delta) == 2:
+        return f"{chr(ord(horse[0]) + (1 if file_delta > 0 else -1))}{horse[1]}"
+    return f"{horse[0]}{int(horse[1]) + (1 if rank_delta > 0 else -1)}"
+
+
+def _is_unprotected_major_target(board: dict[str, str], square: str, owner: str) -> bool:
+    """A flash target is an enemy rook, horse, or cannon without cover."""
+    return (
+        board.get(square, "").upper() in {"R", "N", "C"}
+        and not _has_geometric_defender(board, square, owner)
+    )
+
+
+def _same_kind_can_capture_attacker(
+    board: dict[str, str], attacker: str, victim: str, owner: str,
+) -> bool:
+    """Whether an attacked equal major piece can immediately take its attacker."""
+    attacker_piece = board.get(attacker, "").upper()
+    victim_piece = board.get(victim, "").upper()
+    return (
+        attacker_piece in {"R", "N", "C"}
+        and attacker_piece == victim_piece
+        and f"{victim}{attacker}" in legal_moves(_fen(board, _other(owner)))
+    )
+
+
+def _can_directly_capture(board: dict[str, str], square: str, owner: str) -> bool:
+    """Whether the opponent has a legal immediate capture of this square."""
+    return any(move[2:] == square for move in legal_moves(_fen(board, _other(owner))))
+
+
 def _gives_check(board: dict[str, str], side: str) -> bool:
     enemy_general = next(
         (square for square, piece in board.items()
@@ -529,6 +593,7 @@ def _line_follow_ups(board: dict[str, str], side: str) -> list[tuple[str, str, s
                     )
                     if (
                         valid_line_targets
+                        and not _same_kind_can_capture_attacker(board, source, front, side)
                         and (
                             (kind == "pin" and pin_material and not cannon_rook_cannon and rear not in protected_now)
                             # 串打只指炮隔子攻击一串无保护目标；车的同线
@@ -547,7 +612,9 @@ def _line_follow_ups(board: dict[str, str], side: str) -> list[tuple[str, str, s
 def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, object]]:
     annotations: list[dict[str, object]] = []
     current = fen
-    previous_capture: tuple[dict[str, str], str, str, str, str, str] | None = None
+    # A concrete recapture can be delayed by up to three plies.  Keep the
+    # original capture intact when intervening moves also happen to capture.
+    recent_captures: list[tuple[int, dict[str, str], str, str, str, str, str]] = []
     for ply, move in enumerate(moves, start=1):
         side = side_to_move(current)
         enemy = _other(side)
@@ -562,20 +629,38 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
         def add(identifier: str, squares: list[str], detail: str) -> None:
             occurrences.append({"id": identifier, "label_zh": LABELS[identifier], "squares": squares, "detail": detail})
 
-        # 交换只在对方实际于下一手回吃原落点后才成立；潜在反吃并不
-        # 是交换。标签标在回吃手，题库即可归给实际完成交换的一方。
-        if previous_capture and captured_piece and captured_piece.upper() != "K":
-            prior_board, prior_after, prior_source, prior_target, prior_mover, prior_victim = previous_capture
-            prior_side = _other(side)
-            prior_value = _piece_value(prior_mover, prior_source, prior_side)
-            prior_taken_value = _piece_value(prior_victim, prior_target, side)
-            if (
-                target == prior_target
-                and captured_piece == prior_mover
-                and prior_value == prior_taken_value
-                and not _is_minor_for_two_guards_sacrifice(prior_board, prior_after, prior_source, prior_target)
-            ):
-                add("exchange", [prior_source, prior_target, source], f"{_piece_label(prior_board, prior_source)} 先吃 {prior_target}，本手 {source}{target} 明确反吃落点，交换实际完成。")
+        # 交换必须是对原落点上吃子者的实际反吃，而非仅有潜在反吃。
+        # 允许该反吃在原吃子后的三个 ply 内发生；中间的走子（包括
+        # 其他吃子）不会抹掉原本的交换关系。
+        if captured_piece and captured_piece.upper() != "K":
+            for (
+                prior_ply,
+                prior_board,
+                prior_after,
+                prior_source,
+                prior_target,
+                prior_mover,
+                prior_victim,
+            ) in recent_captures:
+                prior_side = _other(side)
+                prior_value = _piece_value(prior_mover, prior_source, prior_side)
+                prior_taken_value = _piece_value(prior_victim, prior_target, side)
+                if (
+                    1 <= ply - prior_ply <= 3
+                    and target == prior_target
+                    and captured_piece == prior_mover
+                    and prior_value == prior_taken_value
+                    and not _is_minor_for_two_guards_sacrifice(
+                        prior_board, prior_after, prior_source, prior_target
+                    )
+                ):
+                    add(
+                        "exchange",
+                        [prior_source, prior_target, source],
+                        f"{_piece_label(prior_board, prior_source)} 先吃 {prior_target}，"
+                        f"本手 {source}{target} 于三个 ply 内明确反吃落点，交换实际完成。",
+                    )
+                    break
 
         # 捉双：本手新形成两项“可安全吃到”的车、马、炮目标即可。
         # 两项攻击可以来自同一枚子，也可以是一子走动后同时让另一枚
@@ -587,6 +672,8 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             """A fork target must be genuinely chased, not merely contacted."""
             attacker = board.get(capture[:2], "").upper()
             victim = board.get(capture[2:], "").upper()
+            if _same_kind_can_capture_attacker(board, capture[:2], capture[2:], side):
+                return False
             # A horse/cannon attacking a rook is still a chase even if the
             # rook is guarded: exchanging a 4-point minor for a rook gains.
             if victim == "R" and attacker in {"N", "C"}:
@@ -627,37 +714,64 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             else:
                 add("pin", [attacker, front, rear], f"{_piece_label(after, attacker)} 攻击 {front}；{front} 当前有有效保护，但它离开线路会使后方 {rear} 受攻击，构成牵制。")
 
-        # 闪击：车、马、炮移动后，另一枚己子的“几何攻击线”被实际打开。
-        # 士、相（以及兵卒）让线路显露属于普通子力调动，不使用闪击这
-        # 个棋手术语。
-        # 不能只因己方将帅脱离将军、使一条原本已有的攻击恢复合法，就
-        # 误称闪击；该情形没有移动任何遮挡攻击线的棋子。
-        before_geometric_attacks = attacked_squares(before, side)
-        after_geometric_attacks = attacked_squares(after, side)
-        newly_opened = [
-            candidate for candidate in _new_captures(before, after_fen, side)
-            if moving_piece.upper() in {"R", "N", "C"}
-            and candidate[:2] != target
-            # The line is not tactically usable if the opponent can first
-            # safely remove the newly active attacker on its current square.
-            # Checking whether the later capture is safe is insufficient:
-            # the opponent moves next and may pre-empt it.
-            and not _unsafe_captures(after, candidate[:2], side)
-            # A flash attack must create a usable gain, not just a mutually
-            # protected rook/cannon exchange.
-            and _is_unanswerable_flash_capture(after, candidate, side)
-            # An uncrossed pawn/soldier is not a tactical chase target.  Its
-            # normal opening restriction should not manufacture a 闪击.
-            and not (
-                after.get(candidate[2:], "").upper() == "P"
-                and not _has_crossed_river(after[candidate[2:]], candidate[2:], enemy)
-            )
-            and any(entry["square"] == candidate[:2] for entry in after_geometric_attacks.get(candidate[2:], []))
-            and not any(entry["square"] == candidate[:2] for entry in before_geometric_attacks.get(candidate[2:], []))
-        ]
-        if newly_opened:
-            opened = newly_opened[0]
-            add("discovered_attack", [source, target, opened[:2], opened[2:]], f"{source} 移开至 {target} 后，{_piece_label(after, opened[:2])} 新获得 {opened} 的合法攻击线。")
+        # 闪击只认三种明确结构：移开马腿、移开车线，以及以非炮子
+        # 移开炮线形成将军并同时攻击有效目标。不能只因将帅脱离将军、
+        # 使已有攻击恢复合法而误触发。
+        newly_opened = _new_captures(before, after_fen, side)
+        horse_flash = next(
+            (
+                candidate
+                for candidate in newly_opened
+                if after.get(candidate[:2], "").upper() == "N"
+                and _horse_leg(candidate[:2], candidate[2:]) == source
+            ),
+            None,
+        )
+        rook_check = (
+            _new_check_by_piece(before, after, side, "R")
+            if moving_piece.upper() != "R"
+            else None
+        )
+        rook_flash = next(
+            (
+                candidate
+                for candidate in newly_opened
+                if moving_piece.upper() != "R"
+                and after.get(candidate[:2], "").upper() == "R"
+                and _is_unprotected_major_target(after, candidate[2:], enemy)
+                and not _can_directly_capture(after, candidate[:2], side)
+            ),
+            None,
+        )
+        cannon_check = (
+            _new_check_by_piece(before, after, side, "C")
+            if moving_piece.upper() != "C"
+            else None
+        )
+        cannon_partner_flash = next(
+            (
+                candidate
+                for candidate in newly_opened
+                if cannon_check
+                and candidate[:2] == target
+                and (
+                    _is_unprotected_major_target(after, candidate[2:], enemy)
+                    or (
+                        after.get(candidate[2:], "").upper() == "P"
+                        and _has_crossed_river(after[candidate[2:]], candidate[2:], enemy)
+                    )
+                )
+            ),
+            None,
+        )
+        if horse_flash:
+            add("discovered_attack", [source, target, horse_flash[:2], horse_flash[2:]], f"{source} 移开马腿至 {target} 后，{_piece_label(after, horse_flash[:2])} 新获得对 {horse_flash[2:]} 的攻击。")
+        elif rook_check:
+            add("discovered_attack", [source, target, rook_check], f"{source} 移开至 {target} 后，{_piece_label(after, rook_check)} 形成将军；对方必须应将，构成车的闪击。")
+        elif rook_flash:
+            add("discovered_attack", [source, target, rook_flash[:2], rook_flash[2:]], f"{source} 移开至 {target} 后，{_piece_label(after, rook_flash[:2])} 新攻击未受保护的 {rook_flash[2:]}，且该车不能被直接吃掉。")
+        elif cannon_partner_flash:
+            add("discovered_attack", [source, target, cannon_check, cannon_partner_flash[2:]], f"{source} 移开至 {target} 后，{_piece_label(after, cannon_check)} 形成将军，同时 {target} 新攻击 {cannon_partner_flash[2:]}，构成炮的配合闪击。")
 
         # 消除保护：只认“本手直接吃掉指定守子”这一种手段。闪击将军、
         # 牵制或线路变化即使让某条保护关系暂时失效，也不在此标签中
@@ -766,8 +880,12 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
             add("cannon_pawn_breakthrough", [pawn_move[:2], pawn_move[2:], reply[:2], cannon_capture[:2], cannon_capture[2:]], f"预备 {pawn_move} 弃兵／卒；若对方 {reply} 吃兵，{cannon_capture[:2]} 即可走 {cannon_capture} 吃掉目标，构成炮兵突破。")
 
         annotations.append({"ply": ply, "side": side, "ucci": move, "occurrences": occurrences})
-        previous_capture = (
-            before, after_fen, source, target, moving_piece, captured_piece
-        ) if captured_piece and captured_piece.upper() != "K" else None
+        recent_captures = [
+            capture for capture in recent_captures if ply - capture[0] < 3
+        ]
+        if captured_piece and captured_piece.upper() != "K":
+            recent_captures.append(
+                (ply, before, after_fen, source, target, moving_piece, captured_piece)
+            )
         current = after_fen
     return annotations

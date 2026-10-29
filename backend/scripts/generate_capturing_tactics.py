@@ -134,9 +134,10 @@ def main() -> None:
         seed = args.seed
         eligible_rows = len(rows)
 
-    if args.existing_dataset:
-        # This mode is commonly used in short, resumable local runs.  Avoid
-        # paying Windows process-pool startup cost for every small segment.
+    if args.existing_dataset and len(sample) < 32:
+        # Short resumable ranges should not pay Windows process-pool startup
+        # cost.  A full-dataset relabel below benefits substantially from
+        # using all available cores.
         relabelled = [label_puzzle(row) for row in sample]
     else:
         with ProcessPoolExecutor() as pool:
