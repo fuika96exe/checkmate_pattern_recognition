@@ -6,9 +6,11 @@ they do not ask an engine to score a move, so "妙手" is deliberately absent.
 from __future__ import annotations
 
 from .board import FILES, apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
+from .exchange import evaluate_exchange
 
-TACTIC_RULES_VERSION = "tactics-draft-0.1"
+TACTIC_RULES_VERSION = "tactics-draft-0.2"
 LABELS = {
+    "exchange": "交换", "capture": "吃", "chase": "捉",
     "escape": "逃", "protect": "保", "sacrifice": "弃", "block": "挡",
     "seal": "封锁", "trap": "困", "pin": "牵",
 }
@@ -199,6 +201,35 @@ def _is_reciprocal_trade(board: dict[str, str], victim: str, attacker: str, owne
     to take first instead of passively allowing the proposed capture.
     """
     return f"{victim}{attacker}" in legal_moves(_fen(board, owner))
+
+
+def _is_endgame(board: dict[str, str]) -> bool:
+    """Fake Human: each side has at most two R/N/C, or neither has a rook."""
+    red = sum(piece in {"R", "N", "C"} for piece in board.values())
+    black = sum(piece in {"r", "n", "c"} for piece in board.values())
+    return (red <= 2 and black <= 2) or not any(piece.upper() == "R" for piece in board.values())
+
+
+def _material_threats(board: dict[str, str], side: str) -> list[tuple[str, str, int]]:
+    """Profitable legal captures under Fake Human's threat/pawn policy.
+
+    Outside the endgame a threat must gain more than one point, and uncrossed
+    pawns are ignored. In the endgame any positive gain is meaningful.
+    """
+    position = _fen(board, side)
+    endgame = _is_endgame(board)
+    threats: list[tuple[str, str, int]] = []
+    for move in sorted(legal_moves(position)):
+        source, target = move[:2], move[2:]
+        victim = board.get(target)
+        if not _is_side(victim, _other(side)) or victim.upper() == "K":
+            continue
+        if not endgame and not _has_crossed_river(victim, target, _other(side)):
+            continue
+        gain = evaluate_exchange(position, move)
+        if gain > (0 if endgame else 1):
+            threats.append((source, target, gain))
+    return threats
 
 
 def _ray(board: dict[str, str], source: str, dx: int, dy: int) -> list[str]:
@@ -564,6 +595,33 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         def add(identifier: str, squares: list[str], detail: str) -> None:
             occurrences.append({"id": identifier, "label_zh": LABELS[identifier], "squares": squares, "detail": detail})
 
+        # Fake Human's Trade / Capturing Move classifications use the entire
+        # destination-square exchange, rather than only one immediate recapture.
+        source = move[:2]
+        captured_piece = before.get(moved_to)
+        capture_gain: int | None = None
+        if captured_piece and captured_piece.upper() != "K":
+            capture_gain = evaluate_exchange(current, move)
+            if capture_gain == 0:
+                add("exchange", [source, moved_to], f"{_piece_label(before, source)} 吃掉 {_piece_label(before, moved_to)}；按双方最优选择计算同一落点的连续吃与回吃，净收益为 0 分，构成交换。")
+            elif capture_gain > 0 and (
+                _is_endgame(before)
+                or before[source].upper() == "P"
+                or _has_crossed_river(captured_piece, moved_to, enemy)
+            ):
+                add("capture", [source, moved_to], f"{_piece_label(before, source)} 吃掉 {_piece_label(before, moved_to)}；连续吃与回吃结算后净得 {capture_gain} 分，构成获利吃子。")
+
+        # Report only newly established profitable threats. Follow the moved
+        # attacker's identity so keeping the same attack from another square
+        # cannot manufacture another 捉; uncovered attacks by other pieces count.
+        previous_threats = {
+            (moved_to if attacker == source else attacker, victim)
+            for attacker, victim, _ in _material_threats(before, side)
+        }
+        for attacker, victim, gain in _material_threats(after, side):
+            if (attacker, victim) not in previous_threats:
+                add("chase", [attacker, victim], f"本手新形成 {_piece_label(after, attacker)} 对 {_piece_label(after, victim)} 的捉子威胁；若走 {attacker}{victim}，连续吃与回吃结算后可净得 {gain} 分。")
+
         direct_attackers = _direct_escape_attackers(before, move[:2], enemy)
         prior_attacker_squares = {entry["square"] for entry in direct_attackers}
         before_escape_loss = _escape_material_loss(before, move[:2], side)
@@ -631,14 +689,20 @@ def analyze_tactics(fen: str, moves: list[str]) -> list[dict[str, object]]:
         unsafe_capturers = _unsafe_captures(after, moved_to, side)
         sacrifice_capturers = [entry["square"] for entry in _sacrifice_attackers(after, moved_to, enemy)]
         sacrifice_loss = _sacrifice_material_loss(after, moved_to, side)
+        # A completed capture already won something. Its own material result
+        # must include that gain and every recapture, or an even/gaining trade
+        # would also be called an ordinary sacrifice merely for being retaken.
+        if capture_gain is not None:
+            sacrifice_loss = max(-capture_gain, 0)
         guard_recaptures = _minor_for_two_guards_sacrifice(before, after_fen, move[:2], moved_to, side)
         crossing_pawn = _is_crossing_pawn_move(before, after, move[:2], moved_to, side)
         if guard_recaptures:
             add("sacrifice", [move[:2], moved_to, *[reply[:2] for reply in guard_recaptures]], f"{_piece_label(before, move[:2])} 吃掉 {_piece_label(before, moved_to)} 后，另一枚士／象可用 {', '.join(guard_recaptures)} 回吃；即使己方随后还能回吃，马／炮换双士／双象仍按弃子处理。")
-        elif crossing_pawn and sacrifice_capturers:
+        elif crossing_pawn and sacrifice_capturers and (capture_gain is None or capture_gain < 0):
             add("sacrifice", [moved_to, *sacrifice_capturers], f"兵／卒本手越过河界后立即受到 {', '.join(sacrifice_capturers)} 攻击，构成弃兵。")
         elif sacrifice_loss > 0 and _sacrifice_eligible(after.get(moved_to, ""), moved_to, side):
-            add("sacrifice", [moved_to, *sacrifice_capturers], f"本手走到 {moved_to} 后，对方 {', '.join(sacrifice_capturers)} 可吃掉该子；按立即回吃计算，己方净亏 {sacrifice_loss} 分。")
+            basis = "连续吃与回吃结算" if capture_gain is not None else "立即回吃计算"
+            add("sacrifice", [moved_to, *sacrifice_capturers], f"本手走到 {moved_to} 后，对方 {', '.join(sacrifice_capturers)} 可吃掉该子；按{basis}，己方净亏 {sacrifice_loss} 分。")
 
         # A forced check response can consciously leave another major/minor
         # piece to be taken.  It is not ordinary “protect” or “block”: the

@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
 from .board import BoardError, apply_move, position_analysis
@@ -167,10 +168,12 @@ async def api_live_game_advance(request: AdvanceRequest) -> AdvanceResponse:
 
 
 @app.post("/api/analyze-live-report", response_model=LiveGameReport)
-def api_analyze_live_report(request: LiveGameReportRequest) -> LiveGameReport:
-    """CPU-bound tactical report, intentionally served apart from moving."""
+async def api_analyze_live_report(request: LiveGameReportRequest) -> LiveGameReport:
+    """Keep local analysis off the event loop; Workers cannot start threads."""
     try:
-        return analyze_live_game_report(request)
+        if IS_CLOUDFLARE_WORKER:
+            return analyze_live_game_report(request)
+        return await run_in_threadpool(analyze_live_game_report, request)
     except Exception as exc:
         raise _as_http_error(exc) from exc
 
@@ -238,11 +241,11 @@ async def api_analyze_puzzle_line(request: PuzzleLineRequest) -> PuzzleLineRespo
             timeline=timeline,
         )
 
-    if not analysis.analysis.is_checkmate:
+    if not (analysis.analysis.is_checkmate or analysis.analysis.is_stalemate):
         return PuzzleLineResponse(
             rules_version=CHECKMATE_RULES_VERSION,
             valid=False,
-            error="解答線終局不是將死局面",
+            error="解答線終局不是將死或困斃局面",
             timeline=timeline,
             analysis=analysis,
         )

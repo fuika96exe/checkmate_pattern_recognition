@@ -81,6 +81,11 @@ def _live_game_report(
     for occurrence in categories:
         if str(occurrence["id"]) in purpose_ids:
             continue
+        # The category lab's approximate exchange rule can also match a small
+        # material gain. Prefer the purpose lab's resolved Fake Human exchange
+        # result when it has positively classified this capture as gaining.
+        if occurrence["id"] == "exchange" and "capture" in purpose_ids:
+            continue
         events.append(LiveGameEvent(
             source="tactical_category",
             **occurrence,  # type: ignore[arg-type]

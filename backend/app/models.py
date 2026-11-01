@@ -207,7 +207,7 @@ class TacticAnalysisRequest(ApiModel):
 
 
 class TacticOccurrence(ApiModel):
-    id: Literal["escape", "protect", "sacrifice", "block", "seal", "trap", "pin"]
+    id: Literal["exchange", "capture", "chase", "escape", "protect", "sacrifice", "block", "seal", "trap", "pin"]
     label_zh: str
     squares: list[str] = Field(default_factory=list)
     detail: str
@@ -272,6 +272,22 @@ class PatternMatch(ApiModel):
     diagnostics: list[str]
 
 
+class MaterialPiece(ApiModel):
+    square: str
+    piece: str
+
+
+class MaterialController(MaterialPiece):
+    targets: list[str]
+
+
+class MaterialFallback(ApiModel):
+    id: str
+    label_zh: str
+    checking_pieces: list[MaterialPiece]
+    controlling_pieces: list[MaterialController]
+
+
 class PatternAnalysisResponse(ApiModel):
     requested_pattern_id: str | None = None
     fen: str
@@ -279,6 +295,7 @@ class PatternAnalysisResponse(ApiModel):
     analysis: PositionAnalysisResponse
     best_match: PatternMatch | None = None
     matches: list[PatternMatch] = Field(default_factory=list)
+    material_fallback: MaterialFallback | None = None
 
 
 class PuzzleLineRequest(ApiModel):

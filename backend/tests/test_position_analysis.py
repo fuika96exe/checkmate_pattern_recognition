@@ -503,6 +503,15 @@ def test_palcorner_horse_checkmate_examples() -> None:
     assert future_horse_behind_cannon["features"]["final_checker_types"] == ["C"]
 
 
+def test_palcorner_horse_after_defender_blunder() -> None:
+    result = recognize_palcorner_horse_checkmate(
+        "3akcb2/4a4/4b1P2/p1r2N3/2pN4p/9/PR5cP/4B4/9/3AKAB2 b - - 8 26",
+        ["e8f7", "f6d7", "e9e8", "b3b8", "c6c8", "b8c8"],
+    )
+    assert result["features"]["forced_king_reply"] is True
+    assert result["detected"] is True
+
+
 def test_angler_horse_checkmate_examples() -> None:
     rook_finish = recognize_angler_horse_checkmate(
         "4k4/5R3/6N2/9/9/9/9/9/9/3K5 w - - 0 1",

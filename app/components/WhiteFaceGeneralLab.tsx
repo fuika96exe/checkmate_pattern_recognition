@@ -193,8 +193,7 @@ export function WhiteFaceGeneralLab() {
           <select value={debugPatternId} onChange={(e) => setDebugPatternId(e.target.value as "" | PatternId)}>
             <option value="">自动识别全部杀法</option>
             <option value="CROWNED_CHECKMATE">仅平顶冠</option>
-            <option value="EUNUCHS_CHASING_EMPEROR_CHECKMATE">仅太监追皇帝</option>
-            <option value="CENTROID_PAWN_CHECKMATE">仅花心兵</option>
+            <option value="CENTROID_CHECKMATE">仅花心杀</option>
             <option value="CANNONS_SANDWICHING_CHARIOT_CHECKMATE">仅夹车炮</option>
             <option value="DOUBLE_CANNON_CHECKMATE">仅重炮杀</option>
             <option value="DOUBLE_TOAST_CHECKMATE">仅双杯献酒</option>
@@ -207,10 +206,8 @@ export function WhiteFaceGeneralLab() {
             <option value="TWO_DEVILS_KNOCKING_CHECKMATE">仅双鬼拍门</option>
             <option value="DOUBLE_CHARIOTS_CHECKMATE">仅双车错</option>
             <option value="DISCOVERED_HORSE_CHECKMATE">仅拔簧马</option>
-            <option value="CENTROID_CHARIOT_CHECKMATE">仅花心车</option>
             <option value="TIGER_SILHOUETTE_CHECKMATE">仅侧面虎</option>
             <option value="HORSE_CANNON_CHECKMATE">仅马后炮</option>
-            <option value="DOUBLE_HORSES_DRINKING_SPRING_CHECKMATE">仅双马饮泉</option>
             <option value="DOUBLE_CHECK_CHECKMATE">仅双将</option>
             <option value="ELBOW_HORSE_CHECKMATE">仅卧槽马</option>
             <option value="PALCORNER_HORSE_CHECKMATE">仅挂角马</option>

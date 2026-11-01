@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import faulthandler
 import json
 import sys
+from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -18,39 +20,36 @@ from app.models import PuzzleLineRequest  # noqa: E402
 from app.patterns import CHECKMATE_RULES_VERSION  # noqa: E402
 
 
-async def generate_recognition(dataset: dict[str, Any]) -> dict[str, Any]:
+async def recognize_puzzle(puzzle: dict[str, Any]) -> dict[str, Any]:
+    if puzzle["importStatus"] == "invalid":
+        return {"status": "invalid", "patternIds": [], "error": "；".join(puzzle["importErrors"])}
+    response = await api_analyze_puzzle_line(
+        PuzzleLineRequest(fen=puzzle["initialFen"], blunder_move=puzzle["blunderMove"], pv=puzzle["pv"])
+    )
+    if not response.valid or response.analysis is None:
+        return {"status": "invalid", "patternIds": [], "error": response.error or "无法分析棋题"}
+    pattern_ids = [match.pattern_id for match in response.analysis.matches]
+    fallback = response.analysis.material_fallback
+    return {"status": "matched" if pattern_ids or fallback else "unmatched", "patternIds": pattern_ids,
+            "materialId": fallback.id if fallback else None}
+
+
+def recognize_puzzle_worker(puzzle: dict[str, Any]) -> dict[str, Any]:
+    return asyncio.run(recognize_puzzle(puzzle))
+
+
+async def generate_recognition(dataset: dict[str, Any], workers: int = 1) -> dict[str, Any]:
     results: dict[str, dict[str, Any]] = {}
-
-    for puzzle in dataset["puzzles"]:
-        key = str(puzzle["key"])
-        if puzzle["importStatus"] == "invalid":
-            results[key] = {
-                "status": "invalid",
-                "patternIds": [],
-                "error": "；".join(puzzle["importErrors"]),
-            }
-            continue
-
-        response = await api_analyze_puzzle_line(
-            PuzzleLineRequest(
-                fen=puzzle["initialFen"],
-                blunder_move=puzzle["blunderMove"],
-                pv=puzzle["pv"],
-            )
-        )
-        if not response.valid or response.analysis is None:
-            results[key] = {
-                "status": "invalid",
-                "patternIds": [],
-                "error": response.error or "无法分析棋题",
-            }
-            continue
-
-        pattern_ids = [match.pattern_id for match in response.analysis.matches]
-        results[key] = {
-            "status": "matched" if pattern_ids else "unmatched",
-            "patternIds": pattern_ids,
-        }
+    if workers == 1:
+        for puzzle in dataset["puzzles"]:
+            results[str(puzzle["key"])] = await recognize_puzzle(puzzle)
+    else:
+        with ProcessPoolExecutor(max_workers=workers, initializer=faulthandler.enable) as pool:
+            records = pool.map(recognize_puzzle_worker, dataset["puzzles"], chunksize=4)
+            for completed, (puzzle, result) in enumerate(zip(dataset["puzzles"], records), start=1):
+                results[str(puzzle["key"])] = result
+                if completed % 100 == 0:
+                    print(f"Analysed {completed}/{len(dataset['puzzles'])} checkmate puzzles", flush=True)
 
     return {
         "schemaVersion": "1.0",
@@ -67,6 +66,7 @@ def main() -> None:
         sys.stdout.reconfigure(encoding="utf-8")
     project_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description="用当前全部杀法规则生成棋题识别索引")
+    parser.add_argument("--workers", type=int, default=4, help="Number of analysis worker processes.")
     parser.add_argument(
         "--dataset",
         type=Path,
@@ -82,12 +82,14 @@ def main() -> None:
     args = parser.parse_args()
 
     dataset = json.loads(args.dataset.read_text(encoding="utf-8"))
-    recognition = asyncio.run(generate_recognition(dataset))
+    recognition = asyncio.run(generate_recognition(dataset, workers=args.workers))
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
+    temporary_output = args.output.with_suffix(args.output.suffix + ".tmp")
+    temporary_output.write_text(
         json.dumps(recognition, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    temporary_output.replace(args.output)
     print(
         f"已分析 {recognition['puzzleCount']} 题，"
         f"资料版本 {recognition['datasetVersion']}，规则版本 {recognition['rulesVersion']}"

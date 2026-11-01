@@ -118,12 +118,13 @@ def import_csv(source: Path) -> dict[str, object]:
     with source.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         columns = set(reader.fieldnames or [])
-        missing = sorted(REQUIRED_COLUMNS - columns)
+        upload_format = {"fen_before", "blunder_move", "first_turn", "pv", "url", "rating"} <= columns
+        missing = [] if upload_format else sorted(REQUIRED_COLUMNS - columns)
         if missing:
             raise ValueError(f"CSV 缺少必要欄位：{', '.join(missing)}")
         seen_ids: dict[str, int] = {}
         puzzles = [
-            normalize_row(row, row_number, seen_ids)
+            normalize_row(adapt_upload_row(row) if upload_format else row, row_number, seen_ids)
             for row_number, row in enumerate(reader, start=2)
         ]
 
@@ -141,12 +142,23 @@ def import_csv(source: Path) -> dict[str, object]:
     }
 
 
+def adapt_upload_row(row: dict[str, str]) -> dict[str, str]:
+    """Map the puzzle upload export to the original import schema."""
+    url = row["url"].strip()
+    parts = url.rstrip("/").split("/")
+    puzzle_id = parts[-2] if len(parts) >= 2 and parts[-1] == "P" else parts[-1]
+    return {"Encrypted Id": puzzle_id, "Rating": row["rating"],
+            "Initial Fen": row["fen_before"], "Blunder Move": row["blunder_move"],
+            "Player Turn": row["first_turn"].strip().lower(), "Pv": row["pv"], "View Link": url}
+
+
 def main() -> None:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     project_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description="將象棋棋題 CSV 轉換成前端使用的標準 JSON")
     parser.add_argument("source", type=Path, help="CSV 檔案路徑")
+    parser.add_argument("--workers", type=int, default=4, help="Number of recognition worker processes.")
     parser.add_argument(
         "--output",
         type=Path,
@@ -157,13 +169,13 @@ def main() -> None:
 
     dataset = import_csv(args.source)
     args.output.parent.mkdir(parents=True, exist_ok=True)
+    from generate_puzzle_recognition import generate_recognition
+
+    recognition = asyncio.run(generate_recognition(dataset, workers=args.workers))
     args.output.write_text(
         json.dumps(dataset, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    from generate_puzzle_recognition import generate_recognition
-
-    recognition = asyncio.run(generate_recognition(dataset))
     recognition_output = args.output.with_name("checkmate-puzzle-recognition.json")
     recognition_output.write_text(
         json.dumps(recognition, ensure_ascii=False, indent=2) + "\n",

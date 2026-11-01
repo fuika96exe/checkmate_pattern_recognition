@@ -8,6 +8,7 @@ import { api } from "../lib/api";
 import { PATTERN_LABELS } from "../lib/patterns";
 import type {
   PatternId,
+  MaterialId,
   PuzzleDataset,
   PuzzleExpectations,
   PuzzleLineResponse,
@@ -19,6 +20,8 @@ import type {
 import { XiangqiBoard } from "./XiangqiBoard";
 
 const PAGE_SIZE = 24;
+const MATERIAL_LABELS: Record<MaterialId, string> = { R: "车杀", N: "马杀", C: "炮杀", P: "兵杀", RN: "车马", RC: "车炮", RP: "车兵", RNC: "车马炮", RNP: "车马兵", RCP: "车炮兵", NC: "马炮", NCP: "马炮兵", NP: "马兵", CP: "炮兵" };
+const MATERIAL_PIECES: Record<string, string> = { R: "车", N: "马", C: "炮", P: "兵" };
 const CACHE_PREFIX = "xiangqi-puzzle-recognition:v3";
 
 interface RecognitionCache {
@@ -73,9 +76,11 @@ function responseSummary(response: PuzzleLineResponse): PuzzleRecognitionSummary
     return { status: "invalid", patternIds: [], error: response.error ?? "无法分析棋题" };
   }
   const patternIds = response.analysis.matches.map((match) => match.patternId);
+  const materialId = response.analysis.materialFallback?.id ?? null;
   return {
-    status: patternIds.length ? "matched" : "unmatched",
+    status: patternIds.length || materialId ? "matched" : "unmatched",
     patternIds,
+    materialId,
   };
 }
 
@@ -123,6 +128,7 @@ export function PuzzleBrowser() {
   const [movesMax, setMovesMax] = useState("");
   const [puzzleIdQuery, setPuzzleIdQuery] = useState("");
   const [patternFilter, setPatternFilter] = useState<"" | PatternId>("");
+  const [materialFilter, setMaterialFilter] = useState<"" | MaterialId>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "matched" | "unmatched" | "invalid">("all");
   const [filtersExpanded, setFiltersExpanded] = useState(true);
   const [listExpanded, setListExpanded] = useState(true);
@@ -222,10 +228,11 @@ export function PuzzleBrowser() {
       if (minMoves !== null && puzzle.moveCount < minMoves) return false;
       if (maxMoves !== null && puzzle.moveCount > maxMoves) return false;
       if (patternFilter && !summaries[puzzle.key]?.patternIds.includes(patternFilter)) return false;
+      if (materialFilter && summaries[puzzle.key]?.materialId !== materialFilter) return false;
       if (statusFilter !== "all" && status !== statusFilter) return false;
       return true;
     });
-  }, [analyzing, dataset, movesMax, movesMin, patternFilter, puzzleIdQuery, ratingMax, ratingMin, statusFilter, summaries]);
+  }, [analyzing, dataset, movesMax, movesMin, patternFilter, materialFilter, puzzleIdQuery, ratingMax, ratingMin, statusFilter, summaries]);
 
   const totalPages = Math.max(1, Math.ceil(filteredPuzzles.length / PAGE_SIZE));
   const visiblePuzzles = filteredPuzzles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -245,6 +252,7 @@ export function PuzzleBrowser() {
     movesMax,
     puzzleIdQuery,
     patternFilter,
+    materialFilter,
     statusFilter === "all" ? "" : statusFilter,
   ].filter(Boolean).length;
 
@@ -395,6 +403,7 @@ export function PuzzleBrowser() {
             <label><span>着数下限</span><input type="number" value={movesMin} onChange={(event) => { setMovesMin(event.target.value); setPage(1); }} placeholder="不限" /></label>
             <label><span>着数上限</span><input type="number" value={movesMax} onChange={(event) => { setMovesMax(event.target.value); setPage(1); }} placeholder="不限" /></label>
             <label className="wide"><span>杀法</span><select value={patternFilter} onChange={(event) => { setPatternFilter(event.target.value as "" | PatternId); setPage(1); }}><option value="">全部杀法</option>{Object.entries(PATTERN_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
+            <label className="wide"><span>子力组合（兜底分类）</span><select value={materialFilter} onChange={(event) => { setMaterialFilter(event.target.value as "" | MaterialId); setPage(1); }}><option value="">全部组合</option>{Object.entries(MATERIAL_LABELS).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
             <label><span>状态</span><select value={statusFilter} onChange={(event) => { setStatusFilter(event.target.value as typeof statusFilter); setPage(1); }}><option value="all">全部</option><option value="matched">已匹配</option><option value="unmatched">未匹配</option><option value="invalid">无效</option></select></label>
           </div>
         )}
@@ -425,20 +434,21 @@ export function PuzzleBrowser() {
               {visiblePuzzles.map((puzzle) => {
                 const status = statusFor(puzzle, summaries, analyzing);
                 const patternIds = summaries[puzzle.key]?.patternIds ?? [];
+                const materialId = summaries[puzzle.key]?.materialId;
                 return (
-                  <button type="button" className={`puzzle-row${selected?.key === puzzle.key ? " selected" : ""}`} key={puzzle.key} onClick={() => void openPuzzle(puzzle)}>
+                  <div role="button" tabIndex={0} className={`puzzle-row${selected?.key === puzzle.key ? " selected" : ""}`} key={puzzle.key} onClick={() => void openPuzzle(puzzle)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); void openPuzzle(puzzle); } }}>
                     <MiniBoard fen={puzzle.initialFen} />
                     <span className="puzzle-row-main">
                       <span className="puzzle-patterns">
-                        {patternIds.length ? patternIds.map((id) => <i key={id}>{PATTERN_LABELS[id]}</i>) : <em>{status === "analyzing" ? "正在识别…" : status === "unmatched" ? "未识别到杀法" : status === "invalid" ? "无法识别杀法" : "待识别杀法"}</em>}
+                        {patternIds.length ? patternIds.map((id) => <i key={id}>{PATTERN_LABELS[id]}</i>) : materialId ? <i>子力组合 · {MATERIAL_LABELS[materialId]}</i> : <em>{status === "analyzing" ? "正在识别…" : status === "unmatched" ? "未识别到杀法" : status === "invalid" ? "无法识别杀法" : "待识别杀法"}</em>}
                       </span>
                       <span className="puzzle-row-meta">
                         <strong>{puzzle.solverSide === "red" ? "红方解题" : puzzle.solverSide === "black" ? "黑方解题" : "行棋方不明"}</strong>
-                        <small>{puzzle.moveCount} 着</small>
+                        <small>编号 <span className="puzzle-id" onClick={(event) => event.stopPropagation()}>{puzzle.key}</span> · {puzzle.moveCount} 着</small>
                         <span className={`puzzle-row-status ${status}`}>{statusLabel(status)}</span>
                       </span>
                     </span>
-                  </button>
+                  </div>
                 );
               })}
               {visiblePuzzles.length === 0 && <div className="empty-state">没有符合筛选条件的棋题。</div>}
@@ -472,7 +482,7 @@ export function PuzzleBrowser() {
             <section className="panel puzzle-board-panel">
               <div className="panel-heading">
                 <div><span className="eyebrow">SOLUTION REPLAY</span><h2>{selected.solverSide === "red" ? "红方" : "黑方"}解题 · {selected.moveCount} 着</h2></div>
-                <Badge appearance="outline">{statusLabel(selectedStatus)}</Badge>
+                <Badge appearance="outline">编号 <span className="puzzle-id">{selected.key}</span> · {statusLabel(selectedStatus)}</Badge>
               </div>
               {currentFrame ? (
                 <>
@@ -497,19 +507,24 @@ export function PuzzleBrowser() {
             <section className="panel puzzle-recognition-panel">
               <div className="panel-heading">
                 <div><span className="eyebrow">RECOGNITION RESULT</span><h2>整条解答线的杀法</h2></div>
-                <Badge appearance="outline">{currentPatterns.length} 项匹配</Badge>
+                <Badge appearance="outline">{currentPatterns.length + (selectedResult?.analysis?.materialFallback ? 1 : 0)} 项匹配</Badge>
               </div>
               {selectedResult?.error && <div className="error-banner">{selectedResult.error}</div>}
               {selectedResult?.valid && selectedResult.analysis ? (
                 <>
                   <div className="recognition-state">
-                    <strong>{selectedResult.analysis.analysis.isCheckmate ? "终局已将死" : "终局不是将死"}</strong>
+                    <strong>{selectedResult.analysis.analysis.isCheckmate ? "终局已将死" : selectedResult.analysis.analysis.isStalemate ? "终局已困毙" : "终局不是将死或困毙"}</strong>
                     <span>合法着法 {selectedResult.analysis.analysis.legalMoves.length} · 规则 {selectedResult.rulesVersion}</span>
                   </div>
                   <div className="recognized-pattern-list">
                     {currentPatterns.length ? currentPatterns.map((patternId) => (
                       <div key={patternId}><strong>{PATTERN_LABELS[patternId]}</strong><code>{patternId}</code></div>
-                    )) : <div className="empty-state">这是有效的将死局面，但没有命中任何已接入杀法。</div>}
+                    )) : selectedResult.analysis.materialFallback ? (
+                      <div><strong>子力组合 · {selectedResult.analysis.materialFallback.labelZh}</strong>
+                        <span>将军子：{selectedResult.analysis.materialFallback.checkingPieces.map((piece) => `${MATERIAL_PIECES[piece.piece]} ${piece.square}`).join("、") || "无列入组合的棋子"}</span>
+                        <span>控制逃格：{selectedResult.analysis.materialFallback.controllingPieces.map((piece) => `${MATERIAL_PIECES[piece.piece]} ${piece.square} → ${piece.targets.join("、")}`).join("；") || "无列入组合的棋子"}</span>
+                      </div>
+                    ) : <div className="empty-state">未命中现有杀法或指定子力组合。</div>}
                   </div>
                   {reviewedPatterns.length > 0 && (
                     <div className={`reviewed-result${samePatterns(reviewedPatterns, currentPatterns) ? " match" : " mismatch"}`}>

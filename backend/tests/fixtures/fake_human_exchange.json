@@ -1,0 +1,185 @@
+{
+  "comment": "Fake Human XQ-5112 exchange_cases.json reference cases, converted from 1-10 ranks to this project's 0-9 UCCI ranks. Expected gains are unchanged.",
+  "cases": [
+    {
+      "name": "protected gaining capture (ticket example)",
+      "covers": "protected gaining capture, normal 3-step exchange",
+      "fen": "3ak4/4a4/2n1b4/4n1RCp/4c4/6P2/P3P3P/2r1B1N2/9/3AKAB2 w - - 0 1",
+      "move": "h6e6",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Cxe7 (over the g7 screen), nxe7, Rxe7 — Red ends up a Horse ahead"
+    },
+    {
+      "name": "protected capture that really is losing",
+      "covers": "losing / suicide capture",
+      "fen": "3ak4/4a4/2n1b4/4n1RCp/4c4/6P2/P3P3P/2r1B1N2/9/3AKAB2 w - - 0 1",
+      "move": "g6e6",
+      "gain": -5,
+      "classification": "suicide",
+      "line": "Rxe7 nxe7 and the Cannon cannot recapture — the Rook that was its screen has left g7"
+    },
+    {
+      "name": "unprotected gaining capture",
+      "covers": "unprotected gaining capture",
+      "fen": "3ak4/4a4/4b4/4n1RCp/4c4/6P2/P3P3P/2r1B1N2/9/3AKAB2 w - - 0 1",
+      "move": "g6e6",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Rxe7 with no legal recapture — the Elephant does not cover e7 and the Cannon needs a screen"
+    },
+    {
+      "name": "equal trade",
+      "covers": "equal trade",
+      "fen": "3ak4/4a4/2n1b4/4n1pCp/4c4/6P2/P3P3P/2r1B1N2/9/3AKAB2 w - - 0 1",
+      "move": "h6e6",
+      "gain": 0,
+      "classification": "trade",
+      "line": "Cxe7 (screened by the black Pawn on g7) nxe7 — Cannon for Horse, nothing left to recapture"
+    },
+    {
+      "name": "over-defended square, capturing side declines",
+      "covers": "capturing side optimally declining a recapture, multiple defending pieces",
+      "fen": "3k5/9/b8/2p6/2n6/9/3N5/9/2R6/4K4 w - - 0 1",
+      "move": "d3c5",
+      "gain": 0,
+      "classification": "trade",
+      "line": "Nxc6 pxc6 and Red stops — Rxc6 would lose the Chariot to the Elephant on a8"
+    },
+    {
+      "name": "cannon screen changes mid-exchange",
+      "covers": "dynamic cannon-screen change, multiple attacking-side recapturers, defending side declining",
+      "fen": "3ak4/4a4/2n1b4/r3n1RCp/4P4/6P2/P3P3P/2r1B1N2/9/3AKAB2 w - - 0 1",
+      "move": "e5e6",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Pxe7 and Black declines: recapturing loses because Red answers with the Cannon, not the Chariot — taking with the Chariot would vacate the Cannon's own screen"
+    },
+    {
+      "name": "pinned defender cannot recapture",
+      "covers": "recapture illegal because of King safety",
+      "fen": "4k4/9/9/2n1r4/9/9/9/2R6/4R4/4K4 w - - 0 1",
+      "move": "c2c6",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Rxc7 — the Chariot on e7 looks like a defender but is pinned to its King by the Chariot on e2"
+    },
+    {
+      "name": "flying general forbids the recapture",
+      "covers": "Flying General restriction",
+      "fen": "4k4/9/9/9/9/3pp4/9/9/3R5/4K4 w - - 0 1",
+      "move": "d1d4",
+      "gain": 2,
+      "classification": "gaining",
+      "line": "Rxd5 — the Pawn on e5 cannot recapture, it is the only piece between the two Kings"
+    },
+    {
+      "name": "recapture forced as the only escape from check",
+      "covers": "recapture forced as the only legal response to check",
+      "fen": "3ak4/4n4/9/3N5/9/9/9/9/4RR3/4K4 w - - 0 1",
+      "move": "e1e8",
+      "gain": -3,
+      "classification": "suicide",
+      "line": "Rxe9+ and Black has exactly one legal move, Axe9, so no standing pat; Nxe9 follows and the King cannot retake (Flying General)"
+    },
+    {
+      "name": "forced recapture with more than one recapturer",
+      "covers": "recapture forced as the only legal response to check, multiple defending pieces",
+      "fen": "3nkn3/r7r/4P4/3N5/9/9/9/9/9/3K5 w - - 0 1",
+      "move": "e7e8",
+      "gain": 3,
+      "classification": "gaining",
+      "line": "Pe9+ is answered only by Rxe9 (either Chariot) — the King is walled in by its own Horses and cannot take a Pawn the Horse on d7 defends. Nxe9 then wins the Chariot back. Black is in check with two legal moves rather than one, so declining is still impossible: the forced test must be 'every legal move lands here', not 'there is exactly one legal move'."
+    },
+    {
+      "name": "hobbled horse is not a defender",
+      "covers": "Horse-leg blocking",
+      "fen": "3k5/9/9/2n6/nr7/2R6/9/9/9/4K4 w - - 0 1",
+      "move": "c4c6",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Rxc7 — the Horse on a6 covers c7 on paper, but its leg on b6 is blocked by its own Chariot"
+    },
+    {
+      "name": "four-ply over-defended exchange",
+      "covers": "4+ step over-defended exchange",
+      "fen": "4k4/4r4/4r4/9/4n4/9/4R4/4R4/9/4K4 w - - 0 1",
+      "move": "e3e5",
+      "gain": -5,
+      "classification": "suicide",
+      "line": "Rxe6 rxe6 Rxe6 rxe6 — Black has one more defender than Red has attackers"
+    },
+    {
+      "name": "crossed pawn is worth 2",
+      "covers": "piece-value scale (XQ-5113 crossed-Pawn valuation)",
+      "fen": "3k5/9/9/9/9/9/4p4/9/4R4/4K4 w - - 0 1",
+      "move": "e1e3",
+      "gain": 2,
+      "classification": "gaining",
+      "line": "Rxe4 wins a Pawn that has crossed the river, so 2 rather than 1"
+    },
+    {
+      "name": "quiet move onto an attacked square",
+      "covers": "non-capture move (Brilliant / direct-suicide detection)",
+      "fen": "3k5/9/9/2p6/9/9/9/9/2R6/4K4 w - - 0 1",
+      "move": "c1c5",
+      "gain": -9,
+      "classification": "suicide",
+      "line": "Rc6 captures nothing and hangs the Chariot to the Pawn on c7"
+    },
+    {
+      "name": "blocked elephant eye is not a defender",
+      "covers": "Elephant-eye blocking",
+      "fen": "3k5/9/b8/1r7/2n6/9/9/9/2R6/4K4 w - - 0 1",
+      "move": "c1c5",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Rxc6 — the Elephant on a8 covers c6 on paper, but its eye on b7 is blocked by its own Chariot"
+    },
+    {
+      "name": "equal-value recapturers leave different boards",
+      "covers": "case where LVA and Minimax choose different recapturers",
+      "fen": "4k4/4C4/4r4/9/r3n4/9/4R4/9/9/4K4 w - - 0 1",
+      "move": "e3e5",
+      "gain": -5,
+      "classification": "suicide",
+      "line": "Rxe6 and both black Chariots (equal value) can retake, but only rxe6 from e8 also removes the screen Red's Cannon needs — taking from a6 instead lets Cxe6 back and is worth 4 less"
+    },
+    {
+      "name": "pawn crossing the river as it captures",
+      "covers": "piece valued on its origin square, not its destination (XQ-5113 crossed-Pawn valuation)",
+      "fen": "4k4/9/9/9/4p4/4P4/9/4R4/9/3K5 b - - 0 1",
+      "move": "e5e4",
+      "gain": 0,
+      "classification": "trade",
+      "line": "Black's Pawn on e6 is on its own side and worth 1. It captures Red's Pawn on e5 — also worth 1 — and in doing so crosses the river, where a Pawn is worth 2. Red's Chariot on e3 recaptures. Pawn for Pawn is an even trade, so this must be 0; valuing the recaptured Pawn at 2 because of where it ended up returns -1 and misreports the trade as a Direct Suicide."
+    },
+    {
+      "name": "client case — Horse takes a Cannon-defended Horse",
+      "covers": "protected equal exchange, multiple defending Cannons",
+      "fen": "3ak1b2/4a4/2n1bc2c/2R6/1N7/9/P8/4B4/4A4/4KAB2 w - - 0 1",
+      "move": "b5c7",
+      "gain": 0,
+      "classification": "trade",
+      "line": "Posted on XQ-5112 by vincent (2026-09-03), rank notation converted to this file's 1-10. Reference: 'Red unable to gain material advantage (equal trade)'. Nxc8 is met by the Cannon on f8 firing over the Elephant on e8; the Chariot on c7 and the second Cannon on i8 resolve the rest to level."
+    },
+    {
+      "name": "client case — five-ply Chariot and Cannon chain on one square",
+      "covers": "4+ step over-defended exchange, multiple recapturers on both sides",
+      "fen": "3ak1b2/4a4/2n1bc2c/2R6/9/9/9/2C1B4/4A4/2C1KAB2 w - - 0 1",
+      "move": "c2c7",
+      "gain": 4,
+      "classification": "gaining",
+      "line": "Posted on XQ-5112 by vincent (2026-09-03), rank notation converted to this file's 1-10. Reference: 'Red can gain material advantage', line c3c8, f8c8; c1c8, i8c8, c7c8 — five plies, every one of them onto c8, and Red ends a Horse ahead."
+    },
+    {
+      "name": "client case — Cannon recaptures over its own Chariot screen",
+      "covers": "losing capture, recapture only legal because of a Cannon screen",
+      "fen": "3ak1b2/4a4/4b4/2R1n2rc/9/3N5/9/9/4A4/2BAK4 w - - 0 1",
+      "move": "c6e6",
+      "gain": -5,
+      "classification": "suicide",
+      "line": "Posted on XQ-5112 by vincent (2026-09-03), rank notation converted to this file's 1-10. Reference B: 'Red unable to gain material advantage (negative)', line c7e7, i7e7. The Chariot wins the Horse on e7 but the Cannon on i7 takes it back, screened by Black's own Chariot on h7 — Chariot for Horse is -5."
+    }
+  ]
+}

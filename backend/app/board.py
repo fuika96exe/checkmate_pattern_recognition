@@ -74,6 +74,12 @@ def side_to_move(fen: str) -> str:
 
 @lru_cache(maxsize=512)
 def legal_moves(fen: str) -> list[str]:
+    board = parse_fen(fen)
+    # Hypothetical tactical captures can remove a general.  Such positions
+    # are terminal; passing them to the native engine can corrupt its state
+    # and crash a later get_fen call instead of raising a Python exception.
+    if "K" not in board.values() or "k" not in board.values():
+        return []
     if pyffish is not None:
         try:
             return [
@@ -83,7 +89,6 @@ def legal_moves(fen: str) -> list[str]:
         except Exception as exc:  # pragma: no cover - engine text varies
             raise BoardError(f"局面不能產生合法着法：{exc}") from exc
 
-    board = parse_fen(fen)
     moving_red = side_to_move(fen) == "red"
     king_piece = "K" if moving_red else "k"
     king_square = next(

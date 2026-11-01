@@ -149,6 +149,7 @@ button, input, textarea, select { font: inherit; }
 .puzzle-row-main { min-width: 0; display: grid; gap: 8px; align-content: center; }
 .puzzle-row-meta { min-width: 0; display: flex; align-items: baseline; gap: 7px; color: var(--muted); }
 .puzzle-row-meta strong { color: var(--ink); font-size: 11px; font-weight: 600; }.puzzle-row-meta small { font: 9px Consolas, monospace; }.puzzle-row-status { margin-left: auto; color: #858a90; font-size: 9px; font-weight: 500; }.puzzle-row-status.matched { color: #557763; }.puzzle-row-status.invalid { color: #9b6265; }
+.puzzle-id { user-select: text; cursor: text; }
 .puzzle-patterns { min-width: 0; min-height: 27px; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
 .puzzle-patterns i { padding: 5px 8px 5px 10px; color: #173f5d; background: #dcebf5; border: 1px solid #a9c6da; border-left: 3px solid #437da4; border-radius: 3px; font-size: 12px; font-style: normal; font-weight: 700; letter-spacing: .02em; line-height: 1.1; }
 .puzzle-patterns em { color: #858b91; font-size: 11px; font-style: normal; }

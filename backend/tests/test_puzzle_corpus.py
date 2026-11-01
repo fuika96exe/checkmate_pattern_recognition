@@ -1,6 +1,8 @@
 import asyncio
 from pathlib import Path
 
+import pytest
+
 from app.main import api_analyze_puzzle_line
 from app.models import PuzzleLineRequest
 from app.patterns import CHECKMATE_RULES_VERSION
@@ -61,7 +63,22 @@ def test_importer_preserves_invalid_rows(tmp_path: Path) -> None:
     assert dataset["puzzles"][1]["importErrors"]
 
 
-def test_generated_recognition_index_matches_dataset_and_rules() -> None:
+def test_upload_import_uses_url_id_and_normalizes_solver_side(tmp_path: Path) -> None:
+    source = tmp_path / "upload.csv"
+    source.write_text(
+        "game_id,theme,fen_before,blunder_move,first_turn,pv,url,rating\n"
+        "XXXXX,CHECKMATE,4k4/9/9/9/9/9/9/9/9/4K4 w - - 0 1,"
+        "e0e1,BLACK,\"['e9e8']\",https://play.xiangqi.com/puzzle/example/P,900\n",
+        encoding="utf-8",
+    )
+    dataset = import_csv(source)
+    assert dataset["invalidCount"] == 0
+    assert dataset["puzzles"][0]["id"] == "example"
+    assert dataset["puzzles"][0]["solverSide"] == "black"
+
+
+@pytest.mark.parametrize("workers", [1, 2])
+def test_generated_recognition_index_matches_dataset_and_rules(workers: int) -> None:
     dataset = {
         "datasetVersion": "test-dataset",
         "puzzles": [
@@ -81,7 +98,7 @@ def test_generated_recognition_index_matches_dataset_and_rules() -> None:
         ],
     }
 
-    recognition = asyncio.run(generate_recognition(dataset))
+    recognition = asyncio.run(generate_recognition(dataset, workers=workers))
 
     assert recognition["datasetVersion"] == "test-dataset"
     assert recognition["rulesVersion"] == CHECKMATE_RULES_VERSION

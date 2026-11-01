@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from .board import FILES, apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
 
-CATEGORY_RULES_VERSION = "nine-tactics-draft-0.9"
+CATEGORY_RULES_VERSION = "nine-tactics-draft-0.10"
 LABELS = {
     "exchange": "交换", "fork": "捉双", "skewer": "串打",
     "discovered_attack": "闪击", "remove_defender": "消除保护",
@@ -159,13 +159,15 @@ def _has_geometric_defender(board: dict[str, str], victim: str, owner: str) -> b
     )
 
 
-def _trapped_pieces(board: dict[str, str], side: str) -> set[str]:
+def _trapped_pieces(board: dict[str, str], side: str, candidates: set[str] | None = None) -> set[str]:
     """Category-local definition of 困: every legal exit loses immediately.
 
     A side in check has a temporary whole-board restriction: it must answer
     the check, so most otherwise available piece moves disappear from the
     legal-move list.  That is not a local 围困 of any individual piece.
     """
+    if candidates is not None and not candidates:
+        return set()
     position = _fen(board, side)
     enemy = _other(side)
     if _gives_check(board, enemy):
@@ -173,6 +175,13 @@ def _trapped_pieces(board: dict[str, str], side: str) -> set[str]:
     enemy_attacks = attacked_squares(board, enemy)
     grouped: dict[str, list[str]] = {}
     for move in legal_moves(position):
+        if candidates is not None and move[:2] not in candidates:
+            continue
+        # A general is not a material trap target.  Out-of-turn probes can
+        # also offer a pseudo capture of the opposing general; never replay
+        # that as an escape and then ask the engine to analyse a kingless FEN.
+        if board.get(move[:2], "").upper() == "K" or board.get(move[2:], "").upper() == "K":
+            continue
         grouped.setdefault(move[:2], []).append(move)
     trapped: set[str] = set()
     for source, moves in grouped.items():
@@ -292,7 +301,9 @@ def _captures(fen: str, side: str | None = None) -> list[str]:
     if side is not None and side != side_to_move(fen):
         fen = _fen(board, side)
         board = parse_fen(fen)
-    return [move for move in legal_moves(fen) if move[2:] in board and not _is_side(board[move[2:]], side_to_move(fen))]
+    return [move for move in legal_moves(fen)
+            if move[2:] in board and board[move[2:]].upper() != "K"
+            and not _is_side(board[move[2:]], side_to_move(fen))]
 
 
 def _new_captures(before: dict[str, str], after_fen: str, side: str) -> list[str]:
@@ -776,8 +787,11 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
         # 消除保护：只认“本手直接吃掉指定守子”这一种手段。闪击将军、
         # 牵制或线路变化即使让某条保护关系暂时失效，也不在此标签中
         # 另算消除保护；被保护目标本身被吃则属于交换／得子。
-        before_defenses = _defense_relations(before, enemy)
-        after_defenses = _defense_relations(after, enemy)
+        # Only a captured rook/horse/cannon can be a removed defender.
+        # Avoid expensive hypothetical defence probes on every quiet move.
+        captured_defender = captured_piece and captured_piece.upper() in {"R", "N", "C"}
+        before_defenses = _defense_relations(before, enemy) if captured_defender else set()
+        after_defenses = _defense_relations(after, enemy) if captured_defender else set()
         defended_after = {victim for _, victim in after_defenses}
         attacked_after = {capture[2:] for capture in _captures(after_fen, side)}
 
@@ -825,8 +839,10 @@ def analyze_tactical_categories(fen: str, moves: list[str]) -> list[dict[str, ob
         # 围困：目标的每一条合法走法都会立即安全失子，并且当前有己子直接捉它。
         # “困”可以早于“围”形成；本手若给一个早已被困的子新增直接捉子，
         # 两项条件也在此刻首次同时成立，应当输出标签。
-        before_traps = _trapped_pieces(before, enemy)
-        after_traps = _trapped_pieces(after, enemy)
+        # A reported trap must also have a current legal hunter.  Check only
+        # those targets, then compare their previous trap status.
+        after_traps = _trapped_pieces(after, enemy, attacked_after)
+        before_traps = _trapped_pieces(before, enemy, after_traps)
         before_position = _fen(before, side)
         for victim in sorted(after_traps):
             before_hunters = {capture[:2] for capture in _captures(before_position) if capture[2:] == victim}

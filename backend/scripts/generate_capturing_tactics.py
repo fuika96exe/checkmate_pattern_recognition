@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import ast
 import csv
+import faulthandler
 import json
 import random
 import sys
@@ -16,6 +17,7 @@ sys.path.insert(0, str(BACKEND_ROOT.parent))
 
 from backend.app.board import apply_move, parse_fen  # noqa: E402
 from backend.app.tactical_categories import CATEGORY_RULES_VERSION, LABELS, _piece_value, analyze_tactical_categories  # noqa: E402
+from backend.scripts.import_puzzles import adapt_upload_row  # noqa: E402
 
 MAIN_PIECES = {"R", "C", "N"}
 GAIN_LABELS = {"big": "得子(大子)", "small": "得子(小子)", "none": "並非得子"}
@@ -108,6 +110,8 @@ def main() -> None:
     parser.add_argument("--output", type=Path, default=root / "public" / "data" / "capturing-tactics.json")
     parser.add_argument("--count", type=int, default=500)
     parser.add_argument("--seed", type=int, default=20260702)
+    parser.add_argument("--workers", type=int, default=4, help="Number of analysis worker processes.")
+    parser.add_argument("--progress-every", type=int, default=100, help="Report progress every N puzzles (0 disables).")
     parser.add_argument("--existing-dataset", type=Path,
                         help="Relabel every puzzle already stored in this JSON dataset; no source CSV is needed.")
     parser.add_argument("--start", type=int, default=0,
@@ -128,20 +132,29 @@ def main() -> None:
         eligible_rows = int(existing.get("eligibleRows", len(stored_puzzles)))
     else:
         with args.csv.open(encoding="utf-8-sig", newline="") as handle:
-            rows = [row for row in csv.DictReader(handle) if row["State"] == "PUBLISHED" and row["Theme"] == "CAPTURING"]
-        sample = random.Random(args.seed).sample(rows, min(args.count, len(rows)))
+            rows = list(csv.DictReader(handle))
+        if rows and "fen_before" in rows[0]:
+            sample = [adapt_upload_row(row) for row in rows]
+        else:
+            rows = [row for row in rows if row["State"] == "PUBLISHED" and row["Theme"] == "CAPTURING"]
+            sample = random.Random(args.seed).sample(rows, min(args.count, len(rows)))
         source = args.csv.name
         seed = args.seed
         eligible_rows = len(rows)
 
-    if args.existing_dataset and len(sample) < 32:
+    if args.workers == 1 or (args.existing_dataset and len(sample) < 32):
         # Short resumable ranges should not pay Windows process-pool startup
         # cost.  A full-dataset relabel below benefits substantially from
         # using all available cores.
         relabelled = [label_puzzle(row) for row in sample]
     else:
-        with ProcessPoolExecutor() as pool:
-            relabelled = list(pool.map(label_puzzle, sample, chunksize=4))
+        print(f"Analysing {len(sample)} puzzles with {args.workers} workers", flush=True)
+        with ProcessPoolExecutor(max_workers=args.workers, initializer=faulthandler.enable) as pool:
+            relabelled = []
+            for completed, puzzle in enumerate(pool.map(label_puzzle, sample, chunksize=4), start=1):
+                relabelled.append(puzzle)
+                if args.progress_every > 0 and completed % args.progress_every == 0:
+                    print(f"Analysed {completed}/{len(sample)} puzzles", flush=True)
     if args.existing_dataset:
         puzzles = stored_puzzles
         for index, puzzle in zip(indexes, relabelled):
@@ -164,7 +177,9 @@ def main() -> None:
         "generatedAt": datetime.now(timezone.utc).isoformat(), "puzzleCount": len(puzzles),
         "summary": summary, "puzzles": puzzles,
     }
-    args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    temporary_output = args.output.with_suffix(args.output.suffix + ".tmp")
+    temporary_output.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    temporary_output.replace(args.output)
     print(f"wrote {len(puzzles)} puzzles of {eligible_rows} eligible -> {args.output}")
     print(json.dumps(summary, ensure_ascii=False))
 

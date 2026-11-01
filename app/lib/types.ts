@@ -123,8 +123,7 @@ export interface RunAllResponse { total: number; passed: number; results: TestRu
 
 export type PatternId =
   | "CROWNED_CHECKMATE"
-  | "EUNUCHS_CHASING_EMPEROR_CHECKMATE"
-  | "CENTROID_PAWN_CHECKMATE"
+  | "CENTROID_CHECKMATE"
   | "CANNONS_SANDWICHING_CHARIOT_CHECKMATE"
   | "DOUBLE_CANNON_CHECKMATE"
   | "DOUBLE_TOAST_CHECKMATE"
@@ -137,11 +136,9 @@ export type PatternId =
   | "TWO_DEVILS_KNOCKING_CHECKMATE"
   | "DOUBLE_CHARIOTS_CHECKMATE"
   | "DISCOVERED_HORSE_CHECKMATE"
-  | "CENTROID_CHARIOT_CHECKMATE"
   | "TIGER_SILHOUETTE_CHECKMATE"
   | "HORSE_CANNON_CHECKMATE"
   | "OCTAGON_HORSE_CHECKMATE"
-  | "DOUBLE_HORSES_DRINKING_SPRING_CHECKMATE"
   | "DOUBLE_CHECK_CHECKMATE"
   | "ELBOW_HORSE_CHECKMATE"
   | "PALCORNER_HORSE_CHECKMATE"
@@ -152,9 +149,11 @@ export type PatternId =
 
 export interface PatternMatch { patternId: PatternId; patternNameZh: string; detected: boolean; causal: boolean; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; features: Record<string, unknown>; diagnostics: string[]; }
 
-export interface PatternAnalysis { requestedPatternId: PatternId | null; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; bestMatch: PatternMatch | null; matches: PatternMatch[]; }
+export type MaterialId = "R" | "N" | "C" | "P" | "RN" | "RC" | "RP" | "RNC" | "RNP" | "RCP" | "NC" | "NCP" | "NP" | "CP";
+export interface MaterialFallback { id: MaterialId; labelZh: string; checkingPieces: { square: string; piece: string }[]; controllingPieces: { square: string; piece: string; targets: string[] }[]; }
+export interface PatternAnalysis { requestedPatternId: PatternId | null; fen: string; moves: string[]; analysis: { sideToMove: Side; kingSquare: string; isCheck: boolean; isCheckmate: boolean; isStalemate: boolean; legalMoves: string[]; checkingPieces: { square: string; reason: string }[] }; bestMatch: PatternMatch | null; matches: PatternMatch[]; materialFallback: MaterialFallback | null; }
 
-export type TacticId = "escape" | "protect" | "sacrifice" | "block" | "seal" | "trap" | "pin";
+export type TacticId = "exchange" | "capture" | "chase" | "escape" | "protect" | "sacrifice" | "block" | "seal" | "trap" | "pin";
 export interface TacticOccurrence { id: TacticId; labelZh: string; squares: string[]; detail: string; }
 export interface TacticMoveAnnotation { ply: number; side: Side; ucci: string; occurrences: TacticOccurrence[]; }
 export interface TacticAnalysis { rulesVersion: string; annotations: TacticMoveAnnotation[]; }
@@ -212,6 +211,7 @@ export type PuzzleRecognitionStatus = "unanalyzed" | "analyzing" | "matched" | "
 export interface PuzzleRecognitionSummary {
   status: Exclude<PuzzleRecognitionStatus, "analyzing">;
   patternIds: PatternId[];
+  materialId?: MaterialId | null;
   error?: string;
 }
 

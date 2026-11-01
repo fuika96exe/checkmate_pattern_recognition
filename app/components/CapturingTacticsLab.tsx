@@ -94,11 +94,11 @@ export function CapturingTacticsLab() {
     <div className="puzzle-browser">
       <section className="panel puzzle-catalog">
         <div className="panel-heading puzzle-heading">
-          <div><span className="eyebrow">CAPTURING TACTICS SAMPLE</span><h2>吃子棋题战术标注</h2></div>
+          <div><span className="eyebrow">CAPTURING TACTICS</span><h2>吃子棋题战术标注</h2></div>
           <Badge appearance="outline">{dataset.rulesVersion}</Badge>
         </div>
         <div className="puzzle-metrics">
-          <span>抽样<strong>{dataset.puzzleCount}</strong></span>
+          <span>题目<strong>{dataset.puzzleCount}</strong></span>
           <span>已标注<strong>{dataset.puzzles.filter((p) => p.tactics.length).length}</strong></span>
           <span>未识别<strong>{dataset.summary.unmatched ?? 0}</strong></span>
           <span>无效<strong>{dataset.summary.invalid ?? 0}</strong></span>
@@ -121,10 +121,10 @@ export function CapturingTacticsLab() {
             </select>
           </label>
         </div>
-        <p className="support-copy" style={{ padding: "0 14px" }}>数据来源 {dataset.source}（CAPTURING 已发布 {dataset.eligibleRows} 题中随机抽样，seed {dataset.seed}）。标注取解题方每一手的战术分类结果。</p>
+        <p className="support-copy" style={{ padding: "0 14px" }}>数据来源 {dataset.source}（{dataset.puzzleCount === dataset.eligibleRows ? `全量导入 ${dataset.puzzleCount} 题` : `${dataset.eligibleRows} 题中抽样 ${dataset.puzzleCount} 题`}）。标注取解题方走子的战术分类结果；交换也包含对手实际回吃确认的结果。</p>
         <div className="puzzle-list" aria-label="吃子棋题列表">
           {pageRows.map((puzzle) => (
-            <button type="button" className={`puzzle-row${selected?.id === puzzle.id ? " selected" : ""}`} key={puzzle.id} onClick={() => open(puzzle)}>
+            <div role="button" tabIndex={0} className={`puzzle-row${selected?.id === puzzle.id ? " selected" : ""}`} key={puzzle.id} onClick={() => open(puzzle)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); open(puzzle); } }}>
               <MiniBoard fen={puzzle.fens[1] ?? puzzle.initialFen} />
               <span className="puzzle-row-main">
                 <span className="puzzle-patterns">
@@ -132,11 +132,11 @@ export function CapturingTacticsLab() {
                 </span>
                 <span className="puzzle-row-meta">
                   <strong>{puzzle.solverSide === "red" ? "红方解题" : "黑方解题"}</strong>
-                  <small>{puzzle.id} · {puzzle.rating ?? "—"} · {puzzle.pv.length} 着</small>
+                  <small>编号 <span className="puzzle-id" onClick={(event) => event.stopPropagation()}>{puzzle.id}</span> · {puzzle.rating ?? "—"} · {puzzle.pv.length} 着</small>
                   <span className={`puzzle-row-status ${puzzle.status}`}>{puzzle.material ? dataset.gainLabels[puzzle.material.kind] : "无效"}</span>
                 </span>
               </span>
-            </button>
+            </div>
           ))}
           {pageRows.length === 0 && <div className="empty-state">没有符合筛选条件的棋题。</div>}
         </div>
@@ -155,7 +155,7 @@ export function CapturingTacticsLab() {
             <section className="panel puzzle-board-panel">
               <div className="panel-heading">
                 <div><span className="eyebrow">SOLUTION REPLAY</span><h2>{selected.solverSide === "red" ? "红方" : "黑方"}解题 · {selected.pv.length} 着</h2></div>
-                <Badge appearance="outline"><a href={selected.url} target="_blank" rel="noreferrer">{selected.id}</a></Badge>
+                <Badge appearance="outline">编号 <span className="puzzle-id">{selected.id}</span> · <a href={selected.url} target="_blank" rel="noreferrer">原题</a></Badge>
               </div>
               <XiangqiBoard fen={selected.fens[frame]} legalMoves={[]} lastMove={lastMove} disabled onMove={() => undefined} />
               <div className="puzzle-replay-controls">

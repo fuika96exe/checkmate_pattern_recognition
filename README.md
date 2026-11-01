@@ -165,6 +165,13 @@ cannot run in the Python Workers WebAssembly runtime. Built-in fixtures are
 available in production; saving and deleting fixture files remains a local-only
 feature.
 
+Interactive move and tactical analysis require Workers Paid: the Free plan's
+10 ms CPU allowance can terminate these requests with HTTP 500 even when the
+health check succeeds. After upgrading, `limits.cpu_ms` in
+`backend/wrangler.jsonc` can set an explicit analysis budget (for example,
+`30000` for 30 seconds). See the
+[Cloudflare CPU limits](https://developers.cloudflare.com/workers/platform/limits/#cpu-time).
+
 To redeploy the API and frontend:
 
 ```powershell
