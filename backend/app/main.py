@@ -16,6 +16,7 @@ from .models import (
     AdvanceRequest,
     AdvanceResponse,
     AnalyzeRequest,
+    OpeningSampleReplayRequest,
     AnalyzeResponse,
     InitialResponse,
     InspectRequest,
@@ -41,6 +42,7 @@ from .service import advance, analyze, analyze_live_game_report, create_initial,
 from .patterns import CHECKMATE_RULES_VERSION, analyze_patterns
 from .tactics import TACTIC_RULES_VERSION, analyze_tactics
 from .tactical_categories import CATEGORY_RULES_VERSION, analyze_tactical_categories
+from .opening_sample import advance_sample, replay_sample
 
 
 ROOT = Path(os.environ.get("XIANGQI_DATA_DIR", Path(__file__).resolve().parents[1]))
@@ -130,6 +132,24 @@ async def api_initial() -> InitialResponse:
 async def api_advance(request: AdvanceRequest) -> AdvanceResponse:
     try:
         return advance(request.state, request.ucci_move)
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/opening-sample/advance", response_model=AdvanceResponse)
+async def api_opening_sample_advance(request: AdvanceRequest) -> AdvanceResponse:
+    try:
+        return advance_sample(request.state, request.ucci_move)
+    except Exception as exc:
+        raise _as_http_error(exc) from exc
+
+
+@app.post("/api/opening-sample/replay", response_model=list[AdvanceResponse])
+async def api_opening_sample_replay(request: OpeningSampleReplayRequest) -> list[AdvanceResponse]:
+    try:
+        if IS_CLOUDFLARE_WORKER:
+            return replay_sample(request.ucci_moves, request.state)
+        return await run_in_threadpool(replay_sample, request.ucci_moves, request.state)
     except Exception as exc:
         raise _as_http_error(exc) from exc
 

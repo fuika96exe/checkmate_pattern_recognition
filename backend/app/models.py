@@ -158,6 +158,10 @@ class AnalyzeRequest(ApiModel):
     ucci_moves: list[str]
 
 
+class OpeningSampleReplayRequest(AnalyzeRequest):
+    state: RecognitionState | None = None
+
+
 class AnalyzeResponse(ApiModel):
     moves: list[MoveRecord]
     states: list[RecognitionState]

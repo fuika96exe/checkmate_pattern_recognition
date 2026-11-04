@@ -225,3 +225,16 @@ export interface PuzzleRecognitionDataset {
 }
 
 export interface HealthResponse { status: string; rulesVersion: string }
+
+// Midgame dataset v2 is independent from generic tactical-category semantics.
+export type MidgameTacticId = "fork" | "discovered_attack" | "skewer" | "pin" | "check_fork" | "trap" | "remove_defender" | "overload" | "exchange" | "clearance";
+export type MidgameGainKind = "gain" | "no_gain";
+export interface MidgamePieceRef { id: string; square: string | null; piece: string; }
+export interface MidgameEvidence {
+  key: string; triggerPly: number; confirmedPly: number; relationKind: string;
+  actors: MidgamePieceRef[]; targets: MidgamePieceRef[];
+  [field: string]: unknown;
+}
+export interface MidgameOccurrence {
+  id: MidgameTacticId; label_zh: string; squares: string[]; detail: string; evidence: MidgameEvidence;
+}

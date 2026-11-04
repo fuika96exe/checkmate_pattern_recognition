@@ -1,0 +1,252 @@
+{
+  "version": 3,
+  "status": "frozen",
+  "reviewedAt": "2026-11-04",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-2.9",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工追加的取代版本：依專家裁決改判 v1 中走動子將軍並開出有效攻擊的閃擊題，加上抽將。v1 檔案本身不改動。",
+  "supersedes": [
+    "La2D56",
+    "La2D96",
+    "Lb0eGl",
+    "LlpvDL",
+    "R0g43k",
+    "R0g444",
+    "qAbavL"
+  ],
+  "cases": [
+    {
+      "id": "Lb0eGl",
+      "sourceRow": 61,
+      "url": "https://play.xiangqi.com/puzzle/Lb0eGl/P",
+      "initialFen": "3aka3/9/b1ncc1n1b/p3prCRp/2p6/1N4P2/P3P3P/4C1N1B/3rA4/1RB1KA3 b - - 4 16",
+      "blunderMove": "c5c4",
+      "pv": [
+        "g6e6",
+        "f6e6",
+        "e2e6",
+        "d9e8"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "La2D96",
+      "sourceRow": 83,
+      "url": "https://play.xiangqi.com/puzzle/La2D96/P",
+      "initialFen": "2baka3/r8/4b1n2/p1p1nR2p/6pr1/2P1p4/Pc2N1PcP/1C2C1N2/4A4/2B1KABR1 w - - 6 15",
+      "blunderMove": "e2e4",
+      "pv": [
+        "h3e3",
+        "c0e2",
+        "h5h0",
+        "g2h0"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "La2D56",
+      "sourceRow": 118,
+      "url": "https://play.xiangqi.com/puzzle/La2D56/P",
+      "initialFen": "3ak1bnC/4a4/b7N/2p6/p8/6P2/P2nP3P/3CB4/cc7/3AKAB2 b - - 16 25",
+      "blunderMove": "b1i1",
+      "pv": [
+        "i7g8",
+        "e9f9",
+        "i9i1",
+        "h9i7"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "R0g43k",
+      "sourceRow": 228,
+      "url": "https://play.xiangqi.com/puzzle/R0g43k/P",
+      "initialFen": "C1R2abr1/3ka4/3c2n2/4p3p/6p2/3r5/P3P1PcP/3C2N2/4A4/2BAK1BR1 w - - 3 23",
+      "blunderMove": "d2c2",
+      "pv": [
+        "h3e3",
+        "g2e3",
+        "h9h0",
+        "c0e2"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "R0g444",
+      "sourceRow": 305,
+      "url": "https://play.xiangqi.com/puzzle/R0g444/P",
+      "initialFen": "2bakabr1/9/c8/NR2p3p/5r3/2p2C3/P3c3P/4B4/4A4/2BAKR3 b - - 1 18",
+      "blunderMove": "e6e5",
+      "pv": [
+        "f4e4",
+        "g9e7",
+        "f0f5",
+        "e5e4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "qAbavL",
+      "sourceRow": 375,
+      "url": "https://play.xiangqi.com/puzzle/qAbavL/P",
+      "initialFen": "3nkab2/4a4/4b2c1/p2Pp3p/6pn1/1NC1r4/P4rP1P/4B4/4A4/1R2KAB1R b - - 13 18",
+      "blunderMove": "f3d3",
+      "pv": [
+        "c4c9",
+        "e7c9",
+        "b4d3",
+        "e4d4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    },
+    {
+      "id": "LlpvDL",
+      "sourceRow": 483,
+      "url": "https://play.xiangqi.com/puzzle/LlpvDL/P",
+      "initialFen": "2baka1r1/9/1c2b4/p3p3p/9/3n5/P4cC1P/3R2N2/6C2/2BAKAB2 b - - 3 25",
+      "blunderMove": "h9h4",
+      "pv": [
+        "g3g9",
+        "e7g9",
+        "g2h4",
+        "b7e7"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "check_fork"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，R0g40E 一案）：走動子本身將軍、同時開出有效攻擊的結構，一律是閃擊加抽將。"
+      }
+    }
+  ]
+}

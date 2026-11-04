@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "status": "frozen",
+  "reviewedAt": "2026-11-04",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-2.7",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工追加的取代版本：只修正 v1 中經專家改判的題目。每題以 supersedes 註明取代哪個版本及理由；關卡以最新版本為準，v1 檔案本身不改動。",
+  "supersedes": [
+    "LNl7Gx"
+  ],
+  "cases": [
+    {
+      "id": "LNl7Gx",
+      "sourceRow": 36,
+      "url": "https://play.xiangqi.com/puzzle/LNl7Gx/P",
+      "initialFen": "2b1kabr1/4a4/2n1c1n2/p5pCp/2p6/4R1P2/P1P1N3P/1r2BcN2/4C4/2BAKA1R1 b - - 0 14",
+      "blunderMove": "c7e6",
+      "pv": [
+        "h6e6",
+        "h9h0",
+        "g2h0",
+        "f2h2"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "discovered_attack"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決 D1（2026-11-04）：閃擊開出的攻擊交換值須 > 0，或同手將軍；本題開出的車對車交換值為 0 且沒有將軍，不算閃擊。其後的兌車為交換（專家確認）。"
+      }
+    }
+  ]
+}

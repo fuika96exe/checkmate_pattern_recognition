@@ -359,7 +359,6 @@ export function PuzzleBrowser() {
   if (loadError) return <div className="error-banner">{loadError}</div>;
   if (!dataset) return <div className="loading-state"><Spinner label="正在载入棋题资料" /></div>;
 
-  const selectedStatus = selected ? statusFor(selected, summaries, analyzing) : "unanalyzed";
   const timeline = selectedResult?.timeline ?? [];
   const currentFrame = timeline[timelineIndex];
   const currentPatterns = selectedResult?.analysis?.matches.map((match) => match.patternId) ?? [];
@@ -444,7 +443,7 @@ export function PuzzleBrowser() {
                       </span>
                       <span className="puzzle-row-meta">
                         <strong>{puzzle.solverSide === "red" ? "红方解题" : puzzle.solverSide === "black" ? "黑方解题" : "行棋方不明"}</strong>
-                        <small>编号 <span className="puzzle-id" onClick={(event) => event.stopPropagation()}>{puzzle.key}</span> · {puzzle.moveCount} 着</small>
+                        <small><span className="puzzle-id" onClick={(event) => event.stopPropagation()}>{puzzle.key}</span></small>
                         <span className={`puzzle-row-status ${status}`}>{statusLabel(status)}</span>
                       </span>
                     </span>
@@ -482,7 +481,7 @@ export function PuzzleBrowser() {
             <section className="panel puzzle-board-panel">
               <div className="panel-heading">
                 <div><span className="eyebrow">SOLUTION REPLAY</span><h2>{selected.solverSide === "red" ? "红方" : "黑方"}解题 · {selected.moveCount} 着</h2></div>
-                <Badge appearance="outline">编号 <span className="puzzle-id">{selected.key}</span> · {statusLabel(selectedStatus)}</Badge>
+                <Badge appearance="outline"><span className="puzzle-id">{selected.key}</span></Badge>
               </div>
               {currentFrame ? (
                 <>

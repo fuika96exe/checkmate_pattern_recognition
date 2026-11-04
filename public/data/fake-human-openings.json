@@ -1,0 +1,1594 @@
+{
+  "schemaVersion": "1.0",
+  "datasetVersion": "4c48140c253981b2",
+  "rulesVersion": "ecco-contents-0.3",
+  "openingPlies": 20,
+  "generatedAt": "2026-11-04T13:15:11.608688+00:00",
+  "gameCount": 198,
+  "results": {
+    "-pR8rJa7Fu": {
+      "status": "done",
+      "name": "大列手炮局",
+      "nameEn": "Big Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "-XVZ9e2EVk": {
+      "status": "done",
+      "name": "五六炮進三兵巡河車對屏風馬挺七卒飛左象",
+      "nameEn": "3rd Pawn Advancement and Riverbank Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "09G6FTa3aj": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "0pQwjF_zqf": {
+      "status": "done",
+      "name": "起馬轉五七炮進七兵緩開車過河車對黑方巡河炮挺三卒",
+      "nameEn": "7th Pawn Advancement and Deferred Chariot and Crossed-River Chariot vs. Riverbank Cannon and 3rd Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "0Ty96obDas": {
+      "status": "done",
+      "name": "飛相雙正馬騎河車對五六炮七路馬巡河車",
+      "nameEn": "Elephant Opening with Double Proper Horses and Riding-River Chariot vs. 7-Route Horse and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "0ZibgXo_Bu": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "19EVuJh1Yv": {
+      "status": "done",
+      "name": "五八炮邊馬進三兵直車對屏風馬挺三卒飛左象",
+      "nameEn": "Edge Horse (Left) and 3rd Pawn Advancement and Filed Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "1lHrttGSdO": {
+      "status": "done",
+      "name": "仙人指路轉飛相巡河炮邊馬直車過河車對挺卒巡河炮雙正馬直車飛右象",
+      "nameEn": "Elephant Opening with Riverbank Cannon and Edge Horse (Left) and Filed Chariot and Crossed-River Chariot vs. Angle Pawn with Riverbank Cannon and Double Proper Horses and Filed Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "1WaAomPUTb": {
+      "status": "done",
+      "name": "列炮",
+      "nameEn": "Opposite-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "2PqFHyXwJB": {
+      "status": "done",
+      "name": "起馬雙正馬直車對中炮雙正馬直車",
+      "nameEn": "Proper Horse Opening with Double Proper Horses and Filed Chariot vs. Central Cannon with Double Proper Horses and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "2v3jMWhn2J": {
+      "status": "done",
+      "name": "起馬局",
+      "nameEn": "Proper Horse Opening Base",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "2W5gU2AZE1": {
+      "status": "done",
+      "name": "起馬轉中炮雙正馬進三兵緩開車巡河車對屏風馬兩頭蛇飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and 3rd Pawn Advancement and Deferred Chariot and Riverbank Chariot vs. Screen Horse Defense with Two-Headed Snake and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "3A53m16njg": {
+      "status": "done",
+      "name": "五八炮七路馬進七兵緩開車對上士局七路馬挺七卒緩開車飛右象",
+      "nameEn": "7-Route Horse and 7th Pawn Advancement and Deferred Chariot vs. Palace Advisor with 7-Route Horse and 7th Pawn Advancement and Deferred Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "3Lp9gxSvi8": {
+      "status": "done",
+      "name": "五八炮雙正馬進三兵過河車對屏風馬挺三卒飛左象",
+      "nameEn": "Double Proper Horses and 3rd Pawn Advancement and Crossed-River Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "3P8szln08i": {
+      "status": "done",
+      "name": "仙人指路轉中炮進七兵過河車對卒底炮七路馬",
+      "nameEn": "Central Cannon with 7th Pawn Advancement and Crossed-River Chariot vs. Pawn Bottom Cannon with 7-Route Horse",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "3xkacaqrXu": {
+      "status": "done",
+      "name": "左三步虎七路馬直車對五六炮七路馬直車",
+      "nameEn": "Left Three-Step Tiger with 7-Route Horse and Filed Chariot vs. 7-Route Horse and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "3y9iGgV3Y8": {
+      "status": "done",
+      "name": "飛相對左士角炮",
+      "nameEn": "Elephant vs. Left Palcorner Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "4JsoIjkwDD": {
+      "status": "done",
+      "name": "五九炮雙正馬進七兵橫車對屏風馬挺七卒飛右象",
+      "nameEn": "Double Proper Horses and 7th Pawn Advancement and Ranked Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "4tCi-FIT-n": {
+      "status": "done",
+      "name": "飛相雙正馬直車對五六炮七路馬巡河車",
+      "nameEn": "Elephant Opening with Double Proper Horses and Filed Chariot vs. 7-Route Horse and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "5efbSxSqx0": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "5LTcJHRIDG": {
+      "status": "done",
+      "name": "右三步虎雙正馬直車對五六炮雙正馬過河車兩頭蛇",
+      "nameEn": "Right Three-Step Tiger with Double Proper Horses and Filed Chariot vs. Double Proper Horses and Crossed-River Chariot and Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "5xc7y9IGJZ": {
+      "status": "done",
+      "name": "五八炮七路馬橫車直車對右三步虎挺七卒緩開車飛右象",
+      "nameEn": "7-Route Horse and Ranked Chariot and Filed Chariot vs. Right Three-Step Tiger with 7th Pawn Advancement and Deferred Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "6Fpk8BIO1-": {
+      "status": "done",
+      "name": "五七炮進七兵橫車對起右馬騎河車",
+      "nameEn": "7th Pawn Advancement and Ranked Chariot vs. Proper Horse Opening with Riding-River Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "6MnAHflMVi": {
+      "status": "done",
+      "name": "五七炮邊馬直車巡河車對屏風馬橫車飛左象",
+      "nameEn": "Edge Horse (Left) and Filed Chariot and Riverbank Chariot vs. Screen Horse Defense with Ranked Chariot and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "815DnQMLmn": {
+      "status": "done",
+      "name": "紅方雙正馬橫車對屏風馬巡河車飛右象",
+      "nameEn": "Double Proper Horses and Ranked Chariot vs. Screen Horse Defense with Riverbank Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "8G9Ii5Xa4S": {
+      "status": "done",
+      "name": "過宮炮七路馬直車對挺卒飛左象",
+      "nameEn": "Cross-Palace Cannon with 7-Route Horse and Filed Chariot vs. Angle Pawn with Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "8M-OdvkcVY": {
+      "status": "done",
+      "name": "五七炮進三兵對上士局緩開車巡河車兩頭蛇飛左象",
+      "nameEn": "3rd Pawn Advancement vs. Palace Advisor with Deferred Chariot and Riverbank Chariot and Two-Headed Snake and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "8QITQyajlU": {
+      "status": "done",
+      "name": "起馬雙正馬對五七炮",
+      "nameEn": "Proper Horse Opening with Double Proper Horses",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "9HjhWC_0OB": {
+      "status": "done",
+      "name": "五六炮雙正馬緩開車對挺三卒飛左象",
+      "nameEn": "Double Proper Horses and Deferred Chariot vs. Angle Pawn with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "9m7m9Fy93U": {
+      "status": "done",
+      "name": "仙人指路轉中炮七路馬進三兵緩開車對卒底炮挺七卒巡河車飛右象",
+      "nameEn": "Central Cannon with 7-Route Horse and 3rd Pawn Advancement and Deferred Chariot vs. Pawn Bottom Cannon with 7th Pawn Advancement and Riverbank Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "9P2QN7EZbQ": {
+      "status": "done",
+      "name": "仙人指路轉飛相邊馬直車對挺卒直車飛右象",
+      "nameEn": "Elephant Opening with Edge Horse (Left) and Filed Chariot vs. Angle Pawn with Filed Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "_7xOngdiGY": {
+      "status": "done",
+      "name": "過宮炮對左中炮",
+      "nameEn": "Cross Palace Cannon vs. Same Side Central Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "_d_k32ERWb": {
+      "status": "done",
+      "name": "起馬轉中炮對進７卒",
+      "nameEn": "Proper Horse Central Cannon vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "_gJlPfc88g": {
+      "status": "done",
+      "name": "起馬對進７卒",
+      "nameEn": "Proper Horse vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposing_pawns",
+      "plies": 20
+    },
+    "_gZy0EwIwH": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "_KttzGvfSC": {
+      "status": "done",
+      "name": "列相局",
+      "nameEn": "Opposite Direction Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "_zPju2sjpE": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "a480TcIuSA": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "aemBZ86a8b": {
+      "status": "done",
+      "name": "過河炮局巡河炮雙正馬直車對左三步虎直車飛左象",
+      "nameEn": "Crossed-River Cannon with Riverbank Cannon and Double Proper Horses and Filed Chariot vs. Left Three-Step Tiger with Filed Chariot and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Ak2M5dikMm": {
+      "status": "done",
+      "name": "起馬巡河炮雙正馬直車兩頭蛇對五七炮雙正馬騎河車",
+      "nameEn": "Proper Horse Opening with Riverbank Cannon and Double Proper Horses and Filed Chariot and Two-Headed Snake vs. Double Proper Horses and Riding-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "AopN_xsBpc": {
+      "status": "done",
+      "name": "仙人指路轉飛相七路馬直車對卒底炮飛右象",
+      "nameEn": "Elephant Opening with 7-Route Horse and Filed Chariot vs. Pawn Bottom Cannon with Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "AYSfigp3xp": {
+      "status": "done",
+      "name": "仙人指路轉飛相巡河炮邊馬直車兩頭蛇對挺卒七路馬",
+      "nameEn": "Elephant Opening with Riverbank Cannon and Edge Horse (Left) and Filed Chariot and Two-Headed Snake vs. Angle Pawn with 7-Route Horse",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "b3Vpi6ixsR": {
+      "status": "done",
+      "name": "屏風馬過河車",
+      "nameEn": "Screen Horse Defense with Crossed-River Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "B4vb92Le9Y": {
+      "status": "done",
+      "name": "對兵局",
+      "nameEn": "Opposing Pawns",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposing_pawns",
+      "plies": 20
+    },
+    "bct5zMP58H": {
+      "status": "done",
+      "name": "五七炮七路馬緩開車兩頭蛇對單提馬挺七卒飛右象",
+      "nameEn": "7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Single Horse Defense with 7th Pawn Advancement and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "bkaoclB8-V": {
+      "status": "done",
+      "name": "五八炮進三兵對屏風馬巡河車",
+      "nameEn": "3rd Pawn Advancement vs. Screen Horse Defense with Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "BocnesaVnJ": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "bonAEADqbH": {
+      "status": "done",
+      "name": "飛相邊馬過河車對屏風馬橫車飛左象",
+      "nameEn": "Elephant Opening with Edge Horse (Right) and Crossed-River Chariot vs. Screen Horse Defense with Ranked Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "BT32YPDYfu": {
+      "status": "done",
+      "name": "仙人指路對右三步虎邊馬巡河車飛左象",
+      "nameEn": "Angle Pawn vs. Right Three-Step Tiger with Edge Horse (Left) and Riverbank Chariot and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "BVnQJ9NHxw": {
+      "status": "done",
+      "name": "過宮炮邊馬巡河車對飛象邊馬直車過河車兩頭蛇",
+      "nameEn": "Cross-Palace Cannon with Edge Horse (Left) and Riverbank Chariot vs. Elephant Opening with Edge Horse (Right) and Filed Chariot and Crossed-River Chariot and Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "CbnwAbkL8T": {
+      "status": "done",
+      "name": "五六炮七路馬兩頭蛇對起右馬騎河車飛左象",
+      "nameEn": "7-Route Horse and Two-Headed Snake vs. Proper Horse Opening with Riding-River Chariot and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "CC2vkkLbTb": {
+      "status": "done",
+      "name": "飛相進右馬對左過宮炮",
+      "nameEn": "Elephant Right Proper Horse vs. Left Cross Palace Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "cl-tqeOTHY": {
+      "status": "done",
+      "name": "五七炮進七兵對單提馬巡河炮挺三卒",
+      "nameEn": "7th Pawn Advancement vs. Single Horse Defense with Riverbank Cannon and 3rd Pawn Advancement",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "cQvbUt4ORk": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "crv5rhlrGM": {
+      "status": "done",
+      "name": "大列手炮局",
+      "nameEn": "Big Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "CS3uyOvcRw": {
+      "status": "done",
+      "name": "上士局雙正馬兩頭蛇對屏風馬巡河車飛右象",
+      "nameEn": "Palace Advisor with Double Proper Horses and Two-Headed Snake vs. Screen Horse Defense with Riverbank Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "D1t1iNdsiy": {
+      "status": "done",
+      "name": "仙人指路轉飛相邊馬橫車兩頭蛇對單提馬",
+      "nameEn": "Elephant Opening with Edge Horse (Left) and Ranked Chariot and Two-Headed Snake vs. Single Horse Defense",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "d3FNG-qj5o": {
+      "status": "done",
+      "name": "五七炮七路馬進七兵緩開車對屏風馬挺七卒平炮兌車飛左象",
+      "nameEn": "7-Route Horse and 7th Pawn Advancement and Deferred Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Flat Cannon Exchange and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "D802dDBbzf": {
+      "status": "done",
+      "name": "飛相對進3卒",
+      "nameEn": "Elephant vs. Opposite Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "DjNV95L28O": {
+      "status": "done",
+      "name": "金鉤炮局對仕角炮直車過河車",
+      "nameEn": "Golden Hook Cannon vs. Palcorner Cannon with Filed Chariot and Crossed-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "DLlWAwy-uC": {
+      "status": "done",
+      "name": "五六炮七路馬緩開車兩頭蛇對單提馬挺三卒飛右象",
+      "nameEn": "7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Single Horse Defense with 3rd Pawn Advancement and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "duArHJKqDn": {
+      "status": "done",
+      "name": "五六炮邊馬緩開車兩頭蛇對左三步虎挺三卒直車巡河車",
+      "nameEn": "Edge Horse (Left) and Deferred Chariot and Two-Headed Snake vs. Left Three-Step Tiger with 3rd Pawn Advancement and Filed Chariot and Riverbank Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "e0cCswUaYv": {
+      "status": "done",
+      "name": "起馬對屏風馬巡河炮橫車",
+      "nameEn": "Proper Horse Opening vs. Screen Horse Defense with Riverbank Cannon and Ranked Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "E7zerpuY-J": {
+      "status": "done",
+      "name": "五六炮雙正馬進七兵緩開車對屏風馬挺七卒橫車",
+      "nameEn": "Double Proper Horses and 7th Pawn Advancement and Deferred Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Ranked Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "EaJokDK6iF": {
+      "status": "done",
+      "name": "飛相對左士角炮",
+      "nameEn": "Elephant vs. Left Palcorner Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "EaLQyLndWG": {
+      "status": "done",
+      "name": "右三步虎雙正馬直車對屏風馬飛右象",
+      "nameEn": "Right Three-Step Tiger with Double Proper Horses and Filed Chariot vs. Screen Horse Defense with Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ekdXbxC1_y": {
+      "status": "done",
+      "name": "起馬轉中炮雙正馬進三兵緩開車過河車對屏風馬挺三卒飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and 3rd Pawn Advancement and Deferred Chariot and Crossed-River Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "EohPldbGVj": {
+      "status": "done",
+      "name": "列相局",
+      "nameEn": "Opposite Direction Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Fcbq5JWvnF": {
+      "status": "done",
+      "name": "起馬邊馬直車對挺卒雙橫車兩頭蛇飛右象",
+      "nameEn": "Proper Horse Opening with Edge Horse (Left) and Filed Chariot vs. Angle Pawn with Double Ranked Chariots and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "FDKKmfMrVY": {
+      "status": "done",
+      "name": "仙人指路轉五七炮七路馬進七兵緩開車對屏風馬挺七卒飛左象",
+      "nameEn": "7-Route Horse and 7th Pawn Advancement and Deferred Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "fgTPgdJvwg": {
+      "status": "done",
+      "name": "中炮巡河炮七路馬進七兵直車對單提馬挺三卒騎河車飛右象",
+      "nameEn": "Central Cannon with Riverbank Cannon and 7-Route Horse and 7th Pawn Advancement and Filed Chariot vs. Single Horse Defense with 3rd Pawn Advancement and Riding-River Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "FGyE3tz46h": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車對單提馬巡河炮挺三卒飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot vs. Single Horse Defense with Riverbank Cannon and 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "fkrvX8dC14": {
+      "status": "done",
+      "name": "仙人指路轉中炮七路馬進七兵直車對挺七卒七路馬",
+      "nameEn": "Central Cannon with 7-Route Horse and 7th Pawn Advancement and Filed Chariot vs. Angle Pawn with 7-Route Horse and 7th Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "FLRAGhT10Y": {
+      "status": "done",
+      "name": "仙人指路轉中炮進三兵緩開車對起右馬轉仕角炮七路馬兩頭蛇飛左象",
+      "nameEn": "Central Cannon with 3rd Pawn Advancement and Deferred Chariot vs. Palcorner Cannon with 7-Route Horse and Two-Headed Snake and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "FncQxXzIe6": {
+      "status": "done",
+      "name": "五七炮進七兵橫車對左三步虎七路馬挺三卒緩開車飛左象",
+      "nameEn": "7th Pawn Advancement and Ranked Chariot vs. Left Three-Step Tiger with 7-Route Horse and 3rd Pawn Advancement and Deferred Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "G7LEXwXAcn": {
+      "status": "done",
+      "name": "五七炮邊馬緩開車巡河車兩頭蛇對單提馬巡河車",
+      "nameEn": "Edge Horse (Left) and Deferred Chariot and Riverbank Chariot and Two-Headed Snake vs. Single Horse Defense with Riverbank Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "g9w5YZRjUN": {
+      "status": "done",
+      "name": "中炮雙正馬直車對上士局巡河炮邊馬緩開車飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and Filed Chariot vs. Palace Advisor with Riverbank Cannon and Edge Horse (Left) and Deferred Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "gjPqFq6dW9": {
+      "status": "done",
+      "name": "巡河炮局對單提馬",
+      "nameEn": "Riverbank Cannon vs. Single Horse Defense",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "gW1yPwVFap": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "h3l-OM6xoD": {
+      "status": "done",
+      "name": "起馬轉中炮進三兵雙橫車對黑方巡河炮七路馬挺七卒",
+      "nameEn": "Central Cannon with 3rd Pawn Advancement and Double Ranked Chariots vs. Riverbank Cannon and 7-Route Horse and 7th Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "h_hwlzeTi6": {
+      "status": "done",
+      "name": "順炮直車對緩開車",
+      "nameEn": "Same Side Straight vs. Slow Rook",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "hAcqlg2u73": {
+      "status": "done",
+      "name": "起馬轉中炮雙正馬進三兵雙橫車巡河車對單提馬兩頭蛇飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and 3rd Pawn Advancement and Double Ranked Chariots and Riverbank Chariot vs. Single Horse Defense with Two-Headed Snake and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "HbhidUJclU": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "hBHJoSNu7n": {
+      "status": "done",
+      "name": "起馬對進７卒",
+      "nameEn": "Proper Horse vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "hC-mDasMUl": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "hM-U4eYx0X": {
+      "status": "done",
+      "name": "過宮炮巡河炮七路馬直車對反宮馬兩頭蛇",
+      "nameEn": "Cross-Palace Cannon with Riverbank Cannon and 7-Route Horse and Filed Chariot vs. Sandwiched Horse Defense with Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "hOs7a1YNv5": {
+      "status": "done",
+      "name": "中炮雙正馬進三兵進七兵橫車直車巡河車對屏風馬兩頭蛇飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and 3rd Pawn Advancement and 7th Pawn Advancement and Ranked Chariot and Filed Chariot and Riverbank Chariot vs. Screen Horse Defense with Two-Headed Snake and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "hpvS5Xdzvs": {
+      "status": "done",
+      "name": "仙人指路轉中炮七路馬緩開車兩頭蛇對飛象",
+      "nameEn": "Central Cannon with 7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Elephant Opening",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "hsJ_oegFcf": {
+      "status": "done",
+      "name": "中炮七路馬過河車對上士局緩開車兩頭蛇飛右象",
+      "nameEn": "Central Cannon with 7-Route Horse and Crossed-River Chariot vs. Palace Advisor with Deferred Chariot and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "hWrkYsAmS4": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "Hy09CekvmW": {
+      "status": "done",
+      "name": "仙人指路轉飛相七路馬直車對挺卒直車飛左象",
+      "nameEn": "Elephant Opening with 7-Route Horse and Filed Chariot vs. Angle Pawn with Filed Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "I92yHSfxSS": {
+      "status": "done",
+      "name": "五九炮雙正馬橫車巡河車過河車對反宮馬挺三卒過河車飛左象",
+      "nameEn": "Double Proper Horses and Ranked Chariot and Riverbank Chariot and Crossed-River Chariot vs. Sandwiched Horse Defense with 3rd Pawn Advancement and Crossed-River Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "I_re_2ecPR": {
+      "status": "done",
+      "name": "仙人指路轉飛相七路馬對挺卒七路馬橫車兩頭蛇飛右象",
+      "nameEn": "Elephant Opening with 7-Route Horse vs. Angle Pawn with 7-Route Horse and Ranked Chariot and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "iI4CNqDlcf": {
+      "status": "done",
+      "name": "飛相進左馬對右士角炮",
+      "nameEn": "Elephant Proper Horse vs. Right Palcorner Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "IJoUzfTmF0": {
+      "status": "done",
+      "name": "五七炮邊馬進三兵巡河車對屏風馬兩頭蛇飛左象",
+      "nameEn": "Edge Horse (Left) and 3rd Pawn Advancement and Riverbank Chariot vs. Screen Horse Defense with Two-Headed Snake and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "IPo_vp9QKV": {
+      "status": "done",
+      "name": "五九炮橫車對挺三卒雙橫車飛左象",
+      "nameEn": "Ranked Chariot vs. Angle Pawn with 3rd Pawn Advancement and Double Ranked Chariots and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "iWt6MBQZXn": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "IZdzprusAX": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "j0a5YSBMv3": {
+      "status": "done",
+      "name": "過宮炮雙正馬巡河車對飛象邊馬過河車",
+      "nameEn": "Cross-Palace Cannon with Double Proper Horses and Riverbank Chariot vs. Elephant Opening with Edge Horse (Left) and Crossed-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Jd8SiawlUN": {
+      "status": "done",
+      "name": "巡河炮局七路馬橫車對單提馬飛左象",
+      "nameEn": "Riverbank Cannon with 7-Route Horse and Ranked Chariot vs. Single Horse Defense with Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "jDGv4oK-y1": {
+      "status": "done",
+      "name": "飛相雙正馬直車對五六炮雙正馬直車",
+      "nameEn": "Elephant Opening with Double Proper Horses and Filed Chariot vs. Double Proper Horses and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "JwUq70oXkw": {
+      "status": "done",
+      "name": "巡河炮局巡河車對左三步虎雙正馬橫車直車過河車",
+      "nameEn": "Riverbank Cannon with Riverbank Chariot vs. Left Three-Step Tiger with Double Proper Horses and Ranked Chariot and Filed Chariot and Crossed-River Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "jx7Aazy0yg": {
+      "status": "done",
+      "name": "中炮雙正馬進七兵橫車直車對起右馬轉仕角炮巡河炮兩頭蛇飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and 7th Pawn Advancement and Ranked Chariot and Filed Chariot vs. Palcorner Cannon with Riverbank Cannon and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "kB-TAgCT0W": {
+      "status": "done",
+      "name": "飛相對右中炮",
+      "nameEn": "Elephant vs. Right Central Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "kJgHQeheHJ": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "Km73N5Jvp_": {
+      "status": "done",
+      "name": "起馬轉仕角炮對進７卒",
+      "nameEn": "Proper Horse Palcorner Cannon vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "KqeiQFV0K0": {
+      "status": "done",
+      "name": "起馬轉仕角炮雙正馬直車兩頭蛇對單提馬巡河車飛左象",
+      "nameEn": "Palcorner Cannon with Double Proper Horses and Filed Chariot and Two-Headed Snake vs. Single Horse Defense with Riverbank Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "KU_nUb_6yD": {
+      "status": "done",
+      "name": "大列手炮局",
+      "nameEn": "Big Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "Kz1_VPcMpQ": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "l1V0JYtkDx": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "L7w8saK8US": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車對上士局雙正馬橫車兩頭蛇",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot vs. Palace Advisor with Double Proper Horses and Ranked Chariot and Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "L_eJCaJm3_": {
+      "status": "done",
+      "name": "大列手炮局",
+      "nameEn": "Big Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "lAi0Z-9sB9": {
+      "status": "done",
+      "name": "飛相巡河炮雙正馬直車對五六炮雙正馬巡河車",
+      "nameEn": "Elephant Opening with Riverbank Cannon and Double Proper Horses and Filed Chariot vs. Double Proper Horses and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Las2qKIV8Z": {
+      "status": "done",
+      "name": "五七炮橫車對反宮馬挺三卒",
+      "nameEn": "Ranked Chariot vs. Sandwiched Horse Defense with 3rd Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ldQbqVgj0p": {
+      "status": "done",
+      "name": "中炮雙正馬兩頭蛇對左三步虎雙正馬挺七卒直車飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and Two-Headed Snake vs. Left Three-Step Tiger with Double Proper Horses and 7th Pawn Advancement and Filed Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "LGkHBXqDI3": {
+      "status": "done",
+      "name": "中炮巡河炮七路馬橫車對屏風馬巡河炮飛右象",
+      "nameEn": "Central Cannon with Riverbank Cannon and 7-Route Horse and Ranked Chariot vs. Screen Horse Defense with Riverbank Cannon and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Lh3F7NCDna": {
+      "status": "done",
+      "name": "仙人指路轉中炮巡河炮七路馬進七兵緩開車對挺七卒七路馬橫車",
+      "nameEn": "Central Cannon with Riverbank Cannon and 7-Route Horse and 7th Pawn Advancement and Deferred Chariot vs. Angle Pawn with 7-Route Horse and 7th Pawn Advancement and Ranked Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "LlSxh4Daf6": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車兩頭蛇對左三步虎雙正馬直車",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot and Two-Headed Snake vs. Left Three-Step Tiger with Double Proper Horses and Filed Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "LnMKmGTu_2": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "m9T612Xulj": {
+      "status": "done",
+      "name": "中炮七路馬緩開車兩頭蛇對飛象七路馬緩開車",
+      "nameEn": "Central Cannon with 7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Elephant Opening with 7-Route Horse and Deferred Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "MCFRKXXfvz": {
+      "status": "done",
+      "name": "五七炮七路馬進七兵緩開車巡河車對反宮馬挺七卒",
+      "nameEn": "7-Route Horse and 7th Pawn Advancement and Deferred Chariot and Riverbank Chariot vs. Sandwiched Horse Defense with 7th Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "mjwQBs47Qf": {
+      "status": "done",
+      "name": "起馬互進七兵局",
+      "nameEn": "Proper Horse 7pawn vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "mz0U_nFLBf": {
+      "status": "done",
+      "name": "中炮雙正馬巡河車對上士局橫車兩頭蛇飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and Riverbank Chariot vs. Palace Advisor with Ranked Chariot and Two-Headed Snake and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "MZ_qNBZxyD": {
+      "status": "done",
+      "name": "飛相對右過宮炮",
+      "nameEn": "Elephant vs. Right Cross Palace Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Ne_qACay9n": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "Nh_7higLD7": {
+      "status": "done",
+      "name": "過宮炮雙正馬直車巡河車對挺卒邊馬直車兩頭蛇飛右象",
+      "nameEn": "Cross-Palace Cannon with Double Proper Horses and Filed Chariot and Riverbank Chariot vs. Angle Pawn with Edge Horse (Left) and Filed Chariot and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "NQLE_XpYjd": {
+      "status": "done",
+      "name": "飛相七路馬兩頭蛇對五七炮七路馬直車",
+      "nameEn": "Elephant Opening with 7-Route Horse and Two-Headed Snake vs. 7-Route Horse and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "nREV0JwlwW": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "ntImsc84nj": {
+      "status": "done",
+      "name": "五七炮雙正馬進七兵緩開車對屏風馬挺七卒飛右象",
+      "nameEn": "Double Proper Horses and 7th Pawn Advancement and Deferred Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "nvK6-wiw6q": {
+      "status": "done",
+      "name": "五七炮邊馬進七兵直車對屏風馬挺七卒飛右象",
+      "nameEn": "Edge Horse (Left) and 7th Pawn Advancement and Filed Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "oA4wqOX04E": {
+      "status": "done",
+      "name": "左三步虎過河車對中炮巡河炮",
+      "nameEn": "Left Three-Step Tiger with Crossed-River Chariot vs. Central Cannon with Riverbank Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "oBE0wrupBY": {
+      "status": "done",
+      "name": "中炮七路馬過河車對飛象七路馬",
+      "nameEn": "Central Cannon with 7-Route Horse and Crossed-River Chariot vs. Elephant Opening with 7-Route Horse",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "OFRuzJF3yA": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車巡河車對飛象七路馬挺七卒緩開車",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot and Riverbank Chariot vs. Elephant Opening with 7-Route Horse and 7th Pawn Advancement and Deferred Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "OHoUSVaIEC": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車兩頭蛇對單提馬挺三卒騎河車飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot and Two-Headed Snake vs. Single Horse Defense with 3rd Pawn Advancement and Riding-River Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ontEHiHF67": {
+      "status": "done",
+      "name": "五八炮進七兵緩開車對左炮封車雙正馬緩開車巡河車",
+      "nameEn": "7th Pawn Advancement and Deferred Chariot vs. Left Cannon Blockade with Double Proper Horses and Deferred Chariot and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Oq2DKYdrD4": {
+      "status": "done",
+      "name": "右三步虎雙正馬緩開車兩頭蛇對起右馬挺七卒緩開車騎河車飛左象",
+      "nameEn": "Right Three-Step Tiger with Double Proper Horses and Deferred Chariot and Two-Headed Snake vs. Proper Horse Opening with 7th Pawn Advancement and Deferred Chariot and Riding-River Chariot and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "oqm1HgQvOE": {
+      "status": "done",
+      "name": "仙人指路轉飛相邊馬直車對左炮封車雙正馬直車",
+      "nameEn": "Elephant Opening with Edge Horse (Left) and Filed Chariot vs. Left Cannon Blockade with Double Proper Horses and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "OSFQyQYSwy": {
+      "status": "done",
+      "name": "仙人指路轉五八炮七路馬進三兵進七兵緩開車對單提馬巡河車飛右象",
+      "nameEn": "7-Route Horse and 3rd Pawn Advancement and 7th Pawn Advancement and Deferred Chariot vs. Single Horse Defense with Riverbank Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Otwk5VVPDU": {
+      "status": "done",
+      "name": "起馬轉五九炮雙正馬進三兵雙橫車對屏風馬挺三卒橫車飛右象",
+      "nameEn": "Double Proper Horses and 3rd Pawn Advancement and Double Ranked Chariots vs. Screen Horse Defense with 3rd Pawn Advancement and Ranked Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "OXSrFimAQP": {
+      "status": "done",
+      "name": "仙人指路轉五七炮邊馬進七兵緩開車過河車對卒底炮七路馬挺三卒挺七卒橫車飛左象",
+      "nameEn": "Edge Horse (Right) and 7th Pawn Advancement and Deferred Chariot and Crossed-River Chariot vs. Pawn Bottom Cannon with 7-Route Horse and 3rd Pawn Advancement and 7th Pawn Advancement and Ranked Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "p4j0QyWbZC": {
+      "status": "done",
+      "name": "起馬巡河炮直車過河車對起左馬轉五九炮雙正馬過河車兩頭蛇",
+      "nameEn": "Proper Horse Opening with Riverbank Cannon and Filed Chariot and Crossed-River Chariot vs. Double Proper Horses and Crossed-River Chariot and Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "pAe_lCeE7I": {
+      "status": "done",
+      "name": "中炮七路馬進三兵對挺三卒七路馬橫車",
+      "nameEn": "Central Cannon with 7-Route Horse and 3rd Pawn Advancement vs. Angle Pawn with 7-Route Horse and 3rd Pawn Advancement and Ranked Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "pgFLuHMXhN": {
+      "status": "done",
+      "name": "五六炮過河車對飛象邊馬橫車直車",
+      "nameEn": "Crossed-River Chariot vs. Elephant Opening with Edge Horse (Left) and Ranked Chariot and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "pkYbLoHfyr": {
+      "status": "done",
+      "name": "五七炮七路馬過河車對屏風馬兩頭蛇飛左象",
+      "nameEn": "7-Route Horse and Crossed-River Chariot vs. Screen Horse Defense with Two-Headed Snake and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "pSy7BgUDI0": {
+      "status": "done",
+      "name": "中炮雙正馬過河車對左三步虎雙正馬挺七卒直車平炮兌車",
+      "nameEn": "Central Cannon with Double Proper Horses and Crossed-River Chariot vs. Left Three-Step Tiger with Double Proper Horses and 7th Pawn Advancement and Filed Chariot and Flat Cannon Exchange",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "q-ILiAjHT6": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "Q69CEiiNrN": {
+      "status": "done",
+      "name": "五九炮雙正馬進三兵橫車直車對屏風馬挺三卒飛左象",
+      "nameEn": "Double Proper Horses and 3rd Pawn Advancement and Ranked Chariot and Filed Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "q6hS0T4sxZ": {
+      "status": "done",
+      "name": "五七炮雙正馬進七兵直車對屏風馬挺七卒巡河車騎河車",
+      "nameEn": "Double Proper Horses and 7th Pawn Advancement and Filed Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Riverbank Chariot and Riding-River Chariot",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "qmTJG8UCcA": {
+      "status": "done",
+      "name": "五七炮七路馬橫車兩頭蛇對起左馬巡河炮雙橫車巡河車飛右象",
+      "nameEn": "7-Route Horse and Ranked Chariot and Two-Headed Snake vs. Proper Horse Opening with Riverbank Cannon and Double Ranked Chariots and Riverbank Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "rA-dK9harw": {
+      "status": "done",
+      "name": "飛相直車兩頭蛇對單提馬巡河車飛右象",
+      "nameEn": "Elephant Opening with Filed Chariot and Two-Headed Snake vs. Single Horse Defense with Riverbank Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "RAt0euEsCQ": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "RTUO_SZrUO": {
+      "status": "done",
+      "name": "順炮直車對橫車",
+      "nameEn": "Same Side Straight vs. Horizontal",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "rX2Ut5Xc--": {
+      "status": "done",
+      "name": "仙人指路轉飛相七路馬過河車兩頭蛇對單提馬雙橫車",
+      "nameEn": "Elephant Opening with 7-Route Horse and Crossed-River Chariot and Two-Headed Snake vs. Single Horse Defense with Double Ranked Chariots",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ry1sys_qOu": {
+      "status": "done",
+      "name": "五六炮邊馬進七兵直車巡河車對反宮馬挺七卒飛左象",
+      "nameEn": "Edge Horse (Left) and 7th Pawn Advancement and Filed Chariot and Riverbank Chariot vs. Sandwiched Horse Defense with 7th Pawn Advancement and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ryKCQJXeqM": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "seYH0pkhMa": {
+      "status": "done",
+      "name": "五六炮邊馬緩開車過河車兩頭蛇對左炮封車雙正馬挺三卒直車飛右象",
+      "nameEn": "Edge Horse (Left) and Deferred Chariot and Crossed-River Chariot and Two-Headed Snake vs. Left Cannon Blockade with Double Proper Horses and 3rd Pawn Advancement and Filed Chariot and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "SOuLx1q2CL": {
+      "status": "done",
+      "name": "五七炮七路馬進七兵橫車對飛象雙正馬緩開車過河車",
+      "nameEn": "7-Route Horse and 7th Pawn Advancement and Ranked Chariot vs. Elephant Opening with Double Proper Horses and Deferred Chariot and Crossed-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "SqgbCRmdlr": {
+      "status": "done",
+      "name": "中炮雙正馬進七兵緩開車巡河車對屏風馬挺三卒飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and 7th Pawn Advancement and Deferred Chariot and Riverbank Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "sw3ZROgBPy": {
+      "status": "done",
+      "name": "小列手炮局",
+      "nameEn": "Small Lie Shou Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "t-BMoriNnL": {
+      "status": "done",
+      "name": "中炮雙正馬直車過河車對屏風馬兩頭蛇飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and Filed Chariot and Crossed-River Chariot vs. Screen Horse Defense with Two-Headed Snake and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "T412F0kzob": {
+      "status": "done",
+      "name": "中炮雙正馬進七兵雙橫車對屏風馬巡河炮兩頭蛇飛右象",
+      "nameEn": "Central Cannon with Double Proper Horses and 7th Pawn Advancement and Double Ranked Chariots vs. Screen Horse Defense with Riverbank Cannon and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "t4bpPTtUOV": {
+      "status": "done",
+      "name": "五七炮七路馬緩開車兩頭蛇對反宮馬挺七卒巡河車",
+      "nameEn": "7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Sandwiched Horse Defense with 7th Pawn Advancement and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "t7RsHTWzLA": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "tfJVz6CjMM": {
+      "status": "done",
+      "name": "中炮雙正馬進七兵緩開車巡河車對屏風馬挺七卒飛左象",
+      "nameEn": "Central Cannon with Double Proper Horses and 7th Pawn Advancement and Deferred Chariot and Riverbank Chariot vs. Screen Horse Defense with 7th Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ucnMRR6gg3": {
+      "status": "done",
+      "name": "對兵局",
+      "nameEn": "Opposing Pawns",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposing_pawns",
+      "plies": 20
+    },
+    "UjFgrAglMg": {
+      "status": "done",
+      "name": "巡河炮局雙正馬橫車巡河車對挺卒邊馬直車兩頭蛇飛右象",
+      "nameEn": "Riverbank Cannon with Double Proper Horses and Ranked Chariot and Riverbank Chariot vs. Angle Pawn with Edge Horse (Left) and Filed Chariot and Two-Headed Snake and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "UNQEB9BJa0": {
+      "status": "done",
+      "name": "後補列炮",
+      "nameEn": "Delayed Opposite Side Cannons After Left Horse",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "UNQj5MOHr2": {
+      "status": "done",
+      "name": "仙人指路轉五八炮七路馬緩開車兩頭蛇對卒底炮邊馬緩開車飛右象",
+      "nameEn": "7-Route Horse and Deferred Chariot and Two-Headed Snake vs. Pawn Bottom Cannon with Edge Horse (Left) and Deferred Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "uPSN8LkvBL": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "UTWnava-qb": {
+      "status": "done",
+      "name": "仙人指路轉飛相七路馬直車兩頭蛇對中炮巡河炮",
+      "nameEn": "Elephant Opening with 7-Route Horse and Filed Chariot and Two-Headed Snake vs. Central Cannon with Riverbank Cannon",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ux1VRAUac1": {
+      "status": "done",
+      "name": "中炮雙正馬緩開車對飛象七路馬挺三卒",
+      "nameEn": "Central Cannon with Double Proper Horses and Deferred Chariot vs. Elephant Opening with 7-Route Horse and 3rd Pawn Advancement",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "UzdqYFVPBp": {
+      "status": "done",
+      "name": "五六炮邊馬進三兵緩開車過河車對起左馬轉仕角炮挺七卒雙橫車飛右象",
+      "nameEn": "Edge Horse (Left) and 3rd Pawn Advancement and Deferred Chariot and Crossed-River Chariot vs. Palcorner Cannon with 7th Pawn Advancement and Double Ranked Chariots and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "vgZMoLNNwc": {
+      "status": "done",
+      "name": "巡河炮局七路馬直車對單提馬橫車飛右象",
+      "nameEn": "Riverbank Cannon with 7-Route Horse and Filed Chariot vs. Single Horse Defense with Ranked Chariot and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "vvsV0_QR6r": {
+      "status": "done",
+      "name": "五七炮橫車兩頭蛇對飛象挺七卒橫車",
+      "nameEn": "Ranked Chariot and Two-Headed Snake vs. Elephant Opening with 7th Pawn Advancement and Ranked Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "waVS7MDMBx": {
+      "status": "done",
+      "name": "左三步虎七路馬巡河車兩頭蛇對五六炮邊馬巡河車過河車",
+      "nameEn": "Left Three-Step Tiger with 7-Route Horse and Riverbank Chariot and Two-Headed Snake vs. Edge Horse (Left) and Riverbank Chariot and Crossed-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "WJJwIhsQdf": {
+      "status": "done",
+      "name": "仙人指路轉飛相雙正馬直車兩頭蛇對中炮邊馬雙橫車巡河車",
+      "nameEn": "Elephant Opening with Double Proper Horses and Filed Chariot and Two-Headed Snake vs. Central Cannon with Edge Horse (Left) and Double Ranked Chariots and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "WKDFXlecK9": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "WkfuQXHENh": {
+      "status": "done",
+      "name": "列相局",
+      "nameEn": "Opposite Direction Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "WNFhihxy3-": {
+      "status": "done",
+      "name": "仙人指路轉飛相雙橫車對挺卒直車",
+      "nameEn": "Elephant Opening with Double Ranked Chariots vs. Angle Pawn with Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "WtC6dosIaq": {
+      "status": "done",
+      "name": "五七炮邊馬緩開車兩頭蛇對單提馬巡河炮挺三卒飛右象",
+      "nameEn": "Edge Horse (Left) and Deferred Chariot and Two-Headed Snake vs. Single Horse Defense with Riverbank Cannon and 3rd Pawn Advancement and Fly Right Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "Xc3MWtWjKn": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "xDWvQSLmyn": {
+      "status": "done",
+      "name": "順炮",
+      "nameEn": "Same-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "same_side_cannons",
+      "plies": 20
+    },
+    "XfFnMuu1s2": {
+      "status": "done",
+      "name": "左三步虎雙正馬直車對單提馬兩頭蛇",
+      "nameEn": "Left Three-Step Tiger with Double Proper Horses and Filed Chariot vs. Single Horse Defense with Two-Headed Snake",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "XfKo1r6ORZ": {
+      "status": "done",
+      "name": "仙人指路轉飛相雙正馬直車對卒底炮七路馬過河車",
+      "nameEn": "Elephant Opening with Double Proper Horses and Filed Chariot vs. Pawn Bottom Cannon with 7-Route Horse and Crossed-River Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "XhcQTWachr": {
+      "status": "done",
+      "name": "左三步虎雙正馬橫車直車對屏風馬飛右象",
+      "nameEn": "Left Three-Step Tiger with Double Proper Horses and Ranked Chariot and Filed Chariot vs. Screen Horse Defense with Fly Right Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "xiDAJdaOJb": {
+      "status": "done",
+      "name": "對兵局",
+      "nameEn": "Opposing Pawns",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposing_pawns",
+      "plies": 20
+    },
+    "xoimD7srQ6": {
+      "status": "done",
+      "name": "巡河炮局橫車直車對挺卒邊馬直車兩頭蛇飛左象",
+      "nameEn": "Riverbank Cannon with Ranked Chariot and Filed Chariot vs. Angle Pawn with Edge Horse (Left) and Filed Chariot and Two-Headed Snake and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "XrRuW2PBou": {
+      "status": "done",
+      "name": "起馬直車對五七炮邊馬直車",
+      "nameEn": "Proper Horse Opening with Filed Chariot vs. Edge Horse (Left) and Filed Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "yAkZ22nRDN": {
+      "status": "done",
+      "name": "中炮邊馬進三兵橫車巡河車對屏風馬挺三卒騎河車平炮兌車",
+      "nameEn": "Central Cannon with Edge Horse (Left) and 3rd Pawn Advancement and Ranked Chariot and Riverbank Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Riding-River Chariot and Flat Cannon Exchange",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "yIsq8hFaoI": {
+      "status": "done",
+      "name": "起馬雙正馬直車兩頭蛇對單提馬巡河炮飛左象",
+      "nameEn": "Proper Horse Opening with Double Proper Horses and Filed Chariot and Two-Headed Snake vs. Single Horse Defense with Riverbank Cannon and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "yoRPHXQUTx": {
+      "status": "done",
+      "name": "起馬互進七兵局",
+      "nameEn": "Proper Horse 7pawn vs. Same Side Pawn",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "YVAIxWT4zL": {
+      "status": "done",
+      "name": "五八炮七路馬進三兵橫車直車對屏風馬挺三卒飛左象",
+      "nameEn": "7-Route Horse and 3rd Pawn Advancement and Ranked Chariot and Filed Chariot vs. Screen Horse Defense with 3rd Pawn Advancement and Fly Left Elephant",
+      "certainty": "provisional",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ZDv8RlkIUs": {
+      "status": "done",
+      "name": "仙人指路轉中炮進七兵緩開車巡河車對卒底炮七路馬挺三卒緩開車",
+      "nameEn": "Central Cannon with 7th Pawn Advancement and Deferred Chariot and Riverbank Chariot vs. Pawn Bottom Cannon with 7-Route Horse and 3rd Pawn Advancement and Deferred Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ZgUkg1z9iB": {
+      "status": "done",
+      "name": "列炮",
+      "nameEn": "Opposite-Direction Cannons",
+      "certainty": "confirmed",
+      "baseMatchupId": "opposite_side_cannons",
+      "plies": 20
+    },
+    "Zl69g7u4yK": {
+      "status": "done",
+      "name": "中炮七路馬進三兵巡河車對反宮馬挺三卒挺七卒騎河車飛左象",
+      "nameEn": "Central Cannon with 7-Route Horse and 3rd Pawn Advancement and Riverbank Chariot vs. Sandwiched Horse Defense with 3rd Pawn Advancement and 7th Pawn Advancement and Riding-River Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ZmN40jl8ep": {
+      "status": "done",
+      "name": "中炮對進左馬",
+      "nameEn": "Central Cannon vs. Same Side Proper Horse",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "zSuKyyijbI": {
+      "status": "done",
+      "name": "中炮七路馬過河車對上士局邊馬緩開車過河車飛左象",
+      "nameEn": "Central Cannon with 7-Route Horse and Crossed-River Chariot vs. Palace Advisor with Edge Horse (Right) and Deferred Chariot and Crossed-River Chariot and Fly Left Elephant",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    },
+    "ZwyEnIMl6y": {
+      "status": "done",
+      "name": "仙人指路轉飛相邊馬兩頭蛇對五六炮邊馬橫車巡河車",
+      "nameEn": "Elephant Opening with Edge Horse (Right) and Two-Headed Snake vs. Edge Horse (Left) and Ranked Chariot and Riverbank Chariot",
+      "certainty": "confirmed",
+      "baseMatchupId": null,
+      "plies": 20
+    }
+  }
+}

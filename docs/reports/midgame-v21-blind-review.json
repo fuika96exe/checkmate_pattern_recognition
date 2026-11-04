@@ -1,0 +1,5114 @@
+[
+  {
+    "id": "oyj2Gq",
+    "initialFen": "2b1kab2/4a4/n2cc1n2/2p1p1p1p/pr5r1/1CPN1R3/P3P1P1P/4C1N2/9/1RBAKAB2 w - - 20 11",
+    "blunderMove": "d4c6",
+    "solverSide": "black",
+    "pv": [
+      "a7c6",
+      "c4c5",
+      "h5c5",
+      "e2b2",
+      "c5f5",
+      "b2b5",
+      "f5f4",
+      "b4e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oyj2Gq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ov8BDL",
+    "initialFen": "2bak4/n3a4/6n2/p3p3p/1cb3p2/9/PCP1Nrc1P/4C1N1B/R3A4/2B1KA3 b - - 1 15",
+    "blunderMove": "b5b7",
+    "solverSide": "red",
+    "pv": [
+      "e3d5",
+      "f3f7",
+      "b3g3",
+      "g7f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ov8BDL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qKXY4Q",
+    "initialFen": "2bakab2/2cRn3r/2n2r1c1/p3p1p1p/9/2P3P2/P3P3P/2N1C1NC1/4A4/2B1KAB1R w - - 7 12",
+    "blunderMove": "c2d4",
+    "solverSide": "black",
+    "pv": [
+      "h7h8",
+      "d8c8",
+      "h8c8",
+      "i0h0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qKXY4Q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onp1aX",
+    "initialFen": "2bak2r1/4a4/4b1c2/p1p3C1p/5rcn1/2P3R2/P3P3P/2C1B1N2/R8/2BAKA3 w - - 5 17",
+    "blunderMove": "g4f4",
+    "solverSide": "black",
+    "pv": [
+      "f5f4",
+      "g2f4",
+      "g5g0",
+      "f0e1",
+      "h5f4",
+      "e2g0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onp1aX/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onXj5L",
+    "initialFen": "2baka3/9/3C4b/p3p3p/3nc4/1NpC2P2/2P5P/8R/4K4/2B2rB2 w - - 2 20",
+    "blunderMove": "b4c6",
+    "solverSide": "black",
+    "pv": [
+      "c4d4",
+      "i2d2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onXj5L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LDXXKL",
+    "initialFen": "r1b1kab2/4a4/2n3n2/p1N1p1p1p/2P6/4C1P2/Pc2P1c1P/2r1B1N2/9/1RBAKA1R1 w - - 6 15",
+    "blunderMove": "g2e1",
+    "solverSide": "black",
+    "pv": [
+      "c2c5",
+      "h0h7",
+      "c5c6",
+      "h7g7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LDXXKL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAgG3R",
+    "initialFen": "3ak4/9/2C2R3/p8/8p/6Nc1/P1P4cP/5A3/4AK3/1rn6 b - - 1 32",
+    "blunderMove": "b0b7",
+    "solverSide": "red",
+    "pv": [
+      "c7c9",
+      "d9e8",
+      "f7f3",
+      "c0b2",
+      "f3h3",
+      "h4h7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAgG3R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9QEko",
+    "initialFen": "4kab2/4a4/4P1n2/p1c6/6p2/P7p/6P2/4C4/4C4/2BAKAB2 b - - 0 25",
+    "blunderMove": "c6e6",
+    "solverSide": "red",
+    "pv": [
+      "e7f7",
+      "g7f5",
+      "e1e6",
+      "e9d9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9QEko/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbxPwo",
+    "initialFen": "r1b1kab2/n3a4/6n2/p1P3N1p/7r1/3N5/P3p1ccP/6C2/4C4/R1BAKAB1R b - - 9 15",
+    "blunderMove": "c9e7",
+    "solverSide": "red",
+    "pv": [
+      "g6e7",
+      "g9e7",
+      "e1e7",
+      "e8d9",
+      "g2g7",
+      "a8b6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbxPwo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "og22rR",
+    "initialFen": "2bak4/4arNR1/4b4/p3p3p/7P1/6P2/Pp2n4/4RC3/2c1K4/2BA1rB2 b - - 1 30",
+    "blunderMove": "e3g4",
+    "solverSide": "red",
+    "pv": [
+      "h8h9",
+      "e8f9",
+      "h9f9",
+      "e9e8",
+      "e2c2",
+      "e7c5",
+      "c2c5",
+      "b3c3",
+      "c5b5",
+      "f8g8",
+      "b5b8",
+      "e8e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/og22rR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYAxyq",
+    "initialFen": "2bakab2/9/2n3n1c/p2rp1p1p/9/2N3P2/1c2P3P/1C2B2C1/4A4/3AK1BNR b - - 1 18",
+    "blunderMove": "d6d3",
+    "solverSide": "red",
+    "pv": [
+      "h2h3",
+      "d3d4",
+      "h3b3",
+      "g7e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYAxyq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R2xYlq",
+    "initialFen": "r3ka1r1/4a4/4b1n2/p3cR2p/2pnC1b2/9/P1P1N1c1P/1C2B1N2/9/R1BAKA3 b - - 4 16",
+    "blunderMove": "d5e3",
+    "solverSide": "red",
+    "pv": [
+      "e5e7",
+      "e9d9",
+      "e7e3",
+      "a9b9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R2xYlq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxM0jR",
+    "initialFen": "3a5/4k2C1/4ba1Nb/1cp2P3/1n7/2P6/5p3/2N1B2n1/4A4/2BAK4 b - - 33 34",
+    "blunderMove": "h2i0",
+    "solverSide": "red",
+    "pv": [
+      "f6f7",
+      "e8e9",
+      "f7e7",
+      "b6b7",
+      "h7f6",
+      "i0g1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxM0jR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ogMlBL",
+    "initialFen": "3k1ab2/4a2P1/4b4/5c3/4C4/2p1C1n2/9/9/4A4/2BAK4 w - - 32 49",
+    "blunderMove": "c0e2",
+    "solverSide": "black",
+    "pv": [
+      "g4e5",
+      "e2c4",
+      "e5c4",
+      "e4e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ogMlBL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZ0Plq",
+    "initialFen": "2b1ka3/4a4/7R1/p3p4/2P2n2p/9/P3c1r2/3C2C1B/4A4/2BAK4 w - - 0 28",
+    "blunderMove": "e0f0",
+    "solverSide": "black",
+    "pv": [
+      "g3g2",
+      "h7h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZ0Plq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oM1Xbo",
+    "initialFen": "6b2/3kac3/4b4/p1p5p/3R5/2B6/r5n1P/3C5/4A4/4KAB2 b - - 2 29",
+    "blunderMove": "e8d7",
+    "solverSide": "red",
+    "pv": [
+      "d5a5",
+      "a3d3",
+      "a5a3",
+      "f8g8",
+      "e0d0",
+      "g8g0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oM1Xbo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R670no",
+    "initialFen": "4kab2/4a4/1r2b4/p3C3p/3NNn1r1/2P4c1/P5p1P/4C4/4A4/2BRKAB2 w - - 5 24",
+    "blunderMove": "e6h6",
+    "solverSide": "black",
+    "pv": [
+      "f5h6",
+      "e5g6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R670no/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Llnymo",
+    "initialFen": "1rbak4/4a4/4b1n2/p3p1p1p/2pR5/5r1NP/PcP1c1P2/2N1BC1C1/4A4/3AK1B1R w - - 0 14",
+    "blunderMove": "h4g6",
+    "solverSide": "black",
+    "pv": [
+      "f4f2",
+      "h2h3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Llnymo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LzPwvV",
+    "initialFen": "2c1kab2/4a4/4b1c2/pr2n1C2/4p1P2/rNR5R/4P4/5C3/4A4/3AK4 b - - 0 33",
+    "blunderMove": "e6g5",
+    "solverSide": "red",
+    "pv": [
+      "g6g9",
+      "e7g9",
+      "c4c9",
+      "e8d9",
+      "b4d5",
+      "a4i4",
+      "d5b6",
+      "i4i0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LzPwvV/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdpMKr",
+    "initialFen": "r3ka3/4a4/2n1b1R2/p3p3p/2pn1R3/9/P1P1r1P1P/4C4/4A4/2BAK1B2 b - - 6 18",
+    "blunderMove": "a9b9",
+    "solverSide": "red",
+    "pv": [
+      "e2h2",
+      "e9d9",
+      "h2h9",
+      "e7g9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdpMKr/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o7Ox1o",
+    "initialFen": "1rbak1br1/9/2n2a3/p3p3p/2p1cnp2/5R2P/P1P3P2/2N1C3N/4A4/2BAK1B1R b - - 1 13",
+    "blunderMove": "b9b2",
+    "solverSide": "red",
+    "pv": [
+      "f4f5",
+      "g9e7",
+      "f5e5",
+      "b2c2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o7Ox1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onXjAL",
+    "initialFen": "3ckab2/4a4/4b4/p3R3p/2r1p4/P1N2R2P/3r4n/4BC3/4A4/2BAK4 b - - 25 32",
+    "blunderMove": "d9d4",
+    "solverSide": "red",
+    "pv": [
+      "c4b2",
+      "d3h3",
+      "f4d4",
+      "e5e4",
+      "d4e4",
+      "i3h1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onXjAL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onXQDL",
+    "initialFen": "2b1kab1r/4a4/6n2/pR4C1p/2p3p2/9/P1c1N1P1P/B1N1c3R/3r5/3AKA3 b - - 3 17",
+    "blunderMove": "e2a2",
+    "solverSide": "red",
+    "pv": [
+      "e3d1",
+      "a2i2",
+      "d1c3",
+      "g9e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onXQDL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYADXq",
+    "initialFen": "r2ak1b2/4a2R1/1Rc1bcn2/2n1p1p1p/p2r5/7NP/P3P1P2/B1N1CC3/4A4/3AK1B2 w - - 8 19",
+    "blunderMove": "h8g8",
+    "solverSide": "black",
+    "pv": [
+      "c7c8",
+      "b7e7",
+      "c8g8",
+      "e7e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYADXq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8x7zq",
+    "initialFen": "4kab2/4a4/7c1/N3pn1NC/2p4nP/3R5/P3P4/4B1r2/3cA4/2BAK4 b - - 10 37",
+    "blunderMove": "g2e2",
+    "solverSide": "red",
+    "pv": [
+      "i5h5",
+      "e2h2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8x7zq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LarBJR",
+    "initialFen": "1r1akab2/9/c6c1/p3C3p/3n1rCn1/2B3R1P/P3P4/2N5N/4A4/3AK1B1R b - - 0 16",
+    "blunderMove": "d5f4",
+    "solverSide": "red",
+    "pv": [
+      "c2d4",
+      "a7a3",
+      "c4a2",
+      "f5d5",
+      "g4f4",
+      "b9b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LarBJR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q580lo",
+    "initialFen": "1r1akab2/8r/1cn1b4/pRC1p1p2/2p4Rp/5nPc1/P3P3P/2N1BC3/9/3AKAB2 b - - 1 15",
+    "blunderMove": "f4g2",
+    "solverSide": "red",
+    "pv": [
+      "c6g6",
+      "g2f4",
+      "g6g7",
+      "c7e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q580lo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Rd9Wlo",
+    "initialFen": "C1bak4/3Ra4/4b4/p5r1p/1r3n3/4p1p2/P3p3P/B1C6/4A4/3RKAB2 b - - 19 29",
+    "blunderMove": "e4d4",
+    "solverSide": "red",
+    "pv": [
+      "a2c4",
+      "e7c5",
+      "d8c8",
+      "c5e7",
+      "c8c9",
+      "g6d6",
+      "c9c5",
+      "b5b9",
+      "c5f5",
+      "b9a9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Rd9Wlo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R19xaR",
+    "initialFen": "C3kab2/9/3ac4/p3p3p/3nc1p2/P4R3/2P3n1P/Nr2B4/2C1AN3/2BAK4 b - - 7 21",
+    "blunderMove": "g3f1",
+    "solverSide": "red",
+    "pv": [
+      "c1f1",
+      "e5e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R19xaR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "owd5Yq",
+    "initialFen": "1r1k1ab2/4a4/4b2c1/p3Cr2p/5NP2/2R6/P3P3P/4B4/3CK4/3A5 b - - 10 37",
+    "blunderMove": "f6e6",
+    "solverSide": "red",
+    "pv": [
+      "f5d4",
+      "d9e9",
+      "d4e6",
+      "b9b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/owd5Yq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LD1BwR",
+    "initialFen": "4ka3/4a4/4r3N/p3n1R1p/1cb1p4/2N6/P7P/4B4/9/2BAKA3 b - - 8 26",
+    "blunderMove": "b5b6",
+    "solverSide": "red",
+    "pv": [
+      "i7g8",
+      "e9d9",
+      "g8e7",
+      "b6g6",
+      "e7g6",
+      "e5e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LD1BwR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oj0DbL",
+    "initialFen": "3aka1r1/1R7/2n1bccCb/p1C1p2Rp/2p6/6P2/P1P1P3P/2N1Br3/9/2BAKA3 w - - 4 15",
+    "blunderMove": "h7f7",
+    "solverSide": "black",
+    "pv": [
+      "h9h6",
+      "c6h6",
+      "f2f7",
+      "b8h8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oj0DbL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onmyDR",
+    "initialFen": "3akab2/9/3c1c3/p1Pnp4/8r/6Cn1/P3P4/2N1B3N/9/3AKAB1R b - - 1 21",
+    "blunderMove": "d7d0",
+    "solverSide": "red",
+    "pv": [
+      "e0d0",
+      "d6c8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onmyDR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAXlvo",
+    "initialFen": "1rbak4/4a4/n2cb2c1/7r1/p1p3pC1/8R/P3N4/2N1B4/4A4/2BAK3R w - - 1 21",
+    "blunderMove": "i0h0",
+    "solverSide": "black",
+    "pv": [
+      "h7h5",
+      "i4h4",
+      "h5h0",
+      "h4h6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAXlvo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oMZpPq",
+    "initialFen": "r2akabr1/9/c3b3c/p3p3p/1n3np2/1CR6/P3P1P1P/2N1BC2N/9/1R1AKAB2 b - - 0 14",
+    "blunderMove": "a9c9",
+    "solverSide": "red",
+    "pv": [
+      "c4c9",
+      "e7c9",
+      "b4e4",
+      "a7e7",
+      "b0b5",
+      "f5e3",
+      "c2e3",
+      "e7e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oMZpPq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RePOnL",
+    "initialFen": "3aka3/3r5/b7b/p3p3p/3n1Rc2/6NN1/P6cP/2C1B4/4A4/3AK1B2 w - - 2 25",
+    "blunderMove": "h4g6",
+    "solverSide": "black",
+    "pv": [
+      "h3h0",
+      "g0i2",
+      "d5e3",
+      "f5g5",
+      "i7g5",
+      "g4e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RePOnL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrPDvR",
+    "initialFen": "2bak4/4a4/n3b4/8p/2p1p4/P5p2/3rNR3/4B3C/R3N2r1/2BcKA3 w - - 2 26",
+    "blunderMove": "e1c2",
+    "solverSide": "black",
+    "pv": [
+      "h1a1",
+      "c2a1",
+      "e5e4",
+      "f3h3",
+      "e4e3",
+      "e2g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrPDvR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrm79o",
+    "initialFen": "3akab2/6c2/b1n1cr3/p1C1p3p/2PR1n3/6P2/P3P3P/N2C2N2/3rA4/R1BAK1B2 w - - 13 16",
+    "blunderMove": "g4g5",
+    "solverSide": "black",
+    "pv": [
+      "f5e3",
+      "g2e3",
+      "e7e3",
+      "g0e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrm79o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oXKwGR",
+    "initialFen": "2b1ka3/4a4/2c1b4/4p3p/2p4r1/RN2P1PNP/P6c1/4B4/4A4/4KAB2 w - - 3 25",
+    "blunderMove": "b4d5",
+    "solverSide": "black",
+    "pv": [
+      "h5d5",
+      "g4g5",
+      "e7g5",
+      "a4b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oXKwGR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWDO1o",
+    "initialFen": "3akab2/7c1/b3c1r2/8p/4R1p2/2P1N3P/6P2/4B4/9/2C1KAB2 w - - 9 41",
+    "blunderMove": "e5e6",
+    "solverSide": "black",
+    "pv": [
+      "h8e8",
+      "e6i6",
+      "e8e4",
+      "e0d0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWDO1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o424BL",
+    "initialFen": "1rbak3r/4a4/2n1c1c1b/pCC1p3p/6p2/2P6/P3PR2P/2N1B1N1n/9/1RBAKA3 w - - 2 13",
+    "blunderMove": "g2h4",
+    "solverSide": "black",
+    "pv": [
+      "i2g1",
+      "f3f1",
+      "i9f9",
+      "b0b1",
+      "c7a8",
+      "c6i6",
+      "f9f1",
+      "b1f1",
+      "a8b6",
+      "h4g6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o424BL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onp1e5",
+    "initialFen": "3ak1br1/3ra4/1c2b1n2/p3nRp1p/2p1C2c1/9/P1P1N1P1P/4C4/9/1NBAKABR1 w - - 9 12",
+    "blunderMove": "e5e7",
+    "solverSide": "black",
+    "pv": [
+      "g9e7",
+      "e3f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onp1e5/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbXK0o",
+    "initialFen": "2baka3/9/4br3/4p3p/p4n1r1/5N3/P1P1P3P/N3B2c1/1C2A4/2B1KA1R1 b - - 23 32",
+    "blunderMove": "h5h7",
+    "solverSide": "red",
+    "pv": [
+      "b1b7",
+      "d9e8",
+      "b7f7",
+      "e8f7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbXK0o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LzPwj9",
+    "initialFen": "2baka3/9/5Rnr1/1r2p3p/p5c2/c1R6/4P3P/N3C3N/4A4/2B1KAB2 w - - 0 20",
+    "blunderMove": "c4c9",
+    "solverSide": "black",
+    "pv": [
+      "a4g4",
+      "e1d0",
+      "g5g0",
+      "e0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LzPwj9/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWyWGp",
+    "initialFen": "2c1kabr1/4a4/4b1R2/p1r5p/6p2/3N2P2/P3P3P/3CC4/4A4/1RB1KAB1c b - - 2 18",
+    "blunderMove": "h9h0",
+    "solverSide": "red",
+    "pv": [
+      "e2e7",
+      "g9e7",
+      "c0e2",
+      "c6c1",
+      "b0d0",
+      "c9d9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWyWGp/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R1aE6R",
+    "initialFen": "1rbaka2r/5n3/4b1c2/p3p3p/9/6B2/P1CNP3P/2c4RB/4C4/R2AKA3 b - - 2 16",
+    "blunderMove": "c2i2",
+    "solverSide": "red",
+    "pv": [
+      "g4i2",
+      "b9b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R1aE6R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oM11Oo",
+    "initialFen": "r3kabr1/4a4/2n1b2c1/p2np3p/2p6/1cP1PR3/P3N3P/1C2C1N2/9/R1BAKAB2 w - - 3 13",
+    "blunderMove": "c4c5",
+    "solverSide": "black",
+    "pv": [
+      "b4f4",
+      "g2f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oM11Oo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkWBXL",
+    "initialFen": "1rbaka3/4c4/nC2b4/2R5p/p5p2/2c1r4/P5P1P/4C1N2/9/1RBAKAB2 w - - 0 16",
+    "blunderMove": "b0b4",
+    "solverSide": "black",
+    "pv": [
+      "e7c5",
+      "d0e1",
+      "c4c6",
+      "b4e4",
+      "b9b7",
+      "e4b4",
+      "b7e7",
+      "b4b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkWBXL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lby8Gq",
+    "initialFen": "1rbakab2/9/4c1R2/p1p5p/1C7/2P6/P3P1P1P/6r2/4Nc3/1RBAKAB2 b - - 2 15",
+    "blunderMove": "g2d2",
+    "solverSide": "red",
+    "pv": [
+      "g7e7",
+      "g9e7",
+      "b5e5",
+      "d9e8",
+      "b0b9",
+      "e9d9",
+      "e1f3",
+      "d2f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lby8Gq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LJyvzq",
+    "initialFen": "r1bakab1r/9/8c/p2Cn1p1p/2p6/4c4/P1P3P1P/N3B1N2/4A4/1RBAK2R1 b - - 1 11",
+    "blunderMove": "e6f4",
+    "solverSide": "red",
+    "pv": [
+      "b0b4",
+      "f4g2",
+      "b4e4",
+      "d9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LJyvzq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qB6vvq",
+    "initialFen": "1Rn1ka3/4a4/N8/3P5/9/9/3pp4/4B4/2r1A4/2B1KA3 b - - 0 59",
+    "blunderMove": "c1c2",
+    "solverSide": "red",
+    "pv": [
+      "d6c6",
+      "e8d9",
+      "b9c9",
+      "f9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qB6vvq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "owNvNR",
+    "initialFen": "r1baka2r/9/4b3c/p2C2p1p/2p3n2/9/P1P1R1P1P/N3B4/4A2R1/2BAK4 b - - 8 17",
+    "blunderMove": "i7i3",
+    "solverSide": "red",
+    "pv": [
+      "g3g4",
+      "i3i5",
+      "g4g5",
+      "g6g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/owNvNR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qB7kvL",
+    "initialFen": "r1ba1kr2/4a4/1c2bc3/p3C3p/2nR2p2/2p4RP/P3P1P2/nC6N/4A4/2B1KAB2 b - - 5 16",
+    "blunderMove": "g9g6",
+    "solverSide": "red",
+    "pv": [
+      "h4h9",
+      "e7g9",
+      "i2h4",
+      "g6f6",
+      "h9g9",
+      "f9f8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qB7kvL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lp1035",
+    "initialFen": "2b1kab2/c3a4/7r1/p5P2/8p/5nPC1/P3p2RP/4B4/4A4/3AK1C2 b - - 2 29",
+    "blunderMove": "a8a3",
+    "solverSide": "red",
+    "pv": [
+      "g6h6",
+      "h7g7",
+      "h4f4",
+      "g7g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lp1035/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oj5B5R",
+    "initialFen": "3akab2/8r/n3b1nc1/p1r1pRp1p/9/1C2N1P2/P3P3P/4C1N2/4A4/1Rc1KAB2 b - - 3 15",
+    "blunderMove": "e6e5",
+    "solverSide": "red",
+    "pv": [
+      "f6c6",
+      "a7c6",
+      "b4b9",
+      "e7c9",
+      "b0c0",
+      "c6d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oj5B5R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6anzL",
+    "initialFen": "2baka3/9/1cr1b2c1/p3p3p/7n1/6N2/P3P3P/4B1C1N/3rA3R/1R2KAB2 b - - 7 17",
+    "blunderMove": "b7b1",
+    "solverSide": "red",
+    "pv": [
+      "g2g1",
+      "d1d3",
+      "b0b1",
+      "h5f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6anzL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYDZ1o",
+    "initialFen": "1rb1ka1r1/4a4/2n1b2c1/p1p1p3p/5np2/1cPN3R1/P3P1P1P/2C1C1N2/9/1RBAKAB2 w - - 20 11",
+    "blunderMove": "g3g4",
+    "solverSide": "black",
+    "pv": [
+      "b4d4",
+      "b0b9",
+      "d4h4",
+      "b9b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYDZ1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LaXpJq",
+    "initialFen": "2baka2r/9/2n1b1n2/p1p1p3p/6r2/9/P1P1P3P/C1N1B1cCR/4A4/R3KAB2 w - - 2 11",
+    "blunderMove": "h2h4",
+    "solverSide": "black",
+    "pv": [
+      "g2c2",
+      "h4h2",
+      "g5g2",
+      "a0c0",
+      "g2h2",
+      "c0c2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LaXpJq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R1zaXo",
+    "initialFen": "3ak4/2cRar3/n1C1c3b/4N1r1p/p1b1P4/2P3Cn1/P7P/4B4/4A4/2B1KA2R b - - 0 28",
+    "blunderMove": "e7e5",
+    "solverSide": "red",
+    "pv": [
+      "e6f8",
+      "g6g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R1zaXo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ovmVYR",
+    "initialFen": "2r1kabr1/4a4/c1n1b1n2/p1R1p3p/6p2/2P6/P3P1PcP/2NCC1N2/4A4/2B1KABR1 w - - 1 11",
+    "blunderMove": "c2d4",
+    "solverSide": "black",
+    "pv": [
+      "h3h6",
+      "h0h6",
+      "h9h6",
+      "e3e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ovmVYR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9zJMq",
+    "initialFen": "2bak1b1r/4a4/2n1cc3/p1p1p3p/3r3n1/2P3R2/P3P3P/C1N1B1C2/9/1R1AKABN1 w - - 1 12",
+    "blunderMove": "g4h4",
+    "solverSide": "black",
+    "pv": [
+      "f7h7",
+      "h4d4",
+      "d5d4",
+      "c2d4",
+      "h7h0",
+      "b0b1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9zJMq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RO19zq",
+    "initialFen": "4ka3/R3a4/b3bc1nr/4p4/p5p1p/2P1P4/P4RP1P/2C1B1N2/4A4/1rBAK4 b - - 5 23",
+    "blunderMove": "i5i4",
+    "solverSide": "red",
+    "pv": [
+      "a8a9",
+      "e7c9",
+      "c2c9",
+      "a7c9",
+      "a9c9",
+      "e8d9",
+      "f3f7",
+      "f9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RO19zq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5b8lL",
+    "initialFen": "2bakabnr/9/2n6/p1p1p1p1p/4c4/2P1P3P/c8/1rN1C1N2/5R3/2BAKABR1 w - - 0 12",
+    "blunderMove": "e2e5",
+    "solverSide": "black",
+    "pv": [
+      "e6e5",
+      "g2e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5b8lL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oXKJ5R",
+    "initialFen": "2bakab2/2r4c1/1Rn2Cn2/p3p1p1p/2p6/4c4/P3N1P2/2C3N2/4A4/2BAK1B2 w - - 0 16",
+    "blunderMove": "b7c7",
+    "solverSide": "black",
+    "pv": [
+      "e4c4",
+      "e3c4",
+      "c8c7",
+      "f7f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oXKJ5R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LlndJo",
+    "initialFen": "2bakab2/3r5/c1n5c/p1p1n2Rp/4P1p2/2P6/Pr4P1P/1C2C1N2/9/1RBAKAB2 b - - 1 11",
+    "blunderMove": "a7b7",
+    "solverSide": "red",
+    "pv": [
+      "b2b7",
+      "b3b0",
+      "b7i7",
+      "g9i7",
+      "e5e6",
+      "d8e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LlndJo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LpmkrR",
+    "initialFen": "1rbakab1r/6c2/4c4/p3n3p/2nR5/4p1P2/P3P3P/1CN1C1N2/9/R1BAKAB2 w - - 4 13",
+    "blunderMove": "e2e4",
+    "solverSide": "black",
+    "pv": [
+      "b9b2",
+      "a0a2",
+      "g8g2",
+      "d0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LpmkrR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAa2Kq",
+    "initialFen": "2bak4/3Ra4/2n1b2cr/p1N1p3p/6p2/2P4R1/P3Pr2P/4B1N2/3CA4/3AK3c b - - 9 19",
+    "blunderMove": "f3g3",
+    "solverSide": "red",
+    "pv": [
+      "c6e7",
+      "g5g4",
+      "e7g8",
+      "e9f9",
+      "e2g4",
+      "i7i8",
+      "h4h7",
+      "g3g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAa2Kq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qGXnbL",
+    "initialFen": "4kab2/4a4/4b4/p2R2p1p/1r5C1/6P2/P1n1Nn2P/4B4/4A4/2BAK4 w - - 6 25",
+    "blunderMove": "h5f5",
+    "solverSide": "black",
+    "pv": [
+      "c3e4",
+      "d6a6",
+      "b5f5",
+      "e1f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qGXnbL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5r6lL",
+    "initialFen": "1n1akab2/9/4b4/p1p1p4/4c1p2/7N1/P1P1P4/2NCB4/9/3AKAB1c w - - 0 22",
+    "blunderMove": "d0e1",
+    "solverSide": "black",
+    "pv": [
+      "e5e2",
+      "e0d0",
+      "e2c2",
+      "e3e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5r6lL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "L3a1Eo",
+    "initialFen": "2ck1ab2/4a4/4b4/p3R3p/9/2C6/P1P5P/N2nB4/4N1r2/5KB2 b - - 0 30",
+    "blunderMove": "g1e1",
+    "solverSide": "red",
+    "pv": [
+      "e6d6",
+      "d9e9",
+      "d6d2",
+      "e1i1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/L3a1Eo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R0Nb9q",
+    "initialFen": "2b1ka3/4a4/2nCb2R1/p1pN2r1p/1r2P1p2/9/2P1C3P/N8/9/2BAKAB2 w - - 1 16",
+    "blunderMove": "e3e7",
+    "solverSide": "black",
+    "pv": [
+      "c9e7",
+      "d6c4",
+      "e8d7",
+      "h7e7",
+      "f9e8",
+      "e7h7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R0Nb9q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9AEdo",
+    "initialFen": "3ak4/4a4/4b4/p3r3p/1n2C1p2/9/P1r5P/3RB4/2N6/2BK1R3 w - - 3 27",
+    "blunderMove": "e5e7",
+    "solverSide": "black",
+    "pv": [
+      "e6e7",
+      "f0h0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9AEdo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qr7K6L",
+    "initialFen": "1Cbak1b2/4a4/5r3/p1p1N1p2/3R4p/2P6/P3Pc2P/4BAN2/3C2nr1/2BAKcR2 w - - 15 22",
+    "blunderMove": "e0e1",
+    "solverSide": "black",
+    "pv": [
+      "f0c0",
+      "g0g1",
+      "c0c1",
+      "e1e0",
+      "h1g1",
+      "d0e1",
+      "g1g2",
+      "d1d9",
+      "g2h2",
+      "d9d8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qr7K6L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxdgdL",
+    "initialFen": "2r1kab2/4a4/4b4/p5p1p/9/9/P1C1P3P/N3B1c2/3c3R1/2BAKA3 w - - 1 19",
+    "blunderMove": "e2c4",
+    "solverSide": "black",
+    "pv": [
+      "g2g0",
+      "e0e1",
+      "d1h1",
+      "c3c9",
+      "g0g1",
+      "e1e0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxdgdL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWJZPL",
+    "initialFen": "2ba1abnr/4k4/4c2c1/p4Rp1p/2p3n2/1rP2C3/P3P1P1P/4B4/9/RN1AKABN1 b - - 9 12",
+    "blunderMove": "c5c4",
+    "solverSide": "red",
+    "pv": [
+      "f4b4",
+      "c4b4",
+      "f6f9",
+      "h9g7",
+      "f9d9",
+      "g5f3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWJZPL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LJNa3L",
+    "initialFen": "2bakab2/4n4/4c1n2/p1R1pr2p/1N1P2p2/r7P/6P2/4C3N/4A4/2BAK1BR1 b - - 5 16",
+    "blunderMove": "a4b4",
+    "solverSide": "red",
+    "pv": [
+      "e2e7",
+      "c9e7",
+      "b5d6",
+      "b4b8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LJNa3L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojngJo",
+    "initialFen": "2baka1r1/3rc4/1cn1b4/p7p/2p2N1n1/4p4/P1P2RP1P/1C2C1N2/R8/2BAKAB2 w - - 2 14",
+    "blunderMove": "f5e7",
+    "solverSide": "black",
+    "pv": [
+      "e4f4",
+      "f3e3",
+      "e8e3",
+      "g2e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojngJo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lp10Y5",
+    "initialFen": "3akabr1/c3n4/2n1bR3/p2Np1R1p/2p3p2/9/P1P3P1P/1r2B1N2/4A4/3AK1B2 b - - 9 16",
+    "blunderMove": "b2b8",
+    "solverSide": "red",
+    "pv": [
+      "g6g8",
+      "g9i7",
+      "g8f8",
+      "e7c9",
+      "e0f0",
+      "e8d6",
+      "f8b8",
+      "d6b5",
+      "b8b6",
+      "c7d5",
+      "b6b5",
+      "f9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lp10Y5/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qB64aq",
+    "initialFen": "r3ka3/3ca4/1c2b1n2/p3pR2p/2b4r1/3N2C2/P3P3P/6N2/9/R1BAKAB2 w - - 1 18",
+    "blunderMove": "f6g6",
+    "solverSide": "black",
+    "pv": [
+      "d8d6",
+      "g4g7",
+      "d6g6",
+      "g2f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qB64aq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "on935R",
+    "initialFen": "1r1a1Rb2/4k2r1/1cn1b1C2/pR2p4/2p5p/5nPc1/P3P3P/2N1BC3/9/3AKAB2 b - - 2 19",
+    "blunderMove": "h4h0",
+    "solverSide": "red",
+    "pv": [
+      "g7c7",
+      "f4g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/on935R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oyj46q",
+    "initialFen": "r1bakabr1/9/c3c1n2/1Rp3p1p/p1n6/1CP1P4/P5P1P/2N3C1N/4A4/2BAK1B1R b - - 2 11",
+    "blunderMove": "c5e4",
+    "solverSide": "red",
+    "pv": [
+      "b4e4",
+      "g7e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oyj46q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qGQ5kR",
+    "initialFen": "2bak1b2/4a2r1/1cn6/p1p1p3p/9/2P1n1p2/PC5cP/2N1BCN2/4A2R1/2B1KA3 w - - 0 17",
+    "blunderMove": "e2g4",
+    "solverSide": "black",
+    "pv": [
+      "h3e3",
+      "f2e2",
+      "h8h1",
+      "g2e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qGQ5kR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lpr0yo",
+    "initialFen": "3akab2/1r7/4b4/p3p1p2/2p2c3/4PnP2/P1P2C3/3CB1N2/4A4/4KAB2 w - - 12 32",
+    "blunderMove": "g2f4",
+    "solverSide": "black",
+    "pv": [
+      "b8b0",
+      "d2d0",
+      "f5f3",
+      "f4e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lpr0yo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LlX9mL",
+    "initialFen": "2bak1bR1/9/n8/p7p/2p3p2/4Cr3/P1P3P1P/4B1n2/3RAr3/4K1BC1 b - - 23 34",
+    "blunderMove": "f4e4",
+    "solverSide": "red",
+    "pv": [
+      "h9g9",
+      "f1f9",
+      "h0h9",
+      "c9e7",
+      "g9g8",
+      "f9h9",
+      "e0d0",
+      "d9e8",
+      "d1d8",
+      "e4d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LlX9mL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qBJYWq",
+    "initialFen": "4kab2/3na4/4b4/p4R3/1c3PP1p/1cpn3N1/P2r5/2N1BC3/4A4/2C1KAB2 w - - 0 22",
+    "blunderMove": "f6d6",
+    "solverSide": "black",
+    "pv": [
+      "d8b7",
+      "d6a6",
+      "c4c3",
+      "c0c3",
+      "d3c3",
+      "a6a4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qBJYWq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lb3XJR",
+    "initialFen": "r3kab2/4a4/cR2b1nrc/p3p3R/2p6/5NP2/P1n1P3P/1CN3C2/9/2BAKAB2 b - - 0 14",
+    "blunderMove": "g7f5",
+    "solverSide": "red",
+    "pv": [
+      "g2g9",
+      "e7g9",
+      "b7h7",
+      "f5d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lb3XJR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbbakL",
+    "initialFen": "r1b1ka1r1/4a4/4b4/p1p1nR1Cp/2c4P1/6R2/P3P3P/N1n6/9/2BAKAB2 w - - 3 18",
+    "blunderMove": "f6e6",
+    "solverSide": "black",
+    "pv": [
+      "c5c0",
+      "d0e1",
+      "c0a0",
+      "g4g2",
+      "c2b0",
+      "e1d0",
+      "b0a2",
+      "e0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbbakL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8xyzq",
+    "initialFen": "2ba1k3/4a4/4b4/C3n3R/3r2p2/9/P1P5P/9/4A4/2B1KA3 b - - 2 28",
+    "blunderMove": "e6f4",
+    "solverSide": "red",
+    "pv": [
+      "i6f6",
+      "f9e9",
+      "f6f4",
+      "d5d3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8xyzq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ovMwl9",
+    "initialFen": "1R1akab2/9/4b4/p1n1r1n1p/9/4C4/4P3P/c5N2/9/2BAKAB2 b - - 7 38",
+    "blunderMove": "f9e8",
+    "solverSide": "red",
+    "pv": [
+      "c0a2",
+      "g6i5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ovMwl9/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6kmyo",
+    "initialFen": "2bak4/4a4/n3bc3/p3P3p/2pN5/4c4/P7P/C3BC3/1r2A1r2/R1B1KA1R1 w - - 7 23",
+    "blunderMove": "a2a1",
+    "solverSide": "black",
+    "pv": [
+      "f7f0",
+      "e0f0",
+      "e4e1",
+      "f2f1",
+      "e1a1",
+      "f1a1",
+      "b1f1",
+      "f0e0",
+      "f1e1",
+      "e0d0",
+      "e1d1",
+      "d0e0",
+      "d1d5",
+      "e6e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6kmyo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVp26q",
+    "initialFen": "2bakabr1/9/4c1n2/p1N1p1p1p/3n5/2C3P2/P3P3P/3rC1Nc1/9/1RBAKABR1 b - - 9 14",
+    "blunderMove": "h2e2",
+    "solverSide": "red",
+    "pv": [
+      "c4c9",
+      "d9e8",
+      "h0h9",
+      "g7h9",
+      "c0e2",
+      "d5c7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVp26q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojnXZo",
+    "initialFen": "2bakab2/4n4/6n2/p1p5p/1r1Np1p2/P6RP/2P1NrP2/3RB4/9/2BAKA3 b - - 14 16",
+    "blunderMove": "g7f5",
+    "solverSide": "red",
+    "pv": [
+      "e3c4",
+      "e8f6",
+      "c4e5",
+      "b5d5",
+      "d2d5",
+      "f6d5",
+      "e5f3",
+      "d9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojnXZo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbymGq",
+    "initialFen": "r3kabr1/4a1c2/1cn1b3n/p1p5p/4C4/2P3R2/P3N1P1P/1C7/9/RNBAKAB2 w - - 1 14",
+    "blunderMove": "e3d5",
+    "solverSide": "black",
+    "pv": [
+      "h9h5",
+      "b2e2",
+      "h5e5",
+      "d5c7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbymGq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxN1pw",
+    "initialFen": "3k2b2/3ca4/4b3n/p5p2/4N3p/6P2/P2rN3P/3CC4/4A4/2BAK1B2 b - - 12 30",
+    "blunderMove": "d3d4",
+    "solverSide": "red",
+    "pv": [
+      "e5c6",
+      "d4d3",
+      "c6b4",
+      "d3d4",
+      "e3f5",
+      "d4d7",
+      "b4c6",
+      "d7d5",
+      "f5d4",
+      "d5c5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxN1pw/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lbb9pL",
+    "initialFen": "2baka2r/r3n4/3cb4/3np3p/7R1/C1R2NP2/c3P4/N5C2/4A4/2BAK1B2 w - - 8 19",
+    "blunderMove": "c4c3",
+    "solverSide": "black",
+    "pv": [
+      "a8a4",
+      "f4d5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lbb9pL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oMwjJL",
+    "initialFen": "2baka3/5r3/8b/p5p1p/4C4/1N3cP2/P3P3P/B8/9/R3KRBr1 w - - 9 25",
+    "blunderMove": "b4c6",
+    "solverSide": "black",
+    "pv": [
+      "f4e4",
+      "e3e4",
+      "f8f0",
+      "e0f0",
+      "h0g0",
+      "f0f1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oMwjJL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdpMdl",
+    "initialFen": "2b1ka3/4a4/2n1b2r1/p7p/4r4/2PN5/4cR2P/3CB1R2/4A4/2BAK4 w - - 2 21",
+    "blunderMove": "d4f5",
+    "solverSide": "black",
+    "pv": [
+      "h7h0",
+      "f3f0",
+      "h0f0",
+      "e0f0",
+      "e5f5",
+      "g2f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdpMdl/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbwVwR",
+    "initialFen": "3aka3/9/4b4/4p1p2/2b5P/6P2/7C1/n1N1c1N2/4A3c/3K1AB2 b - - 4 37",
+    "blunderMove": "i1i2",
+    "solverSide": "red",
+    "pv": [
+      "g0e2",
+      "a2c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbwVwR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ROYOvq",
+    "initialFen": "4kab2/r3a3r/b8/pR7/2c3p2/2R1C4/P3P1n1P/6N2/9/2BAKAB2 b - - 4 22",
+    "blunderMove": "e8d9",
+    "solverSide": "red",
+    "pv": [
+      "c4c5",
+      "g3e4",
+      "e3e4",
+      "i8e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ROYOvq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LE6aZR",
+    "initialFen": "4k4/1C7/2R6/8p/2P1P4/4r4/P3c3P/5A3/9/4KAB2 w - - 7 43",
+    "blunderMove": "e5d5",
+    "solverSide": "black",
+    "pv": [
+      "e3c3",
+      "f0e1",
+      "c3c7",
+      "b8b6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LE6aZR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxvbMo",
+    "initialFen": "2bak1b1r/4a4/4cc2n/p1p5p/6r2/4Pn1NP/P1PR5/3CBN1C1/4A4/R3KAB2 w - - 0 14",
+    "blunderMove": "f2g4",
+    "solverSide": "black",
+    "pv": [
+      "f4e2",
+      "g4f2",
+      "e2f4",
+      "a0b0",
+      "f7f2",
+      "b0b9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxvbMo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6l3bq",
+    "initialFen": "3a1a3/3rk4/1R1c2n2/p1R1p3p/3r5/P3P1N2/8P/4B4/4A4/4KAB2 b - - 13 30",
+    "blunderMove": "d7e7",
+    "solverSide": "red",
+    "pv": [
+      "g4f6",
+      "e8f8",
+      "b7e7",
+      "d8d7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6l3bq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZbONR",
+    "initialFen": "2bak2r1/2c1a4/1rn1b3c/p2RpC2p/5R3/2P6/P3P2CN/2N6/9/2BAKAB2 b - - 0 20",
+    "blunderMove": "h9h3",
+    "solverSide": "red",
+    "pv": [
+      "i3h5",
+      "i7f7",
+      "f6h6",
+      "b7b5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZbONR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RO3kER",
+    "initialFen": "4kab2/4a4/4b4/2r1c4/6p2/2P1C4/P6R1/4B4/4A4/3AK1B2 w - - 3 55",
+    "blunderMove": "h3h6",
+    "solverSide": "black",
+    "pv": [
+      "e6e2",
+      "g0e2",
+      "c6h6",
+      "e4f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RO3kER/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RePkAL",
+    "initialFen": "4ka3/9/N2a1n3/4N4/5P3/6p2/2n6/9/9/3K5 b - - 13 54",
+    "blunderMove": "f7d6",
+    "solverSide": "red",
+    "pv": [
+      "a7c8",
+      "e9d9",
+      "c8d6",
+      "f9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RePkAL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbbOpL",
+    "initialFen": "2bkc1b2/1rNn5/2Ra2r2/p7p/9/3R5/P7P/2N5B/4A4/3K1A3 w - - 20 45",
+    "blunderMove": "d4d7",
+    "solverSide": "black",
+    "pv": [
+      "g7d7",
+      "c7d7",
+      "b8c8",
+      "c2e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbbOpL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkEk9o",
+    "initialFen": "2b1ka3/1N2a4/4bc3/3r3Cp/2n4R1/P1N1c4/2P5P/4B4/4A4/2BA1K3 b - - 14 34",
+    "blunderMove": "d6b6",
+    "solverSide": "red",
+    "pv": [
+      "h6h9",
+      "e7g9",
+      "h5c5",
+      "b6b8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkEk9o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LDjO3y",
+    "initialFen": "r1baka3/9/4b1R2/p1p1nN2p/4c4/1C7/P1P3P2/1CN1B4/4A4/R3KABrc w - - 1 15",
+    "blunderMove": "b4e4",
+    "solverSide": "black",
+    "pv": [
+      "e5e2",
+      "g0e2",
+      "h0h7",
+      "e2g0",
+      "h7g7",
+      "c2e3",
+      "g7g3",
+      "e3g4",
+      "a9a8",
+      "b2e2",
+      "g3g0",
+      "e2e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LDjO3y/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o42ZKL",
+    "initialFen": "1rbakab2/9/c1n1c1n2/p3p1p1p/9/2R6/P3P1P1P/2NCC1N2/4A4/2BAK1B2 b - - 0 13",
+    "blunderMove": "b9b7",
+    "solverSide": "red",
+    "pv": [
+      "d2d7",
+      "c7d5",
+      "d7g7",
+      "e7e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o42ZKL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ogMPAL",
+    "initialFen": "2bakr3/4a4/3cb4/p2Np3p/7r1/P3Pn3/6R1P/N3B4/4A4/1RB1KA3 w - - 2 24",
+    "blunderMove": "a2c3",
+    "solverSide": "black",
+    "pv": [
+      "h5h3",
+      "g3g4",
+      "h3c3",
+      "b0b2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ogMPAL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ov8AYL",
+    "initialFen": "2bak1br1/4a4/6n2/p1p1n1R1p/9/4P1P2/P1P5P/2c3N2/4C4/2BAKAB2 b - - 0 14",
+    "blunderMove": "g7f9",
+    "solverSide": "red",
+    "pv": [
+      "e1e6",
+      "g9e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ov8AYL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RP0yGR",
+    "initialFen": "n1b1ka3/4a2C1/3cc1n1b/4p3p/3N5/1N4B2/4P3P/1C7/9/2BAKA3 b - - 1 28",
+    "blunderMove": "a9b7",
+    "solverSide": "red",
+    "pv": [
+      "d5e7",
+      "c9e7",
+      "b2b7",
+      "g7h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RP0yGR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R0g4Bm",
+    "initialFen": "2P1c4/4a4/4ka3/3N5/9/9/3n5/4B4/3K5/9 b - - 15 89",
+    "blunderMove": "e7d7",
+    "solverSide": "red",
+    "pv": [
+      "d6c4",
+      "e9e2",
+      "c4e5",
+      "d7d8",
+      "e5d3",
+      "e8d9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R0g4Bm/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojD15L",
+    "initialFen": "2b1ka3/4a4/4b2r1/p2R3C1/4R4/6P2/P1p1c3r/4B4/4A4/2BK1A3 w - - 3 25",
+    "blunderMove": "e5c5",
+    "solverSide": "black",
+    "pv": [
+      "h7h6",
+      "d6h6",
+      "e7c5",
+      "h6a6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojD15L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LzZQgL",
+    "initialFen": "1r1ak3C/n3a3r/c3b1nc1/p1p1p3p/9/6R2/P1P1P1P1P/2N1C4/9/2BAKABNR w - - 5 11",
+    "blunderMove": "i9d9",
+    "solverSide": "black",
+    "pv": [
+      "b9d9",
+      "c3c4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LzZQgL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVpp7q",
+    "initialFen": "9/4k4/4b3C/p3n2rp/4R2C1/6B2/P3P4/5A2B/9/3AK3c w - - 25 52",
+    "blunderMove": "e3e4",
+    "solverSide": "black",
+    "pv": [
+      "e6g5",
+      "e5b5",
+      "h6h5",
+      "b5b8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVpp7q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYa6gq",
+    "initialFen": "r2aka3/9/2n1b3b/p3p4/2p4c1/2P1P1r2/P3N2R1/1C7/9/R1BAKAB2 b - - 0 17",
+    "blunderMove": "g4e4",
+    "solverSide": "red",
+    "pv": [
+      "b2e2",
+      "e4e3",
+      "h3e3",
+      "c5c4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYa6gq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVpBDq",
+    "initialFen": "3akab1C/9/b3c4/p3n4/2pN2p2/P3p4/2P1P1n1P/4B1N2/9/2BAKA3 b - - 3 22",
+    "blunderMove": "e6d4",
+    "solverSide": "red",
+    "pv": [
+      "d5e7",
+      "d9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVpBDq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LDbXYo",
+    "initialFen": "r3kab2/4a4/2c1b1n2/p3p3p/6p2/3N1n3/P3P1P1P/3CB3R/4N2r1/1R1AKAB2 b - - 6 19",
+    "blunderMove": "h1f1",
+    "solverSide": "red",
+    "pv": [
+      "d2d1",
+      "g7f5",
+      "d1f1",
+      "f5d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LDbXYo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R0Aw1o",
+    "initialFen": "2bakab2/5r3/c1n1c4/p1p1p3p/1r3n1R1/2P3C2/P3P3P/2N1C1N1B/5R3/2BAKA3 w - - 9 13",
+    "blunderMove": "c2d4",
+    "solverSide": "black",
+    "pv": [
+      "f5d4",
+      "f1f8",
+      "b5h5",
+      "f8g8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R0Aw1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8x9bq",
+    "initialFen": "3akab1r/9/4b1n2/p1C5p/9/3n2P2/P1p5P/8R/4A4/1NB1KAB2 w - - 2 15",
+    "blunderMove": "c6c5",
+    "solverSide": "black",
+    "pv": [
+      "e7c5",
+      "b0a2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8x9bq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZjkPR",
+    "initialFen": "1rb1kab2/4a4/1c7/1R4p2/p4N1n1/6P1R/P1P4r1/4B1N2/9/3AKAB2 b - - 2 19",
+    "blunderMove": "b7e7",
+    "solverSide": "red",
+    "pv": [
+      "f5e7",
+      "b9b6",
+      "e7c8",
+      "e9d9",
+      "c8b6",
+      "h3c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZjkPR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ogbybR",
+    "initialFen": "2bakab2/9/6n2/p3p1p1p/2P6/1r6P/P3c4/4BCN2/4A4/RcCAK1B2 b - - 0 19",
+    "blunderMove": "b4b1",
+    "solverSide": "red",
+    "pv": [
+      "f2f1",
+      "b1b3",
+      "g2e3",
+      "b3e3",
+      "a0b0",
+      "g9e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ogbybR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "owNl0R",
+    "initialFen": "4kabr1/4a4/n3b1n2/p5p1p/2p1p2c1/Pr1N3R1/6c1P/RC2B1N2/2C6/3AKAB2 b - - 3 15",
+    "blunderMove": "g6g5",
+    "solverSide": "red",
+    "pv": [
+      "c1b1",
+      "g5g4",
+      "h4g4",
+      "b4c4",
+      "g4g3",
+      "c4d4",
+      "g3g7",
+      "h9h6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/owNl0R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdD5rR",
+    "initialFen": "2bak4/1C2a4/n3b4/R7p/6p1c/P8/4P1r2/2p1BrN1R/9/3AKAB2 w - - 5 39",
+    "blunderMove": "b8b3",
+    "solverSide": "black",
+    "pv": [
+      "g3g2",
+      "i2g2",
+      "f2g2",
+      "a6i6",
+      "i5h5",
+      "i6h6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdD5rR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LD11KR",
+    "initialFen": "rnbak4/1C2a1c2/4bc3/pNp2C2p/5n3/5R3/P1P1P3P/2N6/4AK3/2BA5 w - - 13 21",
+    "blunderMove": "b8g8",
+    "solverSide": "black",
+    "pv": [
+      "f5d6",
+      "g8g6",
+      "f7f4",
+      "g6d6",
+      "b9a7",
+      "e3e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LD11KR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "og8neq",
+    "initialFen": "3rkabr1/4a4/2n1b1n2/p1p1p3p/4P1pc1/2P6/P1c1N1P1P/C3C1N2/9/1RBAKABR1 w - - 20 11",
+    "blunderMove": "e3d5",
+    "solverSide": "black",
+    "pv": [
+      "h5e5",
+      "g2e3",
+      "d9d5",
+      "h0h9",
+      "g7h9",
+      "b0b7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/og8neq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LJj03L",
+    "initialFen": "3a1kb2/4a4/3cbc3/1N7/4C1P1p/3nP4/P6rP/4B1N2/4A4/2BAKR3 w - - 5 24",
+    "blunderMove": "b6d7",
+    "solverSide": "black",
+    "pv": [
+      "d4b3",
+      "e1d2",
+      "b3d2",
+      "e0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LJj03L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RPDNGR",
+    "initialFen": "2baka3/9/4n4/4p4/P6RC/2P6/8r/N3B4/c3A4/4KA3 w - - 4 33",
+    "blunderMove": "c4c5",
+    "solverSide": "black",
+    "pv": [
+      "a1a5",
+      "i5i9",
+      "i3i9",
+      "c5c6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RPDNGR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkAO9o",
+    "initialFen": "2b1kab2/4a4/n2cc4/2p1p3p/p2r2pn1/2PN5/P2RP1P1P/Cr2B1N2/R3A4/2BCKA3 w - - 28 15",
+    "blunderMove": "d3d2",
+    "solverSide": "black",
+    "pv": [
+      "b2d2",
+      "e1d2",
+      "d7d4",
+      "d0d4",
+      "d5d4",
+      "a1c1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkAO9o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "L3vY1q",
+    "initialFen": "1r1akab2/9/2n1b1n1c/p1p1p1p1p/9/P8/2PrP1P1P/4C3N/4N2R1/R1BAKAB2 b - - 2 11",
+    "blunderMove": "b9b5",
+    "solverSide": "red",
+    "pv": [
+      "e2e6",
+      "g7e6",
+      "e1d3",
+      "b5d5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/L3vY1q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lmpvzn",
+    "initialFen": "1rb1ka3/3ca4/nc2b1n2/2p1pR2p/p5p2/2P4r1/P3P1P1P/B1N1C1C1N/4A4/1R1AK1B2 w - - 24 13",
+    "blunderMove": "g2g5",
+    "solverSide": "black",
+    "pv": [
+      "d8d6",
+      "f6f2",
+      "e7g5",
+      "f2g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lmpvzn/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxMd5R",
+    "initialFen": "3ak4/9/2R5b/p7p/2Prn1pC1/4c4/P5n1P/2N1B1N2/4A4/2B1KA3 b - - 5 33",
+    "blunderMove": "d5d3",
+    "solverSide": "red",
+    "pv": [
+      "h5e5",
+      "d3d1",
+      "c7i7",
+      "g5g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxMd5R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYYraq",
+    "initialFen": "2ba1k3/3Ra4/nC7/p5R1p/2p6/9/P4r2p/8B/N3A1cr1/2B1KA3 b - - 8 30",
+    "blunderMove": "g1a1",
+    "solverSide": "red",
+    "pv": [
+      "g6g9",
+      "f9f8",
+      "b7b8",
+      "a1a0",
+      "c0e2",
+      "f3b3",
+      "d8d3",
+      "b3b8",
+      "d3f3",
+      "e8f7",
+      "g9g8",
+      "f8f9",
+      "g8b8",
+      "h1h7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYYraq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojQ5bR",
+    "initialFen": "4k1C2/4a2C1/c3b1nn1/p3p3p/2p6/2P2R3/P3P1P1c/1rN5N/4A4/2BAK1B2 w - - 1 20",
+    "blunderMove": "g9i9",
+    "solverSide": "black",
+    "pv": [
+      "i3i9",
+      "c2d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojQ5bR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8xVyq",
+    "initialFen": "3akab2/9/2rcb1n2/p2np1p1p/2P6/1R5R1/P3P1P1P/B1N1C1N2/3rA4/4KAB2 w - - 1 16",
+    "blunderMove": "h4c4",
+    "solverSide": "black",
+    "pv": [
+      "d6c4",
+      "b4c4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8xVyq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Rdx76R",
+    "initialFen": "2bak4/n3a4/6C2/p7p/2P1p1p2/9/P7P/Bc2r1N1B/2R1A4/4KA3 w - - 3 23",
+    "blunderMove": "g2f4",
+    "solverSide": "black",
+    "pv": [
+      "b2i2",
+      "e0d0",
+      "e2a2",
+      "c1c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Rdx76R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZjZnR",
+    "initialFen": "1rbaka3/9/3cb1n1c/p3p1p1p/2pn3r1/6PCP/P1P1P4/2N1BC2N/4A4/2R1KABR1 b - - 21 11",
+    "blunderMove": "g6g5",
+    "solverSide": "red",
+    "pv": [
+      "f2h2",
+      "g5g4",
+      "h2h5",
+      "g7h5",
+      "e2g4",
+      "b9b8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZjZnR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrXXOR",
+    "initialFen": "2b1kab2/4a4/5c3/p5N1C/2p6/6P2/P3P2RP/4n4/3rA4/2BA1K3 w - - 0 21",
+    "blunderMove": "f0f1",
+    "solverSide": "black",
+    "pv": [
+      "e2g1",
+      "h3g3",
+      "g1f3",
+      "g6f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrXXOR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ReEedD",
+    "initialFen": "3akab2/2c6/1r2b4/p7P/3N4R/9/Pcp1P4/4C4/4A4/1RB1KAr2 b - - 6 22",
+    "blunderMove": "b7b5",
+    "solverSide": "red",
+    "pv": [
+      "d5e7",
+      "g9e7",
+      "i5b5",
+      "c8h8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ReEedD/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oj0zgL",
+    "initialFen": "3ak3r/4a4/b1n1b2c1/p1C1pR2p/3Nc4/P5p2/2P3P1P/4B2C1/4A4/2BAK4 b - - 9 16",
+    "blunderMove": "g4g3",
+    "solverSide": "red",
+    "pv": [
+      "d5b6",
+      "e5d5",
+      "c6d6",
+      "c7b9",
+      "b6d5",
+      "b9d8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oj0zgL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9QxNo",
+    "initialFen": "2bak1b2/4a4/n3cc2n/2p1p1p1p/p8/1R7/P1P1P1r1P/N2CB1N1C/9/2BAKA3 w - - 1 15",
+    "blunderMove": "d2d3",
+    "solverSide": "black",
+    "pv": [
+      "g3g2",
+      "d3d2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9QxNo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "onwkXq",
+    "initialFen": "2bakab2/9/2nr2c1n/p1N1p3C/2P3p2/P8/4P1r1P/Cc2B1N2/R6R1/2BAKA3 w - - 1 15",
+    "blunderMove": "e2g0",
+    "solverSide": "black",
+    "pv": [
+      "b2b0",
+      "f0e1",
+      "g3g2",
+      "a2f2",
+      "g2g0",
+      "f2f0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/onwkXq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZbKbR",
+    "initialFen": "2bakabn1/9/2n1c4/p1p1p1p1p/1rc6/1C3NP2/P3P3P/2N1BC3/9/1R1AKAB2 b - - 3 15",
+    "blunderMove": "c5f5",
+    "solverSide": "red",
+    "pv": [
+      "c2d4",
+      "b5b6",
+      "f2f5",
+      "c6c5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZbKbR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkPb4R",
+    "initialFen": "r2akab2/9/b3c1n2/p3p1p1p/2r6/C2N2n2/P3P3P/4B1N2/4A4/1RB1KA2R b - - 3 19",
+    "blunderMove": "c5d5",
+    "solverSide": "red",
+    "pv": [
+      "a4g4",
+      "d5d4",
+      "g4g7",
+      "e7e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkPb4R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qB6j8q",
+    "initialFen": "3akabr1/9/b3c2c1/4C3C/pr1n1np2/2P2R3/P3P1P1P/N5N2/3R5/2BAKAB2 b - - 0 14",
+    "blunderMove": "f9e8",
+    "solverSide": "red",
+    "pv": [
+      "f4f5",
+      "d5e3",
+      "f5b5",
+      "e3d1",
+      "d0e1",
+      "h7h1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qB6j8q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R64Mbq",
+    "initialFen": "C3kab2/9/3ac4/p3p3p/3nc1p2/P4R3/2P3n1P/Nr2B4/2C1A4/2BAK2N1 w - - 6 21",
+    "blunderMove": "h0f1",
+    "solverSide": "black",
+    "pv": [
+      "g3e4",
+      "f4e4",
+      "e5e2",
+      "e4e2",
+      "e7e2",
+      "c0e2",
+      "b2a2",
+      "f1g3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R64Mbq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oX442o",
+    "initialFen": "1R1akab2/9/4b4/4p3p/6p2/5n3/1CN5P/2nC4B/4A4/r1B1KA3 w - - 5 30",
+    "blunderMove": "c3d5",
+    "solverSide": "black",
+    "pv": [
+      "a0c0",
+      "d2d0",
+      "c2d0",
+      "e1d0",
+      "f4d5",
+      "b3a3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oX442o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oj59BR",
+    "initialFen": "1r2kab2/3na4/4b1c1n/pCc3p1C/9/2p6/P3P1P1P/N8/4A4/1RB1KABN1 w - - 1 13",
+    "blunderMove": "g0e2",
+    "solverSide": "black",
+    "pv": [
+      "c4b4",
+      "b0b4",
+      "c6i6",
+      "b6b5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oj59BR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LJXVGP",
+    "initialFen": "4k1b2/4a2r1/2c1bcC1n/p3p3N/9/2B3p2/P1nRP2r1/2N3C1R/4A4/4KAB2 b - - 6 25",
+    "blunderMove": "g4g3",
+    "solverSide": "red",
+    "pv": [
+      "i6g5",
+      "e7g5",
+      "g7c7",
+      "g3g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LJXVGP/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdAyro",
+    "initialFen": "4kab2/4a4/4b4/p1p5p/5n3/2P1r1P2/Pc6P/4C1N2/4A4/1RBAK1B2 b - - 3 21",
+    "blunderMove": "b3g3",
+    "solverSide": "red",
+    "pv": [
+      "b0b9",
+      "e8d9",
+      "b9b3",
+      "g3g0",
+      "b3f3",
+      "f5d4",
+      "f3f4",
+      "d4e2",
+      "f4e4",
+      "e2g1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdAyro/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o42xBL",
+    "initialFen": "2baka2r/7c1/2c1b1n2/p3p3p/1r1n5/3RP4/P7P/2N1C1NC1/9/2BAKAB1R w - - 9 13",
+    "blunderMove": "g2e3",
+    "solverSide": "black",
+    "pv": [
+      "h8d8",
+      "d4d5",
+      "b5d5",
+      "e4e5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o42xBL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qr7y6L",
+    "initialFen": "2bakab2/9/2n6/p2P4p/2p3r2/3RPNC2/5r3/4B3N/c3A2c1/4KABR1 w - - 6 22",
+    "blunderMove": "e4e5",
+    "solverSide": "black",
+    "pv": [
+      "g5g4",
+      "d6d7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qr7y6L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "L3kj6L",
+    "initialFen": "2b1kab2/4a4/3cc4/5RN1p/9/PN2P1p2/8P/4B4/7r1/3AKAB2 b - - 12 31",
+    "blunderMove": "d7c7",
+    "solverSide": "red",
+    "pv": [
+      "f6c6",
+      "c7d7",
+      "c6c9",
+      "d7d9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/L3kj6L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oM18Yo",
+    "initialFen": "2bak4/4a4/4b4/2p5p/1n5r1/P1P3BC1/4Pr2P/2C3N2/4A4/1RBAK4 w - - 1 24",
+    "blunderMove": "c2c3",
+    "solverSide": "black",
+    "pv": [
+      "b5c3",
+      "b0b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oM18Yo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkAZ9o",
+    "initialFen": "2bakab2/4n4/cr2c1n2/p1R1p1R1p/3r2p2/2P5P/P3P1P2/2N1CC2N/9/2BAKAB2 b - - 10 12",
+    "blunderMove": "b7c7",
+    "solverSide": "red",
+    "pv": [
+      "c6c7",
+      "e8c7",
+      "g6g7",
+      "c7e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkAZ9o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ReW2wq",
+    "initialFen": "3ak4/3Ra4/b3b4/4nr3/pn1Np3p/2B6/Pr2P3P/2C1B4/9/2RAKA3 w - - 11 25",
+    "blunderMove": "d5e7",
+    "solverSide": "black",
+    "pv": [
+      "f6f7",
+      "d8d5",
+      "f7e7",
+      "d5e5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ReW2wq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAKAVR",
+    "initialFen": "4kab2/4a4/2n1b3n/p1r1p3p/6p2/PRpC1R3/4P2rP/2cCB1N2/4A4/4KAB2 w - - 4 23",
+    "blunderMove": "b4c4",
+    "solverSide": "black",
+    "pv": [
+      "c6c4",
+      "e2c4",
+      "c2g2",
+      "f4e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAKAVR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9AO0o",
+    "initialFen": "4ka3/2C1a4/4b4/pc2c3p/2b1N4/6B1n/P8/C8/4A4/2BAK4 w - - 2 33",
+    "blunderMove": "c8c6",
+    "solverSide": "black",
+    "pv": [
+      "b6b5",
+      "c6i6",
+      "b5e5",
+      "g4e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9AO0o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qY059o",
+    "initialFen": "2bakab2/4n4/r1n2c3/p1R1p3P/4cNp2/2P6/P5P2/4CC1r1/4A4/2BA1KBNR b - - 4 15",
+    "blunderMove": "h2h7",
+    "solverSide": "red",
+    "pv": [
+      "i6h6",
+      "h7h6",
+      "f2f7",
+      "c9e7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qY059o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LNaNdq",
+    "initialFen": "2ba1kb2/4a4/7c1/pR2nr2p/2p1c1P2/P8/2P1N3P/2NCB4/4A4/2BAK4 b - - 2 20",
+    "blunderMove": "h7h0",
+    "solverSide": "red",
+    "pv": [
+      "g5f5",
+      "f6g6",
+      "f5e5",
+      "g6g0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LNaNdq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qG1r7R",
+    "initialFen": "1rbakab2/9/2n3n2/p3p1N1p/2p6/6P2/PcP1P3P/2N1C4/9/1RBAKAB2 b - - 0 12",
+    "blunderMove": "b3e3",
+    "solverSide": "red",
+    "pv": [
+      "c2e3",
+      "b9b0",
+      "e3c2",
+      "f9e8",
+      "c2b0",
+      "c7d5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qG1r7R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qK94AR",
+    "initialFen": "3nkab2/1c2ac3/4br3/p3N3p/9/6C2/P2CP1n1P/4B1N2/9/1R1AKAB2 b - - 4 21",
+    "blunderMove": "f7f6",
+    "solverSide": "red",
+    "pv": [
+      "d3g3",
+      "g9i7",
+      "e6d4",
+      "b8d8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qK94AR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R174jq",
+    "initialFen": "2Raka3/r8/6R2/p7p/N3c1p2/3p5/P5P1P/4B4/4N2r1/3AKA3 b - - 0 23",
+    "blunderMove": "a6a5",
+    "solverSide": "red",
+    "pv": [
+      "g7e7",
+      "a8e8",
+      "e7d7",
+      "e8b8",
+      "d7d9",
+      "e9e8",
+      "d9f9",
+      "b8d8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R174jq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o4AxBq",
+    "initialFen": "3akab2/1rc6/b1n3nr1/pC2p3p/6R2/5N3/P1P1P3c/N3C4/4A4/1RBAK1B2 w - - 0 15",
+    "blunderMove": "e2c2",
+    "solverSide": "black",
+    "pv": [
+      "c8g8",
+      "c2c7",
+      "h7h0",
+      "g5g7",
+      "g8g0",
+      "c7c9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o4AxBq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZMA6L",
+    "initialFen": "2b2a3/3kaR1C1/2n6/4p3p/9/5N3/4r3P/9/c3A4/3A1K3 w - - 0 31",
+    "blunderMove": "f4e6",
+    "solverSide": "black",
+    "pv": [
+      "e3e6",
+      "h8i8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZMA6L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ovMwjG",
+    "initialFen": "2ra1k3/4a4/4bc2r/p3CR2p/6R2/4P4/P7P/4B4/2p1A4/4KAB2 w - - 1 25",
+    "blunderMove": "e6c6",
+    "solverSide": "black",
+    "pv": [
+      "c9c6",
+      "f6c6",
+      "e7g5",
+      "c6c1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ovMwjG/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qKBBVo",
+    "initialFen": "3akab2/4n4/b4c3/p3R3R/5r1rc/P1P2nP2/4P4/N1C1B1N1C/4A4/2BAK4 w - - 1 19",
+    "blunderMove": "g2f4",
+    "solverSide": "black",
+    "pv": [
+      "h5h0",
+      "e1f0",
+      "f5f4",
+      "i2f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qKBBVo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LaX4Pq",
+    "initialFen": "4ka1n1/4a4/2ncb4/p2Cp1P1p/1rb6/2R2N1r1/P3P3P/2N1B4/9/2BAKAR2 w - - 10 19",
+    "blunderMove": "f4e6",
+    "solverSide": "black",
+    "pv": [
+      "h4c4",
+      "e2c4",
+      "b5b6",
+      "d6d1",
+      "b6e6",
+      "d1e1",
+      "e6b6",
+      "g0g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LaX4Pq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Llnwgo",
+    "initialFen": "1rb1k2r1/4a4/3ab4/2R5C/5N1n1/2P3p2/P3P1c1P/9/1c2N4/1RBAKAB2 b - - 0 18",
+    "blunderMove": "b1c1",
+    "solverSide": "red",
+    "pv": [
+      "b0b9",
+      "c1c6",
+      "f5e7",
+      "e8d9",
+      "i6e6",
+      "d7e8",
+      "b9c9",
+      "h5i3",
+      "e7c6",
+      "e9f9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Llnwgo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oy56lo",
+    "initialFen": "r1bakab2/4nrN2/2n1c4/p1p1p1R1p/9/2P3P2/Pc6P/1C2C4/4A4/RNB1KAB2 w - - 6 13",
+    "blunderMove": "e2g2",
+    "solverSide": "black",
+    "pv": [
+      "b3g3",
+      "c0e2",
+      "g3g6",
+      "g8i9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oy56lo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5YwNm",
+    "initialFen": "2bakr3/4a4/n3c2cb/1C2p3p/R5pn1/1NP6/4P1r1P/1C2B1N2/4A4/4KAB1R w - - 3 16",
+    "blunderMove": "b6b9",
+    "solverSide": "black",
+    "pv": [
+      "a7b9",
+      "b2b9",
+      "g3g2",
+      "a5c5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5YwNm/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R1WmeA",
+    "initialFen": "1C2ka3/3Ca4/b1P1b4/p7p/6p2/9/P3c1n1P/4B4/2r1AR3/R1B1KA1r1 w - - 8 28",
+    "blunderMove": "d8c8",
+    "solverSide": "black",
+    "pv": [
+      "c1b1",
+      "a0a1",
+      "b1b9",
+      "f1f3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R1WmeA/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYQPkq",
+    "initialFen": "3rkab2/4a4/C3b1n2/4n1R2/1R2C3r/3pP3p/P5P1P/2c3N2/9/2BAKAB2 b - - 2 18",
+    "blunderMove": "c2c5",
+    "solverSide": "red",
+    "pv": [
+      "a7g7",
+      "e6g7",
+      "b5c5",
+      "i5g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYQPkq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ogb8vR",
+    "initialFen": "2bak2r1/4a4/n2cb1n2/2p1p3p/p1r6/1R1N2R1P/P3P4/B3CC1cN/4A4/3AK1B2 w - - 1 18",
+    "blunderMove": "d4e6",
+    "solverSide": "black",
+    "pv": [
+      "h2e2",
+      "g0e2",
+      "g7e6",
+      "a2c0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ogb8vR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQY9Oo",
+    "initialFen": "3rkabr1/4a4/2n1b4/pc2n3p/2p1CNpc1/7R1/P1P1N1P1P/7C1/9/R1BAKAB2 b - - 4 13",
+    "blunderMove": "g5g4",
+    "solverSide": "red",
+    "pv": [
+      "e3g4",
+      "h5e5",
+      "h2h9",
+      "b6b5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQY9Oo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LmPgaq",
+    "initialFen": "2Ra1kb2/1r2a1r2/6n2/p2P2R1p/4c2c1/9/P1P5P/N3C4/4A4/2B1KAB2 w - - 1 26",
+    "blunderMove": "c9c4",
+    "solverSide": "black",
+    "pv": [
+      "g8f8",
+      "c4e4",
+      "e5e2",
+      "g0e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LmPgaq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o4rGNL",
+    "initialFen": "1nba4C/4ak3/3cb4/4p3p/p1p2n3/9/PN2crP1P/N3BC1R1/4A4/2B1KA3 b - - 13 20",
+    "blunderMove": "d7d5",
+    "solverSide": "red",
+    "pv": [
+      "b3d4",
+      "e3e4",
+      "a2c3",
+      "e8f7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o4rGNL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oyEXQo",
+    "initialFen": "2bakab2/9/6n2/pc2p3p/2p1r4/6P2/P1PR4P/1C2B1N2/4Ar3/4KABR1 b - - 8 17",
+    "blunderMove": "g7h5",
+    "solverSide": "red",
+    "pv": [
+      "b2b5",
+      "c5c4",
+      "b5h5",
+      "c4d4",
+      "d3d4",
+      "e5e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oyEXQo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAPGno",
+    "initialFen": "2baka2r/4n4/3Rb4/p1p1R3p/3c1r3/9/P1P1P1P1P/2n1B1C1N/9/2BAKA3 b - - 5 15",
+    "blunderMove": "i9h9",
+    "solverSide": "red",
+    "pv": [
+      "g2c2",
+      "e8g7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAPGno/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxmnWR",
+    "initialFen": "1nbakab2/9/9/p1P1n3p/9/1N4B2/P1r1P3R/4C4/4A4/1RB1KA1rc w - - 0 22",
+    "blunderMove": "e2e6",
+    "solverSide": "black",
+    "pv": [
+      "c3e3",
+      "i3i0",
+      "h0i0",
+      "c6d6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxmnWR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o7M82L",
+    "initialFen": "2b2a3/3k2N2/3a5/p2N4p/4C4/4p4/2P6/5A3/3K3rc/5ARc1 w - - 4 40",
+    "blunderMove": "f2e1",
+    "solverSide": "black",
+    "pv": [
+      "h1h6",
+      "e1d2",
+      "h0h1",
+      "d1d0",
+      "h6d6",
+      "d0e0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o7M82L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R06Dxq",
+    "initialFen": "2bakaR2/9/n1N1c4/2p1p3p/2P3p2/R5P2/4P3P/4B1r2/4A4/cr1CKAB2 w - - 1 22",
+    "blunderMove": "c7d9",
+    "solverSide": "black",
+    "pv": [
+      "a0d0",
+      "e1d0",
+      "e7e3",
+      "e2c0",
+      "g2g4",
+      "a4a2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R06Dxq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LkPr4R",
+    "initialFen": "4kab2/4a4/2c1bc3/p3C3p/3n2p2/PNR6/4r3P/2C6/4A4/2B1KAB2 w - - 0 22",
+    "blunderMove": "e6e4",
+    "solverSide": "black",
+    "pv": [
+      "f7f4",
+      "c2g2",
+      "g9i7",
+      "e4e8",
+      "f9e8",
+      "b4a6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LkPr4R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ReY1wR",
+    "initialFen": "2bak4/4a4/3cb1c2/2p1C1R2/pn1r1rpn1/1CP1P4/P6NP/2N1B4/4A1R2/3AK1B2 w - - 15 22",
+    "blunderMove": "i3i4",
+    "solverSide": "black",
+    "pv": [
+      "h5i7",
+      "g6g5",
+      "g7g1",
+      "g5g1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ReY1wR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LEN9PR",
+    "initialFen": "2bak1b2/4a4/9/p3R2Np/2pNP4/4c4/P5r1P/4B2r1/5R3/2BAKA3 w - - 8 24",
+    "blunderMove": "d0e1",
+    "solverSide": "black",
+    "pv": [
+      "e4e6",
+      "e5e6",
+      "h2h6",
+      "d5f6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LEN9PR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6bZzR",
+    "initialFen": "2bak4/n3a4/6n2/p3p3p/1cb3p2/9/PCP1Nrc1P/4C1N1B/R3A4/2B1KA3 b - - 1 15",
+    "blunderMove": "b5b7",
+    "solverSide": "red",
+    "pv": [
+      "e3d5",
+      "f3f7",
+      "b3g3",
+      "g7f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6bZzR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LmpvQa",
+    "initialFen": "1rbak4/4a4/4b1n2/p3c3p/3NN2n1/2C3P2/P3P3P/1c1CB4/9/R1BAKA3 w - - 5 22",
+    "blunderMove": "c4e4",
+    "solverSide": "black",
+    "pv": [
+      "b9b5",
+      "d5e7",
+      "c9e7",
+      "e4e6",
+      "g7e6",
+      "e5c4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LmpvQa/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LmmerL",
+    "initialFen": "3aka3/5r3/2n1b1ccn/p3N1pC1/2b5p/2R3P2/P3P3P/1C2B4/4A4/4KAB2 w - - 1 17",
+    "blunderMove": "e6c7",
+    "solverSide": "black",
+    "pv": [
+      "g7c7",
+      "b2b9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LmmerL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWJN2L",
+    "initialFen": "1r1akab2/8r/4b1n1c/pcR1C3p/6p2/4p4/P1P3P1P/N1C3N2/9/2BAKABR1 b - - 0 12",
+    "blunderMove": "g7e6",
+    "solverSide": "red",
+    "pv": [
+      "c2b2",
+      "b9c9",
+      "c6b6",
+      "e6f4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWJN2L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o7rrKR",
+    "initialFen": "r1bakab2/2c1n4/6nR1/p1Nrp3p/2P3p2/1R7/P3P1c1P/2C1C1N2/4A4/2BAK1B2 w - - 9 14",
+    "blunderMove": "c6a7",
+    "solverSide": "black",
+    "pv": [
+      "c8c2",
+      "c5d5",
+      "d6d8",
+      "e2d2",
+      "d8a8",
+      "a7c6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o7rrKR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxWQwq",
+    "initialFen": "2bakc1R1/4a4/n1c1b4/2p5p/p4P3/2P6/P8/4C4/5R3/2BAKAr2 b - - 5 21",
+    "blunderMove": "c7c4",
+    "solverSide": "red",
+    "pv": [
+      "e2e6",
+      "g0g3",
+      "f5e5",
+      "f9g9",
+      "h9h4",
+      "g3g5",
+      "f1f5",
+      "c4c5",
+      "f5g5",
+      "c5g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxWQwq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojl2PZ",
+    "initialFen": "3k1ab2/4a1N2/8c/6C2/2n1C4/5p3/2p1n4/4B4/4A4/2BAK4 b - - 10 47",
+    "blunderMove": "c5b3",
+    "solverSide": "red",
+    "pv": [
+      "g6g9",
+      "d9d8",
+      "g8i7",
+      "e3g2",
+      "e5d5",
+      "c3d3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojl2PZ/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o9QgOo",
+    "initialFen": "2bakab2/9/4c4/p3n3p/2P4R1/9/P3P3P/2N2C3/4A4/2BAK1r2 w - - 0 18",
+    "blunderMove": "e1f0",
+    "solverSide": "black",
+    "pv": [
+      "e6f4",
+      "h5e5",
+      "f4d3",
+      "c5d5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o9QgOo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LD1dbR",
+    "initialFen": "2baka3/5r3/n3b3N/p1p3p1p/1r7/9/P1Pn2P1P/R5N2/9/2BAKABR1 w - - 12 18",
+    "blunderMove": "a2d2",
+    "solverSide": "black",
+    "pv": [
+      "d3f2",
+      "d2f2",
+      "f8f2",
+      "f0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LD1dbR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxMJdR",
+    "initialFen": "3akab2/3n3r1/c3bn1c1/C1p1p2Rp/5N3/2P6/P3P1p1P/7C1/8N/2BAKAB2 w - - 5 18",
+    "blunderMove": "h6h5",
+    "solverSide": "black",
+    "pv": [
+      "h7h2",
+      "h5h8",
+      "f7h8",
+      "f5g3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxMJdR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qr7kQL",
+    "initialFen": "2b1ka3/4aR3/2r1b4/p1p5p/c5c2/4C4/P1P1P2rP/N1C5B/9/R1BAKA3 w - - 3 17",
+    "blunderMove": "c0e2",
+    "solverSide": "black",
+    "pv": [
+      "h3e3",
+      "f8f4",
+      "e3e2",
+      "f0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qr7kQL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q58Qlo",
+    "initialFen": "2bakab2/5r3/n1c1c1n2/p1p1p3p/6r2/2PN5/P3P3P/3CB1N2/4A4/1R1CKAB1R b - - 3 12",
+    "blunderMove": "g7f5",
+    "solverSide": "red",
+    "pv": [
+      "d4e6",
+      "g5g3",
+      "e6c7",
+      "f5h4",
+      "c7d9",
+      "e7g7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q58Qlo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6bWgR",
+    "initialFen": "r3kab2/4a4/c1n1b1n2/p1p5p/4p1p2/1NPR5/P3c1P1P/1C2C1N2/4A4/2BAK1B2 b - - 2 12",
+    "blunderMove": "a9d9",
+    "solverSide": "red",
+    "pv": [
+      "d4d9",
+      "e9d9",
+      "g2e3",
+      "e5e4",
+      "e2e4",
+      "g7f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6bWgR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbbmpL",
+    "initialFen": "3a1kr2/4a4/3rN3R/P8/9/7R1/2p1P4/4B4/4A1c2/c3KAB2 b - - 6 51",
+    "blunderMove": "g1g7",
+    "solverSide": "red",
+    "pv": [
+      "h4f4",
+      "g7f7",
+      "f4f7",
+      "f9e9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbbmpL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qGND3o",
+    "initialFen": "2bak4/4an1R1/2c1b4/p1r5p/1cN6/4C1B2/P1P1P4/9/2C6/2BAKA3 b - - 4 27",
+    "blunderMove": "b5b8",
+    "solverSide": "red",
+    "pv": [
+      "c5a4",
+      "c6d6",
+      "c1c7",
+      "d6c6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qGND3o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAPpyo",
+    "initialFen": "r1b1ka3/4a4/3cc3b/p3p3p/2p2r1n1/7RP/P1P1P1P2/2N3C1N/1R2A4/2BAK1B2 w - - 1 15",
+    "blunderMove": "g2h2",
+    "solverSide": "black",
+    "pv": [
+      "e7h7",
+      "b1b6",
+      "h7h4",
+      "i2h4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAPpyo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LNxrAo",
+    "initialFen": "3ak4/4a4/1nc1b1nc1/p3p1R1N/6b2/2Pr5/P3P3P/1C2B2C1/4A4/2BAK4 w - - 0 19",
+    "blunderMove": "i6g5",
+    "solverSide": "black",
+    "pv": [
+      "d4g4",
+      "g6g7",
+      "g4g0",
+      "e1f0",
+      "c7g7",
+      "e2g0",
+      "e7g5",
+      "h2h6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LNxrAo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ReQPjR",
+    "initialFen": "2bakab2/9/2n1c1R2/p3p3p/9/P2r3r1/4P3P/3CB1N2/9/1R1AKA3 b - - 0 18",
+    "blunderMove": "d4d2",
+    "solverSide": "red",
+    "pv": [
+      "g2h4",
+      "d2e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ReQPjR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbyjWq",
+    "initialFen": "3ak1b2/4a4/b1n1c1c1n/p1C1p3p/2p3r2/1R3N1r1/P1P1P3P/2N1BC3/4A4/2BAK3R w - - 14 14",
+    "blunderMove": "f4e6",
+    "solverSide": "black",
+    "pv": [
+      "h4b4",
+      "e6g5",
+      "b4b6",
+      "g5h7",
+      "b6c6",
+      "i0g0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbyjWq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LzPwQ8",
+    "initialFen": "2bak4/4aR3/2c6/2r5p/p1b1p4/5N3/4P4/4B4/4A3R/2BAKC1rc b - - 7 33",
+    "blunderMove": "c7f7",
+    "solverSide": "red",
+    "pv": [
+      "f4g2",
+      "h0h2",
+      "i1i0",
+      "h2g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LzPwQ8/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8xlWq",
+    "initialFen": "1rbakr3/4a4/4b3c/4C1p1p/pn7/2B3P2/P3P4/N1C6/R8/2BAKAR1c w - - 7 17",
+    "blunderMove": "a1b1",
+    "solverSide": "black",
+    "pv": [
+      "f9f0",
+      "e0e1",
+      "f0g0",
+      "b1b5",
+      "g0g1",
+      "e1e0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8xlWq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o7zbPR",
+    "initialFen": "4kabr1/4a4/4b4/p6cp/2p1CNn2/2P4R1/P3P3P/1rC1B1N2/9/2BAKA3 w - - 0 17",
+    "blunderMove": "c2c5",
+    "solverSide": "black",
+    "pv": [
+      "g5f3",
+      "h4f4",
+      "f3g1",
+      "f4f1",
+      "h6h0",
+      "f0e1",
+      "h9h1",
+      "e0f0",
+      "h0d0",
+      "f1f4",
+      "d0d1",
+      "f4h4",
+      "h1h4",
+      "g2h4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o7zbPR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5Z0AL",
+    "initialFen": "3ak1b2/4a4/2n1b2cn/p3p1p2/2r1rN3/5R3/P5P2/4BC1C1/4A4/1R1AK1B2 w - - 6 20",
+    "blunderMove": "f5g7",
+    "solverSide": "black",
+    "pv": [
+      "i7h5",
+      "h2h7",
+      "h5f4",
+      "h7h9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5Z0AL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbpYko",
+    "initialFen": "4kab2/4a4/2n6/1C1RP2rp/2b3p2/9/r7P/4B4/4A2cN/2B1KA1R1 b - - 3 25",
+    "blunderMove": "a3a6",
+    "solverSide": "red",
+    "pv": [
+      "d6d9",
+      "e8d9",
+      "b6h6",
+      "a6e6",
+      "h0h1",
+      "c7d5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbpYko/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LD1nmR",
+    "initialFen": "1rbakabr1/4c4/c5n2/p3PR2p/2pn5/9/P1P3P1P/2NCC1N2/9/R1BAKAB2 w - - 1 12",
+    "blunderMove": "e2e8",
+    "solverSide": "black",
+    "pv": [
+      "d5f6",
+      "e6f6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LD1nmR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5zJPL",
+    "initialFen": "2bakab2/5r3/n1c3n2/p1p1p1p1p/1r3N3/1cP3P2/P3PR2P/3C3C1/9/1RBAKABN1 w - - 20 11",
+    "blunderMove": "f5d4",
+    "solverSide": "black",
+    "pv": [
+      "b4d4",
+      "b0b5",
+      "f8f3",
+      "h0g2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5zJPL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "La7kPo",
+    "initialFen": "r1bakab2/9/4cc3/p1p1n3p/1R4p2/2P4r1/P3n1P1P/2N1C3N/4A4/2BAK1B1R w - - 0 11",
+    "blunderMove": "i0h0",
+    "solverSide": "black",
+    "pv": [
+      "h4h0",
+      "e2e6",
+      "d9e8",
+      "i2h0",
+      "e3c2",
+      "b5f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/La7kPo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAP43o",
+    "initialFen": "C1bak4/4a4/9/p1p1n1nR1/6rc1/2P5P/P3P4/4B4/4A4/3AKCB2 b - - 13 31",
+    "blunderMove": "e6f4",
+    "solverSide": "red",
+    "pv": [
+      "h6h9",
+      "e8f9",
+      "h9f9",
+      "e9e8",
+      "f9f4",
+      "g5g3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAP43o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qKXYG9",
+    "initialFen": "3a1kb2/4a4/b3c4/6p1C/4n4/2p2NP2/P7P/B4N3/9/2BAKA3 w - - 2 31",
+    "blunderMove": "f0e1",
+    "solverSide": "black",
+    "pv": [
+      "e5d3",
+      "e0f0",
+      "d3f4",
+      "f2h3",
+      "e7f7",
+      "f0e0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qKXYG9/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6zZyR",
+    "initialFen": "2bak4/4a4/4b4/2p1pR3/pc1rPnp2/2P3r2/P4N1cp/2N1RCC2/4A4/2B1KAB2 b - - 7 26",
+    "blunderMove": "e6e5",
+    "solverSide": "red",
+    "pv": [
+      "f2f5",
+      "g4f4",
+      "f5d5",
+      "f4f6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6zZyR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZ43nq",
+    "initialFen": "r1baka1r1/9/n2cb2c1/p1p1p3p/5np2/9/P1P1P2RP/N1CCB1N2/9/1R1AKAB2 w - - 4 11",
+    "blunderMove": "h3f3",
+    "solverSide": "black",
+    "pv": [
+      "f5d4",
+      "f3f4",
+      "d4c2",
+      "b0b2",
+      "c2d0",
+      "d2d1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZ43nq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojnPBo",
+    "initialFen": "1r1akabr1/9/3cb1n2/C3p3p/9/3nP4/P1P3N1P/N5Cc1/9/R1BAKABR1 w - - 7 16",
+    "blunderMove": "h0h2",
+    "solverSide": "black",
+    "pv": [
+      "h9h2",
+      "g2g7",
+      "d7g7",
+      "g3f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojnPBo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LxvlMo",
+    "initialFen": "4kab1r/4a4/b1n1c4/p3n1C1p/2p1P2R1/3r5/P1P1N1P1P/6N2/9/R1BAKAB2 b - - 1 12",
+    "blunderMove": "e6g5",
+    "solverSide": "red",
+    "pv": [
+      "h5g5",
+      "e7e3",
+      "g2e3",
+      "d4e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LxvlMo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RPX5GR",
+    "initialFen": "2baka3/9/2n1bc3/p1R1p1r1p/5r3/2P2p3/P1C1P3P/4B3N/4A4/4KABR1 w - - 1 22",
+    "blunderMove": "c6c7",
+    "solverSide": "black",
+    "pv": [
+      "f7c7",
+      "c3c7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RPX5GR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o77MGo",
+    "initialFen": "1rbakab2/9/n5n2/p3p1p1p/9/2B3PN1/P3c2CP/2R6/3rA4/3CKAB1R w - - 0 14",
+    "blunderMove": "g0e2",
+    "solverSide": "black",
+    "pv": [
+      "b9b0",
+      "d0c0",
+      "d9e8",
+      "h3h1",
+      "d1d3",
+      "h4g2",
+      "e3e5",
+      "i0i2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o77MGo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R67xgo",
+    "initialFen": "3aka3/9/9/3rn4/1R4n2/2P3R1p/9/3A4B/4A4/2c1K1B2 b - - 10 46",
+    "blunderMove": "d6d4",
+    "solverSide": "red",
+    "pv": [
+      "g4d4",
+      "e6d4",
+      "b5g5",
+      "d4f3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R67xgo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Ll8EgL",
+    "initialFen": "3ak1b2/4a4/2n1bc3/p1pRp3p/6rr1/6N2/P7P/4B2C1/4A4/2BAK1R2 b - - 13 22",
+    "blunderMove": "f7g7",
+    "solverSide": "red",
+    "pv": [
+      "h2g2",
+      "g5g4",
+      "e2g4",
+      "g7g2",
+      "g0g2",
+      "h5h0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Ll8EgL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ReQ9jR",
+    "initialFen": "2baka1n1/5r3/2n1b2c1/p3p1p1p/1rp6/1CP2NPc1/P3P3P/B1N1C4/5R3/1R1AKAB2 b - - 21 11",
+    "blunderMove": "e6e5",
+    "solverSide": "red",
+    "pv": [
+      "e2e5",
+      "f9e8",
+      "e5b5",
+      "c7b5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ReQ9jR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQYbNo",
+    "initialFen": "r3kab2/4a4/1cn1b1c1n/p3p3p/2p6/3R1NCr1/P1P1P3P/2N1B2C1/4A4/4KABR1 b - - 6 11",
+    "blunderMove": "a9d9",
+    "solverSide": "red",
+    "pv": [
+      "h2g2",
+      "g7g2",
+      "d4d9",
+      "e8d9",
+      "h0h4",
+      "g2c2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQYbNo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdngJq",
+    "initialFen": "1r2kab2/4a4/2n1b3r/p1p1p2R1/1c4p1p/1R7/P1P1P3P/2N1BCc2/4K1C2/3A1A3 w - - 2 15",
+    "blunderMove": "e3e4",
+    "solverSide": "black",
+    "pv": [
+      "i7f7",
+      "f2f6",
+      "g2c2",
+      "h6h8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdngJq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "og8wBq",
+    "initialFen": "r1baka3/9/2n1b3n/p1p1p1p1p/9/9/P1c1P1r1P/N3C1N1B/9/R1BAKAR2 b - - 3 11",
+    "blunderMove": "a9b9",
+    "solverSide": "red",
+    "pv": [
+      "a2c3",
+      "c6c5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/og8wBq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LDjOdz",
+    "initialFen": "2b1ka3/4a4/n1ccb1n2/C3p4/8r/P8/4P1P2/1rNRB3N/C3A3R/3AK1B2 b - - 9 21",
+    "blunderMove": "i5c5",
+    "solverSide": "red",
+    "pv": [
+      "a1c1",
+      "c5c2",
+      "c1c7",
+      "g7f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LDjOdz/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrw6vL",
+    "initialFen": "3aka3/9/4b4/4p1p2/2bn4P/6P2/2n1PC3/2N1c1N2/3KA4/5AB1c w - - 8 34",
+    "blunderMove": "f3h3",
+    "solverSide": "black",
+    "pv": [
+      "e2f2",
+      "h3c3",
+      "f2f1",
+      "e1f2",
+      "d5c3",
+      "i5h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrw6vL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "L30e1R",
+    "initialFen": "1nbak1br1/4a4/3Rc4/p1p1C3p/1r4p2/1CP1P4/P5ncP/2N3N2/7R1/2BAKAB2 w - - 0 13",
+    "blunderMove": "h1f1",
+    "solverSide": "black",
+    "pv": [
+      "h9h6",
+      "d7e7",
+      "c9e7",
+      "e6e5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/L30e1R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LlXEgL",
+    "initialFen": "3ak1b1r/4a4/2n1bc3/p1p1p3p/2r3p2/1NC1c4/P1R3P1P/2C1B4/4A4/1R2KAB2 b - - 5 16",
+    "blunderMove": "f7f4",
+    "solverSide": "red",
+    "pv": [
+      "c3e3",
+      "c5c4",
+      "e2c4",
+      "e4b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LlXEgL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5zvmL",
+    "initialFen": "1rbakab2/9/n3c1n2/p1p1p1p1p/9/7C1/P1P1P1r1P/1cN1B1NC1/5R2R/2BAKA3 w - - 0 11",
+    "blunderMove": "g2h0",
+    "solverSide": "black",
+    "pv": [
+      "g3h3",
+      "f1f4",
+      "h3h2",
+      "h0f1",
+      "h2g2",
+      "h4g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5zvmL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAbavL",
+    "initialFen": "3nkab2/4a4/4b2c1/p2Pp3p/6pn1/1NC1r4/P4rP1P/4B4/4A4/1R2KAB1R b - - 13 18",
+    "blunderMove": "f3d3",
+    "solverSide": "red",
+    "pv": [
+      "c4c9",
+      "e7c9",
+      "b4d3",
+      "e4d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAbavL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q8pwe2",
+    "initialFen": "4kab2/4a4/4b4/p5p2/5P2p/2C1n1N2/P1rc4P/4B1R2/1R2A2r1/3AK1B2 w - - 8 32",
+    "blunderMove": "g4e5",
+    "solverSide": "black",
+    "pv": [
+      "e4d2",
+      "e1d2",
+      "h1b1",
+      "e5d3",
+      "c3d3",
+      "d2e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q8pwe2/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5bdlL",
+    "initialFen": "3akab2/9/5R3/pr6p/2p3b2/4C4/P1P1P1c1P/8B/9/2BAKA3 b - - 0 21",
+    "blunderMove": "g3h3",
+    "solverSide": "red",
+    "pv": [
+      "f7e7",
+      "f9e8",
+      "e7h7",
+      "e8d7",
+      "h7h3",
+      "b6b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5bdlL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LmmklL",
+    "initialFen": "r3kab2/4a4/2n1b1n2/p3p3p/1cp1PN3/6N2/P1Pr4P/4CR3/R8/2BAKAB2 b - - 6 17",
+    "blunderMove": "b5e5",
+    "solverSide": "red",
+    "pv": [
+      "g4e5",
+      "e6e5",
+      "f5g7",
+      "a9d9",
+      "d0e1",
+      "d3c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LmmklL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oXYlaq",
+    "initialFen": "2bak3r/4a4/2n1b4/p3p3p/7r1/1N2P3P/P5R2/4B1cCB/4A4/4KA1R1 b - - 0 21",
+    "blunderMove": "i9g9",
+    "solverSide": "red",
+    "pv": [
+      "i2g4",
+      "c7b5",
+      "g3g2",
+      "g9g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oXYlaq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVprbq",
+    "initialFen": "2bak4/4a4/4b4/8p/9/5cB2/P3Nn2P/3A5/1C2A4/5K3 w - - 19 43",
+    "blunderMove": "e3f1",
+    "solverSide": "black",
+    "pv": [
+      "f3d2",
+      "f1e3",
+      "d2b1",
+      "a3a4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVprbq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lbxblo",
+    "initialFen": "2baka3/9/8c/2P1C4/6b2/9/Pn4r2/2N1BC1n1/1R2A4/2BAK4 w - - 3 35",
+    "blunderMove": "e6e3",
+    "solverSide": "black",
+    "pv": [
+      "i7i0",
+      "b1b3",
+      "h2g0",
+      "f2f0",
+      "g0f2",
+      "f0f1",
+      "g3g0",
+      "e1f0",
+      "f2h1",
+      "e0e1",
+      "g0g1",
+      "e3g3",
+      "h1g3",
+      "e1d1",
+      "g1f1",
+      "d0e1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lbxblo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oXKz5R",
+    "initialFen": "2baka3/5R1c1/c1n1b1n1r/p3p1R1p/2p3p2/8P/P1r1P1P2/2N1CC2N/9/2BAKAB2 b - - 9 12",
+    "blunderMove": "i7h7",
+    "solverSide": "red",
+    "pv": [
+      "f2f7",
+      "c3c2",
+      "f7h7",
+      "d9e8",
+      "g6g7",
+      "a7a8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oXKz5R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LNJ2xL",
+    "initialFen": "3akab2/8n/c3bn2c/p3p3p/6p2/3N3R1/3rP1P1P/B2C1CN2/4A4/4KAB2 b - - 1 16",
+    "blunderMove": "i8g7",
+    "solverSide": "red",
+    "pv": [
+      "f2f3",
+      "g5g4",
+      "h4g4",
+      "d3d2",
+      "e1d2",
+      "f7e5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LNJ2xL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "La1VPL",
+    "initialFen": "2C1kab2/3Ra4/4b4/p7p/1r1r5/6P2/P4n2P/9/2R1A4/2BK1A3 w - - 9 42",
+    "blunderMove": "d8d5",
+    "solverSide": "black",
+    "pv": [
+      "b5d5",
+      "c1d1",
+      "d5d1",
+      "d0d1",
+      "e7c9",
+      "d1d0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/La1VPL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojnVJo",
+    "initialFen": "5k3/2C6/4b3b/pR7/6p2/9/P8/4c4/4Ar3/3K1AB2 b - - 1 38",
+    "blunderMove": "i7g9",
+    "solverSide": "red",
+    "pv": [
+      "b6b9",
+      "f9f8",
+      "c8c1",
+      "f1f3",
+      "g0e2",
+      "f3d3",
+      "d0e0",
+      "d3c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojnVJo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWwW2R",
+    "initialFen": "r1bak4/4a4/n3b1n2/pc2pRpr1/2p4cp/2P3PN1/P3P3P/1CN3C2/R8/2BAKAB2 w - - 20 11",
+    "blunderMove": "a1f1",
+    "solverSide": "black",
+    "pv": [
+      "h5e5",
+      "c2e1",
+      "b6f6",
+      "h4g6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWwW2R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R64ybq",
+    "initialFen": "2baka3/9/2n1b3c/p1p5p/9/P1P1p4/2N1c2RP/4C4/4A4/2BAKCr2 b - - 11 23",
+    "blunderMove": "e3i3",
+    "solverSide": "red",
+    "pv": [
+      "c3e4",
+      "d9e8",
+      "e4d6",
+      "i7i8",
+      "d6f7",
+      "i8f8",
+      "h3i3",
+      "c7e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R64ybq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LbbJpL",
+    "initialFen": "3rkab2/1R2a4/1cn1bc3/p1N2R2p/9/2P3p2/P3P3P/4C1N2/1r2A4/2BAK1B2 b - - 4 18",
+    "blunderMove": "b1b6",
+    "solverSide": "red",
+    "pv": [
+      "c6e7",
+      "b7e7",
+      "f6b6",
+      "g4g3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LbbJpL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5zKKL",
+    "initialFen": "4kab2/4a4/4b3n/p3pn3/2P3p2/3R5/c3P1P2/1rN1BC3/4A4/2CAK1B2 b - - 0 19",
+    "blunderMove": "a3a2",
+    "solverSide": "red",
+    "pv": [
+      "c2b4",
+      "a2e2",
+      "g0e2",
+      "b2b3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5zKKL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oM15Po",
+    "initialFen": "2b1kab2/4a4/n3c4/2p3p2/4r2np/C1P4R1/P1r1P1P1P/1RN1B3N/4A4/3AK1B2 b - - 8 16",
+    "blunderMove": "a7b5",
+    "solverSide": "red",
+    "pv": [
+      "a4a5",
+      "b5a7",
+      "a5h5",
+      "e5b5",
+      "b2b5",
+      "a7b5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oM15Po/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZMM4L",
+    "initialFen": "2bakn3/4a4/2n2r1R1/p3p4/1cb3p2/1R1N3Nr/P3P1P2/4BC3/4A4/4KAB2 w - - 6 22",
+    "blunderMove": "d4b5",
+    "solverSide": "black",
+    "pv": [
+      "f7h7",
+      "f2f4",
+      "h7h4",
+      "g3g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZMM4L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZAVNL",
+    "initialFen": "2bakab2/9/n1c3n2/p1p1p3p/6c2/P1PN5/4P1r1P/3CB1NRC/4Ar3/R3KAB2 b - - 11 15",
+    "blunderMove": "f1f4",
+    "solverSide": "red",
+    "pv": [
+      "d2d3",
+      "g3g2",
+      "h2g2",
+      "f4d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZAVNL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RdxaKR",
+    "initialFen": "r1b1ka2r/4a4/n3b4/2p1C3p/pc7/6R2/P1P1n3P/N5C1B/9/1RBAKA3 w - - 0 15",
+    "blunderMove": "g4g3",
+    "solverSide": "black",
+    "pv": [
+      "b5e5",
+      "d0e1",
+      "e3f5",
+      "e0d0",
+      "f5g3",
+      "b0b7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RdxaKR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R6v2nR",
+    "initialFen": "2bak4/7Cn/3a5/2p1p1P1p/6bC1/p1P2N2c/9/4B2n1/4A4/2BA1K3 b - - 1 30",
+    "blunderMove": "i4i3",
+    "solverSide": "red",
+    "pv": [
+      "h8h2",
+      "i3g3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R6v2nR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LNndlL",
+    "initialFen": "2b2ab2/R3a4/1Rck3c1/6C2/5r3/2P6/P7r/2N1B4/4A4/4K4 w - - 0 35",
+    "blunderMove": "c2d4",
+    "solverSide": "black",
+    "pv": [
+      "i3i0",
+      "g6g0",
+      "f5f1",
+      "g0f0",
+      "i0i1",
+      "b7c7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LNndlL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ogMOdL",
+    "initialFen": "4kab2/4a4/4b1n2/p1n1p1p1p/9/4P1P2/P1R5P/1r1CB1N1B/4A4/4KA3 b - - 5 20",
+    "blunderMove": "c6a5",
+    "solverSide": "red",
+    "pv": [
+      "a3a4",
+      "b2b6",
+      "a4a5",
+      "a6a5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ogMOdL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LlnEJo",
+    "initialFen": "2bak1b2/4a3n/2n6/p3p1P1p/2p6/4RN3/P1c5P/C1r1C4/4A4/2BAK1B2 w - - 4 17",
+    "blunderMove": "e0f0",
+    "solverSide": "black",
+    "pv": [
+      "c3c0",
+      "f0f1",
+      "c2a2",
+      "f4e6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LlnEJo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQQlNG",
+    "initialFen": "1r2kabn1/4aN3/1Cn1b4/p1p2c2p/6P2/1R1p5/P1P5P/4B1N2/4A4/2BAK4 b - - 5 18",
+    "blunderMove": "f6f7",
+    "solverSide": "red",
+    "pv": [
+      "b7e7",
+      "e8d9",
+      "b4d4",
+      "b9b8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQQlNG/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVpz6q",
+    "initialFen": "2bakcbR1/4a4/2n1c4/p1p1p4/5nr1p/6CN1/P1P1P3P/4B2C1/4A4/1NBAK4 w - - 1 18",
+    "blunderMove": "h9h5",
+    "solverSide": "black",
+    "pv": [
+      "g5h5",
+      "h2h5",
+      "f5h4",
+      "c3c4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVpz6q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQ2Drq",
+    "initialFen": "2r1kab2/4a4/4b1n2/p1C5p/4Nn3/9/3Rcp2P/4C4/4A4/2B1KAB2 w - - 3 24",
+    "blunderMove": "d3d6",
+    "solverSide": "black",
+    "pv": [
+      "f3f2",
+      "e0d0",
+      "f2e2",
+      "c0e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQ2Drq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LpmynR",
+    "initialFen": "3ak1b2/4a4/2n1b3n/p5p1p/6Pr1/4R2NP/P4p3/4C4/9/3AKAB2 b - - 5 27",
+    "blunderMove": "g6g5",
+    "solverSide": "red",
+    "pv": [
+      "e2h2",
+      "i6i5",
+      "h2h5",
+      "i7h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LpmynR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5bgPL",
+    "initialFen": "2bak2r1/4a4/n2cb4/p1p1p2Cp/3r5/1R4PR1/P3P3P/2N1B4/4A4/3AK1B2 b - - 4 20",
+    "blunderMove": "h9h6",
+    "solverSide": "red",
+    "pv": [
+      "h4h6",
+      "d7c7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5bgPL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAXEyo",
+    "initialFen": "1r2kab2/4a4/4b4/p2n3rp/3R2p2/4C4/PcP1PnP1P/6N2/5R3/1NBAKAB2 b - - 7 18",
+    "blunderMove": "b9b5",
+    "solverSide": "red",
+    "pv": [
+      "d5b5",
+      "d6b5",
+      "f1f3",
+      "b5c3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAXEyo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LlVMmo",
+    "initialFen": "r1bak1c2/3C1r3/n1cab2R1/p1N1p3p/2P2np2/9/P3P1P1P/1C2B1N2/9/R2AKAB2 w - - 9 14",
+    "blunderMove": "c5b5",
+    "solverSide": "black",
+    "pv": [
+      "a7c6",
+      "b5b6",
+      "f8d8",
+      "b6c6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LlVMmo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qKkpxq",
+    "initialFen": "rn2kab2/1C2aC3/1R4n2/p1N1p3p/2b3p2/9/P3P1c1P/2c3N1B/9/2BAKA3 w - - 5 16",
+    "blunderMove": "c6d8",
+    "solverSide": "black",
+    "pv": [
+      "b9d8",
+      "b7b2",
+      "c2i2",
+      "g2i1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qKkpxq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qK9DAR",
+    "initialFen": "1R1ak1b1r/4a4/4b1n2/p3n1c1p/2pN5/6p2/P3Nr2P/B3C4/9/3AKABR1 b - - 7 21",
+    "blunderMove": "i9h9",
+    "solverSide": "red",
+    "pv": [
+      "h0h9",
+      "g7h9",
+      "e2e6",
+      "h9g7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qK9DAR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RZ484q",
+    "initialFen": "4kab2/4a4/r3b2rc/pR1N4p/2n6/9/P1n1N1P1P/5C3/9/2BAKAB1R b - - 3 21",
+    "blunderMove": "i7i8",
+    "solverSide": "red",
+    "pv": [
+      "b6b9",
+      "e8d9",
+      "d6c8",
+      "i8d8",
+      "c8a7",
+      "e7g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RZ484q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oyEJ2o",
+    "initialFen": "2bak4/4a4/1C2b4/8p/2PP5/8c/6n2/4C4/4A4/5KB2 b - - 4 30",
+    "blunderMove": "g3e2",
+    "solverSide": "red",
+    "pv": [
+      "g0e2",
+      "e7c5",
+      "d5c5",
+      "i4e4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oyEJ2o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrmZQo",
+    "initialFen": "2bak1bn1/4a4/2ncc4/p1p1C1p1p/4r4/2C6/P1P1P1P1P/2N3N2/9/1RBAKAB2 w - - 5 11",
+    "blunderMove": "e6a6",
+    "solverSide": "black",
+    "pv": [
+      "e5e3",
+      "d0e1",
+      "e3c3",
+      "c0e2",
+      "c3c4",
+      "g2e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrmZQo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWyWmy",
+    "initialFen": "1rb1ka1r1/4a4/nC2b1n2/2N1p3p/p5p2/2P1P4/P5PcP/4C1c2/9/1RBAKABR1 w - - 0 14",
+    "blunderMove": "h0h3",
+    "solverSide": "black",
+    "pv": [
+      "h9h3",
+      "b0b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWyWmy/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "ojYr0R",
+    "initialFen": "3ak1b2/4a4/1r2bc3/C3n4/4Nnp1p/P1P6/1c4P1P/1RC1B1N2/4A4/3AK1B2 b - - 0 23",
+    "blunderMove": "f5g3",
+    "solverSide": "red",
+    "pv": [
+      "a6a9",
+      "b7b9",
+      "b2b3",
+      "b9a9",
+      "b3g3",
+      "a9a4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/ojYr0R/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R0Z9Eq",
+    "initialFen": "3ak4/4a4/n2nb2c1/p1pC2p1p/9/9/P1r1N1P1P/6N2/3RA1r2/1RB1KAB2 w - - 0 17",
+    "blunderMove": "e1d0",
+    "solverSide": "black",
+    "pv": [
+      "g1d1",
+      "e3d1",
+      "c3d3",
+      "d6i6",
+      "d3d1",
+      "b0b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R0Z9Eq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYQ7kq",
+    "initialFen": "2bk1a3/4a4/2n1b2c1/p4r2p/9/2N2CB2/P5c1P/4C1N2/4A4/1RBAK4 w - - 2 23",
+    "blunderMove": "f4d4",
+    "solverSide": "black",
+    "pv": [
+      "f6f4",
+      "d4d7",
+      "e8d7",
+      "c4b6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYQ7kq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R0N0pq",
+    "initialFen": "2bakr3/4an3/1c2b2c1/p5p1p/2p1CN3/9/P1Pr2P1P/1C7/5R3/2BAKABR1 w - - 5 13",
+    "blunderMove": "e5e8",
+    "solverSide": "black",
+    "pv": [
+      "d9e8",
+      "b2f2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R0N0pq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQYkNo",
+    "initialFen": "2bak1b2/4a4/8n/2p3p1p/p8/2P3P1P/P3Pn3/2r1BC1cN/4A4/3RKAB2 w - - 0 20",
+    "blunderMove": "i4i5",
+    "solverSide": "black",
+    "pv": [
+      "c2c3",
+      "i5i6",
+      "i7g8",
+      "d0d6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQYkNo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "owl8Zq",
+    "initialFen": "3ak1bn1/4a4/1Rn1b3c/r1N1p3p/p5p2/9/P3P1P1P/1CC3N2/9/c1BAKAB2 w - - 4 17",
+    "blunderMove": "b2b6",
+    "solverSide": "black",
+    "pv": [
+      "a0b0",
+      "b6e6",
+      "a6c6",
+      "c2c7",
+      "i7c7",
+      "b7b0",
+      "c6e6",
+      "b0b4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/owl8Zq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qBXjWR",
+    "initialFen": "2bak4/4a4/4b4/p2RCr1cN/4r1p2/2PN4P/4P2c1/9/4A4/2BAK1B1R b - - 0 22",
+    "blunderMove": "e5e3",
+    "solverSide": "red",
+    "pv": [
+      "e6e8",
+      "e3f3",
+      "d6f6",
+      "f3f6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qBXjWR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYAZPq",
+    "initialFen": "1rbaka3/9/nC2b1n2/2p1p1p1p/p1c2r3/6P2/P2NP3P/1R2B2CR/4A4/4KAB2 b - - 3 12",
+    "blunderMove": "c5b5",
+    "solverSide": "red",
+    "pv": [
+      "b7g7",
+      "f5h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYAZPq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oM2VKq",
+    "initialFen": "3a1a3/7R1/b1c1k1c1C/p3C3p/9/5rP2/P2n4P/4B4/4A4/2BAK4 b - - 6 25",
+    "blunderMove": "g7g6",
+    "solverSide": "red",
+    "pv": [
+      "h8h7",
+      "e7e8",
+      "h7c7",
+      "e8f8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oM2VKq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "o73z1o",
+    "initialFen": "2b1ka3/4a4/2n1b4/p1p4rp/4C4/2P1PR2P/Pcr3Pc1/4B3N/NR7/3AKAB2 b - - 12 20",
+    "blunderMove": "c7e6",
+    "solverSide": "red",
+    "pv": [
+      "a1b3",
+      "c3b3",
+      "b1f1",
+      "e6g7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/o73z1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oMZbEq",
+    "initialFen": "2baka3/8r/6Ccb/p3R3p/2pn2p2/3C5/P1P1c3P/8N/9/1NBAKAB2 b - - 0 13",
+    "blunderMove": "f9e8",
+    "solverSide": "red",
+    "pv": [
+      "e6e3",
+      "i8g8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oMZbEq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LDjOB4",
+    "initialFen": "r2k1ab1N/4a4/3c2r2/p3R3p/2pc5/3n2P2/P1P5P/2N1C4/4A4/2BAK1B1R w - - 3 20",
+    "blunderMove": "c2e3",
+    "solverSide": "black",
+    "pv": [
+      "d5i5",
+      "i0h0",
+      "d4e6",
+      "h0h5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LDjOB4/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQYMro",
+    "initialFen": "2b1kab1r/4a4/2c1c3n/C1p5p/6p2/7R1/P1P1r1P1P/2N3N2/9/R1BAKAB2 w - - 0 12",
+    "blunderMove": "c0e2",
+    "solverSide": "black",
+    "pv": [
+      "e3e2",
+      "d0e1",
+      "e2c2",
+      "g2e3"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQYMro/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oyk6rL",
+    "initialFen": "3ak1br1/4a4/1c2b1nc1/3rp1p1p/pnpN5/6P2/P1P1P3P/N1C1C4/3R3R1/2BAKAB2 b - - 21 11",
+    "blunderMove": "b7d7",
+    "solverSide": "red",
+    "pv": [
+      "d5f6",
+      "d6d1",
+      "f6g8",
+      "e9f9",
+      "h1d1",
+      "e7c9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oyk6rL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrmk1o",
+    "initialFen": "2bak4/4a4/4brn2/pR4R1p/2r1N4/4P1P1P/Pc7/3pB1N2/9/2BAKA3 b - - 4 21",
+    "blunderMove": "b3g3",
+    "solverSide": "red",
+    "pv": [
+      "e5f7",
+      "e8f7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrmk1o/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LzZKlL",
+    "initialFen": "2bakab2/8r/2n1c4/p1Nrp3p/2P3p2/3n1R3/P3P1c1P/2C1C1N2/9/2BAKABR1 w - - 7 13",
+    "blunderMove": "c5d5",
+    "solverSide": "black",
+    "pv": [
+      "d6c6",
+      "f4d4",
+      "c6c2",
+      "d5d6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LzZKlL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYDnPo",
+    "initialFen": "3k1ab2/4a4/4b4/4C2C1/1R5P1/p5P2/c5r2/4B4/4A4/2BAK3c w - - 9 34",
+    "blunderMove": "e6g6",
+    "solverSide": "black",
+    "pv": [
+      "g3g0",
+      "e1f0",
+      "g0g4",
+      "e2g0",
+      "g4g6",
+      "b5b9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYDnPo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LENdNR",
+    "initialFen": "3ak1bR1/4a4/2n1b4/p3c3p/1r3np2/4C4/P1r1P1P1P/R1N3N2/4A4/2BAK1B2 b - - 11 18",
+    "blunderMove": "f5e3",
+    "solverSide": "red",
+    "pv": [
+      "e4e7",
+      "e8f9",
+      "e7e3",
+      "d9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LENdNR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LaKlJo",
+    "initialFen": "1rbakab2/2c6/2n3n1c/p2Rp1p1p/2p6/6P2/P1P1Pr2P/4C1N2/4N3C/2BAKABR1 w - - 24 13",
+    "blunderMove": "e2e6",
+    "solverSide": "black",
+    "pv": [
+      "f3f6",
+      "d6d8",
+      "g7e6",
+      "d8c8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LaKlJo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oMGJbL",
+    "initialFen": "1Crakab2/8r/2Ncb1n1c/4p3p/6p2/4R4/P5P1n/4BC2N/4A4/1R1AK1B2 b - - 1 17",
+    "blunderMove": "g7e8",
+    "solverSide": "red",
+    "pv": [
+      "c7a8",
+      "e8c7",
+      "a8c9",
+      "e7c9"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oMGJbL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qAPWKo",
+    "initialFen": "2ba1kb2/4a4/4c1n2/p1R1C1p1p/4P4/5r3/P1P5P/5N3/4A4/2B1KA3 w - - 9 21",
+    "blunderMove": "c6d6",
+    "solverSide": "black",
+    "pv": [
+      "e7e5",
+      "e0d0",
+      "f4f6",
+      "d6a6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qAPWKo/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RVDQ7q",
+    "initialFen": "3ak1b2/4aR3/R3n1n2/4p2r1/2r3p2/3C5/4P3P/4B4/9/3AKAB2 w - - 0 26",
+    "blunderMove": "a7e7",
+    "solverSide": "black",
+    "pv": [
+      "g7f5",
+      "e7c7",
+      "c5c7",
+      "f8f5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RVDQ7q/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qYA2vq",
+    "initialFen": "3rkab2/4a4/1c2b3c/p3n1p1p/4C4/P2p5/4P1P1P/N5N2/9/1RBAKAB2 w - - 7 17",
+    "blunderMove": "g3g4",
+    "solverSide": "black",
+    "pv": [
+      "d9d5",
+      "e5e7",
+      "g9e7",
+      "c0e2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qYA2vq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qKMXbR",
+    "initialFen": "2b1kabcr/4a2R1/c1r6/p1p1p3p/5np2/5C3/P1P1P1P1P/4B3N/4N4/1R1AKAB2 b - - 5 12",
+    "blunderMove": "c6c5",
+    "solverSide": "red",
+    "pv": [
+      "f4i4",
+      "c7i7",
+      "i4i7",
+      "i9i7",
+      "h8h9",
+      "i7d7"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qKMXbR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qrWk9L",
+    "initialFen": "2bakab2/9/2n1c1n2/p3p3p/2pr5/7r1/P1P1P3P/1CN1BC1c1/4N4/1R1AKABR1 b - - 9 13",
+    "blunderMove": "g7f5",
+    "solverSide": "red",
+    "pv": [
+      "e1g2",
+      "h2f2",
+      "g2h4",
+      "f5d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qrWk9L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lp5NrR",
+    "initialFen": "3akab2/3r5/2n1bc2n/p3p4/2p2c3/5N2R/P1P1P4/6C1B/9/1NBAKAC2 w - - 9 18",
+    "blunderMove": "b0c2",
+    "solverSide": "black",
+    "pv": [
+      "d8d4",
+      "g0i0",
+      "d4f4",
+      "i4f4",
+      "f7f4",
+      "i0i7",
+      "g9i7",
+      "c0a2"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lp5NrR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "R20g7j",
+    "initialFen": "2b1ka1r1/4a4/4b4/pr2p3p/2p2np2/P3P4/1cP3PcP/N2CB1N2/4A4/1RBA1K1R1 b - - 13 12",
+    "blunderMove": "f5g3",
+    "solverSide": "red",
+    "pv": [
+      "d2d3",
+      "b3b2",
+      "h0h3",
+      "h9h3",
+      "d3h3",
+      "e6e5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/R20g7j/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "LNBnkL",
+    "initialFen": "2bak1b2/4a4/8r/p1p1n1p1p/4R4/2P6/P3P1P1P/2r1B3N/9/3AKAB1R b - - 7 13",
+    "blunderMove": "e6g5",
+    "solverSide": "red",
+    "pv": [
+      "g3g4",
+      "i7e7",
+      "e5e7",
+      "c9e7",
+      "g4g5",
+      "g6g5"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/LNBnkL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qK0MVL",
+    "initialFen": "4kabr1/4a4/2n1b1nc1/p5pRp/1cp1P4/9/P7P/2NrCRN2/4C4/2BAK1B2 w - - 0 15",
+    "blunderMove": "e2e7",
+    "solverSide": "black",
+    "pv": [
+      "h7e7",
+      "f2d2",
+      "h9h6",
+      "c2d4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qK0MVL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "q5b1dL",
+    "initialFen": "1rbakab2/9/2n3n2/p1N1p1CCp/2P3P2/9/P1c1P3P/9/6r2/R1BAKABcR b - - 0 13",
+    "blunderMove": "g1c1",
+    "solverSide": "red",
+    "pv": [
+      "g6g9",
+      "e9e8",
+      "i0h0",
+      "c3c0"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/q5b1dL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oQ2DNq",
+    "initialFen": "4kabr1/2r1a4/4b1nc1/p5p1p/4C4/2N3P2/P1c1n3P/1C7/2R6/2BAKABR1 w - - 1 15",
+    "blunderMove": "c4e3",
+    "solverSide": "black",
+    "pv": [
+      "c3c0",
+      "c1c0",
+      "c8c0",
+      "h0h1"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oQ2DNq/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "qK07AL",
+    "initialFen": "2bakab2/9/4c2rn/n3p3p/p4Np2/2p5P/P3P1P2/4C3N/1R7/2BAKAB2 b - - 3 14",
+    "blunderMove": "h7f7",
+    "solverSide": "red",
+    "pv": [
+      "f5e7",
+      "g9e7",
+      "b1b6",
+      "a6b8",
+      "b6b8",
+      "f9e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/qK07AL/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "oXzw3L",
+    "initialFen": "3k1ab1C/4a4/4b4/2N6/9/2P2pp2/P7P/1r3n3/5R3/3AKA3 b - - 8 52",
+    "blunderMove": "b2d2",
+    "solverSide": "red",
+    "pv": [
+      "f0e1",
+      "d2d6",
+      "c6b8",
+      "d9e9",
+      "f1f2",
+      "d6i6"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/oXzw3L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "RWkANR",
+    "initialFen": "2bakab2/r8/2c1c1n2/p1p1n1pRp/9/4C1C2/P1PrP1P1P/N5N2/4A4/1RBAK1B2 b - - 0 12",
+    "blunderMove": "g6g5",
+    "solverSide": "red",
+    "pv": [
+      "g4g7",
+      "e7e4",
+      "h6e6",
+      "a8e8"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/RWkANR/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  },
+  {
+    "id": "Lmmm0L",
+    "initialFen": "r1b6/4k4/4c4/2p5p/pc1C1R3/2P6/Pr1nP1P1P/4C1N2/4A4/R1B1KAB2 w - - 5 23",
+    "blunderMove": "d5d9",
+    "solverSide": "black",
+    "pv": [
+      "d3c1",
+      "d9d1",
+      "c1a0",
+      "g3g4"
+    ],
+    "url": "https://play.xiangqi.com/puzzle/Lmmm0L/P",
+    "humanTactics": null,
+    "humanClassification": null,
+    "notes": null
+  }
+]

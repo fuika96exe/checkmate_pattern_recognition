@@ -1,0 +1,9 @@
+{
+  "comment": "人工維護。凍結檔的 SHA256；只有人工追加新凍結版本時才可新增項目，既有項目永不修改。",
+  "frozen": {
+    "v1.json": "6df1b5b05b8838e32aa6a850c0ac558e55a05b3c17499148596ef5e6feecbef1",
+    "v2.json": "477c9d62fe3c25ff1c863055a85d2a9105fd389a264bd4bd9b5691cf23cbe1d4",
+    "v3.json": "2220b1a5e3abd41e6b16db926f0dcf5816e226d92555c6c3d726a820c9f3d651",
+    "v4.json": "37b026e80f45d9734294607b3f4fb91cd2ab69dbcc6e0d04c733fe19f507e722"
+  }
+}

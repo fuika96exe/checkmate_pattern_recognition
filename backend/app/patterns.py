@@ -4,6 +4,8 @@ from functools import lru_cache
 
 from .board import (
     _between,
+    _board_to_fen,
+    _pseudo_legal_targets,
     _xy,
     attacked_squares,
     apply_move,
@@ -42,7 +44,7 @@ PATTERN_ORDER = [
     "STALEMATE",
 ]
 
-CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.11.01-v10"
+CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.11.02-v14"
 
 
 @lru_cache(maxsize=2048)
@@ -740,7 +742,14 @@ def recognize_double_chariots_checkmate(
                 continue
             attacks = analysis["attacked_squares"].get(target, [])
             supported_by_other_rook = any(entry["square"] in supporting_rooks for entry in attacks)
-            if supported_by_other_rook:
+            checked_by_finishing_rook = any(
+                entry["square"] in checking_rooks for entry in attacks
+            ) or any(
+                rook[0] == defender_king[0] == target[0]
+                or rook[1] == defender_king[1] == target[1]
+                for rook in checking_rooks
+            )
+            if supported_by_other_rook and not checked_by_finishing_rook:
                 supporting_rook_escape_squares.append(target)
     immediate_rook_finish = bool(
         attacker_trace
@@ -782,10 +791,41 @@ def recognize_double_chariots_checkmate(
         },
         "diagnostics": [
             "攻击方两辆车分处不同列或不同行。",
-            "最后一段攻击序列可以是双车交替将军，或由一辆车将军、另一辆车封锁关键逃路。",
+            "最后一段攻击序列可以是双车交替将军，或由一辆车将军、另一辆车封锁将军车未控制的空逃路。",
             "终局没有合法防守，因此构成双车错绝杀。",
         ],
     }
+
+
+def _cannon_pinned_defenders(
+    board: dict[str, str], cannon: str, king: str, attacker: str, defender: str
+) -> list[str]:
+    """Find defenders pinned to their general by this cannon, independently of other checks."""
+    if cannon[0] != king[0] and cannon[1] != king[1]:
+        return []
+    defender_pieces = {"a", "b"} if defender == "black" else {"A", "B"}
+    candidates = [square for square in _between(board, cannon, king) if board.get(square) in defender_pieces]
+    if not candidates:
+        return []
+    probe = dict(board)
+    for checker in attacked_squares(board, attacker).get(king, []):
+        source = checker["square"]
+        if source != cannon and probe.get(source, "").upper() != "K":
+            probe.pop(source, None)
+    probe_fen = f"{_board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
+    moves = legal_moves(probe_fen)
+    pinned = []
+    for square in candidates:
+        piece = probe.get(square)
+        if piece not in defender_pieces or any(move.startswith(square) for move in moves):
+            continue
+        for target in _pseudo_legal_targets(probe, square, piece):
+            moved = dict(probe)
+            moved[target] = moved.pop(square)
+            if any(entry["square"] == cannon for entry in attacked_squares(moved, attacker).get(king, [])):
+                pinned.append(square)
+                break
+    return pinned
 
 
 def recognize_heaven_and_earth_cannon_checkmate(
@@ -797,77 +837,79 @@ def recognize_heaven_and_earth_cannon_checkmate(
     )
     cannon_piece = "C" if attacker == "red" else "c"
     home_rank = _home_rank(defender)
-    lock_piece_set = {"a", "b"} if defender == "black" else {"A", "B"}
     cannons = sorted(
         square for square, piece in board.items() if piece == cannon_piece
     )
     heaven_cannons = [square for square in cannons if square[1] == home_rank]
     earth_cannons = [square for square in cannons if square[0] == "e" and square[1] != home_rank]
 
-    pre_final_fen = None
     pre_final_board = None
-    final_move = None
     final_piece = None
     final_destination = None
     captured_piece = None
     if applied:
         pre_final_fen, _ = _apply_moves(fen, applied[:-1])
         pre_final_board = parse_fen(pre_final_fen)
-        final_move = applied[-1]
-        final_piece = pre_final_board.get(final_move[:2])
-        final_destination = final_move[2:]
+        final_piece = pre_final_board.get(applied[-1][:2])
+        final_destination = applied[-1][2:]
         captured_piece = pre_final_board.get(final_destination)
 
-    controlled_targets: dict[str, list[str]] = {}
-    if pre_final_board:
-        pre_attacks = attacked_squares(pre_final_board, attacker)
-        for target, entries in pre_attacks.items():
-            if pre_final_board.get(target) not in lock_piece_set:
-                continue
-            cannon_sources = [
+    pre_pins: dict[str, list[str]] = {}
+    final_pins: dict[str, list[str]] = {}
+    scenarios: list[str] = []
+    supporting_rooks: list[str] = []
+    protecting_cannons: list[str] = []
+    if analysis["is_checkmate"] and defender_king and defender_king == "e" + home_rank and heaven_cannons and earth_cannons:
+        for cannon in heaven_cannons + earth_cannons:
+            final_pins[cannon] = _cannon_pinned_defenders(board, cannon, defender_king, attacker, defender)
+        if pre_final_board:
+            pre_king = next((square for square, piece in pre_final_board.items() if piece == ("k" if defender == "black" else "K")), None)
+            if pre_king:
+                for cannon in heaven_cannons + earth_cannons:
+                    if pre_final_board.get(cannon) == cannon_piece:
+                        pre_pins[cannon] = _cannon_pinned_defenders(pre_final_board, cannon, pre_king, attacker, defender)
+
+        checking_squares = {item["square"] for item in analysis["checking_pieces"]}
+        if final_destination:
+            protecting_cannons = sorted(
                 entry["square"]
-                for entry in entries
-                if pre_final_board.get(entry["square"]) == cannon_piece
-                and entry["square"] in heaven_cannons + earth_cannons
+                for entry in analysis["attacked_squares"].get(final_destination, [])
+                if entry["square"] in heaven_cannons + earth_cannons
                 and entry["reason"] == "cannon_screen"
-            ]
-            if cannon_sources:
-                controlled_targets[target] = sorted(set(cannon_sources))
+            )
+        if (
+            final_piece and final_piece.upper() in {"R", "P"}
+            and final_destination and _palace_contains(final_destination, defender)
+            and any(pre_pins.get(cannon) for cannon in heaven_cannons)
+            and any(pre_pins.get(cannon) for cannon in earth_cannons)
+            and final_destination in checking_squares
+            and protecting_cannons
+        ):
+            scenarios.append("cannon_protected_finish")
 
-    distinct_control = False
-    if controlled_targets:
-        heaven_controls = {
-            target
-            for target, sources in controlled_targets.items()
-            if any(source in heaven_cannons for source in sources)
-        }
-        earth_controls = {
-            target
-            for target, sources in controlled_targets.items()
-            if any(source in earth_cannons for source in sources)
-        }
-        distinct_control = bool(
-            heaven_controls
-            and earth_controls
-            and len(heaven_controls | earth_controls) >= 2
+        if (
+            any(final_pins.get(cannon) for cannon in earth_cannons)
+            and any(cannon in checking_squares for cannon in heaven_cannons)
+        ):
+            scenarios.append("center_pin_bottom_cannon_check")
+
+        empty_center = any(
+            not any(square in board for square in _between(board, cannon, defender_king))
+            for cannon in earth_cannons
         )
+        bottom_advisor_check = any(
+            cannon in checking_squares
+            and len(screens := [square for square in _between(board, cannon, defender_king) if square in board]) == 1
+            and board[screens[0]] == ("a" if defender == "black" else "A")
+            for cannon in heaven_cannons
+        )
+        second_rank = "8" if defender == "black" else "1"
+        rook_piece = "R" if attacker == "red" else "r"
+        supporting_rooks = sorted(square for square, piece in board.items() if piece == rook_piece and square[1] == second_rank)
+        if empty_center and bottom_advisor_check and supporting_rooks:
+            scenarios.append("empty_center_bottom_advisor_screen")
 
-    detected = bool(
-        analysis["is_checkmate"]
-        and defender_king
-        and defender_king[0] == "e"
-        and defender_king[1] == home_rank
-        and heaven_cannons
-        and earth_cannons
-        and pre_final_board
-        and final_piece
-        and final_piece.upper() in {"R", "N", "P"}
-        and final_destination
-        and _palace_contains(final_destination, defender)
-        and captured_piece in lock_piece_set
-        and final_destination in controlled_targets
-        and distinct_control
-    )
+    detected = bool(scenarios)
     return {
         "pattern_id": "HEAVEN_AND_EARTH_CANNON_CHECKMATE",
         "pattern_name_zh": "天地炮",
@@ -883,15 +925,18 @@ def recognize_heaven_and_earth_cannon_checkmate(
             "defender_general_square": defender_king,
             "heaven_cannon_squares": heaven_cannons,
             "earth_cannon_squares": earth_cannons,
-            "controlled_targets": controlled_targets,
+            "pre_final_pins": pre_pins,
+            "final_pins": final_pins,
+            "scenarios": scenarios,
+            "supporting_rook_squares": supporting_rooks,
+            "protecting_cannon_squares": protecting_cannons,
             "final_piece_type": final_piece.upper() if final_piece else None,
             "final_destination": final_destination,
             "captured_piece": captured_piece,
         },
         "diagnostics": [
             "攻击方同时具备一门对方底线炮与一门中路炮。",
-            "双炮分别联控黑方宫内士象等关键守子。",
-            "最后由车、马或兵吃入其中一个受控守子并完成将死，因此构成天地炮。",
+            "双炮各自牵制士象，由受炮保护的车兵入宫将死；或中炮牵制士象、底炮将军；或中炮空头、底炮以底士为架将军且有车在下二路。",
         ],
     }
 
@@ -1866,17 +1911,6 @@ def recognize_three_chariots_attacking_advisor_checkmate(
     starting_pawns = [
         square for square in starting_main_pieces if starting_board[square].upper() == "P"
     ]
-    home_rank = _home_rank(defender)
-    attacking_zone = sorted(
-        square
-        for square in starting_main_pieces
-        if (
-            square[1] == home_rank
-            or _palace_contains(square, defender)
-            or square[1] in (("7", "8") if defender == "black" else ("1", "2"))
-            or square[1] == ("6" if defender == "black" else "3")
-        )
-    )
     final_checker_squares = [
         item["square"]
         for item in analysis["checking_pieces"]
@@ -1887,13 +1921,45 @@ def recognize_three_chariots_attacking_advisor_checkmate(
     advisor_squares = sorted(
         square for square, piece in starting_board.items() if piece == defender_advisor
     )
+    identities = build_piece_identity(fen)
+    main_ids = {identities[square]: square for square in starting_main_pieces}
+    participation: dict[str, list[str]] = {piece_id: [] for piece_id in main_ids}
+    position = fen
+    if position_analysis(fen)["side_to_move"] == defender:
+        for checker in position_analysis(fen)["checking_pieces"]:
+            piece_id = identities.get(checker["square"])
+            if piece_id in participation:
+                participation[piece_id].append("check")
+    for item in trace:
+        move = str(item["move"])
+        piece_id = str(item["piece_id"])
+        before = parse_fen(position)
+        if piece_id in participation:
+            if before.get(move[2:]) == defender_advisor:
+                participation[piece_id].append("capture_advisor")
+        identities = move_piece_identity(identities, move[:2], move[2:])
+        for checker in item["analysis"]["checking_pieces"]:
+            checker_id = identities.get(checker["square"])
+            if checker_id in participation and "check" not in participation[checker_id]:
+                participation[checker_id].append("check")
+        position = apply_move(position, move)
+    if defender_king:
+        escape_squares = [square for square in _orthogonal_palace_neighbors(defender_king, defender) if not board.get(square)]
+        for square, piece_id in identities.items():
+            if piece_id in participation and any(
+                any(attack["square"] == square for attack in analysis["attacked_squares"].get(target, []))
+                for target in escape_squares
+            ):
+                participation[piece_id].append("control_escape")
+    participating_squares = sorted(
+        square for piece_id, square in main_ids.items() if participation[piece_id]
+    )
     detected = bool(
         analysis["is_checkmate"]
         and not analysis["is_stalemate"]
-        and len(starting_main_pieces) == 3
-        and len(starting_rooks) >= 1
-        and len(starting_pawns) >= 1
-        and len(attacking_zone) == 3
+        and len(participating_squares) >= 3
+        and any(starting_board[square].upper() == "R" for square in participating_squares)
+        and any(starting_board[square].upper() == "P" for square in participating_squares)
         and advisor_squares
         and final_checker_squares
         and final_move_piece in {"R", "P"}
@@ -1917,11 +1983,15 @@ def recognize_three_chariots_attacking_advisor_checkmate(
             "defender_advisor_squares": advisor_squares,
             "final_checker_squares": final_checker_squares,
             "final_move_piece_type": final_move_piece,
+            "participating_starting_squares": participating_squares,
+            "participation": [
+                {"starting_square": square, "piece_id": piece_id, "reasons": participation[piece_id]}
+                for piece_id, square in main_ids.items()
+            ],
         },
         "diagnostics": [
-            "起始局面有三枚车形主攻子力，组合可以是两车一兵或一车两兵。",
-            "三枚主攻子力集中在对方九宫、宫门或下二路关键区域。",
-            "它们围绕对方士的防守结构进行攻击、牵制、驱赶或消灭，并形成将死。",
+            "至少三枚车兵参与杀局，其中至少有一车和一兵。",
+            "参与包括吃士、直接将军，或在终局控制将帅相邻的空逃格。",
         ],
     }
 
@@ -1958,44 +2028,53 @@ def recognize_iron_bolt_checkmate(
         for square, piece in board.items()
         if piece in attacker_line_pieces and square[0] == "e"
     )
+    if attacker_king and attacker_king[0] == "e":
+        central_lock_candidates.append(attacker_king)
     central_lock_square = None
     central_lock_piece = None
     locked_midline_pieces: list[str] = []
-    if defender_king and defender_king[0] == "e":
-        for lock_square in central_lock_candidates:
-            between = _between(board, lock_square, defender_king)
-            locked = [
-                square
-                for square in between
-                if board.get(square) in lock_piece_set and square[0] == "e"
-            ]
-            if locked:
-                central_lock_square = lock_square
-                central_lock_piece = board[lock_square]
-                locked_midline_pieces = locked
-                break
-    # A general on the central file can also provide the king-side lock.
-    if (
-        not central_lock_square
-        and attacker_king
-        and attacker_king[0] == "e"
-        and defender_king
-        and defender_king[0] == "e"
-        and any(piece in lock_piece_set for piece in board.values())
-    ):
-        central_lock_square = attacker_king
-        central_lock_piece = board[attacker_king]
-        locked_midline_pieces = sorted(
-            square
-            for square, piece in board.items()
-            if piece in lock_piece_set and square[0] == "e"
-        )
     flank_checkers = [
         item
         for item in analysis["checking_pieces"]
         if item["square"][1] == home_rank
         and board.get(item["square"], "").upper() in {"R", "P"}
     ]
+    if analysis["is_checkmate"] and flank_checkers and defender_king and defender_king[0] == "e":
+        for lock_square in central_lock_candidates:
+            between = _between(board, lock_square, defender_king)
+            if not any(board.get(square) in lock_piece_set for square in between):
+                continue
+            # In a checkmate every defender has zero legal moves. Remove the
+            # other checking pieces to test the advisor's independent pin.
+            probe = dict(board)
+            for checker in analysis["checking_pieces"]:
+                source = checker["square"]
+                if source != lock_square and probe.get(source, "").upper() != "K":
+                    probe.pop(source, None)
+            probe_fen = f"{_board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
+            probe_moves = legal_moves(probe_fen)
+            locked = []
+            for square in between:
+                if probe.get(square) not in lock_piece_set:
+                    continue
+                if any(move.startswith(square) for move in probe_moves):
+                    continue
+                # The lock itself must expose the general when the advisor
+                # moves; immobility caused solely by another piece is not a pin.
+                for target in _pseudo_legal_targets(probe, square, probe[square]):
+                    moved = dict(probe)
+                    moved[target] = moved.pop(square)
+                    if any(
+                        attack["square"] == lock_square
+                        for attack in attacked_squares(moved, attacker).get(defender_king, [])
+                    ):
+                        locked.append(square)
+                        break
+            if locked:
+                central_lock_square = lock_square
+                central_lock_piece = board[lock_square]
+                locked_midline_pieces = locked
+                break
     detected = bool(
         analysis["is_checkmate"]
         and defender_king
@@ -2028,7 +2107,7 @@ def recognize_iron_bolt_checkmate(
             ),
         },
         "diagnostics": [
-            "攻击方以中路炮、车或帅控制 e 路士，形成门栓封锁；单独控制象不计入铁门栓。",
+            "移除其他将军子后，中路士仍无合法走法，且走开会暴露中路车、炮或帅的将军。",
             "最终由底线车或兵实施将军，底线不限定为 d/f 肋道。",
             "防守方没有任何合法解杀，因此构成铁门栓。",
         ],

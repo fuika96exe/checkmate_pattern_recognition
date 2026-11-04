@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "backend",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "uvicorn", "app.main:app", "--app-dir", "backend", "--host", "127.0.0.1", "--port", "8000", "--reload", "--reload-dir", "backend"],
+      "port": 8000
+    },
+    {
+      "name": "frontend",
+      "runtimeExecutable": "npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3001
+    },
+    {
+      "name": "frontend-3002",
+      "runtimeExecutable": "npx.cmd",
+      "runtimeArgs": ["vinext", "dev", "--hostname", "127.0.0.1", "--port", "3002"],
+      "port": 3002
+    }
+  ]
+}

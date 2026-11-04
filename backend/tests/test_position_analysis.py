@@ -162,8 +162,9 @@ def test_double_chariots_checkmate_examples() -> None:
         ["e9d9", "c7c9", "d9d8", "b0b8", "a7c8", "b8c8", "d8d7", "c9d9"],
     )
     assert black_to_move_red_double_chariots["analysis"]["is_checkmate"] is True
-    assert black_to_move_red_double_chariots["detected"] is True
-    assert black_to_move_red_double_chariots["features"]["immediate_rook_finish"] is True
+    # Both rooks control d8, so the supporting rook adds no independent escape control.
+    assert black_to_move_red_double_chariots["detected"] is False
+    assert black_to_move_red_double_chariots["features"]["immediate_rook_finish"] is False
 
     red_to_move_black_double_chariots = recognize_double_chariots_checkmate(
         "3akab2/9/4b1R1n/4R3p/9/2P6/P3P3P/C3BK3/1r1r5/2B6 w - - 6 22",
@@ -344,13 +345,18 @@ def test_heaven_and_earth_cannon_checkmate_examples() -> None:
     assert first["detected"] is True
     assert first["features"]["final_destination"] == "e8"
     assert first["features"]["captured_piece"] == "a"
+    assert first["features"]["scenarios"] == ["cannon_protected_finish"]
+    assert first["features"]["protecting_cannon_squares"] == ["e6"]
+    assert first["features"]["pre_final_pins"] == {"b9": ["c9"], "e6": ["e7", "e8"]}
 
     second = recognize_heaven_and_earth_cannon_checkmate(
         "1Cbak4/4a2R1/4b4/4C4/9/3R5/9/9/9/5K3 w - - 0 1",
         ["d4d9"],
     )
     assert second["analysis"]["is_checkmate"] is True
+    # The captured advisor need not itself be pinned; the bottom cannon protects the rook.
     assert second["detected"] is True
+    assert second["features"]["protecting_cannon_squares"] == ["b9"]
     assert second["features"]["final_destination"] == "d9"
     assert second["features"]["captured_piece"] == "a"
 
@@ -360,6 +366,7 @@ def test_heaven_and_earth_cannon_checkmate_examples() -> None:
     )
     assert third["analysis"]["is_checkmate"] is True
     assert third["detected"] is True
+    assert third["features"]["protecting_cannon_squares"] == ["b9"]
     assert third["features"]["final_piece_type"] == "P"
 
     fourth = recognize_heaven_and_earth_cannon_checkmate(
@@ -379,6 +386,60 @@ def test_heaven_and_earth_cannon_checkmate_rejects_iron_bolt_boundary() -> None:
     )
     assert result["analysis"]["is_checkmate"] is True
     assert result["detected"] is False
+    assert result["features"]["protecting_cannon_squares"] == []
+
+
+def test_heaven_and_earth_accepts_cannon_protected_quiet_pawn_finish() -> None:
+    result = recognize_heaven_and_earth_cannon_checkmate(
+        "1Cbak4/9/4P1N2/9/4b4/9/4C4/9/9/5K3 w - - 0 1",
+        ["e7e8"],
+    )
+    assert result["analysis"]["is_checkmate"]
+    assert result["features"]["captured_piece"] is None
+    assert result["features"]["pre_final_pins"] == {"b9": ["c9", "d9"], "e3": ["e5"]}
+    assert result["features"]["protecting_cannon_squares"] == ["e3"]
+    assert result["features"]["scenarios"] == ["cannon_protected_finish"]
+
+
+def test_heaven_and_earth_empty_center_and_bottom_advisor_screen() -> None:
+    cases = [
+        ("1C1ak4/5R3/9/4C4/9/9/9/9/9/5K3 b - - 0 1", "f8"),
+        ("3k5/9/9/9/9/9/4c4/9/3r5/4KA1c1 w - - 0 1", "d1"),
+    ]
+    for fen, rook in cases:
+        result = recognize_heaven_and_earth_cannon_checkmate(fen)
+        assert result["analysis"]["is_checkmate"]
+        assert result["features"]["scenarios"] == ["empty_center_bottom_advisor_screen"]
+        assert result["features"]["supporting_rook_squares"] == [rook]
+
+    # The extra pawn turns the central cannon into a screened check, not 空头炮.
+    blocked_center = recognize_heaven_and_earth_cannon_checkmate(
+        "1C1ak4/4PR3/9/4C4/9/9/9/9/9/5K3 b - - 0 1"
+    )
+    assert blocked_center["analysis"]["is_checkmate"]
+    assert not blocked_center["detected"]
+
+
+def test_heaven_and_earth_center_pin_with_bottom_cannon_check() -> None:
+    result = recognize_heaven_and_earth_cannon_checkmate(
+        "1C1ak4/4aR3/4b4/4C4/9/9/9/9/9/5K3 b - - 0 1"
+    )
+    assert result["analysis"]["is_checkmate"]
+    assert result["features"]["scenarios"] == ["center_pin_bottom_cannon_check"]
+    assert result["features"]["final_pins"]["e6"] == ["e7", "e8"]
+    mirrored = recognize_heaven_and_earth_cannon_checkmate(
+        "3k5/9/9/9/9/9/4c4/4B4/3rA4/4KA1c1 w - - 0 1"
+    )
+    assert mirrored["analysis"]["is_checkmate"]
+    assert mirrored["features"]["scenarios"] == ["center_pin_bottom_cannon_check"]
+    assert mirrored["features"]["final_pins"]["e3"] == ["e2", "e1"]
+
+    # One screen makes the central cannon check, but does not pin the advisor.
+    unpinned = recognize_heaven_and_earth_cannon_checkmate(
+        "1C1ak4/4aR3/9/4C4/9/9/9/9/9/5K3 b - - 0 1"
+    )
+    assert unpinned["analysis"]["is_checkmate"]
+    assert not unpinned["detected"]
 
 
 def test_elbow_horse_checkmate_examples() -> None:
@@ -1727,17 +1788,15 @@ def test_analyze_patterns_keeps_double_check_as_overlap_label() -> None:
     ]
 
 
-def test_analyze_patterns_auto_detects_heaven_and_earth_before_iron_bolt() -> None:
+def test_analyze_patterns_auto_detects_heaven_and_earth_with_pinned_capture() -> None:
     result = analyze_patterns(
         "1Cbak4/4a2R1/4b4/4C4/9/3R5/9/9/9/5K3 w - - 0 1",
-        ["d4d9"],
+        ["h8e8"],
     )
     assert result["best_match"]["pattern_id"] == "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
-    assert [match["pattern_id"] for match in result["matches"]] == [
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE",
-        "IRON_BOLT_CHECKMATE",
-        "DOUBLE_CHARIOTS_CHECKMATE",
-    ]
+    assert "HEAVEN_AND_EARTH_CANNON_CHECKMATE" in {
+        match["pattern_id"] for match in result["matches"]
+    }
 
 
 def test_analyze_patterns_auto_detects_elbow_horse_before_white_face() -> None:

@@ -1,0 +1,720 @@
+{
+  "baselineSha": "ee36518e806bada0e3b4e9d2a73d01d1215a17c3",
+  "baselineRulesVersion": "midgame-tactics-2.0",
+  "baselineIndexSha256": "5a1a96279bcf98448cd1b1bf05098ba25e9e9c8c7ac31bc9a3282dc284da84c5",
+  "csvSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90",
+  "indexSha256": "68aa84c6d1e86eca97cb15c6def8f307de0487e088ca9038d85da97f633b3e04",
+  "generatedAt": "2026-11-03T04:59:07.001345+00:00",
+  "elapsedSeconds": 273.522,
+  "summary": {
+    "matched": 1861,
+    "unmatched": 1274,
+    "invalid": 0,
+    "gain_gain": 2281,
+    "gain_no_gain": 854,
+    "fork": 616,
+    "discovered_attack": 438,
+    "skewer": 112,
+    "pin": 518,
+    "check_fork": 350,
+    "trap": 198,
+    "remove_defender": 102,
+    "overload": 10,
+    "exchange": 619,
+    "clearance": 9
+  },
+  "classificationCrossTable": [
+    {
+      "old": "gain",
+      "new": "gain",
+      "count": 2281
+    },
+    {
+      "old": "no_gain",
+      "new": "no_gain",
+      "count": 854
+    }
+  ],
+  "labelChanges": {
+    "fork": {
+      "added": 2,
+      "removed": 316,
+      "retained": 614,
+      "hits": 616
+    },
+    "discovered_attack": {
+      "added": 0,
+      "removed": 6,
+      "retained": 438,
+      "hits": 438
+    },
+    "skewer": {
+      "added": 0,
+      "removed": 65,
+      "retained": 112,
+      "hits": 112
+    },
+    "pin": {
+      "added": 368,
+      "removed": 0,
+      "retained": 150,
+      "hits": 518
+    },
+    "check_fork": {
+      "added": 1,
+      "removed": 195,
+      "retained": 349,
+      "hits": 350
+    },
+    "trap": {
+      "added": 78,
+      "removed": 79,
+      "retained": 120,
+      "hits": 198
+    },
+    "remove_defender": {
+      "added": 29,
+      "removed": 18,
+      "retained": 73,
+      "hits": 102
+    },
+    "overload": {
+      "added": 10,
+      "removed": 0,
+      "retained": 0,
+      "hits": 10
+    },
+    "exchange": {
+      "added": 0,
+      "removed": 476,
+      "retained": 619,
+      "hits": 619
+    },
+    "clearance": {
+      "added": 9,
+      "removed": 0,
+      "retained": 0,
+      "hits": 9
+    }
+  },
+  "representativeCases": [
+    {
+      "id": "ogm3Jr",
+      "kind": "gain",
+      "tactics": [
+        "fork",
+        "check_fork",
+        "trap"
+      ],
+      "evidenceKeys": [
+        "fork:2:0",
+        "check_fork:2:1",
+        "trap:4:0"
+      ]
+    },
+    {
+      "id": "q5YwNm",
+      "kind": "gain",
+      "tactics": [
+        "overload"
+      ],
+      "evidenceKeys": [
+        "overload:2:0"
+      ]
+    },
+    {
+      "id": "qGK2kX",
+      "kind": "gain",
+      "tactics": [
+        "discovered_attack",
+        "skewer"
+      ],
+      "evidenceKeys": [
+        "discovered_attack:2:0",
+        "skewer:2:1"
+      ]
+    },
+    {
+      "id": "Lmpvzn",
+      "kind": "gain",
+      "tactics": [
+        "clearance"
+      ],
+      "evidenceKeys": [
+        "clearance:2:0"
+      ]
+    },
+    {
+      "id": "Ll62Gb",
+      "kind": "gain",
+      "tactics": [
+        "pin"
+      ],
+      "evidenceKeys": [
+        "pin:4:0",
+        "pin:6:0"
+      ]
+    },
+    {
+      "id": "LxN1pw",
+      "kind": "no_gain",
+      "tactics": [
+        "fork",
+        "skewer",
+        "pin"
+      ],
+      "evidenceKeys": [
+        "fork:2:0",
+        "pin:2:1",
+        "pin:2:2",
+        "pin:4:0",
+        "pin:6:0",
+        "pin:8:0",
+        "skewer:10:0"
+      ]
+    },
+    {
+      "id": "oM0beE",
+      "kind": "gain",
+      "tactics": [
+        "pin"
+      ],
+      "evidenceKeys": [
+        "pin:2:0",
+        "pin:4:0",
+        "pin:6:0"
+      ]
+    },
+    {
+      "id": "R6jDez",
+      "kind": "no_gain",
+      "tactics": [
+        "pin"
+      ],
+      "evidenceKeys": [
+        "pin:2:0",
+        "pin:4:0",
+        "pin:4:1"
+      ]
+    },
+    {
+      "id": "o9WMlO",
+      "kind": "gain",
+      "tactics": [
+        "pin"
+      ],
+      "evidenceKeys": [
+        "pin:4:0",
+        "pin:6:0"
+      ]
+    },
+    {
+      "id": "LzPwnV",
+      "kind": "gain",
+      "tactics": [
+        "fork",
+        "pin"
+      ],
+      "evidenceKeys": [
+        "fork:2:0",
+        "pin:2:1"
+      ]
+    },
+    {
+      "id": "oyMnv4",
+      "kind": "gain",
+      "tactics": [
+        "exchange"
+      ],
+      "evidenceKeys": [
+        "exchange:2:0",
+        "exchange:4:0"
+      ]
+    },
+    {
+      "id": "ovMw1a",
+      "kind": "gain",
+      "tactics": [
+        "exchange"
+      ],
+      "evidenceKeys": [
+        "exchange:2:0",
+        "exchange:4:0"
+      ]
+    },
+    {
+      "id": "oX0nE1",
+      "kind": "gain",
+      "tactics": [
+        "exchange"
+      ],
+      "evidenceKeys": [
+        "exchange:4:0"
+      ]
+    },
+    {
+      "id": "RdpMdl",
+      "kind": "gain",
+      "tactics": [
+        "fork",
+        "pin",
+        "check_fork",
+        "remove_defender"
+      ],
+      "evidenceKeys": [
+        "fork:2:0",
+        "pin:2:1",
+        "check_fork:2:2",
+        "remove_defender:2:3",
+        "pin:4:0",
+        "pin:6:0"
+      ]
+    }
+  ],
+  "suppressionCounts": {
+    "gain_has_other_tactic": 781,
+    "covered_by_discovered_attack_and_check_fork": 142
+  },
+  "suppressionPuzzleCounts": {
+    "gain_has_other_tactic": 476,
+    "covered_by_discovered_attack_and_check_fork": 87
+  },
+  "rawLabelHits": {
+    "fork": 703,
+    "discovered_attack": 438,
+    "skewer": 112,
+    "pin": 518,
+    "check_fork": 350,
+    "trap": 198,
+    "remove_defender": 102,
+    "overload": 10,
+    "exchange": 1095,
+    "clearance": 9
+  },
+  "reviewReasons": [
+    {
+      "label": "pin",
+      "reason": "horse_leg_value_boundary",
+      "count": 66
+    },
+    {
+      "label": "remove_defender",
+      "reason": "no_prior_legal_attack",
+      "count": 87
+    },
+    {
+      "label": "remove_defender",
+      "reason": "release_not_proven_forced",
+      "count": 66
+    },
+    {
+      "label": "skewer",
+      "reason": "no_profitable_two_stage_confirmation",
+      "count": 63
+    },
+    {
+      "label": "threat",
+      "reason": "nonpositive_mover_recaptured_next_ply",
+      "count": 481
+    },
+    {
+      "label": "trap",
+      "reason": "defender_in_check",
+      "count": 469
+    }
+  ],
+  "humanReview": {
+    "reviewed": 0,
+    "correct": null,
+    "precision": null,
+    "recall": null,
+    "byLabel": {
+      "fork": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "discovered_attack": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "skewer": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "pin": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "check_fork": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "trap": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "remove_defender": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "overload": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "exchange": {
+        "reviewed": 0,
+        "correct": null
+      },
+      "clearance": {
+        "reviewed": 0,
+        "correct": null
+      }
+    }
+  },
+  "blindReviewCohorts": {
+    "fork": [
+      "q5Z0AL",
+      "owd5Yq",
+      "oyEXQo",
+      "RWkANR",
+      "q58Qlo",
+      "LJXVGP",
+      "owNl0R",
+      "oXKz5R",
+      "RZ43nq",
+      "q5r6lL",
+      "o7zbPR",
+      "RVDQ7q",
+      "q8x7zq",
+      "ojYr0R",
+      "R6kmyo",
+      "LxmnWR",
+      "qKBBVo",
+      "qrw6vL",
+      "qB7kvL",
+      "q8xyzq",
+      "RWJN2L",
+      "R0Nb9q",
+      "RePOnL",
+      "oyj2Gq",
+      "LNxrAo",
+      "R1WmeA",
+      "R0Z9Eq",
+      "qYa6gq",
+      "RePkAL",
+      "LENdNR"
+    ],
+    "discovered_attack": [
+      "RdxaKR",
+      "Lby8Gq",
+      "LxWQwq",
+      "qBJYWq",
+      "qYADXq",
+      "ReEedD",
+      "LDjO3y",
+      "LxMJdR",
+      "R0Aw1o",
+      "oQYbNo",
+      "R6bZzR",
+      "LkWBXL",
+      "qYDZ1o",
+      "LE6aZR",
+      "RO3kER",
+      "LDjOB4",
+      "qGQ5kR",
+      "qAbavL",
+      "R6zZyR",
+      "oMwjJL",
+      "L3vY1q",
+      "owNvNR",
+      "qAgG3R",
+      "o9QgOo",
+      "qYDnPo",
+      "LzPwvV",
+      "RVprbq",
+      "Lbxblo",
+      "LbbJpL",
+      "LbxPwo"
+    ],
+    "skewer": [
+      "oy56lo",
+      "RZAVNL",
+      "LkPr4R",
+      "LJyvzq",
+      "RdpMKr",
+      "RdAyro",
+      "qYQ7kq",
+      "qr7K6L",
+      "og22rR",
+      "RWDO1o",
+      "q5zKKL",
+      "oM1Xbo",
+      "oM15Po",
+      "R670no",
+      "R6bZzR",
+      "qYYraq",
+      "qYAxyq",
+      "ogMPAL",
+      "oM2VKq",
+      "qGND3o",
+      "qBXjWR",
+      "o9zJMq",
+      "LmpvQa",
+      "qAPpyo",
+      "LbymGq",
+      "o42ZKL",
+      "ov8BDL",
+      "Ll8EgL",
+      "LDjOdz",
+      "q5zvmL"
+    ],
+    "pin": [
+      "qAKAVR",
+      "qYAZPq",
+      "qGQ5kR",
+      "L30e1R",
+      "q8xlWq",
+      "qAXlvo",
+      "RVpBDq",
+      "RdD5rR",
+      "Lmmm0L",
+      "qrXXOR",
+      "R06Dxq",
+      "oQ2Drq",
+      "qB6j8q",
+      "La7kPo",
+      "RZMM4L",
+      "LNndlL",
+      "RWwW2R",
+      "o77MGo",
+      "oMZpPq",
+      "Llnymo",
+      "ojngJo",
+      "La1VPL",
+      "L3kj6L",
+      "R174jq",
+      "LxN1pw",
+      "LbbmpL",
+      "Lpr0yo",
+      "o9AO0o",
+      "LaXpJq",
+      "qrWk9L"
+    ],
+    "check_fork": [
+      "R64ybq",
+      "qG1r7R",
+      "owd5Yq",
+      "Lbxblo",
+      "R6kmyo",
+      "ReQ9jR",
+      "LbbakL",
+      "qKXYG9",
+      "RVp26q",
+      "R2xYlq",
+      "oQQlNG",
+      "qr7K6L",
+      "LxdgdL",
+      "RVprbq",
+      "LlndJo",
+      "o7M82L",
+      "q5bdlL",
+      "RZ484q",
+      "R0g4Bm",
+      "Lpr0yo",
+      "oX442o",
+      "L3a1Eo",
+      "LJj03L",
+      "qAP43o",
+      "qrmZQo",
+      "qr7kQL",
+      "q5b1dL",
+      "RZjkPR",
+      "LlX9mL",
+      "Rd9Wlo"
+    ],
+    "trap": [
+      "qK07AL",
+      "LD1BwR",
+      "oj5B5R",
+      "LaX4Pq",
+      "ogMOdL",
+      "ReW2wq",
+      "q580lo",
+      "LbXK0o",
+      "qAPWKo",
+      "Lp5NrR",
+      "o4rGNL",
+      "oQY9Oo",
+      "LDbXYo",
+      "RZAVNL",
+      "qrPDvR",
+      "RZjZnR",
+      "LaKlJo",
+      "qYA2vq",
+      "qr7y6L",
+      "qAXEyo",
+      "qB64aq",
+      "qKXY4Q",
+      "LNBnkL",
+      "LpmynR",
+      "owl8Zq",
+      "oXYlaq",
+      "RVpp7q",
+      "RPDNGR",
+      "RZbONR",
+      "oj59BR"
+    ],
+    "remove_defender": [
+      "q5zJPL",
+      "ogb8vR",
+      "RO19zq",
+      "LlnEJo",
+      "LzPwQ8",
+      "LEN9PR",
+      "qAa2Kq",
+      "RdpMdl",
+      "RVpp7q",
+      "og8neq",
+      "onXjAL",
+      "qB6vvq",
+      "R6l3bq",
+      "o9QEko",
+      "qGXnbL",
+      "oXzw3L",
+      "RP0yGR",
+      "LbpYko",
+      "LkAO9o",
+      "oXKz5R",
+      "LpmkrR",
+      "oXKJ5R",
+      "Lp10Y5",
+      "LkEk9o",
+      "ojl2PZ",
+      "RZbKbR",
+      "onwkXq",
+      "qY059o",
+      "R6anzL",
+      "LarBJR"
+    ],
+    "overload": [
+      "q5YwNm",
+      "LbbOpL",
+      "ogbybR",
+      "LkAZ9o",
+      "R67xgo",
+      "qK9DAR",
+      "R64Mbq",
+      "o424BL",
+      "qYQPkq",
+      "qKMXbR"
+    ],
+    "exchange": [
+      "ROYOvq",
+      "R6bWgR",
+      "RWJZPL",
+      "LkPb4R",
+      "o73z1o",
+      "LD1nmR",
+      "qrw6vL",
+      "oQ2DNq",
+      "LJNa3L",
+      "RPX5GR",
+      "ovmVYR",
+      "qrm79o",
+      "oyk6rL",
+      "LzZKlL",
+      "LlXEgL",
+      "oM11Oo",
+      "onp1aX",
+      "LD11KR",
+      "LmPgaq",
+      "R1zaXo",
+      "qrmk1o",
+      "LDXXKL",
+      "LxdgdL",
+      "LmmklL",
+      "q8xVyq",
+      "LxWQwq",
+      "LD1dbR",
+      "ojnXZo",
+      "oj0DbL",
+      "LlVMmo"
+    ],
+    "clearance": [
+      "Lmpvzn",
+      "ojnVJo",
+      "Lb3XJR",
+      "ojD15L",
+      "RdngJq",
+      "ovMwjG",
+      "q8pwe2",
+      "Llnwgo",
+      "ReY1wR"
+    ],
+    "unmatched": [
+      "ov8AYL",
+      "RWyWmy",
+      "q8x9bq",
+      "oQYkNo",
+      "qK94AR",
+      "Rdx76R",
+      "R19xaR",
+      "o9AEdo",
+      "LzZQgL",
+      "ogMlBL",
+      "LxM0jR",
+      "R6v2nR",
+      "o4AxBq",
+      "ojQ5bR",
+      "q5bgPL",
+      "R1aE6R",
+      "on935R",
+      "oXKwGR",
+      "onmyDR",
+      "q5b8lL",
+      "onp1e5",
+      "LmmerL",
+      "LzPwj9",
+      "ovMwl9",
+      "LxMd5R",
+      "LbwVwR",
+      "oyEJ2o",
+      "o9QxNo",
+      "qAPGno",
+      "RWyWGp"
+    ],
+    "boundary_delta_3_4_5": [
+      "LxvlMo",
+      "Lp1035",
+      "oMZbEq",
+      "RZ0Plq",
+      "oM15Po",
+      "qKkpxq",
+      "oyj46q",
+      "R0N0pq",
+      "qK0MVL",
+      "o7Ox1o",
+      "o42xBL",
+      "o7rrKR",
+      "RVpz6q",
+      "oQYMro",
+      "Lbb9pL",
+      "ojnPBo",
+      "Lbxblo",
+      "oj0zgL",
+      "ReQPjR",
+      "onXj5L",
+      "RZMA6L",
+      "LxvbMo",
+      "R20g7j",
+      "LNaNdq",
+      "LNJ2xL",
+      "oM18Yo",
+      "onXQDL",
+      "LbyjWq",
+      "og8wBq",
+      "oMGJbL"
+    ]
+  },
+  "invalid": []
+}

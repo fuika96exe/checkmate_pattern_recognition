@@ -29,9 +29,19 @@ interface Props {
   lastMove?: MoveRecord;
   disabled?: boolean;
   onMove: (move: string) => void;
+  /** View from Black's side (rank 0 at the top). */
+  flipped?: boolean;
+  /** Display-only rings around a tactic's acting and targeted pieces. */
+  marks?: { actors?: string[]; targets?: string[] };
+  /** Show file letters (a–i) and rank numbers (0–9) beside the board. */
+  coordinates?: boolean;
 }
 
-export function XiangqiBoard({ fen, legalMoves, lastMove, disabled, onMove }: Props) {
+export function XiangqiBoard({ fen, legalMoves, lastMove, disabled, onMove, flipped = false, marks, coordinates = false }: Props) {
+  const actorSquares = new Set(marks?.actors ?? []);
+  const targetSquares = new Set(marks?.targets ?? []);
+  const fileAt = (column: number) => String.fromCharCode(97 + (flipped ? 8 - column : column));
+  const rankAt = (row: number) => (flipped ? row : 9 - row);
   const [selected, setSelected] = useState<string | null>(null);
   const board = useMemo(() => parseFen(fen), [fen]);
   const legalTargets = useMemo(
@@ -55,8 +65,14 @@ export function XiangqiBoard({ fen, legalMoves, lastMove, disabled, onMove }: Pr
   }
 
   return (
-    <div className="board-shell" aria-label="中國象棋棋盤">
+    <div className={`board-shell${coordinates ? " with-coordinates" : ""}`} aria-label="中國象棋棋盤">
       <div className="board-stage">
+        {coordinates && (
+          <>
+            <div className="board-ranks" aria-hidden="true">{Array.from({ length: 10 }, (_, row) => <span key={row}>{rankAt(row)}</span>)}</div>
+            <div className="board-files" aria-hidden="true">{Array.from({ length: 9 }, (_, column) => <span key={column}>{fileAt(column)}</span>)}</div>
+          </>
+        )}
         <svg className="board-lines" viewBox="0 0 90 100" aria-hidden="true">
           <rect x="1" y="1" width="88" height="98" rx="1" fill="#ead2a5" stroke="#624729" strokeWidth="1.2" />
           {Array.from({ length: 10 }, (_, i) => <line key={`h${i}`} x1="5" y1={5 + i * 10} x2="85" y2={5 + i * 10} />)}
@@ -67,14 +83,15 @@ export function XiangqiBoard({ fen, legalMoves, lastMove, disabled, onMove }: Pr
         </svg>
         <div className="board-cells">
           {Array.from({ length: 10 }, (_, row) => Array.from({ length: 9 }, (_, file) => {
-            const square = `${String.fromCharCode(97 + file)}${9 - row}`;
+            const square = `${fileAt(file)}${rankAt(row)}`;
             const piece = board[square];
             const isRed = piece && piece === piece.toUpperCase();
             const isSelected = selected === square;
             const isTarget = legalTargets.has(square);
             const isLast = lastMove && (lastMove.fromSquare === square || lastMove.toSquare === square);
+            const mark = actorSquares.has(square) ? " mark-actor" : targetSquares.has(square) ? " mark-target" : "";
             return (
-              <button type="button" key={square} className={`board-cell${isSelected ? " selected" : ""}${isTarget ? " target" : ""}${isLast ? " last" : ""}`} onClick={() => click(square)} aria-label={`${square}${piece ? ` ${PIECE_TEXT[piece]}` : ""}`}>
+              <button type="button" key={square} className={`board-cell${isSelected ? " selected" : ""}${isTarget ? " target" : ""}${isLast ? " last" : ""}${mark}`} onClick={() => click(square)} aria-label={`${square}${piece ? ` ${PIECE_TEXT[piece]}` : ""}`}>
                 {isTarget && <span className="target-dot" />}
                 {piece && <span className={`piece ${isRed ? "red" : "black"}`}>{PIECE_TEXT[piece]}</span>}
               </button>

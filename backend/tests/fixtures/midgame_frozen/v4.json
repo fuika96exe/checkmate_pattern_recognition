@@ -1,0 +1,60 @@
+{
+  "version": 4,
+  "status": "frozen",
+  "reviewedAt": "2026-11-04",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-3.0",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工追加的取代版本：依專家裁決改判 v1 的 q8pwMX，加上捉雙。v1 檔案本身不改動。",
+  "supersedes": [
+    "q8pwMX"
+  ],
+  "cases": [
+    {
+      "id": "q8pwMX",
+      "sourceRow": 63,
+      "url": "https://play.xiangqi.com/puzzle/q8pwMX/P",
+      "initialFen": "1r2kab2/1r2a4/2n1b1c1n/p3p3p/2p3p2/P2C3RP/1cP1P1P2/N2CB1N2/4A4/1R2KAB2 b - - 25 13",
+      "blunderMove": "g7g3",
+      "pv": [
+        "d4b4",
+        "b8a8",
+        "b0b3",
+        "a6a5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "fork",
+          "remove_defender"
+        ],
+        "material": "gain"
+      },
+      "supersedes": {
+        "version": 1,
+        "previousExpected": {
+          "tactics": [
+            "remove_defender"
+          ],
+          "material": "gain"
+        },
+        "reason": "專家裁決（2026-11-04，qGXnbL 一案）：走動子新增一個威脅，同時令另一子的攻擊變成有利，而本手不是吃子、閃擊或串打，算捉雙；q8pwMX 可以算捉雙（qAylYD 與其重複，只保留 q8pwMX）。"
+      }
+    }
+  ]
+}

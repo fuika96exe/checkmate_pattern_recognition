@@ -9,8 +9,18 @@ The active datasets are built from the complete exports below:
 
 The export's `game_id` is a placeholder. Importers use the puzzle ID from
 `url`, normalize `first_turn` to `red`/`black`, and replay `blunder_move`
-followed by `pv` from `fen_before`. Upload exports are imported in full;
-the legacy published-puzzle export still supports random sampling.
+followed by `pv` from `fen_before`. Upload exports are imported in full
+unless `--start`/`--limit` select a contiguous slice in source order; the
+legacy published-puzzle export still supports random sampling.
+
+The capturing lab currently holds puzzles 501–1000 (CSV rows 502–1001):
+
+```powershell
+python backend/scripts/generate_capturing_tactics.py --csv data/puzzle-sources/Puzzles_2026-10-22_08-12-00_tactic_upload.csv --start 500 --limit 500 --workers 8
+```
+
+`audit_midgame_tactics.py` still assumes a full-CSV dataset and a v2.0
+baseline with the same IDs, so it does not audit a slice.
 
 From the repository root:
 

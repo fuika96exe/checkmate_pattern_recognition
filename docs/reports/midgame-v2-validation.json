@@ -1,0 +1,66 @@
+{
+  "baselineState": "Original dirty workspace; only our midgame routing/generator replaced with HEAD versions; new tests excluded.",
+  "baseline": {
+    "failed": 36,
+    "passed": 345,
+    "seconds": 91.51
+  },
+  "implementation": {
+    "failed": 36,
+    "passed": 402,
+    "seconds": 149.501
+  },
+  "addedFailures": [],
+  "removedFailures": [],
+  "baselineFailures": [
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_centroid_chariot_checkmate",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_crowned_before_double_chariots",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_discovered_horse_before_centroid",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_double_chariots_before_generic_patterns",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_double_horses_drinking_spring",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_eunuchs_chasing_emperor_before_two_devils",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_iron_bolt_before_generic_patterns",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_throat_cutting_before_double_chariots",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_auto_detects_two_devils_before_double_chariots",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_keeps_centroid_pawn_as_overlap_label",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_keeps_double_check_as_overlap_label",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_keeps_double_horses_drinking_spring_with_double_check",
+    "backend/tests/test_position_analysis.py::test_analyze_patterns_rejects_legacy_tiger_horse_square",
+    "backend/tests/test_position_analysis.py::test_centroid_chariot_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_double_horses_drinking_spring_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_drawer_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_pattern_dispatch_supports_stalemate_and_white_face_general",
+    "backend/tests/test_position_analysis.py::test_smothered_cannon_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_smothered_cannon_requires_two_defenders_and_can_be_smothered_by_support",
+    "backend/tests/test_position_analysis.py::test_smothered_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_throat_cutting_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_tiger_silhouette_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_tiger_silhouette_requires_opponent_camp_horse",
+    "backend/tests/test_position_analysis.py::test_two_devils_knocking_checkmate_examples",
+    "backend/tests/test_position_analysis.py::test_two_devils_knocking_uses_exactly_two_main_rook_or_pawn_attackers",
+    "backend/tests/test_position_analysis.py::test_two_devils_rejects_a_remote_pawn_without_attack_contribution",
+    "backend/tests/test_recognition.py::test_all_built_in_cases_pass",
+    "backend/tests/test_recognition.py::test_c20_to_c49_matchups",
+    "backend/tests/test_recognition.py::test_delayed_opposite_cannons_requires_left_horse_then_cannon_two",
+    "backend/tests/test_recognition.py::test_later_cannon_formation_is_evidence_only",
+    "backend/tests/test_recognition.py::test_opening_matchups_a35_to_a53",
+    "backend/tests/test_recognition.py::test_same_physical_cannon_side_is_same_side_cannons",
+    "backend/tests/test_recognition.py::test_same_side_cannon_templates_cover_horizontal_vs_straight_rook",
+    "backend/tests/test_recognition.py::test_same_side_cannon_templates_cover_slow_and_horizontal_rook",
+    "backend/tests/test_tactical_categories.py::test_two_separate_black_pieces_can_form_a_fork",
+    "backend/tests/test_tactical_categories.py::test_unanswerable_new_capture_remains_a_discovered_attack"
+  ],
+  "latestMidgameAndExchangeTests": {
+    "passed": 103,
+    "failed": 0,
+    "seconds": 25.03
+  },
+  "lint": "passed",
+  "build": "passed",
+  "typescript": "20 errors outside changed files",
+  "browser": "Browser host unavailable; native Chrome app approval timed out; interactive acceptance not completed.",
+  "httpSmoke": {
+    "http://127.0.0.1:3001/": 200,
+    "http://127.0.0.1:3002/": 200
+  }
+}

@@ -1,0 +1,510 @@
+{
+  "version": 1,
+  "status": "tracked",
+  "reviewedAt": "2026-11-04",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-2.5",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工專家判為錯誤的中局題及其修正標籤。只追蹤、不作關卡；邏輯修正後轉為通過時由人工決定是否升入凍結集。",
+  "cases": [
+    {
+      "id": "R0g40E",
+      "sourceRow": 112,
+      "url": "https://play.xiangqi.com/puzzle/R0g40E/P",
+      "initialFen": "3ak2r1/r1c1a4/4b4/p1p2N2p/6b2/5R3/P1P2n2P/C4C3/4Ac3/2BAK3R w - - 8 25",
+      "blunderMove": "i0f0",
+      "pv": [
+        "f3d2",
+        "e1d2",
+        "f1f4",
+        "f2e2"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "check_fork"
+      ],
+      "note": "",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RPx5jO",
+      "sourceRow": 182,
+      "url": "https://play.xiangqi.com/puzzle/RPx5jO/P",
+      "initialFen": "3k1ab2/4a4/6C2/p1nC2N1p/4P2r1/2P6/Pr4pcP/4B4/4A4/2BAK2R1 b - - 4 22",
+      "blunderMove": "c6d4",
+      "pv": [
+        "g7d7",
+        "d9e9",
+        "d7d4",
+        "h5g5"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "fork",
+        "check_fork"
+      ],
+      "note": "炮三平六是捉雙",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "fork"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RWyWB6",
+      "sourceRow": 227,
+      "url": "https://play.xiangqi.com/puzzle/RWyWB6/P",
+      "initialFen": "3akab2/1c7/3R5/p7p/2p3br1/4r4/P3N3P/4B4/9/R2AKAB2 w - - 0 21",
+      "blunderMove": "e3g4",
+      "pv": [
+        "e4g4",
+        "a0b0",
+        "h5h8",
+        "d0e1"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "pin"
+      ],
+      "note": "借用中相被牽制得子, 應加牽制",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oMWWEL",
+      "sourceRow": 310,
+      "url": "https://play.xiangqi.com/puzzle/oMWWEL/P",
+      "initialFen": "2bakab1r/9/2n3Cc1/p1p1p3p/5r3/1R7/P1P1p3P/2N2A3/9/2BAK1B1R w - - 0 14",
+      "blunderMove": "c2e3",
+      "pv": [
+        "f5e5",
+        "g0e2",
+        "e5e3",
+        "b4c4"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "pin"
+      ],
+      "note": "車6平5應該是牽制",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RPDNGR",
+      "sourceRow": 332,
+      "url": "https://play.xiangqi.com/puzzle/RPDNGR/P",
+      "initialFen": "2baka3/9/4n4/4p4/P6RC/2P6/8r/N3B4/c3A4/4KA3 w - - 4 33",
+      "blunderMove": "c4c5",
+      "pv": [
+        "a1a5",
+        "i5i9",
+        "i3i9",
+        "c5c6"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "skewer",
+          "trap"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "trap"
+      ],
+      "missing": [],
+      "note": "哪裡有圍困?",
+      "expected": {
+        "tactics": [
+          "skewer"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ROJQ8L",
+      "sourceRow": 335,
+      "url": "https://play.xiangqi.com/puzzle/ROJQ8L/P",
+      "initialFen": "3a1kb2/4a4/2n1b4/p2R5/2P2rp2/9/P1c4rP/1C2B4/2CK5/1R1A2B2 b - - 4 29",
+      "blunderMove": "f5f3",
+      "pv": [
+        "b2b3",
+        "g5g4",
+        "b3f3",
+        "h3f3"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [
+          "skewer",
+          "trap"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "trap"
+      ],
+      "missing": [],
+      "note": "哪裡有圍困?",
+      "expected": {
+        "tactics": [
+          "skewer"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LxWvgq",
+      "sourceRow": 338,
+      "url": "https://play.xiangqi.com/puzzle/LxWvgq/P",
+      "initialFen": "1nbak2r1/4a4/4b1n2/p1p1C1p1p/4c4/6P2/P1PCN2cP/6N2/4A4/2BK1ABR1 w - - 6 16",
+      "blunderMove": "e6a6",
+      "pv": [
+        "h3d3",
+        "h0h9",
+        "g7h9",
+        "e3d5"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "discovered_attack"
+      ],
+      "missing": [],
+      "note": "炮八平四並沒有雙重攻擊, 黑車對紅車是 trade invitation 不是有效攻擊, 黑炮也沒新增有效攻擊",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      },
+      "ruling": "2026-11-04 專家裁決：去掉閃擊後其後的兌車是交換"
+    },
+    {
+      "id": "oMW7bL",
+      "sourceRow": 352,
+      "url": "https://play.xiangqi.com/puzzle/oMW7bL/P",
+      "initialFen": "3ak3r/2r1a4/1c2R2c1/p7p/2n3p2/2N6/P2p2P1P/1C7/5R3/2BAKAB2 b - - 0 20",
+      "blunderMove": "c5d7",
+      "pv": [
+        "e7d7",
+        "c8c4",
+        "d7b7",
+        "h7c7"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [
+          "fork"
+        ],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "pin"
+      ],
+      "note": "車五平六借牽制得子",
+      "expected": {
+        "tactics": [
+          "fork",
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "q8pww2",
+      "sourceRow": 374,
+      "url": "https://play.xiangqi.com/puzzle/q8pww2/P",
+      "initialFen": "2bakab2/9/8n/p2r4p/4p4/9/P1R1c2rP/2N1B2C1/4A4/3AK2R1 b - - 2 28",
+      "blunderMove": "d6d2",
+      "pv": [
+        "c3e3",
+        "h3e3",
+        "h2d2",
+        "e3c3"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "pin"
+      ],
+      "missing": [
+        "remove_defender"
+      ],
+      "note": "車七平五不應該是牽制, 更應該是消除保護 (炮牽制住大士, 所以黑4路車不會被士吃掉",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      },
+      "ruling": "2026-11-04 專家同意：紅炮 h2 本可白吃 d2 黑車，解除牽制並非得車必要條件，不加消除保護；保留牽制"
+    },
+    {
+      "id": "RZMM4L",
+      "sourceRow": 385,
+      "url": "https://play.xiangqi.com/puzzle/RZMM4L/P",
+      "initialFen": "2bakn3/4a4/2n2r1R1/p3p4/1cb3p2/1R1N3Nr/P3P1P2/4BC3/4A4/4KAB2 w - - 6 22",
+      "blunderMove": "d4b5",
+      "pv": [
+        "f7h7",
+        "f2f4",
+        "h7h4",
+        "g3g4"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "trap"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "trap"
+      ],
+      "missing": [
+        "pin"
+      ],
+      "note": "黑借i4車牽制得馬了",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "Lb3VlR",
+      "sourceRow": 406,
+      "url": "https://play.xiangqi.com/puzzle/Lb3VlR/P",
+      "initialFen": "4k1b2/2r1a4/4b2R1/8p/3N5/2P3C2/3pc1n1P/4B4/4A4/3AK1B2 b - - 3 36",
+      "blunderMove": "c8c4",
+      "pv": [
+        "d5e3",
+        "c4c5",
+        "e3g2",
+        "g3e4"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "pin"
+      ],
+      "note": "红中相对車卒有牽制",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "qGXnbL",
+      "sourceRow": 442,
+      "url": "https://play.xiangqi.com/puzzle/qGXnbL/P",
+      "initialFen": "4kab2/4a4/4b4/p2R2p1p/1r5C1/6P2/P1n1Nn2P/4B4/4A4/2BAK4 w - - 6 25",
+      "blunderMove": "h5f5",
+      "pv": [
+        "c3e4",
+        "d6a6",
+        "b5f5",
+        "e1f2"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "remove_defender"
+        ],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "fork"
+      ],
+      "note": "馬3退5後, 同时对红炮和红車产生了新的攻击",
+      "expected": {
+        "tactics": [
+          "fork",
+          "remove_defender"
+        ],
+        "material": "gain"
+      },
+      "ruling": "2026-11-04 專家裁決：一步新增兩個有效威脅（不限同一子，非吃子、閃擊、串打）算捉雙"
+    },
+    {
+      "id": "o7PaGq",
+      "sourceRow": 472,
+      "url": "https://play.xiangqi.com/puzzle/o7PaGq/P",
+      "initialFen": "3akab1r/2c6/1r1cb1n2/p3p1R1p/9/9/PnP1P1P1P/4C1NC1/N7R/2BAKAB2 w - - 5 16",
+      "blunderMove": "i1b1",
+      "pv": [
+        "b3c1",
+        "b1c1",
+        "c8c1",
+        "e3e4"
+      ],
+      "solverSide": "black",
+      "engineAtReview": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      },
+      "extra": [],
+      "missing": [
+        "discovered_attack"
+      ],
+      "note": "馬2進3是閃擊",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "gain"
+      },
+      "ruling": "2026-11-04 專家裁決：走動子將軍並開出有效攻擊，一律閃擊加抽將（得子題交換照舊抑制）"
+    },
+    {
+      "id": "LxvlMo",
+      "sourceRow": 478,
+      "url": "https://play.xiangqi.com/puzzle/LxvlMo/P",
+      "initialFen": "4kab1r/4a4/b1n1c4/p3n1C1p/2p1P2R1/3r5/P1P1N1P1P/6N2/9/R1BAKAB2 b - - 1 12",
+      "blunderMove": "e6g5",
+      "pv": [
+        "h5g5",
+        "e7e3",
+        "g2e3",
+        "d4e4"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "exchange"
+      ],
+      "missing": [],
+      "note": "車二平三不應該是交換, 黑炮吃紅中馬不是 exchange value >0 的有效攻擊",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      },
+      "ruling": "2026-11-04 專家改判：應是交換，引擎沒標錯"
+    },
+    {
+      "id": "R18wlL",
+      "sourceRow": 490,
+      "url": "https://play.xiangqi.com/puzzle/R18wlL/P",
+      "initialFen": "3akab2/3n4r/1c1Rb1n1c/p3p1p1p/9/5rP2/P3P3P/N1C1BC3/9/2BAKA1R1 b - - 5 14",
+      "blunderMove": "g7h9",
+      "pv": [
+        "c2c9",
+        "d9e8",
+        "d7d8",
+        "h9g7"
+      ],
+      "solverSide": "red",
+      "engineAtReview": {
+        "tactics": [
+          "fork"
+        ],
+        "material": "gain"
+      },
+      "extra": [
+        "fork"
+      ],
+      "missing": [],
+      "note": "這步並沒新增有效吃子威脅, b7 d8 都有保護",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    }
+  ],
+  "removed": [
+    {
+      "id": "qAyllv",
+      "removedAt": "2026-11-04",
+      "reason": "專家指示移出測試集，改回未審查"
+    },
+    {
+      "id": "LJjDbL",
+      "removedAt": "2026-11-04",
+      "reason": "專家指示移出測試集，改回未審查"
+    }
+  ]
+}

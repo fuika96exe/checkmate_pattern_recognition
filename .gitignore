@@ -50,3 +50,6 @@ release-portable/
 release-portable-fixed/
 release-portable-final/
 build/pyinstaller/
+
+# TypeScript incremental build info
+*.tsbuildinfo

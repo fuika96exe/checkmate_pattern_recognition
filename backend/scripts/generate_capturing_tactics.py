@@ -6,6 +6,8 @@ import ast
 import csv
 import faulthandler
 import json
+import hashlib
+import time
 import random
 import sys
 from concurrent.futures import ProcessPoolExecutor
@@ -15,84 +17,77 @@ from pathlib import Path
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND_ROOT.parent))
 
-from backend.app.board import apply_move, parse_fen  # noqa: E402
-from backend.app.tactical_categories import CATEGORY_RULES_VERSION, LABELS, _piece_value, analyze_tactical_categories  # noqa: E402
-from backend.scripts.import_puzzles import adapt_upload_row  # noqa: E402
+from backend.app.midgame_tactics import LABELS, RULES_VERSION, ReplayError, material_result
+from backend.app.notation import chinese_notation
+from backend.app.tactical_categories import analyze_midgame_categories
+from backend.scripts.import_puzzles import adapt_upload_row
 
-MAIN_PIECES = {"R", "C", "N"}
-GAIN_LABELS = {"big": "得子(大子)", "small": "得子(小子)", "none": "並非得子"}
+GAIN_LABELS = {"gain": "得子", "no_gain": "並非得子"}
 
 
 def material_gain(fens: list[str], pv: list[str]) -> dict[str, object]:
-    """Net material the solver wins between the position after the blunder and the end of pv.
-
-    Walks the pv moves from fens[1] (after the blunder), valuing each captured piece
-    at its square when it is taken (so a pawn's river status is judged at capture time).
-    Gain = value the solver captured - value the solver lost; main gain only counts R/C/N.
-    """
-    board = parse_fen(fens[1])
-    solver_is_red = board[pv[0][:2]].isupper()
-    total = main = 0
-    captures: list[dict[str, object]] = []
-    for move in pv:
-        source, target = move[:2], move[2:]
-        mover = board[source]
-        victim = board.get(target)
-        if victim and victim.upper() != "K":
-            mover_red = mover.isupper()
-            value = _piece_value(victim, target, "black" if mover_red else "red")
-            sign = 1 if mover_red == solver_is_red else -1
-            total += sign * value
-            if victim.upper() in MAIN_PIECES:
-                main += sign * value
-            captures.append({"move": move, "piece": victim, "value": value, "by": "solver" if sign > 0 else "opponent"})
-        board[target] = mover
-        del board[source]
-    kind = "big" if total >= 2 and main >= 2 else "small" if total >= 2 else "none"
-    return {"kind": kind, "gain": total, "mainGain": main, "captures": captures}
+    """Compatibility helper; score the complete timeline, including the blunder."""
+    from backend.app.board import side_to_move
+    if not pv or len(fens) < 3:
+        raise ValueError("A complete replay is required")
+    return material_result(fens[0], fens[-1], side_to_move(fens[1]))
 
 
 def label_puzzle(row: dict[str, str]) -> dict[str, object]:
-    pv = ast.literal_eval(row["Pv"])
-    moves = [row["Blunder Move"], *pv]
-    record: dict[str, object] = {
-        "id": row["Encrypted Id"], "rating": int(row["Rating"]) if row["Rating"] else None,
-        "initialFen": row["Initial Fen"], "blunderMove": row["Blunder Move"],
-        "solverSide": row["Player Turn"], "pv": pv, "url": row["View Link"],
-    }
+    original = dict(row)
+    record = {"id": row.get("Encrypted Id") or row.get("url") or "unknown",
+              "rating": None, "initialFen": row.get("Initial Fen", row.get("fen_before", "")),
+              "blunderMove": row.get("Blunder Move", row.get("blunder_move", "")),
+              "solverSide": row.get("Player Turn", row.get("first_turn", "")),
+              "pv": [], "url": row.get("View Link", row.get("url", "")),
+              "sourceRow": row.get("_sourceRow"), "rulesVersion": RULES_VERSION}
     try:
-        annotations = analyze_tactical_categories(row["Initial Fen"], moves)
-    except Exception as error:  # noqa: BLE001 - keep the puzzle, report why it failed
-        return {**record, "status": "invalid", "error": str(error), "tactics": [], "fens": [], "plies": [], "material": None}
-    fens = [row["Initial Fen"]]
-    for move in moves:
-        fens.append(apply_move(fens[-1], move))
-    plies = []
-    tactics: list[str] = []
-    for ply, (move, item) in enumerate(zip(moves, annotations), start=1):
-        solver = ply > 1 and ply % 2 == 0
-        occurrences = item["occurrences"]
-        plies.append({"ply": ply, "ucci": move, "solver": solver, "occurrences": occurrences})
-        # Exchange is a bilateral outcome: it is only confirmed when the
-        # other side actually recaptures, so retain it in the puzzle summary
-        # regardless of which side made that confirming move.  All other
-        # tactical labels remain scoped to the solver's moves.
-        if solver:
-            for occurrence in occurrences:
-                if occurrence["id"] not in tactics:
-                    tactics.append(occurrence["id"])
-        else:
-            for occurrence in occurrences:
-                if occurrence["id"] == "exchange" and occurrence["id"] not in tactics:
-                    tactics.append(occurrence["id"])
-    return {**record, "status": "matched" if tactics else "unmatched", "tactics": tactics, "fens": fens, "plies": plies,
-            "material": material_gain(fens, pv)}
+        if "fen_before" in row:
+            row = {**adapt_upload_row(row), "_sourceRow": row.get("_sourceRow")}
+        record.update(id=row["Encrypted Id"], initialFen=row["Initial Fen"].strip(),
+                      blunderMove=row["Blunder Move"].strip(), solverSide=row["Player Turn"].strip().lower(),
+                      url=row.get("View Link", ""))
+        try:
+            parsed_pv = ast.literal_eval(row["Pv"])
+        except (ValueError, SyntaxError) as error:
+            raise ValueError("PV must parse as a UCCI string list") from error
+        if not isinstance(parsed_pv, list) or not all(isinstance(move, str) for move in parsed_pv):
+            raise ValueError("PV must parse as a UCCI string list")
+        record["pv"] = parsed_pv
+        try:
+            record["rating"] = int(row["Rating"]) if row.get("Rating") else None
+        except ValueError:
+            pass  # metadata does not invalidate a legal puzzle
+    except (ReplayError, ValueError, SyntaxError, KeyError, TypeError) as error:
+        return {**record, "status": "invalid", "error": str(error),
+                "errorPly": getattr(error, "ply", 0), "errorFen": getattr(error, "fen", record["initialFen"]),
+                "errorMove": getattr(error, "move", None), "sourceInput": original,
+                "tactics": [], "fens": [], "plies": [], "material": None, "reviewReasons": [], "supportingEvidence": []}
+    try:
+        result = analyze_midgame_categories(record["initialFen"], record["blunderMove"], record["pv"], record["solverSide"])
+        # Display only: Chinese notation of each ply, read from the position before it.
+        for ply, fen_before in zip(result["plies"], result["fens"]):
+            ply["chinese"] = chinese_notation(fen_before, ply["ucci"])
+        return {**record, **result}
+    except ReplayError as error:
+        return {**record, "status": "invalid", "error": str(error),
+                "errorPly": error.ply, "errorFen": error.fen, "errorMove": error.move,
+                "sourceInput": original, "tactics": [], "fens": [], "plies": [],
+                "material": None, "reviewReasons": [], "supportingEvidence": []}
+    # Detector/programming failures propagate and leave the public index intact;
+    # they must not be silently counted as malformed input.
 
 
 def row_from_existing_record(record: dict[str, object]) -> dict[str, str]:
     """Adapt a stored puzzle record so the current rules can relabel it."""
+    if record.get("sourceInput"):
+        original = dict(record["sourceInput"])
+        if record.get("sourceRow") is not None:
+            original["_sourceRow"] = record["sourceRow"]
+        return original
     return {
         "Pv": repr(record["pv"]),
+        "_sourceRow": record.get("sourceRow"),
         "Blunder Move": str(record["blunderMove"]),
         "Encrypted Id": str(record["id"]),
         "Rating": "" if record.get("rating") is None else str(record["rating"]),
@@ -104,9 +99,10 @@ def row_from_existing_record(record: dict[str, object]) -> dict[str, str]:
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    started = time.perf_counter()
     root = BACKEND_ROOT.parent
     parser = argparse.ArgumentParser()
-    parser.add_argument("--csv", type=Path, default=Path(r"C:\Coding\puzzle_batch_update_test\All_Capturing_Puzzles_2026-10-14_10-18-45.csv"))
+    parser.add_argument("--csv", type=Path, default=root / "data/puzzle-sources/Puzzles_2026-10-22_08-12-00_tactic_upload.csv")
     parser.add_argument("--output", type=Path, default=root / "public" / "data" / "capturing-tactics.json")
     parser.add_argument("--count", type=int, default=500)
     parser.add_argument("--seed", type=int, default=20260702)
@@ -115,26 +111,35 @@ def main() -> None:
     parser.add_argument("--existing-dataset", type=Path,
                         help="Relabel every puzzle already stored in this JSON dataset; no source CSV is needed.")
     parser.add_argument("--start", type=int, default=0,
-                        help="First existing-dataset puzzle index to relabel (default: 0).")
+                        help="First puzzle index (0-based) to label from an upload CSV or an existing dataset (default: 0).")
     parser.add_argument("--limit", type=int,
-                        help="Maximum existing-dataset puzzles to relabel; omit to relabel the remainder.")
+                        help="Maximum puzzles to label from an upload CSV or an existing dataset; omit for the remainder.")
     args = parser.parse_args()
 
     if args.existing_dataset:
         existing = json.loads(args.existing_dataset.read_text(encoding="utf-8"))
         stored_puzzles = list(existing["puzzles"])
+        source_hash = existing.get("sourceSha256")
         start = max(0, args.start)
         end = len(stored_puzzles) if args.limit is None else min(len(stored_puzzles), start + max(0, args.limit))
+        if start != 0 or end != len(stored_puzzles):
+            if args.output.resolve() == (root / "public/data/capturing-tactics.json").resolve():
+                parser.error("Partial relabels require an independent --output outside the public index")
         indexes = list(range(start, end))
         sample = [row_from_existing_record(stored_puzzles[index]) for index in indexes]
         source = str(existing.get("source", args.existing_dataset.name))
         seed = int(existing.get("seed", args.seed))
         eligible_rows = int(existing.get("eligibleRows", len(stored_puzzles)))
     else:
+        source_hash = hashlib.sha256(args.csv.read_bytes()).hexdigest()
         with args.csv.open(encoding="utf-8-sig", newline="") as handle:
             rows = list(csv.DictReader(handle))
+        rows = [{**row, "_sourceRow": index} for index, row in enumerate(rows, 2)]
         if rows and "fen_before" in rows[0]:
-            sample = [adapt_upload_row(row) for row in rows]
+            # Upload exports are labelled in source order; --start/--limit pick a contiguous slice.
+            start = max(0, args.start)
+            end = len(rows) if args.limit is None else min(len(rows), start + max(0, args.limit))
+            sample = rows[start:end]
         else:
             rows = [row for row in rows if row["State"] == "PUBLISHED" and row["Theme"] == "CAPTURING"]
             sample = random.Random(args.seed).sample(rows, min(args.count, len(rows)))
@@ -155,13 +160,9 @@ def main() -> None:
                 relabelled.append(puzzle)
                 if args.progress_every > 0 and completed % args.progress_every == 0:
                     print(f"Analysed {completed}/{len(sample)} puzzles", flush=True)
-    if args.existing_dataset:
-        puzzles = stored_puzzles
-        for index, puzzle in zip(indexes, relabelled):
-            puzzles[index] = puzzle
-    else:
-        puzzles = relabelled
-    summary: dict[str, int] = {"unmatched": 0, "invalid": 0}
+    # A partial export contains only newly analyzed rows, never mixed rule versions.
+    puzzles = relabelled
+    summary: dict[str, int] = {"matched": 0, "unmatched": 0, "invalid": 0, "gain_gain": 0, "gain_no_gain": 0, **{label: 0 for label in LABELS}}
     for puzzle in puzzles:
         if puzzle["status"] in summary:
             summary[str(puzzle["status"])] += 1
@@ -172,11 +173,14 @@ def main() -> None:
         for tactic in puzzle["tactics"]:  # type: ignore[union-attr]
             summary[tactic] = summary.get(tactic, 0) + 1
     payload = {
-        "schemaVersion": "1.0", "rulesVersion": CATEGORY_RULES_VERSION, "labels": LABELS, "gainLabels": GAIN_LABELS,
-        "source": source, "seed": seed, "eligibleRows": eligible_rows,
+        "schemaVersion": "2.1", "rulesVersion": RULES_VERSION, "labels": LABELS, "gainLabels": GAIN_LABELS,
+        "source": source, "sourceSha256": source_hash, "seed": seed, "eligibleRows": eligible_rows,
+        "elapsedSeconds": round(time.perf_counter() - started, 3),
+        "partial": len(puzzles) != eligible_rows,
         "generatedAt": datetime.now(timezone.utc).isoformat(), "puzzleCount": len(puzzles),
         "summary": summary, "puzzles": puzzles,
     }
+    args.output.parent.mkdir(parents=True, exist_ok=True)
     temporary_output = args.output.with_suffix(args.output.suffix + ".tmp")
     temporary_output.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
     temporary_output.replace(args.output)

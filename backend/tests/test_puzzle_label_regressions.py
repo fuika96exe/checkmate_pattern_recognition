@@ -22,6 +22,101 @@ def analyze(puzzles, key):
     return fen, moves, analyze_patterns(fen, moves)
 
 
+@pytest.mark.parametrize("key, pattern", [
+    ("q5kZPR", "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE"),
+    ("oXWXXR", "IRON_BOLT_CHECKMATE"),
+    ("LJlMbo", "IRON_BOLT_CHECKMATE"),
+    ("Lpp2yL", "DOUBLE_CHARIOTS_CHECKMATE"),
+    ("qrkP4L", "DOUBLE_CHARIOTS_CHECKMATE"),
+    ("RVjBbR", "DOUBLE_CHARIOTS_CHECKMATE"),
+])
+def test_patterns_require_actual_participation_or_lock(puzzles, key, pattern):
+    fen, moves, result = analyze(puzzles, key)
+    assert not recognize_pattern(pattern, fen, moves)["detected"]
+    assert pattern not in {match["pattern_id"] for match in result["matches"]}
+
+
+def test_three_chariots_records_each_pieces_contribution(puzzles):
+    fen, moves, _ = analyze(puzzles, "q5kZPR")
+    features = recognize_pattern("THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE", fen, moves)["features"]
+    reasons = {item["starting_square"]: item["reasons"] for item in features["participation"]}
+    assert "check" in reasons["b6"]
+    assert "control_escape" in reasons["d8"]
+    assert reasons["e6"] == []
+
+    result = recognize_pattern(
+        "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE",
+        "4kab2/3PaP3/9/4R4/9/9/9/9/4p1p2/5K3 w - - 0 1",
+        ["f8e8", "f9e8", "e6e8"],
+    )
+    assert result["detected"]
+    reasons = {item["starting_square"]: item["reasons"] for item in result["features"]["participation"]}
+    assert "capture_advisor" in reasons["f8"]
+    assert "check" in reasons["e6"]
+    assert "control_escape" in reasons["d8"]
+
+
+def test_three_chariots_counts_participants_among_extra_pieces(puzzles):
+    fen, moves, result = analyze(puzzles, "o9ZM0q")
+    match = recognize_pattern("THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE", fen, moves)
+    assert match["detected"]
+    assert match["features"]["participating_starting_squares"] == ["c1", "e6", "f1"]
+    assert "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE" in {item["pattern_id"] for item in result["matches"]}
+
+    four_participants = recognize_pattern(
+        "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE",
+        "2P1kab2/3PaP3/9/4R4/9/9/9/9/4p1p2/5K3 w - - 0 1",
+        ["f8e8", "f9e8", "e6e8"],
+    )
+    assert four_participants["detected"]
+    assert four_participants["features"]["participating_starting_squares"] == ["c9", "d8", "e6", "f8"]
+
+
+def test_double_chariots_escape_behind_king_is_covered_by_checking_rook(puzzles):
+    fen, moves, _ = analyze(puzzles, "RVjBbR")
+    match = recognize_pattern("DOUBLE_CHARIOTS_CHECKMATE", fen, moves)
+    assert match["analysis"]["is_checkmate"]
+    assert match["features"]["checking_rook_squares"] == ["f0"]
+    assert match["features"]["supporting_rook_squares"] == ["d2"]
+    assert match["features"]["supporting_rook_escape_squares"] == []
+    assert not match["detected"]
+
+    vertical = recognize_pattern(
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "3k5/9/9/9/9/4r4/9/9/1n3r3/4K4 b - - 0 1",
+        ["e4e2"],
+    )
+    assert vertical["analysis"]["is_checkmate"]
+    assert vertical["features"]["supporting_rook_escape_squares"] == ["f0"]
+
+
+def test_heaven_and_earth_accepts_cannon_protected_rook_finish(puzzles):
+    fen, moves, result = analyze(puzzles, "RVjBbR")
+    match = recognize_pattern("HEAVEN_AND_EARTH_CANNON_CHECKMATE", fen, moves)
+    assert match["analysis"]["is_checkmate"]
+    assert match["features"]["pre_final_pins"] == {"h0": ["g0"], "e3": ["e2", "e1"]}
+    assert match["features"]["protecting_cannon_squares"] == ["h0"]
+    assert match["features"]["scenarios"] == ["cannon_protected_finish"]
+    assert "HEAVEN_AND_EARTH_CANNON_CHECKMATE" in {item["pattern_id"] for item in result["matches"]}
+
+
+def test_locked_advisor_and_independent_rook_escape_control_are_recognized():
+    iron = recognize_pattern(
+        "IRON_BOLT_CHECKMATE",
+        "2bak4/4a4/4b4/4CR3/9/9/9/9/9/5K3 w - - 0 1",
+        ["f6f9"],
+    )
+    assert iron["detected"]
+    assert iron["features"]["locked_midline_pieces"] == ["e8"]
+    double = recognize_pattern(
+        "DOUBLE_CHARIOTS_CHECKMATE",
+        "3a1k3/4a1R2/9/9/7R1/9/9/5A3/4A4/5K3 w - - 0 1",
+        ["h5h9"],
+    )
+    assert double["detected"]
+    assert double["features"]["supporting_rook_escape_squares"] == ["f8"]
+
+
 def test_elbow_horse_takes_precedence_over_discovered_horse(puzzles):
     fen, moves, result = analyze(puzzles, "LxN1ej")
     labels = {match["pattern_id"] for match in result["matches"]}

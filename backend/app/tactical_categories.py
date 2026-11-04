@@ -8,6 +8,12 @@ from __future__ import annotations
 
 from .board import FILES, apply_move, attacked_squares, legal_moves, parse_fen, side_to_move
 
+
+def analyze_midgame_categories(fen: str, blunder: str, pv: list[str], solver: str) -> dict:
+    """Separate puzzle contract; generic API/workbench semantics stay unchanged."""
+    from .midgame_tactics import analyze_midgame
+    return analyze_midgame(fen, blunder, pv, solver)
+
 CATEGORY_RULES_VERSION = "nine-tactics-draft-0.10"
 LABELS = {
     "exchange": "交换", "fork": "捉双", "skewer": "串打",
