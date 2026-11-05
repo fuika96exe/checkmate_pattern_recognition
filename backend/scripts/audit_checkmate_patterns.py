@@ -123,11 +123,6 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
         piece = trial.pop(move[:2])
         trace.append({"ply": ply, "piece": piece, "move": move, "captured": trial.get(move[2:])})
         trial[move[2:]] = piece
-    for first, reply, second in zip(trace[1::2], trace[2::2], trace[3::2]):
-        if first["piece"].upper() == "C" and reply["piece"].upper() == "B" and second["piece"].upper() == "C":
-            if first["move"][2:] == reply["move"][2:] == second["move"][2:]:
-                flags.append("double_toast_sequence_candidate")
-                break
 
     if "THROAT_CUTTING_CHECKMATE" in labels:
         central = "e8" if defender == "black" else "e1"
@@ -224,8 +219,6 @@ def sequence_recheck(task: tuple[dict, str]) -> dict:
 
 def focused_probes() -> list[dict]:
     cases = [
-        ("toast_original", "DOUBLE_TOAST_CHECKMATE", "2b1ka3/4a4/4b4/6C2/9/6B2/9/6C2/9/3K5 w - - 0 1", ["g6g9", "e7g9", "g2g9"], True),
-        ("toast_with_legal_blunder_prefix", "DOUBLE_TOAST_CHECKMATE", "2b1ka3/9/3ab4/6C2/9/6B2/9/6C2/9/3K5 b - - 0 1", ["d7e8", "g6g9", "e7g9", "g2g9"], True),
         ("drawer_original", "DRAWER_CHECKMATE", "3akab1C/9/4b4/5R3/9/9/9/9/9/5K3 w - - 0 1", ["f6f9", "e9e8", "f9f8"], True),
         ("drawer_with_legal_blunder_prefix", "DRAWER_CHECKMATE", "2bakab1C/9/9/5R3/9/9/9/9/9/5K3 b - - 0 1", ["c9e7", "f6f9", "e9e8", "f9f8"], True),
         ("heaven_earth_quiet_finish", "HEAVEN_AND_EARTH_CANNON_CHECKMATE", "1Cbak4/4a4/4b1N2/4CR3/9/9/9/9/9/3K5 w - - 0 1", ["f6f9"], True),
@@ -279,8 +272,7 @@ def main():
         puzzles = {p["id"]: p for p in data["puzzles"]}
         rechecks = []
         for row in rows:
-            for flag, pattern in (("double_toast_sequence_candidate", "DOUBLE_TOAST_CHECKMATE"),
-                                  ("palcorner_unlabeled_sequence_review_candidate", "PALCORNER_HORSE_CHECKMATE"),
+            for flag, pattern in (("palcorner_unlabeled_sequence_review_candidate", "PALCORNER_HORSE_CHECKMATE"),
                                   ("elbow_without_real_palace_control", "ELBOW_HORSE_CHECKMATE"),
                                   ("horse_cannon_geometry_unlabeled_candidate", "HORSE_CANNON_CHECKMATE")):
                 if flag in row["flags"] and row["isCheckmate"]:

@@ -67,11 +67,12 @@ Update the matching document when a rule's behaviour changes, and bump the modul
 | `public/data/capturing-tactics.json` | Generated | `python backend/scripts/generate_capturing_tactics.py`, then `python backend/scripts/audit_midgame_tactics.py` |
 | `public/data/fake-human-games.json` | Generated | `backend/scripts/import_fake_human_games.py` |
 | `public/data/fake-human-openings.json` | Generated (ply-20 opening per game, read by the Fake Human tab) | `python backend/scripts/generate_fake_human_openings.py` after the games file or the opening recognizer changes |
-| `public/data/checkmate-puzzle-expectations.json` | Human review labels | Never overwrite with engine output |
+| `public/data/checkmate-puzzle-expectations.json` | Human review labels (emptied on 2026-11-05 at the user's request; reviewed labels now live in `checkmate_frozen/`) | Never overwrite with engine output |
 | `backend/tests/fixtures/built_in/` | Opening recognition cases | Hand-written |
 | `backend/tests/fixtures/user/` | User-saved cases (created on first save) | Preserve when changing rules |
 | `backend/tests/fixtures/midgame_frozen/v*.json`, `MANIFEST.json` | **Frozen human-confirmed midgame regression set** (gate: `test_midgame_frozen.py`) | Human only, by appending a new version file. Agents never edit, delete, regenerate or re-hash them |
 | `backend/tests/fixtures/midgame_frozen/known_wrong_v*.json` | Expert-corrected labels for puzzles the engine gets wrong (tracked, not a gate) | Human only |
+| `backend/tests/fixtures/checkmate_frozen/v*.json`, `MANIFEST.json` | **Frozen human-confirmed checkmate-pattern regression set** (gate: `test_checkmate_frozen.py`) | Human only, by appending a new version file. Agents never edit, delete, regenerate or re-hash them |
 
 After a rule change, regenerate every affected `public/data/*.json`; the frontend lists and filters read these indexes, not live analysis. Never back-fill expected values in fixtures from generated output.
 
@@ -106,6 +107,27 @@ After a rule change, regenerate every affected `public/data/*.json`; the fronten
 - `MIDGAME_FROZEN_FULL=1` also runs the variants on the native board (slow, about 3 min).
 - `test_frozen_evidence_is_well_formed` checks only the structural consistency of evidence on frozen cases, such as ply order, piece references and parent keys. A failure there is an engine bug, so fix the engine.
 - Hand-written rule-boundary tests for midgame labels were removed on 2026-11-04. Do not reintroduce label expectations outside the frozen set. Coverage for a rule comes from the human adding confirmed puzzles to a new frozen version.
+
+### Frozen checkmate regression gate
+
+`backend/tests/test_checkmate_frozen.py` applies the same discipline to checkmate patterns (`patterns.py`). It checks every case in `fixtures/checkmate_frozen/v*.json` through the real puzzle pipeline (`scripts.generate_puzzle_recognition.recognize_puzzle`). It compares:
+
+- the exact pattern-ID set, restricted to the version's `vocabulary`;
+- `materialId`, the material fallback, present only when no pattern matched.
+
+Coverage is the same as the midgame gate:
+
+- the original case on both boards;
+- colour-swapped and mirrored variants on the pure-Python fallback;
+- `CHECKMATE_FROZEN_FULL=1` adds the variants on the native board.
+
+The midgame rules above apply unchanged:
+
+- a failing case rejects the change, and the diff goes to the user;
+- agents never edit frozen files or `MANIFEST.json`;
+- extensions and re-rulings come only as new human versions with `supersedes`.
+
+The hand-written checkmate label tests (`test_puzzle_label_regressions.py`, `test_revised_mate_definitions.py`, and the label assertions in `test_position_analysis.py`) were removed on 2026-11-05. Do not reintroduce checkmate label expectations outside the frozen set.
 
 ## Style and safety
 

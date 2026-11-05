@@ -196,7 +196,6 @@ export function WhiteFaceGeneralLab() {
             <option value="CENTROID_CHECKMATE">仅花心杀</option>
             <option value="CANNONS_SANDWICHING_CHARIOT_CHECKMATE">仅夹车炮</option>
             <option value="DOUBLE_CANNON_CHECKMATE">仅重炮杀</option>
-            <option value="DOUBLE_TOAST_CHECKMATE">仅双杯献酒</option>
             <option value="SMOTHERED_CANNON_CHECKMATE">仅闷宫杀</option>
             <option value="HEAVEN_AND_EARTH_CANNON_CHECKMATE">仅天地炮</option>
             <option value="IRON_BOLT_CHECKMATE">仅铁门栓</option>

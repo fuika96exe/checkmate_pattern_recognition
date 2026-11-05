@@ -22,7 +22,6 @@ PATTERN_ORDER = [
     "CENTROID_CHECKMATE",
     "CANNONS_SANDWICHING_CHARIOT_CHECKMATE",
     "DOUBLE_CANNON_CHECKMATE",
-    "DOUBLE_TOAST_CHECKMATE",
     "SMOTHERED_CANNON_CHECKMATE",
     "HEAVEN_AND_EARTH_CANNON_CHECKMATE",
     "IRON_BOLT_CHECKMATE",
@@ -44,7 +43,7 @@ PATTERN_ORDER = [
     "STALEMATE",
 ]
 
-CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.11.02-v14"
+CHECKMATE_RULES_VERSION = "checkmate-patterns-2026.11.05-v15"
 
 
 @lru_cache(maxsize=2048)
@@ -602,91 +601,6 @@ def recognize_cannons_sandwiching_chariot_checkmate(
     }
 
 
-def recognize_double_toast_checkmate(
-    fen: str, moves: list[str] | None = None
-) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
-        current_fen
-    )
-    cannon_piece = "C" if attacker == "red" else "c"
-    elephant_piece = "b" if defender == "black" else "B"
-    attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
-
-    sacrifice_move: dict[str, object] | None = None
-    capture_reply: dict[str, object] | None = None
-    reload_move: dict[str, object] | None = None
-    for index in range(len(attacker_trace) - 1):
-        first = attacker_trace[index]
-        if str(first["piece"]).upper() != "C":
-            continue
-        if index >= len(defender_trace):
-            continue
-        reply = defender_trace[index]
-        if (
-            str(reply["piece"]) != elephant_piece
-            or str(reply["to_square"]) != str(first["to_square"])
-        ):
-            continue
-        second = attacker_trace[index + 1]
-        if (
-            str(second["piece"]).upper() == "C"
-            and str(second["to_square"]) == str(first["to_square"])
-        ):
-            sacrifice_move = first
-            capture_reply = reply
-            reload_move = second
-            break
-
-    final_screen_square = None
-    final_screen_piece = None
-    checking_cannons = [
-        item
-        for item in analysis["checking_pieces"]
-        if item["reason"] == "cannon_screen"
-        and board.get(item["square"], "").upper() == "C"
-    ]
-    if defender_king and checking_cannons:
-        between_squares = _between(board, checking_cannons[0]["square"], defender_king)
-        occupied = [square for square in between_squares if square in board]
-        if len(occupied) == 1:
-            final_screen_square = occupied[0]
-            final_screen_piece = board[final_screen_square]
-
-    detected = bool(
-        analysis["is_checkmate"]
-        and sacrifice_move
-        and capture_reply
-        and reload_move
-        and final_screen_piece == ("a" if defender == "black" else "A")
-    )
-    return {
-        "pattern_id": "DOUBLE_TOAST_CHECKMATE",
-        "pattern_name_zh": "双杯献酒",
-        "detected": detected,
-        "causal": detected,
-        "fen": current_fen,
-        "moves": applied,
-        "analysis": analysis,
-        "features": {
-            "attacker_side": attacker,
-            "defender_side": defender,
-            "attacker_general_square": attacker_king,
-            "defender_general_square": defender_king,
-            "sacrifice_square": str(sacrifice_move["to_square"]) if sacrifice_move else None,
-            "capturing_elephant_from": str(capture_reply["from_square"]) if capture_reply else None,
-            "reload_square": str(reload_move["to_square"]) if reload_move else None,
-            "final_screen_square": final_screen_square,
-            "final_screen_piece": final_screen_piece,
-        },
-        "diagnostics": [
-            "攻击方先献出一门炮，让防守方的象吃到同一落点。",
-            "随后第二门炮回到该点，复现闷宫型炮杀结构。",
-            "防守方无合法解杀，因此构成双杯献酒。",
-        ],
-    }
-
-
 def recognize_smothered_cannon_checkmate(fen: str, moves: list[str] | None = None) -> dict:
     current_fen, applied = _apply_moves(fen, moves)
     board, analysis, attacker, defender, attacker_king, king = _infer_sides(current_fen)
@@ -973,7 +887,8 @@ def recognize_drawer_checkmate(
     rook_piece = "R" if attacker == "red" else "r"
     cannon_piece = "C" if attacker == "red" else "c"
     home_rank = _home_rank(defender)
-    cave_file = "f" if defender == "black" else "d"
+    # 2026.11.05-v15 (expert review): the drawer works on either rib file.
+    cave_files = {"d", "f"}
     cave_ranks = {"8", "9"} if defender == "black" else {"0", "1"}
     king_tunnel_squares = {"e8", "e9"} if defender == "black" else {"e0", "e1"}
     attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
@@ -997,7 +912,7 @@ def recognize_drawer_checkmate(
         if not same_rook:
             continue
         squares = [str(item["to_square"]) for item in candidate]
-        if any(square[0] != cave_file or square[1] not in cave_ranks for square in squares):
+        if any(square[0] not in cave_files or square[1] not in cave_ranks for square in squares):
             continue
         if len(set(squares)) != 2:
             continue
@@ -1052,7 +967,7 @@ def recognize_drawer_checkmate(
             "rook_cycles": rook_cycles,
             "penetration_started": penetration_started,
             "final_piece_type": final_piece_type,
-            "cave_file": cave_file,
+            "cave_files": sorted(cave_files),
             "king_tunnel_squares": sorted(king_tunnel_squares),
         },
         "diagnostics": [
@@ -2282,8 +2197,6 @@ def recognize_pattern(
         return recognize_cannons_sandwiching_chariot_checkmate(fen, moves)
     if normalized == "DOUBLE_CANNON_CHECKMATE":
         return recognize_double_cannon_checkmate(fen, moves)
-    if normalized == "DOUBLE_TOAST_CHECKMATE":
-        return recognize_double_toast_checkmate(fen, moves)
     if normalized == "DISCOVERED_HORSE_CHECKMATE":
         return recognize_discovered_horse_checkmate(fen, moves)
     if normalized == "SMOTHERED_CANNON_CHECKMATE":
@@ -2379,6 +2292,8 @@ def analyze_patterns(fen: str, moves: list[str] | None = None, pattern_id: str |
         "DOUBLE_CHARIOTS_CHECKMATE": {"CENTROID_CHECKMATE", "TWO_DEVILS_KNOCKING_CHECKMATE", "CROWNED_CHECKMATE"},
         "DISCOVERED_HORSE_CHECKMATE": {"ELBOW_HORSE_CHECKMATE"},
         "PALCORNER_HORSE_CHECKMATE": {"HORSE_CANNON_CHECKMATE"},
+        # 2026.11.05-v15 (expert review): 闷宫杀 already names this finish.
+        "HEAVEN_AND_EARTH_CANNON_CHECKMATE": {"SMOTHERED_CANNON_CHECKMATE"},
     }
     present = {match["pattern_id"] for match in detected}
     if pattern_id and detected and detected[0]["pattern_id"] in excluded_by:
