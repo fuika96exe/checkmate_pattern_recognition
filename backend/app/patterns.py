@@ -3,17 +3,17 @@ from __future__ import annotations
 from functools import lru_cache
 
 from .board import (
-    _between,
-    _board_to_fen,
-    _pseudo_legal_targets,
-    _xy,
-    attacked_squares,
     apply_move,
+    attacked_squares,
+    board_to_fen,
     build_piece_identity,
+    coords,
     legal_moves,
     move_piece_identity,
     parse_fen,
     position_analysis,
+    pseudo_legal_targets,
+    squares_between,
 )
 
 
@@ -153,8 +153,8 @@ def _flank_name(square: str) -> str | None:
 
 
 def _horse_leg_square(horse_square: str, target_square: str) -> str | None:
-    hx, hy = _xy(horse_square)
-    tx, ty = _xy(target_square)
+    hx, hy = coords(horse_square)
+    tx, ty = coords(target_square)
     dx = tx - hx
     dy = ty - hy
     if abs(dx) == 1 and abs(dy) == 2:
@@ -200,11 +200,11 @@ def recognize_crowned_checkmate(
         source = item["square"]
         if board.get(source) != cannon_piece or not defender_king:
             continue
-        between_king = _between(board, source, defender_king)
+        between_king = squares_between(source, defender_king)
         occupied_between_king = [square for square in between_king if square in board]
         if occupied_between_king != [crown_front_square]:
             continue
-        between_front = _between(board, source, crown_front_square)
+        between_front = squares_between(source, crown_front_square)
         if any(square in board for square in between_front):
             continue
         cannon_square = source
@@ -612,7 +612,7 @@ def recognize_smothered_cannon_checkmate(fen: str, moves: list[str] | None = Non
         square = checker["square"]
         if not king or board.get(square, "").upper() != "C":
             continue
-        between = [x for x in _between(board, square, king) if x in board]
+        between = [x for x in squares_between(square, king) if x in board]
         perpendicular = [x for x in _orthogonal_palace_neighbors(king, defender) if (x[0] == king[0] if square[1] == king[1] else x[1] == king[1])]
         if len(between) == 1 and board[between[0]].upper() == "A" and perpendicular and all(board.get(x) == advisor for x in perpendicular):
             matches.append({"cannon": square, "screen": between[0], "blocked_squares": perpendicular})
@@ -718,7 +718,7 @@ def _cannon_pinned_defenders(
     if cannon[0] != king[0] and cannon[1] != king[1]:
         return []
     defender_pieces = {"a", "b"} if defender == "black" else {"A", "B"}
-    candidates = [square for square in _between(board, cannon, king) if board.get(square) in defender_pieces]
+    candidates = [square for square in squares_between(cannon, king) if board.get(square) in defender_pieces]
     if not candidates:
         return []
     probe = dict(board)
@@ -726,14 +726,14 @@ def _cannon_pinned_defenders(
         source = checker["square"]
         if source != cannon and probe.get(source, "").upper() != "K":
             probe.pop(source, None)
-    probe_fen = f"{_board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
+    probe_fen = f"{board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
     moves = legal_moves(probe_fen)
     pinned = []
     for square in candidates:
         piece = probe.get(square)
         if piece not in defender_pieces or any(move.startswith(square) for move in moves):
             continue
-        for target in _pseudo_legal_targets(probe, square, piece):
+        for target in pseudo_legal_targets(probe, square, piece):
             moved = dict(probe)
             moved[target] = moved.pop(square)
             if any(entry["square"] == cannon for entry in attacked_squares(moved, attacker).get(king, [])):
@@ -808,12 +808,12 @@ def recognize_heaven_and_earth_cannon_checkmate(
             scenarios.append("center_pin_bottom_cannon_check")
 
         empty_center = any(
-            not any(square in board for square in _between(board, cannon, defender_king))
+            not any(square in board for square in squares_between(cannon, defender_king))
             for cannon in earth_cannons
         )
         bottom_advisor_check = any(
             cannon in checking_squares
-            and len(screens := [square for square in _between(board, cannon, defender_king) if square in board]) == 1
+            and len(screens := [square for square in squares_between(cannon, defender_king) if square in board]) == 1
             and board[screens[0]] == ("a" if defender == "black" else "A")
             for cannon in heaven_cannons
         )
@@ -1558,7 +1558,7 @@ def recognize_horse_cannon_checkmate(
             or not defender_king
         ):
             continue
-        between_squares = _between(board, cannon_square, defender_king)
+        between_squares = squares_between(cannon_square, defender_king)
         occupied_between = [square for square in between_squares if square in board]
         if len(occupied_between) != 1:
             continue
@@ -1956,7 +1956,7 @@ def recognize_iron_bolt_checkmate(
     ]
     if analysis["is_checkmate"] and flank_checkers and defender_king and defender_king[0] == "e":
         for lock_square in central_lock_candidates:
-            between = _between(board, lock_square, defender_king)
+            between = squares_between(lock_square, defender_king)
             if not any(board.get(square) in lock_piece_set for square in between):
                 continue
             # In a checkmate every defender has zero legal moves. Remove the
@@ -1966,7 +1966,7 @@ def recognize_iron_bolt_checkmate(
                 source = checker["square"]
                 if source != lock_square and probe.get(source, "").upper() != "K":
                     probe.pop(source, None)
-            probe_fen = f"{_board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
+            probe_fen = f"{board_to_fen(probe)} {'w' if defender == 'red' else 'b'} - - 0 1"
             probe_moves = legal_moves(probe_fen)
             locked = []
             for square in between:
@@ -1976,7 +1976,7 @@ def recognize_iron_bolt_checkmate(
                     continue
                 # The lock itself must expose the general when the advisor
                 # moves; immobility caused solely by another piece is not a pin.
-                for target in _pseudo_legal_targets(probe, square, probe[square]):
+                for target in pseudo_legal_targets(probe, square, probe[square]):
                     moved = dict(probe)
                     moved[target] = moved.pop(square)
                     if any(
@@ -2083,7 +2083,7 @@ def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> di
         and board.get(central_escape_square) is None
         and not any(
             square in board
-            for square in _between(board, attacker_king, central_escape_square)
+            for square in squares_between(attacker_king, central_escape_square)
         )
     )
     geometry = bool(

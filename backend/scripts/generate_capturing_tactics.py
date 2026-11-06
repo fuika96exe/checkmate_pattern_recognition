@@ -16,6 +16,7 @@ from pathlib import Path
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND_ROOT.parent))
+sys.path.insert(0, str(BACKEND_ROOT))  # xq_classify, imported by backend.app.board
 
 from backend.app.midgame_tactics import LABELS, RULES_VERSION, ReplayError, material_result
 from backend.app.notation import chinese_notation

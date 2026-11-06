@@ -113,13 +113,13 @@ class Position:
         king = next((s for s, p in self.board.items() if p == ("k" if self.side == "red" else "K")), None)
         if king:
             for source, piece in sorted(self.board.items()):
-                if not own(piece, self.side) or king not in b._pseudo_legal_targets(self.board, source, piece):
+                if not own(piece, self.side) or king not in b.pseudo_legal_targets(self.board, source, piece):
                     continue
                 # Occupancy-only safety check; never send a missing-king FEN to pyffish.
                 trial = dict(self.board)
                 trial[king] = trial.pop(source)
                 own_king = next(s for s, p in trial.items() if p == ("K" if self.side == "red" else "k"))
-                if b._is_square_attacked(trial, own_king, self.side != "red"):
+                if b.is_square_attacked(trial, own_king, self.side != "red"):
                     continue
                 result.setdefault(self.ids[king], []).append({
                     "actor": self.ref(self.ids[source]), "target": self.ref(self.ids[king]),
@@ -155,7 +155,7 @@ class Position:
     @cached_property
     def checked(self):
         king = next(s for s, p in self.board.items() if p == ("k" if self.side == "red" else "K"))
-        return b._is_square_attacked(self.board, king, self.side == "red")
+        return b.is_square_attacked(self.board, king, self.side == "red")
 
     @cached_property
     def pins(self):
@@ -224,11 +224,11 @@ def opened_by(before: Position, after: Position, actor: str, target: str, vacate
     piece = after.board[src]
     if src != before.squares.get(actor) or dst != before.squares.get(target):
         return False
-    if dst in b._pseudo_legal_targets(before.board, src, piece):
+    if dst in b.pseudo_legal_targets(before.board, src, piece):
         return False
     trial = dict(after.board)
     trial[vacated] = before.board[vacated]
-    return dst not in b._pseudo_legal_targets(trial, src, piece)
+    return dst not in b.pseudo_legal_targets(trial, src, piece)
 
 
 def ray_relations(pos: Position):
@@ -237,11 +237,11 @@ def ray_relations(pos: Position):
     for src, piece in sorted(pos.board.items()):
         if not own(piece, pos.side) or piece.upper() not in {"R", "C"}:
             continue
-        x, y = b._xy(src)
+        x, y = b.coords(src)
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             occupied = []
             cx, cy = x + dx, y + dy
-            while (square := b._square(cx, cy)) is not None:
+            while (square := b.square_at(cx, cy)) is not None:
                 if square in pos.board:
                     occupied.append(square)
                 cx, cy = cx + dx, cy + dy
@@ -264,11 +264,11 @@ def exposed_relation(pos: Position, actor: str, front: str, rear: str):
     trial = dict(pos.board)
     trial.pop(pos.squares[front])
     src, dst = pos.squares[actor], pos.squares[rear]
-    if dst not in b._pseudo_legal_targets(trial, src, trial[src]):
+    if dst not in b.pseudo_legal_targets(trial, src, trial[src]):
         return False
     trial[dst] = trial.pop(src)
     king = next((s for s, p in trial.items() if p == ("K" if pos.side == "red" else "k")), None)
-    return bool(king and not b._is_square_attacked(trial, king, pos.side != "red"))
+    return bool(king and not b.is_square_attacked(trial, king, pos.side != "red"))
 
 
 def verified_hits(pos: Position, reply: Position | None = None, excluded=frozenset()):
@@ -316,11 +316,11 @@ def _pin_relations(pos: Position):
     for src, piece in sorted(pos.board.items()):
         if not own(piece, pos.side) or piece.upper() not in {"R", "C"}:
             continue
-        x, y = b._xy(src)
+        x, y = b.coords(src)
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             occupied = []
             cx, cy = x + dx, y + dy
-            while (square := b._square(cx, cy)) is not None:
+            while (square := b.square_at(cx, cy)) is not None:
                 if square in pos.board:
                     occupied.append(square)
                 cx, cy = cx + dx, cy + dy
@@ -360,15 +360,15 @@ def _pin_relations(pos: Position):
     for src, piece in pos.board.items():
         if not own(piece, pos.side) or piece.upper() != "N":
             continue
-        sx, sy = b._xy(src)
+        sx, sy = b.coords(src)
         for dst, victim in pos.board.items():
             if own(victim, pos.side) or victim.upper() not in VALUES:
                 continue
-            tx, ty = b._xy(dst)
+            tx, ty = b.coords(dst)
             dx, dy = tx - sx, ty - sy
             if sorted((abs(dx), abs(dy))) != [1, 2]:
                 continue
-            leg = b._square(sx + (dx // 2 if abs(dx) == 2 else 0), sy + (dy // 2 if abs(dy) == 2 else 0))
+            leg = b.square_at(sx + (dx // 2 if abs(dx) == 2 else 0), sy + (dy // 2 if abs(dy) == 2 else 0))
             blocker = pos.board.get(leg, "")
             if not blocker or own(blocker, pos.side) or blocker.upper() == "K":
                 continue
@@ -383,14 +383,14 @@ def _pin_relations(pos: Position):
     for src, piece in pos.board.items():
         if not own(piece, pos.side) or piece.upper() != "B":
             continue
-        sx, sy = b._xy(src)
+        sx, sy = b.coords(src)
         for dst, victim in pos.board.items():
             if own(victim, pos.side) or victim.upper() not in MAIN:
                 continue
-            tx, ty = b._xy(dst)
+            tx, ty = b.coords(dst)
             if abs(tx - sx) != 2 or abs(ty - sy) != 2:
                 continue
-            eye = b._square((sx + tx) // 2, (sy + ty) // 2)
+            eye = b.square_at((sx + tx) // 2, (sy + ty) // 2)
             if eye not in pos.board or own(pos.board[eye], pos.side) or pos.board[eye].upper() == "K":
                 continue
             actor, front, rear = pos.ids[src], pos.ids[eye], pos.ids[dst]
@@ -400,7 +400,7 @@ def _pin_relations(pos: Position):
                     "kind": "elephant_eye", "absolute": False, "review": False}
     kings = [s for s, p in pos.board.items() if p.upper() == "K"]
     if len(kings) == 2 and kings[0][0] == kings[1][0]:
-        occupied = [s for s in b._between(pos.board, *kings) if s in pos.board]
+        occupied = [s for s in b.squares_between(*kings) if s in pos.board]
         if len(occupied) == 1 and not own(pos.board[occupied[0]], pos.side):
             front = occupied[0]
             actor = next(s for s in kings if own(pos.board[s], pos.side))
@@ -427,7 +427,7 @@ def without_pieces(pos: Position, identities):
             board.pop(square)
             ids.pop(square)
     parts = pos.fen.split()
-    parts[0] = b._board_to_fen(board)
+    parts[0] = b.board_to_fen(board)
     return Position(" ".join(parts), ids, pos.side)
 
 
@@ -528,7 +528,7 @@ def functional_pin_capture(relation, positions, events, start_ply):
         if not gs:
             continue
         reply = gs + capture.dst
-        if capture.dst not in b._pseudo_legal_targets(post.board, gs, post.board[gs]) or reply in b.legal_moves(post.fen):
+        if capture.dst not in b.pseudo_legal_targets(post.board, gs, post.board[gs]) or reply in b.legal_moves(post.fen):
             continue
         released_post, released_pre = without_pieces(post, [pinner]), without_pieces(pre, [pinner])
         if not released_post or not released_pre or reply not in b.legal_moves(released_post.fen):
@@ -623,15 +623,15 @@ def guard_line_squares(pos: Position, guard: str, target: str) -> set[str]:
         return set()
     kind = pos.board[gs].upper()
     if kind in {"R", "C"}:
-        return set(b._between(pos.board, gs, ts))
-    gx, gy = b._xy(gs)
-    tx, ty = b._xy(ts)
+        return set(b.squares_between(gs, ts))
+    gx, gy = b.coords(gs)
+    tx, ty = b.coords(ts)
     dx, dy = tx - gx, ty - gy
     if kind == "N" and sorted((abs(dx), abs(dy))) == [1, 2]:
-        leg = b._square(gx + (dx // 2 if abs(dx) == 2 else 0), gy + (dy // 2 if abs(dy) == 2 else 0))
+        leg = b.square_at(gx + (dx // 2 if abs(dx) == 2 else 0), gy + (dy // 2 if abs(dy) == 2 else 0))
         return {leg} if leg else set()
     if kind == "B" and abs(dx) == 2 and abs(dy) == 2:
-        eye = b._square(gx + dx // 2, gy + dy // 2)
+        eye = b.square_at(gx + dx // 2, gy + dy // 2)
         return {eye} if eye else set()
     return set()
 
@@ -665,16 +665,16 @@ def illegal_recapture_pin(positions, events, capture):
     for square, piece in sorted(post.board.items()):
         if own(piece, solver) or piece.upper() == "K":
             continue
-        if capture.dst not in b._pseudo_legal_targets(post.board, square, piece) or square + capture.dst in legal:
+        if capture.dst not in b.pseudo_legal_targets(post.board, square, piece) or square + capture.dst in legal:
             continue
         trial = dict(post.board)
         trial[capture.dst] = trial.pop(square)
         pinner = None
-        if enemy_king[0] == own_king[0] and not any(s in trial for s in b._between(trial, enemy_king, own_king)):
+        if enemy_king[0] == own_king[0] and not any(s in trial for s in b.squares_between(enemy_king, own_king)):
             pinner = post.ids[own_king]
         else:
             for src, attacker in sorted(trial.items()):
-                if own(attacker, solver) and src != capture.dst and enemy_king in b._pseudo_legal_targets(trial, src, attacker):
+                if own(attacker, solver) and src != capture.dst and enemy_king in b.pseudo_legal_targets(trial, src, attacker):
                     pinner = post.ids[src]
                     break
         if pinner:
@@ -819,7 +819,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
                     src, dst = before.squares[actor], before.squares[target]
                     old = before.relation(actor, target)
                     return bool(old and (old["profitable"] or old["check"])) or (b.position_analysis(before.query)["is_check"] and
-                        dst in b._pseudo_legal_targets(before.board, src, before.board[src]))
+                        dst in b.pseudo_legal_targets(before.board, src, before.board[src]))
                 if all(existed(t) for t in pair):
                     continue
                 # v2.6: a new check alone does not make a fork; the non-king
@@ -855,7 +855,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
                     if not check["check"] or after.board.get(after.squares.get(cannon, ""), "").upper() != "C":
                         continue
                     king_sq = after.squares[king]
-                    between = [sq for sq in b._between(after.board, after.squares[cannon], king_sq) if sq in after.board]
+                    between = [sq for sq in b.squares_between(after.squares[cannon], king_sq) if sq in after.board]
                     if len(between) != 1 or not own(after.board[between[0]], solver):
                         continue
                     screen = after.ids[between[0]]

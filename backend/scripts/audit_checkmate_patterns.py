@@ -15,11 +15,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.app.board
 from backend.app import board, patterns  # noqa: E402
 
 
 def encode(pieces: dict[str, str], side: str) -> str:
-    return f"{board._board_to_fen(pieces)} {side} - - 0 1"
+    return f"{board.board_to_fen(pieces)} {side} - - 0 1"
 
 
 def transform(fen: str, moves: list[str], rotate: bool = False) -> tuple[str, list[str]]:
@@ -89,7 +90,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
             for target in neighbors:
                 if target in pieces or target[0] != own_king[0]:
                     continue
-                if not any(s in pieces for s in board._between(pieces, own_king, target)) and not attacks.get(target):
+                if not any(s in pieces for s in board.squares_between(own_king, target)) and not attacks.get(target):
                     flags.append("off_center_general_closes_unique_escape_but_no_white_face")
                     break
 
@@ -111,7 +112,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
             for checker in analysis["checking_pieces"]:
                 if checker["reason"] != "cannon_screen":
                     continue
-                screen = [s for s in board._between(pieces, checker["square"], king) if s in pieces]
+                screen = [s for s in board.squares_between(checker["square"], king) if s in pieces]
                 if len(screen) == 1 and screen[0] in horses:
                     flags.append("horse_cannon_geometry_unlabeled_candidate")
                     break
