@@ -23,17 +23,15 @@ from pathlib import Path
 
 import pytest
 
-from backend.app import board, exchange
-from backend.app.midgame_tactics import analyze_midgame, replay
+from backend.app import board as lab_board  # the lab's pyffish adapter, for the native runs
+from xq_classify import board, classify_midgame, clear_caches
+from xq_classify.midgame import replay
 
 FROZEN_DIR = Path(__file__).parent / "fixtures" / "midgame_frozen"
 MANIFEST = json.loads((FROZEN_DIR / "MANIFEST.json").read_text(encoding="utf-8"))
 FROZEN = {name: json.loads((FROZEN_DIR / name).read_text(encoding="utf-8")) for name in MANIFEST["frozen"]}
 KNOWN_WRONG = json.loads((FROZEN_DIR / "known_wrong_v1.json").read_text(encoding="utf-8"))
 FULL = os.environ.get("MIDGAME_FROZEN_FULL") == "1"
-
-CACHED = (board.legal_moves, board.apply_move, board.position_analysis,
-          exchange.evaluate_exchange, exchange._evaluate_square)
 
 
 def _rot(square):
@@ -63,22 +61,20 @@ def transform(case, variant):
     if swap:
         side = "black" if side == "red" else "red"
         solver = "black" if solver == "red" else "red"
-    fen = f"{board._board_to_fen(pieces)} {'w' if side == 'red' else 'b'} - - 0 1"
+    fen = f"{board.board_to_fen(pieces)} {'w' if side == 'red' else 'b'} - - 0 1"
     move = lambda m: square(m[:2]) + square(m[2:])
     return fen, move(case["blunderMove"]), [move(m) for m in case["pv"]], solver
 
 
 @pytest.fixture(params=["native", "python"])
-def board_backend(request, monkeypatch):
-    if request.param == "native" and board.pyffish is None:
+def board_backend(request):
+    if request.param == "native" and lab_board.pyffish is None:
         pytest.skip("pyffish is unavailable")
-    if request.param == "python":
-        monkeypatch.setattr(board, "pyffish", None)
-    for cached in CACHED:
-        cached.cache_clear()
+    previous = board.use_backend(lab_board.NATIVE_BACKEND if request.param == "native" else board.PURE_BACKEND)
+    clear_caches()
     yield request.param
-    for cached in CACHED:
-        cached.cache_clear()
+    board.use_backend(previous)
+    clear_caches()
 
 
 def diff_report(case, variant, backend, vocabulary, result):
@@ -106,7 +102,7 @@ def diff_report(case, variant, backend, vocabulary, result):
 
 def check(case, vocabulary, variant, backend):
     fen, blunder, pv, solver = transform(case, variant)
-    result = analyze_midgame(fen, blunder, pv, solver)
+    result = classify_midgame(fen, blunder, pv, solver).to_dict()
     got = (set(result.get("tactics", [])) & set(vocabulary), (result.get("material") or {}).get("kind"))
     want = (set(case["expected"]["tactics"]), case["expected"]["material"])
     assert result.get("status") != "invalid" and got == want, diff_report(case, variant, backend, vocabulary, result)
@@ -206,16 +202,15 @@ def evidence_problems(case, result):
 
 
 @pytest.mark.parametrize("case,vocabulary", PARAMS)
-def test_frozen_evidence_is_well_formed(case, vocabulary, monkeypatch):
-    monkeypatch.setattr(board, "pyffish", None)  # board-independent; parity is covered above
-    for cached in CACHED:
-        cached.cache_clear()
+def test_frozen_evidence_is_well_formed(case, vocabulary):
+    previous = board.use_backend(board.PURE_BACKEND)  # board-independent; parity is covered above
+    clear_caches()
     try:
-        result = analyze_midgame(case["initialFen"], case["blunderMove"], case["pv"], case["solverSide"])
+        result = classify_midgame(case["initialFen"], case["blunderMove"], case["pv"], case["solverSide"]).to_dict()
         problems = evidence_problems(case, result)
     finally:
-        for cached in CACHED:
-            cached.cache_clear()
+        board.use_backend(previous)
+        clear_caches()
     assert not problems, f"{case['id']} {case['url']} 證據結構錯誤：\n  " + "\n  ".join(problems)
 
 
@@ -243,7 +238,7 @@ def test_frozen_and_known_wrong_are_disjoint():
 def test_known_wrong_tracking(case):
     """Not a gate. XPASS means the engine now matches the expert correction:
     report it to the user, who decides whether to promote it to a new frozen version."""
-    result = analyze_midgame(case["initialFen"], case["blunderMove"], case["pv"], case["solverSide"])
+    result = classify_midgame(case["initialFen"], case["blunderMove"], case["pv"], case["solverSide"]).to_dict()
     got = (sorted(set(result.get("tactics", [])) & set(KNOWN_WRONG["vocabulary"])), (result.get("material") or {}).get("kind"))
     if got != (case["expected"]["tactics"], case["expected"]["material"]):
         pytest.xfail(f"專家修正 {case['expected']['tactics']}，目前 {got[0]}：{case['note']}")

@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.app.board
 
-from backend.app.midgame_tactics import LABELS, material_result, replay  # noqa: E402
+import backend.app.board  # noqa: E402,F401 - installs the lab's default move generator (pyffish when available)
+from xq_classify.midgame import LABELS, material_result, replay  # noqa: E402
 from backend.scripts.import_puzzles import adapt_upload_row  # noqa: E402
 
 BASE = "ee36518e806bada0e3b4e9d2a73d01d1215a17c3"

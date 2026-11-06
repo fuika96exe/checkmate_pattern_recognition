@@ -33,3 +33,38 @@ class CheckmateResult:
         if self.status == 'invalid':
             return {'status': 'invalid', 'patternIds': [], 'error': self.error}
         return {'status': self.status, 'patternIds': list(self.pattern_ids), 'materialId': self.material_id}
+
+
+@dataclass(frozen=True)
+class MidgameResult:
+    """Outcome of ``classify_midgame`` for a line that replays (an invalid line raises ``ReplayError``).
+
+    ``status`` is ``'matched'`` when ``tactics`` is non-empty, else ``'unmatched'``.
+    ``tactics`` lists label IDs in the fixed label order; ``material`` holds
+    ``kind`` (``'gain'`` / ``'no_gain'``), ``start``, ``end`` and ``delta``.
+    ``plies`` carries the per-move occurrences with their evidence;
+    ``supporting_evidence`` keeps suppressed occurrences, ``review_reasons``
+    the candidates a rule rejected and why.
+    """
+
+    status: str
+    solver: str
+    tactics: list[str]
+    fens: list[str]
+    plies: list[dict]
+    material: dict
+    supporting_evidence: list[dict] = field(default_factory=list)
+    review_reasons: list[dict] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        """The lab's puzzle record fields, in the lab's key order."""
+        return {
+            'status': self.status,
+            'solver': self.solver,
+            'tactics': self.tactics,
+            'fens': self.fens,
+            'plies': self.plies,
+            'material': self.material,
+            'supportingEvidence': self.supporting_evidence,
+            'reviewReasons': self.review_reasons,
+        }
