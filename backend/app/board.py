@@ -8,10 +8,15 @@ second one.  It adds the pyffish adapter, the UCCI <-> engine move conversion
   and its FEN halfmove clock and move order differ from the pure generator.
 * On Cloudflare pyffish cannot load, and the pure generator is used.
 
-``legal_moves``, ``apply_move`` and ``position_analysis`` read the module
-attribute ``pyffish`` on every call.  The frozen gates switch boards with
-``monkeypatch.setattr(board, "pyffish", None)``.  Phase 0 steps 4 and 5 move
-them to ``xq_classify.board.use_backend``.
+Two switches exist until phase 0 step 5:
+
+* Importing this module installs the pyffish adapter as the package's move
+  generator when pyffish loads (``xq_classify.board.use_backend``).  Code that
+  runs inside the package (checkmate classification since step 4) follows it.
+* This module's own ``legal_moves``, ``apply_move`` and ``position_analysis``,
+  still used by the lab's midgame and tactic modules, read the module attribute
+  ``pyffish`` on every call.  The frozen midgame gate switches boards with
+  ``monkeypatch.setattr(board, "pyffish", None)`` until step 5.
 """
 from __future__ import annotations
 
@@ -39,6 +44,7 @@ from xq_classify.board import (  # noqa: F401 - re-exported for the lab modules
     side_to_move,
     square_at,
     squares_between,
+    use_backend,
 )
 from xq_classify.board.fen import _parse_fen_cached  # noqa: F401 - cleared by the frozen gates until steps 4-5
 
@@ -97,6 +103,9 @@ class PyffishMoveGenerator:
 
 
 NATIVE_BACKEND = PyffishMoveGenerator()
+
+if pyffish is not None:
+    use_backend(NATIVE_BACKEND)  # the lab's default; public/data was generated with pyffish
 
 
 def active_backend() -> MoveGenerator:

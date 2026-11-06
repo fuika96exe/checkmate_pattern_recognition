@@ -67,16 +67,25 @@ MAX_VALUE_CHARS = 240
 # --------------------------------------------------------------------------- board
 
 def use_board(name: str) -> None:
-    """Select the move generator before any analysis runs (caches are still empty)."""
+    """Select the move generator before any analysis runs.
+
+    Two switches until phase 0 step 5: code inside xq_classify follows
+    ``use_backend``; the lab's own board wrappers (midgame, tactics) read
+    ``app.board.pyffish``.  Both are set here.
+    """
     import app.board
     import backend.app.board
+    from xq_classify import board as package_board
 
     modules = (app.board, backend.app.board)  # two distinct module objects in one process
     if name == "python":
         for module in modules:
             module.pyffish = None
+        package_board.use_backend(package_board.PURE_BACKEND)
     elif any(module.pyffish is None for module in modules):
         raise SystemExit("pyffish is unavailable; cannot snapshot the native board")
+    else:
+        package_board.use_backend(app.board.NATIVE_BACKEND)
 
 
 # --------------------------------------------------------------------------- suites

@@ -16,7 +16,10 @@ import sys
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.app.board
-from backend.app import board, patterns  # noqa: E402
+from backend.app import board  # noqa: E402
+from xq_classify.checkmate import recognition as patterns  # noqa: E402
+
+RECOGNIZER_SOURCE = ROOT / "backend/xq_classify/checkmate/recognition.py"
 
 
 def encode(pieces: dict[str, str], side: str) -> str:
@@ -141,7 +144,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
 
 def literal_examples() -> list[dict]:
     tree = ast.parse((ROOT/"backend/tests/test_position_analysis.py").read_text(encoding="utf-8"))
-    source = ast.parse((ROOT/"backend/app/patterns.py").read_text(encoding="utf-8"))
+    source = ast.parse(RECOGNIZER_SOURCE.read_text(encoding="utf-8"))
     dispatch = {}
     for f in source.body:
         if isinstance(f, ast.FunctionDef):
@@ -284,7 +287,7 @@ def main():
         for flag in row["flags"]:
             flags[flag].append(row["id"])
     result = {"datasetVersion": data["datasetVersion"], "rulesVersion": patterns.CHECKMATE_RULES_VERSION,
-              "recognizerSha256": hashlib.sha256((ROOT/"backend/app/patterns.py").read_bytes()).hexdigest(),
+              "recognizerSha256": hashlib.sha256(RECOGNIZER_SOURCE.read_bytes()).hexdigest(),
               "patternCounts": dict(Counter(k for row in rows for k in row["labels"])),
               "flagCounts": {k: len(v) for k, v in flags.items()}, "flagIds": dict(flags),
               "examples": examples, "sequenceChecks": sequence_checks, "focusedProbes": focused_probes(), "corpus": rows}

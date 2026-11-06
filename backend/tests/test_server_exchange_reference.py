@@ -12,6 +12,8 @@ import json
 from collections import Counter
 from pathlib import Path
 
+import pytest
+
 from xq_classify import board, exchange
 
 REFERENCE = json.loads(
@@ -19,12 +21,20 @@ REFERENCE = json.loads(
 )
 
 
+@pytest.fixture
+def pure_board():
+    """The lab installs pyffish as the package backend when it loads; the server runs the pure board."""
+    previous = board.use_backend(board.PURE_BACKEND)
+    yield
+    board.use_backend(previous)
+
+
 def test_reference_fixture_shape():
     assert REFERENCE["fields"] == ["fen", "move", "kind", "server"]
     assert Counter(kind for _, _, kind, _ in REFERENCE["cases"]) == {"capture": 8000, "quiet": 2000}
 
 
-def test_package_exchange_matches_server():
+def test_package_exchange_matches_server(pure_board):
     assert board.current_backend() is board.PURE_BACKEND
     mismatches = [
         (fen, move, kind, server, got)

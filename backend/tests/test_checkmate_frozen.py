@@ -16,7 +16,6 @@ at freeze time) and the material fallback code (子力歸類), which is only pre
 when no named pattern matched. When a later version re-rules a puzzle
 (``supersedes``), only its newest entry is checked.
 """
-import asyncio
 import hashlib
 import json
 import os
@@ -24,17 +23,13 @@ from pathlib import Path
 
 import pytest
 
-from app import board
-import app.patterns as patterns
-from scripts.generate_puzzle_recognition import recognize_puzzle
+from app import board as lab_board  # the lab's pyffish adapter, for the native runs
+from xq_classify import board, classify_checkmate, clear_caches
 
 FROZEN_DIR = Path(__file__).parent / "fixtures" / "checkmate_frozen"
 MANIFEST = json.loads((FROZEN_DIR / "MANIFEST.json").read_text(encoding="utf-8"))
 FROZEN = {name: json.loads((FROZEN_DIR / name).read_text(encoding="utf-8")) for name in MANIFEST["frozen"]}
 FULL = os.environ.get("CHECKMATE_FROZEN_FULL") == "1"
-
-CACHED = (board._parse_fen_cached, board.legal_moves, board.apply_move, board.position_analysis,
-          patterns._apply_moves_cached, patterns._move_trace_cached)
 
 
 def effective_cases():
@@ -80,28 +75,25 @@ def transform(case, variant):
     side = board.side_to_move(case["initialFen"])
     if swap:
         side = "black" if side == "red" else "red"
-    fen = f"{board._board_to_fen(pieces)} {'w' if side == 'red' else 'b'} - - 0 1"
+    fen = f"{board.board_to_fen(pieces)} {'w' if side == 'red' else 'b'} - - 0 1"
     move = lambda m: square(m[:2]) + square(m[2:])
     return fen, move(case["blunderMove"]), [move(m) for m in case["pv"]]
 
 
 @pytest.fixture(params=["native", "python"])
-def board_backend(request, monkeypatch):
-    if request.param == "native" and board.pyffish is None:
+def board_backend(request):
+    if request.param == "native" and lab_board.pyffish is None:
         pytest.skip("pyffish is unavailable")
-    if request.param == "python":
-        monkeypatch.setattr(board, "pyffish", None)
-    for cached in CACHED:
-        cached.cache_clear()
+    previous = board.use_backend(lab_board.NATIVE_BACKEND if request.param == "native" else board.PURE_BACKEND)
+    clear_caches()
     yield request.param
-    for cached in CACHED:
-        cached.cache_clear()
+    board.use_backend(previous)
+    clear_caches()
 
 
 def check(case, vocabulary, variant, backend):
     fen, blunder, pv = transform(case, variant)
-    result = asyncio.run(recognize_puzzle({"importStatus": "ready", "importErrors": [], "initialFen": fen,
-                                           "blunderMove": blunder, "pv": pv}))
+    result = classify_checkmate(fen, blunder, pv).to_dict()
     got = (set(result.get("patternIds", [])) & set(vocabulary), result.get("materialId"))
     want = (set(case["expected"]["patterns"]), case["expected"]["material"])
     if result.get("status") != "invalid" and got == want:

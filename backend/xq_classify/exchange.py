@@ -99,3 +99,4 @@ _PACKAGE_BOARD = ExchangeEvaluator(board.legal_moves, board.apply_move, board.po
 evaluate_exchange = _PACKAGE_BOARD.evaluate_exchange
 evaluate_square = _PACKAGE_BOARD.evaluate_square
 clear_caches = _PACKAGE_BOARD.clear_caches
+board.register_dependent_cache(clear_caches)

@@ -55,11 +55,24 @@ __all__ = [
     'parse_fen',
     'position_analysis',
     'pseudo_legal_targets',
+    'register_dependent_cache',
     'side_to_move',
     'square_at',
     'squares_between',
     'use_backend',
 ]
+
+
+_DEPENDENT_CACHES: list[Callable[[], None]] = []
+
+
+def register_dependent_cache(clear: Callable[[], None]) -> None:
+    """Register the clear function of a cache built on board results (moves, FENs).
+
+    ``use_backend`` and ``clear_caches`` call it too: FEN strings differ between
+    move generators (the halfmove clock), so such caches must not outlive a switch.
+    """
+    _DEPENDENT_CACHES.append(clear)
 
 
 def current_backend() -> MoveGenerator:
@@ -122,6 +135,9 @@ def position_analysis(fen: str) -> dict:
 
 
 def clear_caches() -> None:
+    """Clear the board caches and every registered dependent cache."""
     _fen.clear_cache()
     for cached in (legal_moves, apply_move, position_analysis):
         cached.cache_clear()
+    for clear in _DEPENDENT_CACHES:
+        clear()

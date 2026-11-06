@@ -10,7 +10,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 
-from .board import BoardError, apply_move, position_analysis
+from xq_classify import classify_checkmate
+
+from .board import BoardError, position_analysis
 from .builtin_cases import BUILT_IN_CASES
 from .models import (
     AdvanceRequest,
@@ -232,47 +234,25 @@ async def api_analyze_checkmate_pattern(request: PatternAnalysisRequest) -> Patt
 
 @app.post("/api/analyze-puzzle-line", response_model=PuzzleLineResponse)
 async def api_analyze_puzzle_line(request: PuzzleLineRequest) -> PuzzleLineResponse:
-    moves = [request.blunder_move, *request.pv]
-    timeline = [PuzzleTimelineEntry(index=0, fen=request.fen)]
-    current_fen = request.fen
-
-    for index, move in enumerate(moves, start=1):
+    """Thin wrapper: xq_classify.classify_checkmate decides; this only shapes the HTTP response."""
+    result = classify_checkmate(request.fen, request.blunder_move, request.pv)
+    timeline = [PuzzleTimelineEntry(**entry) for entry in result.timeline]
+    analysis = None
+    if result.analysis is not None:
         try:
-            current_fen = apply_move(current_fen, move)
+            analysis = PatternAnalysisResponse.model_validate(result.analysis)
         except Exception as exc:
             return PuzzleLineResponse(
                 rules_version=CHECKMATE_RULES_VERSION,
                 valid=False,
-                error=f"第 {index} 手 {move} 無法套用：{exc}",
-                failed_move_index=index,
+                error=f"殺法分析失敗：{exc}",
                 timeline=timeline,
             )
-        timeline.append(PuzzleTimelineEntry(index=index, fen=current_fen, move=move))
-
-    try:
-        analysis = PatternAnalysisResponse.model_validate(
-            analyze_patterns(request.fen, moves)
-        )
-    except Exception as exc:
-        return PuzzleLineResponse(
-            rules_version=CHECKMATE_RULES_VERSION,
-            valid=False,
-            error=f"殺法分析失敗：{exc}",
-            timeline=timeline,
-        )
-
-    if not (analysis.analysis.is_checkmate or analysis.analysis.is_stalemate):
-        return PuzzleLineResponse(
-            rules_version=CHECKMATE_RULES_VERSION,
-            valid=False,
-            error="解答線終局不是將死或困斃局面",
-            timeline=timeline,
-            analysis=analysis,
-        )
-
     return PuzzleLineResponse(
         rules_version=CHECKMATE_RULES_VERSION,
-        valid=True,
+        valid=result.status != "invalid",
+        error=result.error,
+        failed_move_index=result.failed_move_index,
         timeline=timeline,
         analysis=analysis,
     )

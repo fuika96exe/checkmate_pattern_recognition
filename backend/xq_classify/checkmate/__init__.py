@@ -1,5 +1,27 @@
 """Checkmate pattern classification (``classify_checkmate``).
 
-Filled in phase 0 steps 4 and 7: apply the line, require a final checkmate or
-stalemate, recognise the patterns, then fall back to the mating-material code.
+Apply the line, require a final checkmate or stalemate, recognise the patterns,
+then fall back to the mating-material code.  Phase 0 step 7 splits
+``recognition`` into one module per pattern.
 """
+
+from .classify import NOT_MATE_ERROR, classify_checkmate
+from .recognition import (
+    CHECKMATE_RULES_VERSION,
+    PATTERN_ORDER,
+    analyze_patterns,
+    classify_mating_material,
+    clear_caches,
+    recognize_pattern,
+)
+
+__all__ = [
+    'CHECKMATE_RULES_VERSION',
+    'NOT_MATE_ERROR',
+    'PATTERN_ORDER',
+    'analyze_patterns',
+    'classify_checkmate',
+    'classify_mating_material',
+    'clear_caches',
+    'recognize_pattern',
+]

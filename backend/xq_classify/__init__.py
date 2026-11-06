@@ -6,10 +6,13 @@ Modules inside the package import each other relatively, so it also works
 when vendored under another package; xiangqi-server imports it as
 ``xiangqi_server.vendor.xq_classify``.
 
-The public entry points ``classify_midgame``, ``classify_checkmate`` and
-``clear_caches`` are added as the lab code moves in (phase 0, steps 4 and 5).
+Public entry points: ``classify_checkmate`` and ``clear_caches``;
+``classify_midgame`` follows in phase 0 step 5.
 """
 
+from .board import clear_caches
+from .checkmate import classify_checkmate
+from .contracts import CheckmateResult
 from .version import CHECKMATE_RULES_VERSION, MIDGAME_RULES_VERSION, PACKAGE_VERSION, SCHEMA_VERSION
 
 __version__ = PACKAGE_VERSION
@@ -19,5 +22,8 @@ __all__ = [
     'MIDGAME_RULES_VERSION',
     'PACKAGE_VERSION',
     'SCHEMA_VERSION',
+    'CheckmateResult',
     '__version__',
+    'classify_checkmate',
+    'clear_caches',
 ]
