@@ -41,7 +41,8 @@ def _pin_proof(run: Analysis, relation: dict, ply: int) -> dict | None:
 
 
 def _newly_attacked(frame: MoveFrame, identity: str) -> bool:
-    return any(r['profitable'] and not (frame.before.relation(r['actor']['id'], identity) or {}).get('profitable', False)
+    return any(r['profitable']
+               and not (frame.before.relation(r['actor']['id'], identity) or {}).get('profitable', False)
                for r in frame.hits.get(identity, []))
 
 
@@ -115,7 +116,8 @@ def _only_while_in_check(frame: MoveFrame, key: tuple, candidate: _Candidate) ->
     after a reply that moved none of its pieces, it never restricted anything.
     """
     after, reply = frame.after, frame.reply
-    return (candidate.mode in {'created', 'exploited', 'defensive_duty_exploited'} and candidate.confirmed == frame.ply and
+    return (candidate.mode in {'created', 'exploited', 'defensive_duty_exploited'} and
+            candidate.confirmed == frame.ply and
             after.checked and reply is not None and key not in reply.pins and
             all(after.squares.get(x) == reply.squares.get(x) for x in key[:3]))
 
@@ -158,7 +160,8 @@ def detect_recapture_pins(run: Analysis) -> None:
             continue
         if any(o['id'] == 'pin' for ply in run.plies for o in ply['occurrences']):
             break
-        found = illegal_recapture_pin(run.positions, capture) or relative_recapture_pin(run.positions, run.events, capture)
+        found = (illegal_recapture_pin(run.positions, capture)
+                 or relative_recapture_pin(run.positions, run.events, capture))
         if found:
             pinner, guard, king, proof = found
             mode, position = proof['mode'], run.positions[capture.ply]

@@ -38,7 +38,9 @@ def _realization_of(run: Analysis, case: _Departure, attack: dict, target: str) 
     if (case.before.relation(actor, target) or pressure.relation(actor, blocker) or
             not opened_by(pressure, release, actor, target, case.response.move[:2])):
         return None
-    realization = next((e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None)
+    realization = next(
+        (e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None,
+    )
     if not realization or evaluate_exchange(run.positions[realization.ply - 1].fen, realization.move) <= 0:
         return None
     return realization if _held_until_realized(run, case, actor, target, realization) else None
@@ -47,7 +49,8 @@ def _realization_of(run: Analysis, case: _Departure, attack: dict, target: str) 
 def _emit_clearance(run: Analysis, case: _Departure, attack: dict, target: str, realization: Event) -> None:
     trigger, response, pressure = case.trigger, case.response, case.pressure
     blocker = response.actor
-    run.emit(Finding('clearance', trigger.ply, realization.ply, [trigger.actor, attack['actor']['id']], [blocker, target],
+    run.emit(Finding('clearance', trigger.ply, realization.ply, [trigger.actor, attack['actor']['id']],
+                     [blocker, target],
                      'forced_blocker_departure',
                      {'blocker': pressure.ref(blocker), 'vacated': response.move[:2],
                       'pressure': case.new_pressure, 'pressureFen': pressure.fen,

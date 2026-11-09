@@ -16,15 +16,9 @@ from ..geometry import (
 # --- 重炮杀 (double cannon) ---------------------------------------------------
 
 
-def _is_file_screen(board: dict[str, str], other: str, checker: str, king: str) -> bool:
+def _is_file_screen(other: str, checker: str, king: str) -> bool:
     """Whether ``other``, on the file of the checking cannon and the general, stands between the two."""
-    between = {
-        square
-        for square in board
-        if square[0] == checker[0]
-        and min(int(square[1]), int(king[1])) < int(other[1]) < max(int(square[1]), int(king[1]))
-    }
-    return other in between or min(int(checker[1]), int(king[1])) < int(other[1]) < max(int(checker[1]), int(king[1]))
+    return min(int(checker[1]), int(king[1])) < int(other[1]) < max(int(checker[1]), int(king[1]))
 
 
 def _is_rank_screen(other: str, checker: str, king: str) -> bool:
@@ -32,9 +26,7 @@ def _is_rank_screen(other: str, checker: str, king: str) -> bool:
     return min(ord(checker[0]), ord(king[0])) < ord(other[0]) < max(ord(checker[0]), ord(king[0]))
 
 
-def _find_screen_cannon(
-    board: dict[str, str], cannon_squares: list[str], checker: str, king: str
-) -> tuple[bool, bool, str | None]:
+def _find_screen_cannon(cannon_squares: list[str], checker: str, king: str) -> tuple[bool, bool, str | None]:
     """``(same_file, same_rank, screen_cannon_square)``; the scan stops at the first screening cannon."""
     same_file = False
     same_rank = False
@@ -43,7 +35,7 @@ def _find_screen_cannon(
             continue
         if other[0] == checker[0] == king[0]:
             same_file = True
-            if _is_file_screen(board, other, checker, king):
+            if _is_file_screen(other, checker, king):
                 return same_file, same_rank, other
         if other[1] == checker[1] == king[1]:
             same_rank = True
@@ -71,7 +63,7 @@ def recognize_double_cannon_checkmate(fen: str, moves: list[str] | None = None) 
     if len(cannon_squares) >= 2 and defender_king and checking_cannons:
         checking_cannon_square = checking_cannons[0]['square']
         same_file, same_rank, screen_cannon_square = _find_screen_cannon(
-            board, cannon_squares, checking_cannon_square, defender_king
+            cannon_squares, checking_cannon_square, defender_king
         )
     orientation = _screen_orientation(screen_cannon_square, checking_cannon_square)
     detected = bool(

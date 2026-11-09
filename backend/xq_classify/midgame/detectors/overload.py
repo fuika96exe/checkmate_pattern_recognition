@@ -13,7 +13,9 @@ def _realization(run: Analysis, trigger: Event, duty: tuple[str, str], guard: st
     """The later capture on the guard's other duty, if the release held all the way to it."""
     p = trigger.ply
     actor, target = duty
-    realization = next((e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None)
+    realization = next(
+        (e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None,
+    )
     if not realization:
         return None
     if any(not pos.relation(actor, target) or not pos.relation(actor, target)['profitable'] or

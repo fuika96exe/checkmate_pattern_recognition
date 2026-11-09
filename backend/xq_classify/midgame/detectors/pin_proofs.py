@@ -55,7 +55,9 @@ def _capture_proof(pre: Position, post: Position, capture: Event, guard: str, pi
             'releasedFen': released_post.fen, 'gainWithoutPin': without_gain}
 
 
-def functional_pin_capture(relation: dict, positions: list[Position], events: list[Event], start_ply: int) -> dict | None:
+def functional_pin_capture(
+    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+) -> dict | None:
     """Minor pins need an actual profitable major capture enabled by the pin."""
     guard, pinner = relation['front']['id'], relation['actor']['id']
     key = _pin_key(relation)
@@ -71,7 +73,9 @@ def functional_pin_capture(relation: dict, positions: list[Position], events: li
     return None
 
 
-def absolute_pin_sacrifice(relation: dict, positions: list[Position], events: list[Event], start_ply: int) -> dict | None:
+def absolute_pin_sacrifice(
+    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+) -> dict | None:
     """The pinned piece captures its pinner and is then captured at a net loss."""
     guard, pinner = relation['front']['id'], relation['actor']['id']
     key = _pin_key(relation)
@@ -115,7 +119,9 @@ def _front_won_after_rear_left(
             'mode': 'rear_evades_front_captured', 'response': departure.move}
 
 
-def relative_pin_front_capture(relation: dict, positions: list[Position], events: list[Event], start_ply: int) -> dict | None:
+def relative_pin_front_capture(
+    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+) -> dict | None:
     """The defender saves the rear piece, then the pinned front is won."""
     if relation.get('absolute'):
         return None
@@ -164,7 +170,8 @@ def _illegal_recapture_pinner(post: Position, trial: dict, kings: tuple[str, str
     if enemy_king[0] == own_king[0] and not any(s in trial for s in b.squares_between(enemy_king, own_king)):
         return post.ids[own_king]
     for src, attacker in sorted(trial.items()):
-        if own(attacker, post.side) and src != capture_dst and enemy_king in b.pseudo_legal_targets(trial, src, attacker):
+        if (own(attacker, post.side) and src != capture_dst
+                and enemy_king in b.pseudo_legal_targets(trial, src, attacker)):
             return post.ids[src]
     return None
 
