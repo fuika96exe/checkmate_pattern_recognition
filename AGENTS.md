@@ -15,6 +15,17 @@ npm.cmd run build
 .\run-dev.ps1                       # backend :8000 (uvicorn reload=True), frontend :3001
 ```
 
+Extra checks for `backend/xq_classify/`:
+
+```powershell
+python backend\scripts\portability_check.py                  # frozen gates with nothing from the lab importable, flat and vendored
+python backend\scripts\golden_snapshot.py verify             # full output against a local baseline (refactors only)
+python backend\scripts\bench_classify.py --cpus 0-11 --rounds 5 --baseline-root <checkout>   # exits 1 if over 10% slower
+python -m pytest backend\tests -q --cov=backend\xq_classify --cov-branch
+```
+
+- `golden_snapshot.py` guards refactors, not rule changes. Its baselines live in the git-ignored `backend/.golden/`, so create one with `snapshot` before refactoring.
+- `bench_classify.py` must alternate with a reference checkout, because timings drift by more than 10% between sessions. `18bbdf7` is the last commit before the package existed.
 - Use `npm.cmd`; PowerShell execution policy may block `npm.ps1`.
 - `npm test` runs legacy starter HTML tests (`tests/rendered-html.test.mjs`) and is not a project verification command. `node --test tests/notation-importer.test.mjs` covers the TypeScript notation importer.
 - Local runtime is Python 3.12 with `pyffish`. `backend/pyproject.toml` (`>=3.13`, `uv`) exists only for the Cloudflare Python Worker build.
@@ -23,23 +34,31 @@ npm.cmd run build
 
 ```text
 app/components/Workbench.tsx (tabs)
-  -> app/lib/api.ts -> backend/app/main.py (FastAPI) -> service.py / analysis modules
+  -> app/lib/api.ts -> backend/app/main.py (FastAPI) -> service.py / analysis modules -> backend/xq_classify/
   -> or public/data/*.json (pre-generated indexes)
 ```
+
+Portable classifiers (`backend/xq_classify/`; its `README.md` covers result fields, coordinates and when to bump each version):
+
+| Module | Responsibility |
+|---|---|
+| `board/` | FEN, legal moves, attacks, piece identity; pure-Python generator by default, `use_backend` is the only switch |
+| `midgame/` | `classify_midgame`: replay, material, `detectors/` (one module per label), merge. `analysis.py` holds the detector order |
+| `checkmate/` | `classify_checkmate`: `recognition.py` (dispatch, `PATTERN_ORDER`, exclusions), `patterns/` (one module per pattern group), `material.py`, `geometry.py` |
+| `exchange.py` | Destination-square exchange evaluation |
+| `contracts.py`, `labels.py`, `version.py` | Result dataclasses, stable IDs with their zh-TW names, all version constants |
 
 Backend (`backend/app/`):
 
 | Module | Responsibility |
 |---|---|
-| `board.py` | UCCI validation, FEN, legal moves; `pyffish` locally, pure-Python fallback on Cloudflare |
+| `board.py` | Re-exports the package board and holds the pyffish adapter (`PyffishMoveGenerator`, `NATIVE_BACKEND`), installed on first import |
 | `notation.py` | Chinese move notation (Red: Chinese numerals; Black: full-width Arabic numerals) |
 | `recognizer.py`, `service.py` | Opening shapes, append-only opening memory, immutable state snapshots |
 | `opening_sample.py` | Opening-sample advance/replay endpoints |
-| `patterns.py` | Checkmate pattern recognition (`CHECKMATE_RULES_VERSION`) |
+| `patterns.py`, `midgame_tactics.py`, `exchange.py` | Thin re-exports of the package for lab code. Rules never go here |
 | `tactics.py` | Move-level tactic labels (`TACTIC_RULES_VERSION`) |
 | `tactical_categories.py` | Tactical category labels (`CATEGORY_RULES_VERSION`) |
-| `midgame_tactics.py` | Midgame puzzle tactics used by the capturing-tactics dataset (`RULES_VERSION`) |
-| `exchange.py` | Destination-square exchange evaluation for Fake Human move labels |
 | `cycle_rules.py`, `repetition.py` | Pure long-check/long-chase cycle evaluator and repetition adjudication |
 | `builtin_cases.py`, `models.py`, `main.py` | Built-in cases, Pydantic models, HTTP API and fixture management |
 
@@ -56,7 +75,7 @@ Frontend (`app/`):
 - Opening naming policy: `xiangqi-opening-recognition-spec.md`
 - Midgame batch/audit reports: `docs/reports/`
 
-Update the matching document when a rule's behaviour changes, and bump the module's rules-version constant.
+Update the matching document when a rule's behaviour changes, and bump its rules-version constant. The checkmate and midgame versions are in `backend/xq_classify/version.py`.
 
 ## Data and fixtures
 
@@ -82,7 +101,8 @@ After a rule change, regenerate every affected `public/data/*.json`; the fronten
 - Red file numbers run right-to-left (physical `g` = Red 3, `c` = Red 7); Black is mirrored (`c` = Black 3, `g` = Black 7).
 - Opening memory is append-only along a move line. A later position must not erase a confirmed opening choice; the frontend navigates immutable snapshots rather than mutating history.
 - Keep recognition, pattern, and tactic IDs stable. Prefer adding a template or modifier over renaming an existing ID.
-- Analysis must run both locally (`pyffish`) and on Cloudflare (pure-Python fallback, no threads). Kingless or terminal positions must never reach `pyffish`, which crashes natively. `test_native_board_safety.py` and `test_cloudflare_api.py` guard these paths.
+- Analysis must run both locally (`pyffish`) and on Cloudflare (the package's pure-Python board, no threads). `xq_classify.board.use_backend` is the only board switch. Importing `app.board` or `backend.app.board` installs pyffish on first import, so choose another backend only after both are imported.
+- Kingless or terminal positions must never reach `pyffish`, which crashes natively. `test_native_board_safety.py` and `test_cloudflare_api.py` guard these paths.
 
 ## Change workflow
 
@@ -95,7 +115,7 @@ After a rule change, regenerate every affected `public/data/*.json`; the fronten
 
 ### Frozen midgame regression gate
 
-`backend/tests/test_midgame_frozen.py` checks every case in `fixtures/midgame_frozen/v*.json`. Each case was confirmed correct by a human expert. The test checks:
+`backend/tests/test_midgame_frozen.py` runs every case in `fixtures/midgame_frozen/v*.json` through `xq_classify.classify_midgame`. Each case was confirmed correct by a human expert. The test checks:
 
 - the exact `tactics` set and `material.kind`;
 - on both boards (native pyffish and the pure-Python fallback);
@@ -110,7 +130,7 @@ After a rule change, regenerate every affected `public/data/*.json`; the fronten
 
 ### Frozen checkmate regression gate
 
-`backend/tests/test_checkmate_frozen.py` applies the same discipline to checkmate patterns (`patterns.py`). It checks every case in `fixtures/checkmate_frozen/v*.json` through the real puzzle pipeline (`scripts.generate_puzzle_recognition.recognize_puzzle`). It compares:
+`backend/tests/test_checkmate_frozen.py` applies the same discipline to checkmate patterns (`xq_classify/checkmate/`). It runs every case in `fixtures/checkmate_frozen/v*.json` through `xq_classify.classify_checkmate`, the call behind the puzzle pipeline. It compares:
 
 - the exact pattern-ID set, restricted to the version's `vocabulary`;
 - `materialId`, the material fallback, present only when no pattern matched.
@@ -128,6 +148,18 @@ The midgame rules above apply unchanged:
 - extensions and re-rulings come only as new human versions with `supersedes`.
 
 The hand-written checkmate label tests (`test_puzzle_label_regressions.py`, `test_revised_mate_definitions.py`, and the label assertions in `test_position_analysis.py`) were removed on 2026-11-05. Do not reintroduce checkmate label expectations outside the frozen set.
+
+## Portable package rules
+
+`backend/xq_classify/` is copied into xiangqi-server as `xiangqi_server.vendor.xq_classify`. The lab holds the only source, so change rules here and never in a copy.
+
+- Use only the standard library, and relative imports between the package's own modules. No threads, processes, file or network access, or `print` (`test_xq_classify_isolation.py`).
+- Keep every function at cognitive complexity 15 or lower (`test_xq_classify_complexity.py`, complexipy). An exception needs the user's approval.
+- Keep the package clean under xiangqi-server's ruff settings, copied in `backend/ruff.toml` (`test_xq_classify_ruff.py`). Chinese punctuation in output strings is exempt from `RUF001` file by file. Never change an output string to satisfy a linter.
+- `to_dict()` must keep its keys and key order unless `SCHEMA_VERSION` is bumped. `public/data/*.json` and the gates depend on it.
+- Detector order in `midgame/analysis.py` and `PATTERN_ORDER` in `checkmate/recognition.py` are observable in the output.
+- A new label or pattern also needs its zh-TW name in `labels.py`, taken from the lab's rules, never translated (`test_xq_classify_contracts.py`). A new checkmate pattern needs a section in the rules document too, because the test reads the names from there.
+- Lab code calls the package. Do not grow a second copy of a rule or of the move generator in `backend/app/`.
 
 ## Style and safety
 

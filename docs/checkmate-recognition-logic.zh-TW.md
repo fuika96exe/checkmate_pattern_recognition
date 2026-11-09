@@ -2,7 +2,7 @@
 
 整理日期：2026-11-05  
 程式規則版本：`checkmate-patterns-2026.11.05-v15`  
-主要來源：[backend/app/patterns.py](../backend/app/patterns.py)  
+主要來源：[backend/xq_classify/checkmate/](../backend/xq_classify/checkmate/)  
 定義摘要：[checkmate-definitions-2026-11.md](checkmate-definitions-2026-11.md)
 
 本文按目前程式實際使用嘅 23 種分類（`PATTERN_ORDER`），解釋每種殺法會檢查邊啲棋位、幾時需要走子歷史，以及已知嘅誤判或漏判位。
@@ -17,7 +17,7 @@
 ## 同上一版（2026-09-26）嘅分別
 
 - **花心兵、花心車合併為「花心殺」**，統一編號 `CENTROID_CHECKMATE`。舊編號 `CENTROID_PAWN_CHECKMATE`、`CENTROID_CHARIOT_CHECKMATE` 仍可經 `recognize_pattern` 查詢同一規則。
-- **太監追皇帝、雙馬飲泉已移出分類**：函數仍留喺 `patterns.py`，但 `PATTERN_ORDER` 同 `recognize_pattern` 都冇登記，用呢兩個編號查詢會拋出「不支援的 pattern_id」。
+- **太監追皇帝、雙馬飲泉已移出分類**：對應函數已喺 2026-11 重構時刪除，`PATTERN_ORDER` 同 `recognize_pattern` 都冇登記，用呢兩個編號查詢會拋出「不支援的 pattern_id」。
 - 新增**標籤互斥**、**雙將隱藏**同**子力組合兜底**三個後處理步驟（見下文）。
 - 鐵門栓、大膽穿心、雙鬼拍門、悶殺、悶宮殺、側面虎、臥槽馬、掛角馬、夾車炮嘅條件改寫，上一版列出嘅多項誤判已修正。
 - 困斃題：棋題分析 API 而家接受「將死或困斃」終局，唔再標為無效。
@@ -514,5 +514,5 @@ d7  e7  f7    黑方宮口
 - [辨認邏輯審核報告（英文）](checkmate-categorization-audit.md)：2026-10-31 對上一版規則嘅審核，部分問題已喺本版修正，作歷史參考。
 - [審核證據 JSON](checkmate-audit-evidence.json)：上述審核嘅 FEN、走法、鏡像測試與反例。
 - [題庫匯入報告](puzzle-batch-import-report.md)：匯入數量與標籤統計。
-- [辨認器原始程式](../backend/app/patterns.py)。
+- [辨認器原始程式](../backend/xq_classify/checkmate/)：`recognition.py` 負責分派同互斥，各殺法喺 `patterns/`。
 - [棋題分析 API](../backend/app/main.py)。
