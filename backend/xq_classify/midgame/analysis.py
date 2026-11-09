@@ -11,6 +11,8 @@ from ..version import MIDGAME_RULES_VERSION
 from .context import LABELS, Analysis, Finding, move_frame
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
+from .detectors.pin import detect_pins, detect_recapture_pins
+from .detectors.pin_proofs import front_can_trade_pinner
 from .detectors.skewer import detect_skewers
 from .material import material_result
 from .merge import finalize_labels
@@ -18,15 +20,6 @@ from .position import MAIN, VALUES, Position, opened_by, other, own, view, witho
 from .replay import replay
 
 RULES_VERSION = MIDGAME_RULES_VERSION
-
-
-def front_can_trade_pinner(pos: Position, relation):
-    actor, front = relation["actor"]["id"], relation["front"]["id"]
-    if actor not in pos.squares or front not in pos.squares:
-        return False
-    fen = view(pos.fen, other(pos.side))
-    move = pos.squares[front] + pos.squares[actor]
-    return move in b.legal_moves(fen) and evaluate_exchange(fen, move) >= 0
 
 
 def escape_assessment(pos: Position, target: str, move: str):
@@ -84,118 +77,6 @@ def trap_state(pos: Position, target: str, excluded=frozenset()):
     return {"initialAttack": initial[0], "escapes": escapes}
 
 
-def functional_pin_capture(relation, positions, events, start_ply):
-    """Minor pins need an actual profitable major capture enabled by the pin."""
-    guard, pinner = relation["front"]["id"], relation["actor"]["id"]
-    key = (pinner, guard, relation["rear"]["id"], relation["kind"])
-    for capture in events[start_ply - 1:]:
-        if capture.side != positions[0].side or capture.victim_kind not in MAIN:
-            continue
-        pre, post = positions[capture.ply - 1:capture.ply + 1]
-        if key not in pre.pins or any(key not in pos.pins for pos in positions[start_ply:capture.ply]):
-            continue
-        if capture.victim == guard:
-            gain = evaluate_exchange(pre.fen, capture.move)
-            if gain > 0:
-                return {"guard": pre.ref(guard), "defendedTarget": pre.ref(guard),
-                        "capturePly": capture.ply, "capture": capture.move, "gain": gain,
-                        "mode": "pinned_piece_captured"}
-        if guard not in pre.squares or pinner not in pre.squares or pinner == capture.actor:
-            continue
-        gain = evaluate_exchange(pre.fen, capture.move)
-        if gain <= 0:
-            continue
-        gs = post.squares.get(guard)
-        if not gs:
-            continue
-        reply = gs + capture.dst
-        if capture.dst not in b.pseudo_legal_targets(post.board, gs, post.board[gs]) or reply in b.legal_moves(post.fen):
-            continue
-        released_post, released_pre = without_pieces(post, [pinner]), without_pieces(pre, [pinner])
-        if not released_post or not released_pre or reply not in b.legal_moves(released_post.fen):
-            continue
-        if capture.move not in b.legal_moves(released_pre.fen):
-            continue
-        without_gain = evaluate_exchange(released_pre.fen, capture.move)
-        if without_gain > 0:
-            continue
-        return {"guard": pre.ref(guard), "defendedTarget": pre.ref(capture.victim),
-                "capturePly": capture.ply, "capture": capture.move, "captureFen": pre.fen,
-                "gain": gain, "preventedRecapture": reply, "afterCaptureFen": post.fen,
-                "releasedFen": released_post.fen, "gainWithoutPin": without_gain}
-    return None
-
-
-def absolute_pin_sacrifice(relation, positions, events, start_ply):
-    """The pinned piece captures its pinner and is then captured at a net loss."""
-    guard, pinner = relation["front"]["id"], relation["actor"]["id"]
-    key = (pinner, guard, relation["rear"]["id"], relation["kind"])
-    for event in events[start_ply:]:
-        if event.actor != guard or event.victim != pinner or key not in positions[event.ply - 1].pins:
-            continue
-        gain = -evaluate_exchange(positions[event.ply - 1].fen, event.move)
-        if gain <= 0:
-            continue
-        realized = next((e for e in events[event.ply:] if e.actor in positions[e.ply - 1].squares
-                         and e.side == positions[0].side and e.victim == guard), None)
-        if realized:
-            return {"guard": positions[event.ply - 1].ref(guard), "defendedTarget": positions[event.ply - 1].ref(guard),
-                    "capturePly": realized.ply, "capture": realized.move, "gain": gain,
-                    "mode": "pinner_sacrifice", "response": event.move}
-    return None
-
-
-def relative_pin_front_capture(relation, positions, events, start_ply):
-    """The defender saves the rear piece, then the pinned front is won."""
-    if relation.get("absolute"):
-        return None
-    pinner, guard, rear = (relation[name]["id"] for name in ("actor", "front", "rear"))
-    key = (pinner, guard, rear, relation["kind"])
-    for capture in events[start_ply - 1:]:
-        if capture.side != positions[0].side or capture.victim != guard:
-            continue
-        history = events[start_ply - 1:capture.ply - 1]
-        departure = next((e for e in history if e.actor == rear and e.side != positions[0].side), None)
-        if not departure or key not in positions[departure.ply - 1].pins:
-            continue
-        if any(positions[i].squares.get(guard) != positions[start_ply].squares.get(guard) or
-               positions[i].squares.get(pinner) != positions[start_ply].squares.get(pinner)
-               for i in range(start_ply, capture.ply)):
-            continue
-        gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
-        if gain > 0:
-            return {"guard": positions[start_ply].ref(guard), "defendedTarget": positions[start_ply].ref(guard),
-                    "capturePly": capture.ply, "capture": capture.move, "gain": gain,
-                    "mode": "rear_evades_front_captured", "response": departure.move}
-    return None
-
-
-def pinned_front_won(relation, positions, events, start_ply):
-    """v2.6: the pinned front never moves again and is later won outright.
-
-    Experts call this 借牽制得子 even when the defender first interposes or
-    reinforces, so the relation itself need not survive until the capture.
-    """
-    pinner, guard = relation["actor"]["id"], relation["front"]["id"]
-    if relation["front"]["piece"].upper() not in MAIN:
-        return None
-    home = positions[start_ply].squares.get(guard)
-    for capture in events[start_ply:]:
-        if capture.actor == guard:
-            return None
-        if capture.side != positions[0].side or capture.victim != guard:
-            continue
-        if positions[capture.ply - 1].squares.get(guard) != home:
-            return None
-        gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
-        if gain > 0:
-            return {"guard": positions[start_ply].ref(guard), "defendedTarget": positions[start_ply].ref(guard),
-                    "capturePly": capture.ply, "capture": capture.move, "gain": gain,
-                    "mode": "pinned_front_won", "pinner": positions[start_ply].ref(pinner)}
-        return None
-    return None
-
-
 def guard_line_squares(pos: Position, guard: str, target: str) -> set[str]:
     """Squares whose occupancy decides whether `guard` can recapture on `target`:
     the rook/cannon line between them, a horse leg, or an elephant eye."""
@@ -229,75 +110,6 @@ def checking_interception(before: Position, release: Position, move: str, guard:
     return move[:2] in line or move[2:4] in line
 
 
-def illegal_recapture_pin(positions, events, capture):
-    """v2.6: a profitable capture whose natural recapture is illegal only
-    because the recapturing piece is pinned to its own general (including the
-    facing-generals rule). Returns (pinner, guard, king, proof) or None."""
-    solver = positions[0].side
-    pre, post = positions[capture.ply - 1:capture.ply + 1]
-    gain = evaluate_exchange(pre.fen, capture.move)
-    if gain <= 0 or piece_value(pre.board[capture.move[:2]], capture.move[:2]) < VALUES[capture.victim_kind]:
-        return None
-    legal = set(b.legal_moves(post.fen))
-    enemy_king = next((s for s, p in post.board.items() if p == ("k" if solver == "red" else "K")), None)
-    own_king = next((s for s, p in post.board.items() if p == ("K" if solver == "red" else "k")), None)
-    if not enemy_king or not own_king:
-        return None
-    for square, piece in sorted(post.board.items()):
-        if own(piece, solver) or piece.upper() == "K":
-            continue
-        if capture.dst not in b.pseudo_legal_targets(post.board, square, piece) or square + capture.dst in legal:
-            continue
-        trial = dict(post.board)
-        trial[capture.dst] = trial.pop(square)
-        pinner = None
-        if enemy_king[0] == own_king[0] and not any(s in trial for s in b.squares_between(enemy_king, own_king)):
-            pinner = post.ids[own_king]
-        else:
-            for src, attacker in sorted(trial.items()):
-                if own(attacker, solver) and src != capture.dst and enemy_king in b.pseudo_legal_targets(trial, src, attacker):
-                    pinner = post.ids[src]
-                    break
-        if pinner:
-            return pinner, post.ids[square], post.ids[enemy_king], {
-                "guard": post.ref(post.ids[square]), "defendedTarget": pre.ref(capture.victim),
-                "capturePly": capture.ply, "capture": capture.move, "gain": gain,
-                "preventedRecapture": square + capture.dst, "mode": "illegal_recapture"}
-    return None
-
-
-def relative_recapture_pin(positions, events, capture):
-    """v2.8 (expert, Lb3VlR): the natural recapture is legal, but the
-    recapturing piece is the front of a pin, so recapturing lets another
-    player piece win the more valuable rear piece. Returns
-    (pinner, guard, rear, proof) or None."""
-    solver = positions[0].side
-    pre, post = positions[capture.ply - 1:capture.ply + 1]
-    capturer_value = piece_value(pre.board[capture.move[:2]], capture.move[:2])
-    nxt = events[capture.ply] if capture.ply < len(events) else None
-    legal = set(b.legal_moves(post.fen))
-    for key, relation in sorted(post.pins.items()):
-        pinner, guard, rear = key[:3]
-        if relation.get("absolute") or pinner == capture.actor or guard not in post.squares:
-            continue
-        reply = post.squares[guard] + capture.dst
-        if reply not in legal or (nxt and nxt.move == reply):
-            continue
-        rear_square = post.squares.get(rear)
-        if not rear_square or piece_value(post.board[rear_square], rear_square) <= capturer_value:
-            continue
-        child = Position(b.apply_move(post.fen, reply), b.move_piece_identity(post.ids, reply[:2], reply[2:]), solver)
-        punish = child.relation(pinner, rear)
-        if not punish or not punish["profitable"]:
-            continue
-        return pinner, guard, rear, {
-            "guard": post.ref(guard), "defendedTarget": pre.ref(capture.victim), "capturePly": capture.ply,
-            "capture": capture.move, "gain": evaluate_exchange(pre.fen, capture.move),
-            "deterredRecapture": reply, "punishment": punish["ucci"], "punishmentGain": punish["gain"],
-            "mode": "recapture_costs_rear"}
-    return None
-
-
 def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
     positions, events = replay(fen, blunder, pv, solver)
     run = Analysis(positions, events, solver)
@@ -318,86 +130,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
         detect_escaped_discovered_attacks(run, frame)
         detect_skewers(run, frame)
         detect_two_threat_forks(run, frame)
-        # Structural relations are tracked continuously. Emit an existing pin
-        # only when this player move exploits it, including an actual capture.
-        candidates = {}
-        for key, relation in after.pins.items():
-            guard = key[1]
-            minor = relation["front"]["piece"].upper() not in MAIN
-            proof = functional_pin_capture(relation, positions, events, p)
-            if relation.get("absolute") and not proof:
-                proof = absolute_pin_sacrifice(relation, positions, events, p)
-            if not relation.get("absolute") and not proof:
-                proof = relative_pin_front_capture(relation, positions, events, p)
-            if not proof:
-                proof = pinned_front_won(relation, positions, events, p)
-            newly_attacked = any(r["profitable"] and not (
-                before.relation(r["actor"]["id"], guard) or {}).get("profitable", False)
-                for r in hits.get(guard, []))
-            if key not in before.pins:
-                candidates[key] = (relation, p, "created", proof)
-            elif newly_attacked:
-                candidates[key] = (relation, p, "exploited", proof)
-            elif proof:
-                target = proof["defendedTarget"]["id"]
-                new_attack = any(r["profitable"] and not (
-                    before.relation(r["actor"]["id"], target) or {}).get("profitable", False)
-                    for r in hits.get(target, []))
-                if proof["capturePly"] == p or new_attack:
-                    candidates[key] = (relation, p, "defensive_duty_exploited", proof)
-        if event.victim:
-            for key, relation in before.pins.items():
-                if key[1] == event.victim and relation["front"]["piece"].upper() in MAIN:
-                    proof = functional_pin_capture(relation, positions, events, p - 1)
-                    candidates[key] = (relation, p, "pinned_piece_captured", proof)
-        if reply:
-            # Actual recapture pulls a small blocker off an enemy cannon ray.
-            for key, relation in after.pins.items():
-                if (relation.get("absolute") or relation["front"]["piece"].upper() in MAIN or
-                        response.actor != key[1] or response.victim != event.actor):
-                    continue
-                realized = next((e for e in events[p + 1:] if e.side == solver and e.actor == key[0]
-                                 and e.victim == key[2]), None)
-                if realized:
-                    gain = evaluate_exchange(positions[realized.ply - 1].fen, realized.move)
-                    if gain > 0 and opened_by(after, reply, key[0], key[2], response.move[:2]):
-                        proof = {"guard": after.ref(key[1]), "defendedTarget": after.ref(key[2]),
-                                 "capturePly": realized.ply, "capture": realized.move, "gain": gain,
-                                 "mode": "blocker_recapture", "response": response.move}
-                        candidates[key] = (relation, p + 1, "blocker_recapture", proof)
-        if reply and (after.checked or any(r["profitable"] for rows in threats.values() for r in rows)):
-            for key, relation in reply.pins.items():
-                if key in after.pins:
-                    continue
-                # The actual response must move the restricted piece or the
-                # protected rear target; unrelated preexisting pins do not count.
-                if response.actor not in {key[1], key[2]}:
-                    continue
-                minor = relation["front"]["piece"].upper() not in MAIN
-                proof = functional_pin_capture(relation, positions, events, p + 1)
-                candidates[key] = (relation, p + 1, "formed_by_response", proof)
-        for key, (relation, confirmed, mode, proof) in candidates.items():
-            if relation.get("review"):
-                review("pin", p, "horse_leg_value_boundary", relation)
-                continue
-            # v3.1 (ruling E2): a relation that holds only while the defender
-            # is in check (a recapture is illegal until the check is answered)
-            # and is gone after a reply that moved none of its pieces is not a pin.
-            if (mode in {"created", "exploited", "defensive_duty_exploited"} and confirmed == p and
-                    after.checked and reply is not None and key not in reply.pins and
-                    all(after.squares.get(x) == reply.squares.get(x) for x in key[:3])):
-                review("pin", p, "pin_only_while_in_check", relation)
-                continue
-            if not proof:
-                continue
-            relation_pos = before if mode == "pinned_piece_captured" else positions[confirmed]
-            if front_can_trade_pinner(relation_pos, relation):
-                continue
-            emit("pin", p, max(confirmed, proof["capturePly"] if proof else confirmed),
-                 [key[0]], [key[1], key[2]], key[3],
-                 {"restriction": relation, "use": mode, "functionalCapture": proof,
-                  "relationFen": positions[confirmed].fen,
-                  "response": response.move if confirmed == p + 1 else None})
+        detect_pins(run, frame)
         # Derived only after rejecting dead actors and resolving pending check.
         for parent in list(plies[p - 1]["occurrences"]):
             if parent["id"] not in {"fork", "discovered_attack", "skewer"} or not after.checked:
@@ -485,22 +218,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
                     continue
             emit("trap", p, p, [trapped["initialAttack"]["actor"]["id"]], [target], "all_legal_escapes", trapped)
 
-    # v2.6: 借牽制得子 through an illegal recapture (pinned to the general,
-    # including facing generals) that the structural pin scan cannot key.
-    for capture in events[1:]:
-        if capture.side != solver or capture.victim_kind not in MAIN:
-            continue
-        if any(o["id"] == "pin" for ply in plies for o in ply["occurrences"]):
-            break
-        found = illegal_recapture_pin(positions, events, capture) or relative_recapture_pin(positions, events, capture)
-        if found:
-            pinner, guard, king, proof = found
-            mode = proof["mode"]
-            emit("pin", capture.ply, capture.ply, [pinner], [guard, king], mode,
-                 {"restriction": {"actor": positions[capture.ply].ref(pinner), "front": positions[capture.ply].ref(guard),
-                                  "rear": positions[capture.ply].ref(king), "kind": mode, "absolute": mode == "illegal_recapture"},
-                  "use": mode, "functionalCapture": proof,
-                  "relationFen": positions[capture.ply].fen, "response": None})
+    detect_recapture_pins(run)
 
     # Forcing an enemy blocker away opens a previously unavailable attack.
     # The later profitable capture, the vacated obstruction and the pressure
