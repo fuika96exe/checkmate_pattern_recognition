@@ -1,239 +1,22 @@
-"""Identity-based, precision-first midgame rules. No network or engine PV search.
+"""Midgame tactic analysis: run the detectors over a replayed line and merge their findings.
 
-Only this module owns the v2 puzzle contract. The lab's generic workbench recognizer
-(tactical_categories.analyze_tactical_categories) is separate and unchanged.
-
-Moved verbatim from the lab's ``backend/app/midgame_tactics.py`` in phase 0 step 5;
-only the imports changed. Phase 0 step 6 splits it into a replay context, one
-detector per label and the final merge.
+Identity-based and precision-first: no network and no engine PV search.  Phase 0
+step 6 is moving each label's detector out of this module, in the original order.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
-from functools import cached_property
 from itertools import combinations
 
 from .. import board as b
 from ..exchange import evaluate_exchange, piece_value
 from ..version import MIDGAME_RULES_VERSION
+from .context import LABELS, Analysis, Finding, threats_from, verified_hits
+from .material import material_result
+from .merge import finalize_labels
+from .position import MAIN, VALUES, Position, opened_by, other, own, view, without_pieces
+from .replay import replay
 
 RULES_VERSION = MIDGAME_RULES_VERSION
-LABELS = {
-    "fork": "捉雙", "discovered_attack": "閃擊", "skewer": "串打",
-    "pin": "牽制", "check_fork": "抽將", "trap": "圍困",
-    "remove_defender": "消除保護", "overload": "過載", "exchange": "交換",
-    "clearance": "消除阻隔",
-}
-MAIN = frozenset("RNC")
-VALUES = {"R": 9, "N": 4, "C": 4, "K": 99999}
-
-
-def other(side: str) -> str:
-    return "black" if side == "red" else "red"
-
-
-def own(piece: str, side: str) -> bool:
-    return bool(piece) and piece.isupper() == (side == "red")
-
-
-def view(fen: str, side: str) -> str:
-    parts = fen.split()
-    parts[1] = "w" if side == "red" else "b"
-    return " ".join(parts)
-
-
-def profitable_capture(fen: str, move: str) -> tuple[bool, int | None]:
-    """Legal is_capturing_move adapter, including upstream's pawn policy.
-
-    None means inapplicable/illegal, never evidence of an even exchange.
-    Signed exchange gains are retained for audit (upstream clamps its output).
-    """
-    board = b.parse_fen(fen)
-    if move not in b.legal_moves(fen):
-        return False, None
-    src, dst = move[:2], move[2:]
-    victim = board.get(dst, "")
-    if not victim or victim.upper() == "K":
-        return False, None
-    red = sum(p in "RNC" for p in board.values())
-    black = sum(p in "rnc" for p in board.values())
-    endgame = (red <= 2 and black <= 2) or not any(p.upper() == "R" for p in board.values())
-    crossed = int(dst[1]) >= 5 if victim.isupper() else int(dst[1]) <= 4
-    if victim.upper() == "P" and not crossed and not endgame and board[src].upper() != "P":
-        return False, None
-    gain = evaluate_exchange(fen, move)
-    return gain > 0, gain
-
-
-class ReplayError(ValueError):
-    def __init__(self, message: str, ply: int, fen: str, move: str | None = None):
-        super().__init__(message)
-        self.ply, self.fen, self.move = ply, fen, move
-
-
-@dataclass
-class Position:
-    fen: str
-    ids: dict[str, str]
-    side: str
-
-    @cached_property
-    def board(self):
-        return b.parse_fen(self.fen)
-
-    @cached_property
-    def squares(self):
-        return {identity: square for square, identity in self.ids.items()}
-
-    @cached_property
-    def query(self):
-        return view(self.fen, self.side)
-
-    def ref(self, identity: str):
-        square = self.squares.get(identity)
-        return {"id": identity, "square": square, "piece": self.board.get(square, "")}
-
-    @cached_property
-    def captures(self):
-        """All ordinary legal captures; local losses include minor pieces."""
-        result = {}
-        for move in sorted(b.legal_moves(self.query)):
-            src, dst = move[:2], move[2:]
-            victim = self.board.get(dst, "")
-            if not victim or own(victim, self.side) or victim.upper() == "K":
-                continue
-            ok, gain = profitable_capture(self.query, move)
-            relation = {"actor": self.ref(self.ids[src]), "target": self.ref(self.ids[dst]),
-                        "ucci": move, "gain": gain, "profitable": ok, "check": False,
-                        "fen": self.query}
-            result.setdefault(self.ids[dst], []).append(relation)
-        return result
-
-    @cached_property
-    def hits(self):
-        """Major targets and actual checking sources, separately from capture values."""
-        result = {t: list(rows) for t, rows in self.captures.items()
-                  if rows[0]["target"]["piece"].upper() in MAIN}
-        # A check is an actual attack on the general, never an exchange input.
-        king = next((s for s, p in self.board.items() if p == ("k" if self.side == "red" else "K")), None)
-        if king:
-            for source, piece in sorted(self.board.items()):
-                if not own(piece, self.side) or king not in b.pseudo_legal_targets(self.board, source, piece):
-                    continue
-                # Occupancy-only safety check; never send a missing-king FEN to pyffish.
-                trial = dict(self.board)
-                trial[king] = trial.pop(source)
-                own_king = next(s for s, p in trial.items() if p == ("K" if self.side == "red" else "k"))
-                if b.is_square_attacked(trial, own_king, self.side != "red"):
-                    continue
-                result.setdefault(self.ids[king], []).append({
-                    "actor": self.ref(self.ids[source]), "target": self.ref(self.ids[king]),
-                    "ucci": None, "gain": None, "profitable": False, "check": True,
-                })
-        return result
-
-    @cached_property
-    def threats(self):
-        return {t: [r for r in rows if r["profitable"] or r["check"]]
-                for t, rows in self.hits.items() if any(r["profitable"] or r["check"] for r in rows)}
-
-    @cached_property
-    def guards(self):
-        """(attacker ID,target ID) -> guard ID -> legal recapture evidence."""
-        result = {}
-        for target, relations in self.hits.items():
-            for r in relations:
-                if r["check"]:
-                    continue
-                child = b.apply_move(self.query, r["ucci"])
-                guards = {}
-                for reply in sorted(b.legal_moves(child)):
-                    if reply[2:] == r["target"]["square"]:
-                        identity = self.ids[reply[:2]]
-                        guards[identity] = {"guard": self.ref(identity), "capture": r["ucci"], "recapture": reply}
-                result[(r["actor"]["id"], target)] = guards
-        return result
-
-    def relation(self, actor, target):
-        return next((r for r in self.hits.get(target, []) if r["actor"]["id"] == actor), None)
-
-    @cached_property
-    def checked(self):
-        king = next(s for s, p in self.board.items() if p == ("k" if self.side == "red" else "K"))
-        return b.is_square_attacked(self.board, king, self.side == "red")
-
-    @cached_property
-    def pins(self):
-        return _pin_relations(self)
-
-
-@dataclass(frozen=True)
-class Event:
-    ply: int
-    side: str
-    move: str
-    actor: str
-    victim: str | None
-    victim_kind: str
-
-    @property
-    def dst(self):
-        return self.move[2:]
-
-
-def replay(fen: str, blunder: str, pv: list[str], solver: str):
-    try:
-        board = b.parse_fen(fen)
-        if list(board.values()).count("K") != 1 or list(board.values()).count("k") != 1:
-            raise ValueError("FEN requires exactly one general per side")
-        if not isinstance(pv, list) or not pv or not all(isinstance(m, str) for m in pv):
-            raise ValueError("PV must be a nonempty UCCI string list")
-        if solver not in {"red", "black"}:
-            raise ValueError("first_turn must normalize to red or black")
-        ids = b.build_piece_identity(fen)
-    except (ValueError, TypeError) as error:
-        raise ReplayError(str(error), 0, fen) from error
-    positions = [Position(fen, ids, solver)]
-    events = []
-    for ply, move in enumerate([blunder, *pv], 1):
-        before = positions[-1]
-        try:
-            if not isinstance(move, str) or not b.UCCI_RE.fullmatch(move) or move not in b.legal_moves(before.fen):
-                raise ValueError(f"Illegal UCCI move: {move}")
-            src, dst = move[:2], move[2:]
-            if before.board.get(dst, "").upper() == "K":
-                raise ValueError("PV cannot capture a general")
-            after = b.apply_move(before.fen, move)
-            if ply == 1 and b.side_to_move(after) != solver:
-                raise ValueError(f"first_turn mismatch: expected {b.side_to_move(after)}, got {solver}")
-            events.append(Event(ply, b.side_to_move(before.fen), move, before.ids[src],
-                                before.ids.get(dst), before.board.get(dst, "").upper()))
-            positions.append(Position(after, b.move_piece_identity(before.ids, src, dst), solver))
-        except (ValueError, TypeError) as error:
-            raise ReplayError(str(error), ply, before.fen, move) from error
-    return positions, events
-
-
-def material_result(initial: str, final: str, solver: str):
-    def balance(fen):
-        return sum(VALUES.get(p.upper(), 0) * (1 if own(p, solver) else -1)
-                   for p in b.parse_fen(fen).values() if p.upper() in MAIN)
-    start, end = balance(initial), balance(final)
-    return {"kind": "gain" if end - start >= 4 else "no_gain",
-            "start": start, "end": end, "delta": end - start}
-
-
-def opened_by(before: Position, after: Position, actor: str, target: str, vacated: str):
-    """The vacated source must be a necessary blocker, using occupancy only."""
-    src, dst = after.squares[actor], after.squares[target]
-    piece = after.board[src]
-    if src != before.squares.get(actor) or dst != before.squares.get(target):
-        return False
-    if dst in b.pseudo_legal_targets(before.board, src, piece):
-        return False
-    trial = dict(after.board)
-    trial[vacated] = before.board[vacated]
-    return dst not in b.pseudo_legal_targets(trial, src, piece)
 
 
 def ray_relations(pos: Position):
@@ -264,40 +47,6 @@ def ray_relations(pos: Position):
     return result
 
 
-def exposed_relation(pos: Position, actor: str, front: str, rear: str):
-    """Occupancy-only removal, never a missing-general FEN."""
-    trial = dict(pos.board)
-    trial.pop(pos.squares[front])
-    src, dst = pos.squares[actor], pos.squares[rear]
-    if dst not in b.pseudo_legal_targets(trial, src, trial[src]):
-        return False
-    trial[dst] = trial.pop(src)
-    king = next((s for s, p in trial.items() if p == ("K" if pos.side == "red" else "k")), None)
-    return bool(king and not b.is_square_attacked(trial, king, pos.side != "red"))
-
-
-def verified_hits(pos: Position, reply: Position | None = None, excluded=frozenset()):
-    """A pending check cannot subsidize a hypothetical second consecutive move."""
-    result = {}
-    for target, relations in pos.hits.items():
-        for relation in relations:
-            actor = relation["actor"]["id"]
-            if actor in excluded:
-                continue
-            if relation["check"] or not pos.checked:
-                result.setdefault(target, []).append(relation)
-            elif reply is not None:
-                confirmed = reply.relation(actor, target)
-                if confirmed:
-                    result.setdefault(target, []).append({**confirmed, "triggerAttack": relation})
-    return result
-
-
-def threats_from(hits):
-    return {t: [r for r in rows if r["profitable"] or r["check"]]
-            for t, rows in hits.items() if any(r["profitable"] or r["check"] for r in rows)}
-
-
 def skewer_confirmation(pos: Position, actor: str, front: str, rear: str, front_attack=None):
     # A front piece that can take the attacker immediately breaks the skewer.
     if pos.squares[front] + pos.squares[actor] in b.legal_moves(view(pos.fen, other(pos.side))):
@@ -314,134 +63,6 @@ def skewer_confirmation(pos: Position, actor: str, front: str, rear: str, front_
         if rear_attack and rear_attack["profitable"]:
             return {"frontAttack": relation, "escape": move, "fen": child.fen, "rearAttack": rear_attack}
     return None
-
-
-def _pin_relations(pos: Position):
-    result = {}
-    for src, piece in sorted(pos.board.items()):
-        if not own(piece, pos.side) or piece.upper() not in {"R", "C"}:
-            continue
-        x, y = b.coords(src)
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            occupied = []
-            cx, cy = x + dx, y + dy
-            while (square := b.square_at(cx, cy)) is not None:
-                if square in pos.board:
-                    occupied.append(square)
-                cx, cy = cx + dx, cy + dy
-            # Absolute cannon pins: either of the two blockers may be pinned.
-            king_index = next((i for i, sq in enumerate(occupied)
-                               if pos.board[sq] == ("k" if pos.side == "red" else "K")), None)
-            required = 2 if piece.upper() == "C" else 1
-            if king_index == required:
-                rear = occupied[king_index]
-                for front in occupied[:king_index]:
-                    if own(pos.board[front], pos.side):
-                        continue
-                    actor, guard, target = pos.ids[src], pos.ids[front], pos.ids[rear]
-                    if not exposed_relation(pos, actor, guard, target):
-                        continue
-                    screen = next((sq for sq in occupied[:king_index] if sq != front), None)
-                    result[(actor, guard, target, "ray")] = {
-                        "actor": pos.ref(actor), "front": pos.ref(guard), "rear": pos.ref(target),
-                        "screen": pos.ref(pos.ids[screen]) if screen else None,
-                        "kind": "ray", "absolute": True,
-                    }
-            offset = int(piece.upper() == "C")
-            if len(occupied) < offset + 2:
-                continue
-            front, rear = occupied[offset:offset + 2]
-            fp, rp = pos.board[front], pos.board[rear]
-            if (own(fp, pos.side) or own(rp, pos.side) or fp.upper() not in "RNCBAP" or
-                    rp.upper() not in MAIN or piece_value(rp, rear) <= piece_value(fp, front)):
-                continue
-            actor, guard, target = pos.ids[src], pos.ids[front], pos.ids[rear]
-            if exposed_relation(pos, actor, guard, target) and profitable_after_removal(pos, actor, guard, target):
-                result[(actor, guard, target, "ray")] = {
-                    "actor": pos.ref(actor), "front": pos.ref(guard), "rear": pos.ref(target),
-                    "screen": pos.ref(pos.ids[occupied[0]]) if offset else None,
-                    "kind": "ray", "absolute": False,
-                }
-    for src, piece in pos.board.items():
-        if not own(piece, pos.side) or piece.upper() != "N":
-            continue
-        sx, sy = b.coords(src)
-        for dst, victim in pos.board.items():
-            if own(victim, pos.side) or victim.upper() not in VALUES:
-                continue
-            tx, ty = b.coords(dst)
-            dx, dy = tx - sx, ty - sy
-            if sorted((abs(dx), abs(dy))) != [1, 2]:
-                continue
-            leg = b.square_at(sx + (dx // 2 if abs(dx) == 2 else 0), sy + (dy // 2 if abs(dy) == 2 else 0))
-            blocker = pos.board.get(leg, "")
-            if not blocker or own(blocker, pos.side) or blocker.upper() == "K":
-                continue
-            actor, front, rear = pos.ids[src], pos.ids[leg], pos.ids[dst]
-            if exposed_relation(pos, actor, front, rear) and (victim.upper() == "K" or profitable_after_removal(pos, actor, front, rear)):
-                result[(actor, front, rear, "horse_leg")] = {
-                    "actor": pos.ref(actor), "front": pos.ref(front), "rear": pos.ref(rear),
-                    "kind": "horse_leg", "absolute": victim.upper() == "K",
-                    "review": False,
-                }
-    # An opposing eye blocker can restrict a rook just as a horse leg does.
-    for src, piece in pos.board.items():
-        if not own(piece, pos.side) or piece.upper() != "B":
-            continue
-        sx, sy = b.coords(src)
-        for dst, victim in pos.board.items():
-            if own(victim, pos.side) or victim.upper() not in MAIN:
-                continue
-            tx, ty = b.coords(dst)
-            if abs(tx - sx) != 2 or abs(ty - sy) != 2:
-                continue
-            eye = b.square_at((sx + tx) // 2, (sy + ty) // 2)
-            if eye not in pos.board or own(pos.board[eye], pos.side) or pos.board[eye].upper() == "K":
-                continue
-            actor, front, rear = pos.ids[src], pos.ids[eye], pos.ids[dst]
-            if exposed_relation(pos, actor, front, rear) and profitable_after_removal(pos, actor, front, rear):
-                result[(actor, front, rear, "elephant_eye")] = {
-                    "actor": pos.ref(actor), "front": pos.ref(front), "rear": pos.ref(rear),
-                    "kind": "elephant_eye", "absolute": False, "review": False}
-    kings = [s for s, p in pos.board.items() if p.upper() == "K"]
-    if len(kings) == 2 and kings[0][0] == kings[1][0]:
-        occupied = [s for s in b.squares_between(*kings) if s in pos.board]
-        if len(occupied) == 1 and not own(pos.board[occupied[0]], pos.side):
-            front = occupied[0]
-            actor = next(s for s in kings if own(pos.board[s], pos.side))
-            rear = next(s for s in kings if s != actor)
-            result[(pos.ids[actor], pos.ids[front], pos.ids[rear], "flying_general")] = {
-                "actor": pos.ref(pos.ids[actor]), "front": pos.ref(pos.ids[front]),
-                "rear": pos.ref(pos.ids[rear]), "kind": "flying_general", "absolute": True,
-            }
-    return result
-
-
-def pin_relations(pos: Position):
-    return pos.pins
-
-
-def without_pieces(pos: Position, identities):
-    """Counterfactual proof only. Both generals must remain; never a PV frame."""
-    board, ids = dict(pos.board), dict(pos.ids)
-    for identity in identities:
-        square = pos.squares.get(identity)
-        if square:
-            if board[square].upper() == "K":
-                return None
-            board.pop(square)
-            ids.pop(square)
-    parts = pos.fen.split()
-    parts[0] = b.board_to_fen(board)
-    return Position(" ".join(parts), ids, pos.side)
-
-
-def profitable_after_removal(pos: Position, actor: str, front: str, rear: str):
-    trial = without_pieces(pos, {front})
-    if not trial:
-        return None
-    relation = trial.relation(actor, rear)
-    return relation if relation and relation["profitable"] else None
 
 
 def front_can_trade_pinner(pos: Position, relation):
@@ -742,56 +363,13 @@ def fork_defences(pos: Position, actor: str, pair):
     return None
 
 
-def finalize_labels(plies, material):
-    """Keep supporting proof separately so suppressed parent keys remain usable."""
-    raw = {o["id"] for ply in plies for o in ply["occurrences"]}
-    suppressed = {}
-    if material["kind"] == "gain":
-        if raw - {"exchange"}:
-            suppressed["exchange"] = "gain_has_other_tactic"
-    support = []
-    for ply in plies:
-        visible = []
-        for occurrence in ply["occurrences"]:
-            if occurrence["id"] in suppressed:
-                support.append({**occurrence, "suppressedBy": suppressed[occurrence["id"]]})
-            else:
-                visible.append(occurrence)
-        ply["occurrences"] = visible
-    tactics = [label for label in LABELS if label in raw and label not in suppressed]
-    return tactics, support
-
-
 def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
     positions, events = replay(fen, blunder, pv, solver)
-    plies = [{"ply": e.ply, "ucci": e.move, "solver": e.ply >= 2 and e.side == solver,
-              "occurrences": []} for e in events]
-    reviews = []
-
-    def review(label, ply, reason, evidence):
-        reviews.append({"label": label, "ply": ply, "fen": positions[ply].fen,
-                        "reason": reason, "evidence": evidence})
+    run = Analysis(positions, events, solver)
+    plies, reviews, review = run.plies, run.reviews, run.review
 
     def emit(label, ply, confirmed, actors, targets, kind, evidence):
-        key = f"{label}:{ply}:{len(plies[ply - 1]['occurrences'])}"
-        pos = positions[ply]
-        def reference(identity):
-            for snapshot in reversed(positions[:ply + 1]):
-                if identity in snapshot.squares:
-                    return snapshot.ref(identity)
-            # A future participant in an exchange still existed initially.
-            return positions[0].ref(identity)
-        actors, targets = list(dict.fromkeys(actors)), list(dict.fromkeys(targets))
-        refs = [reference(i) for i in dict.fromkeys([*actors, *targets])]
-        occurrence = {"id": label, "label_zh": LABELS[label],
-                      "squares": list(dict.fromkeys(r["square"] for r in refs if r["square"])),
-                      "detail": f"{LABELS[label]}：第 {ply} 手觸發，第 {confirmed} 手確認；" +
-                                "、".join(f"{r['id']}@{r['square']}" for r in refs),
-                      "evidence": {"key": key, "triggerPly": ply, "confirmedPly": confirmed,
-                                   "actors": [reference(i) for i in actors], "targets": [reference(i) for i in targets],
-                                   "relationKind": kind, **evidence}}
-        plies[ply - 1]["occurrences"].append(occurrence)
-        return occurrence
+        return run.emit(Finding(label, ply, confirmed, actors, targets, kind, evidence))
 
     for event in events[1:]:
         if event.side != solver:
