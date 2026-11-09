@@ -1,7 +1,9 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Checkmate pattern recognition: the dispatcher and ``analyze_patterns``.
 
 Each pattern's recogniser lives in ``checkmate/patterns/``.
 """
+
 from __future__ import annotations
 
 from ..board import parse_fen, position_analysis
@@ -117,26 +119,35 @@ def _apply_exclusions(detected: list[dict], request: tuple[str | None, str, list
     present = {match['pattern_id'] for match in detected}
     if pattern_id and detected and detected[0]['pattern_id'] in _EXCLUDED_BY:
         present.update(
-            candidate for candidate in _EXCLUDED_BY[detected[0]['pattern_id']]
+            candidate
+            for candidate in _EXCLUDED_BY[detected[0]['pattern_id']]
             if recognize_pattern(candidate, fen, moves)['detected']
         )
     return [match for match in detected if not (_EXCLUDED_BY.get(match['pattern_id'], set()) & present)]
 
 
 def _drop_redundant_double_check(
-    detected: list[dict], position: tuple[str, dict], request: tuple[str | None, str, list[str] | None],
+    detected: list[dict],
+    position: tuple[str, dict],
+    request: tuple[str | None, str, list[str] | None],
 ) -> list[dict]:
     """A cannon check alongside a chariot or pawn check is named by the other pattern, when there is one."""
     pattern_id, fen, moves = request
     current_fen, analysis = position
     checker_types = {parse_fen(current_fen).get(item['square'], '').upper() for item in analysis['checking_pieces']}
-    if not ('C' in checker_types and checker_types.intersection({'R', 'P'})
-            and any(match['pattern_id'] == _DOUBLE_CHECK for match in detected)):
+    if not (
+        'C' in checker_types
+        and checker_types.intersection({'R', 'P'})
+        and any(match['pattern_id'] == _DOUBLE_CHECK for match in detected)
+    ):
         return detected
     has_other = any(match['pattern_id'] != _DOUBLE_CHECK for match in detected)
     if pattern_id and not has_other:
-        has_other = any(recognize_pattern(candidate, fen, moves)['detected']
-                        for candidate in PATTERN_ORDER if candidate != _DOUBLE_CHECK)
+        has_other = any(
+            recognize_pattern(candidate, fen, moves)['detected']
+            for candidate in PATTERN_ORDER
+            if candidate != _DOUBLE_CHECK
+        )
     return [match for match in detected if match['pattern_id'] != _DOUBLE_CHECK] if has_other else detected
 
 

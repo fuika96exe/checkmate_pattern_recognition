@@ -64,10 +64,12 @@ def _is_causal(run: Analysis, case: _Case, guard: str, release_ply: int) -> bool
     if release_ply == p:
         # Direct removal or demonstrable interception of the
         # same guard's recapture line, with both targets alive.
-        return (guard in release.squares and
-                before.squares[guard] == release.squares[guard] and
-                before.squares[actor] == release.squares[actor] and
-                before.squares[target] == release.squares[target])
+        return (
+            guard in release.squares
+            and before.squares[guard] == release.squares[guard]
+            and before.squares[actor] == release.squares[actor]
+            and before.squares[target] == release.squares[target]
+        )
     if run.positions[p].checked and checking_interception(before, release, trigger.move, (guard, actor, target)):
         # v3.1 (E1): the trigger position was skipped because it
         # is check; the line it cut is still cut after the reply.
@@ -80,7 +82,7 @@ def _is_causal(run: Analysis, case: _Case, guard: str, release_ply: int) -> bool
 
 def _uninterrupted(run: Analysis, case: _Case, release_ply: int, causal: list[str]) -> bool:
     actor, target = case.capture.actor, case.capture.victim
-    for intermediate in run.positions[release_ply:case.capture.ply]:
+    for intermediate in run.positions[release_ply : case.capture.ply]:
         if intermediate.checked:
             continue
         rel = intermediate.relation(actor, target)
@@ -105,16 +107,36 @@ def _try_release(run: Analysis, case: _Case, release_ply: int) -> bool:
         return False
     causal = [guard for guard in sorted(lost) if _is_causal(run, case, guard, release_ply)]
     if not causal:
-        run.review('remove_defender', p, 'release_not_proven_forced',
-                   {'target': before.ref(target), 'guards': sorted(lost), 'realizationPly': q})
+        run.review(
+            'remove_defender',
+            p,
+            'release_not_proven_forced',
+            {'target': before.ref(target), 'guards': sorted(lost), 'realizationPly': q},
+        )
         return False
     if not _uninterrupted(run, case, release_ply, causal):
         return False
-    run.emit(Finding('remove_defender', p, q, [trigger.actor, actor], [target], 'profitable_release',
-                     {'beforeFen': before.fen, 'releaseFen': release.fen, 'releasePly': release_ply,
-                      'guardsBefore': list(case.guards.values()), 'guardsAfter': list(remaining.values()),
-                      'removedGuards': [before.ref(g) for g in causal], 'beforeAttack': case.old,
-                      'releaseAttack': new, 'realization': {'ply': q, 'ucci': capture.move, 'attack': case.realized}}))
+    run.emit(
+        Finding(
+            'remove_defender',
+            p,
+            q,
+            [trigger.actor, actor],
+            [target],
+            'profitable_release',
+            {
+                'beforeFen': before.fen,
+                'releaseFen': release.fen,
+                'releasePly': release_ply,
+                'guardsBefore': list(case.guards.values()),
+                'guardsAfter': list(remaining.values()),
+                'removedGuards': [before.ref(g) for g in causal],
+                'beforeAttack': case.old,
+                'releaseAttack': new,
+                'realization': {'ply': q, 'ucci': capture.move, 'attack': case.realized},
+            },
+        )
+    )
     return True
 
 
@@ -125,9 +147,12 @@ def _review_without_prior_attack(run: Analysis, capture: Event, trigger: Event, 
         return
     protectors = b.attacked_squares(before.board, other(run.solver)).get(before.squares[target], [])
     if any(before.ids[r['square']] == trigger.victim for r in protectors):
-        run.review('remove_defender', trigger.ply, 'no_prior_legal_attack', {
-            'target': before.ref(target), 'removedGuard': before.ref(trigger.victim),
-            'realizationPly': capture.ply})
+        run.review(
+            'remove_defender',
+            trigger.ply,
+            'no_prior_legal_attack',
+            {'target': before.ref(target), 'removedGuard': before.ref(trigger.victim), 'realizationPly': capture.ply},
+        )
 
 
 def _judge_trigger(run: Analysis, capture: Event, realized: dict, trigger: Event) -> None:
@@ -153,6 +178,6 @@ def detect_removed_defenders(run: Analysis) -> None:
         realized = run.positions[capture.ply - 1].relation(capture.actor, capture.victim)
         if not realized or not realized['profitable']:
             continue
-        for trigger in run.events[1:capture.ply - 1]:
+        for trigger in run.events[1 : capture.ply - 1]:
             if trigger.side == run.solver:
                 _judge_trigger(run, capture, realized, trigger)

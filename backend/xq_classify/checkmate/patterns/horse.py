@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Horse checkmate patterns: discovered (拔簧马), elbow (卧槽马), palace corner (挂角马), angler (钓鱼马), octagon (八角马)."""
 
 from collections.abc import Callable
@@ -54,30 +55,50 @@ class _Corner(NamedTuple):
 
 _ReplyFinder = Callable[[_Line, int, _Ply], _Ply | None]
 
-_DISCOVERED = _Pattern('DISCOVERED_HORSE_CHECKMATE', '拔簧马', (
-    '最后一着并非马跳将，而是另一枚己方棋子离开了马腿位置。',
-    '该着法一旦把马腿拔开，原本静止的马立即形成马将并完成绝杀。',
-    '因此该终局构成拔簧马。',
-))
-_ELBOW = _Pattern('ELBOW_HORSE_CHECKMATE', '卧槽马', (
-    '绝杀黑方时检查攻击方马是否位于 c8/g8；绝杀红方时检查攻击方马是否位于 c1/g1。',
-    '终局卧槽马须实际攻击将帅或控制宫内相邻逃路，蹩马腿时不算控制。',
-    '随后再由车、炮或兵完成绝杀，因此构成卧槽马。',
-))
-_PALCORNER = _Pattern('PALCORNER_HORSE_CHECKMATE', '挂角马', (
-    '挂角马可以先行占位并控制一个将帅或宫内去路，再由其他棋子将死。',
-    '马也可以跳入挂角位将军，随后逼出将帅应将或直接绝杀。',
-))
-_ANGLER = _Pattern('ANGLER_HORSE_CHECKMATE', '钓鱼马', (
-    '绝杀黑方时只检查红马是否稳占 c7/g7；绝杀红方时只检查黑马是否稳占 c2/g2。',
-    '该马可以先手跳入钓鱼位将军，也可以作为既有钓鱼位支撑最后一击。',
-    '随后再由车、马、炮或兵完成绝杀，因此构成钓鱼马。',
-))
-_OCTAGON = _Pattern('OCTAGON_HORSE_CHECKMATE', '八角马', (
-    '攻击方马位于对方九宫角位，并与对方将帅处于九宫对角位置。',
-    '控制范围达到两个或以上才是八角马；只控制一个位置由挂角马负责。',
-    '随后可以由另一匹马、车、炮或兵完成绝杀；只要八角马实际参与控制逃路即可。',
-))
+_DISCOVERED = _Pattern(
+    'DISCOVERED_HORSE_CHECKMATE',
+    '拔簧马',
+    (
+        '最后一着并非马跳将，而是另一枚己方棋子离开了马腿位置。',
+        '该着法一旦把马腿拔开，原本静止的马立即形成马将并完成绝杀。',
+        '因此该终局构成拔簧马。',
+    ),
+)
+_ELBOW = _Pattern(
+    'ELBOW_HORSE_CHECKMATE',
+    '卧槽马',
+    (
+        '绝杀黑方时检查攻击方马是否位于 c8/g8；绝杀红方时检查攻击方马是否位于 c1/g1。',
+        '终局卧槽马须实际攻击将帅或控制宫内相邻逃路，蹩马腿时不算控制。',
+        '随后再由车、炮或兵完成绝杀，因此构成卧槽马。',
+    ),
+)
+_PALCORNER = _Pattern(
+    'PALCORNER_HORSE_CHECKMATE',
+    '挂角马',
+    (
+        '挂角马可以先行占位并控制一个将帅或宫内去路，再由其他棋子将死。',
+        '马也可以跳入挂角位将军，随后逼出将帅应将或直接绝杀。',
+    ),
+)
+_ANGLER = _Pattern(
+    'ANGLER_HORSE_CHECKMATE',
+    '钓鱼马',
+    (
+        '绝杀黑方时只检查红马是否稳占 c7/g7；绝杀红方时只检查黑马是否稳占 c2/g2。',
+        '该马可以先手跳入钓鱼位将军，也可以作为既有钓鱼位支撑最后一击。',
+        '随后再由车、马、炮或兵完成绝杀，因此构成钓鱼马。',
+    ),
+)
+_OCTAGON = _Pattern(
+    'OCTAGON_HORSE_CHECKMATE',
+    '八角马',
+    (
+        '攻击方马位于对方九宫角位，并与对方将帅处于九宫对角位置。',
+        '控制范围达到两个或以上才是八角马；只控制一个位置由挂角马负责。',
+        '随后可以由另一匹马、车、炮或兵完成绝杀；只要八角马实际参与控制逃路即可。',
+    ),
+)
 
 _ELBOW_VS_BLACK = frozenset({'c8', 'g8'})
 _ELBOW_VS_RED = frozenset({'c1', 'g1'})
@@ -117,8 +138,16 @@ def _read_line(fen: str, moves: list[str] | None) -> _Line:
     board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(current_fen)
     attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     return _Line(
-        current_fen, applied, board, analysis, attacker, defender,
-        attacker_king, defender_king, attacker_trace, defender_trace,
+        current_fen,
+        applied,
+        board,
+        analysis,
+        attacker,
+        defender,
+        attacker_king,
+        defender_king,
+        attacker_trace,
+        defender_trace,
     )
 
 
@@ -198,16 +227,10 @@ def _move_ply(move: _Ply | None) -> int | None:
     return int(move['ply']) if move else None
 
 
-def _first_horse_check(
-    trace: list[_Ply], targets: frozenset[str], horses: frozenset[str]
-) -> tuple[int, _Ply] | None:
+def _first_horse_check(trace: list[_Ply], targets: frozenset[str], horses: frozenset[str]) -> tuple[int, _Ply] | None:
     """The first ply, with its trace index, where one of ``horses`` lands on a target and gives check."""
     for index, item in enumerate(trace):
-        if (
-            str(item['piece']) in horses
-            and str(item['to_square']) in targets
-            and bool(item['analysis']['is_check'])
-        ):
+        if str(item['piece']) in horses and str(item['to_square']) in targets and bool(item['analysis']['is_check']):
             return index, item
     return None
 
@@ -255,9 +278,7 @@ def _finish_features(line: _Line, entry: _HorseEntry, checker_types: list[str]) 
     }
 
 
-def _unblocked_leg(
-    line: _Line, item: dict, vacated_square: str, previous_board: dict[str, str]
-) -> str | None:
+def _unblocked_leg(line: _Line, item: dict, vacated_square: str, previous_board: dict[str, str]) -> str | None:
     """The horse-leg square the last move cleared of the attacker's own piece, if ``item`` is such a horse check."""
     horse_piece = _horse_of(line.attacker)
     horse_square = item['square']
@@ -308,13 +329,18 @@ def recognize_discovered_horse_checkmate(fen: str, moves: list[str] | None = Non
         and discovered
         and bool(final_attack['analysis']['is_checkmate'])
     )
-    return _report(line, _DISCOVERED, detected, {
-        'discovered_horses': discovered,
-        'discovered_horse_count': len(discovered),
-        'final_unblocking_piece_type': _final_piece_type(line),
-        'final_unblocking_from': str(final_attack['from_square']) if final_attack else None,
-        'final_unblocking_to': _move_square(final_attack),
-    })
+    return _report(
+        line,
+        _DISCOVERED,
+        detected,
+        {
+            'discovered_horses': discovered,
+            'discovered_horse_count': len(discovered),
+            'final_unblocking_piece_type': _final_piece_type(line),
+            'final_unblocking_from': str(final_attack['from_square']) if final_attack else None,
+            'final_unblocking_to': _move_square(final_attack),
+        },
+    )
 
 
 def _elbow_final_support(line: _Line, static_horses: list[str], checker_types: list[str]) -> bool:
@@ -352,15 +378,20 @@ def recognize_elbow_horse_checkmate(fen: str, moves: list[str] | None = None) ->
             or (entry.move and elbow_horse_present and _entry_finishes(entry, checker_types, _NON_HORSE_FINISHERS))
         )
     )
-    return _report(line, _ELBOW, detected, {
-        'elbow_square': elbow_square,
-        'elbow_horse_present': elbow_horse_present,
-        'static_elbow_horse_squares': static_horses,
-        'elbow_horse_control': horse_control,
-        'active_elbow_horses': active_horses,
-        'elbow_move_ply': _move_ply(entry.move),
-        **_finish_features(line, entry, checker_types),
-    })
+    return _report(
+        line,
+        _ELBOW,
+        detected,
+        {
+            'elbow_square': elbow_square,
+            'elbow_horse_present': elbow_horse_present,
+            'static_elbow_horse_squares': static_horses,
+            'elbow_horse_control': horse_control,
+            'active_elbow_horses': active_horses,
+            'elbow_move_ply': _move_ply(entry.move),
+            **_finish_features(line, entry, checker_types),
+        },
+    )
 
 
 def _palcorner_from_entry(line: _Line, entry: _HorseEntry, control_squares: list[str]) -> _Corner:
@@ -369,9 +400,7 @@ def _palcorner_from_entry(line: _Line, entry: _HorseEntry, control_squares: list
     return _Corner(square, horse_present, sorted(_horse_controlled(line.analysis, square, control_squares)))
 
 
-def _stationary_palcorner_horses(
-    line: _Line, targets: frozenset[str], control_squares: list[str]
-) -> list[dict]:
+def _stationary_palcorner_horses(line: _Line, targets: frozenset[str], control_squares: list[str]) -> list[dict]:
     candidates: list[dict] = []
     for square in _horses_on(line.board, _horse_of(line.attacker), targets):
         controlled = _horse_controlled(line.analysis, square, control_squares)
@@ -401,19 +430,23 @@ def recognize_palcorner_horse_checkmate(fen: str, moves: list[str] | None = None
     checker_types = _final_checker_types(line)
     stationary = _stationary_palcorner_horses(line, targets, control_squares)
     detected = bool(
-        line.analysis['is_checkmate']
-        and (stationary or _palcorner_entry_mates(entry, corner, checker_types))
+        line.analysis['is_checkmate'] and (stationary or _palcorner_entry_mates(entry, corner, checker_types))
     )
     if stationary and not entry.move:
         corner = _Corner(stationary[0]['square'], True, stationary[0]['controlled_squares'])
-    return _report(line, _PALCORNER, detected, {
-        'palcorner_square': corner.square,
-        'palcorner_horse_present': corner.horse_present,
-        'palcorner_restricted_escape_squares': corner.restricted,
-        'palcorner_move_ply': _move_ply(entry.move),
-        **_finish_features(line, entry, checker_types),
-        'stationary_horse_candidates': stationary,
-    })
+    return _report(
+        line,
+        _PALCORNER,
+        detected,
+        {
+            'palcorner_square': corner.square,
+            'palcorner_horse_present': corner.horse_present,
+            'palcorner_restricted_escape_squares': corner.restricted,
+            'palcorner_move_ply': _move_ply(entry.move),
+            **_finish_features(line, entry, checker_types),
+            'stationary_horse_candidates': stationary,
+        },
+    )
 
 
 def _empty_escape_squares(line: _Line) -> set[str]:
@@ -423,25 +456,20 @@ def _empty_escape_squares(line: _Line) -> set[str]:
 def _only_horse_reaches(line: _Line, horse_square: str, reasons: list[dict]) -> bool:
     """True when this horse attacks the square and no other attacking piece type does."""
     return any(
-        reason['reason'] == 'horse_attack' and reason['square'] == horse_square
-        for reason in reasons
+        reason['reason'] == 'horse_attack' and reason['square'] == horse_square for reason in reasons
     ) and not any(
-        reason['reason'] != 'horse_attack'
-        and is_attacker_piece(line.board.get(reason['square'], ''), line.attacker)
+        reason['reason'] != 'horse_attack' and is_attacker_piece(line.board.get(reason['square'], ''), line.attacker)
         for reason in reasons
     )
 
 
-def _angler_contributions(
-    line: _Line, angler_horses: list[str], escape_squares: set[str]
-) -> dict[str, list[str]]:
+def _angler_contributions(line: _Line, angler_horses: list[str], escape_squares: set[str]) -> dict[str, list[str]]:
     """For each angler horse that contributes, the king and empty escape squares only it covers."""
     contributions = {
         square: sorted(
             target
             for target, reasons in line.analysis['attacked_squares'].items()
-            if (target == line.defender_king or target in escape_squares)
-            and _only_horse_reaches(line, square, reasons)
+            if (target == line.defender_king or target in escape_squares) and _only_horse_reaches(line, square, reasons)
         )
         for square in angler_horses
     }
@@ -457,9 +485,7 @@ def recognize_angler_horse_checkmate(fen: str, moves: list[str] | None = None) -
     entry = _own_horse_entry(line, targets)
     checker_types = _final_checker_types(line)
     static_support = bool(
-        line.analysis['is_checkmate']
-        and contributions
-        and _has_finisher(checker_types, _ALL_FINISHERS)
+        line.analysis['is_checkmate'] and contributions and _has_finisher(checker_types, _ALL_FINISHERS)
     )
     dynamic_support = bool(
         line.analysis['is_checkmate']
@@ -468,15 +494,20 @@ def recognize_angler_horse_checkmate(fen: str, moves: list[str] | None = None) -
         and _entry_finishes(entry, checker_types, _ALL_FINISHERS)
     )
     detected = bool(static_support or dynamic_support)
-    return _report(line, _ANGLER, detected, {
-        'angler_horse_squares': angler_horses,
-        'angler_horse_contributions': contributions,
-        'empty_escape_squares': sorted(escape_squares),
-        'angler_move_square': _move_square(entry.move),
-        'angler_move_ply': _move_ply(entry.move),
-        **_finish_features(line, entry, checker_types),
-        'static_angler_support': static_support,
-    })
+    return _report(
+        line,
+        _ANGLER,
+        detected,
+        {
+            'angler_horse_squares': angler_horses,
+            'angler_horse_contributions': contributions,
+            'empty_escape_squares': sorted(escape_squares),
+            'angler_move_square': _move_square(entry.move),
+            'angler_move_ply': _move_ply(entry.move),
+            **_finish_features(line, entry, checker_types),
+            'static_angler_support': static_support,
+        },
+    )
 
 
 def _first_octagon_move(trace: list[_Ply], targets: frozenset[str]) -> _Ply | None:
@@ -523,15 +554,20 @@ def recognize_octagon_horse_checkmate(fen: str, moves: list[str] | None = None) 
         and _has_finisher(checker_types, _ALL_FINISHERS)
         and (not line.applied or created_mate)
     )
-    return _report(line, _OCTAGON, detected, {
-        'octagon_square': octagon_square,
-        'octagon_horse_squares': static_horses,
-        'octagon_horse_present': octagon_horse_present,
-        'opposite_corner': opposite_corner,
-        'diagonal_corner_alignment': diagonal_corner_alignment,
-        'restricted_escape_squares': restricted,
-        'final_checker_types': checker_types,
-        'octagon_move_ply': _move_ply(octagon_move),
-        'final_move_created_mate': created_mate,
-        'octagon_direct_checkmate': octagon_direct_checkmate,
-    })
+    return _report(
+        line,
+        _OCTAGON,
+        detected,
+        {
+            'octagon_square': octagon_square,
+            'octagon_horse_squares': static_horses,
+            'octagon_horse_present': octagon_horse_present,
+            'opposite_corner': opposite_corner,
+            'diagonal_corner_alignment': diagonal_corner_alignment,
+            'restricted_escape_squares': restricted,
+            'final_checker_types': checker_types,
+            'octagon_move_ply': _move_ply(octagon_move),
+            'final_move_created_mate': created_mate,
+            'octagon_direct_checkmate': octagon_direct_checkmate,
+        },
+    )

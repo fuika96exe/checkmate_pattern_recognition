@@ -34,13 +34,19 @@ def classify_mating_material(fen: str, analysis: dict) -> dict | None:
     board = parse_fen(fen)
     defender = analysis['side_to_move']
     attacker = 'black' if defender == 'red' else 'red'
-    checkers = [{'square': item['square'], 'piece': board[item['square']].upper()}
-                for item in analysis['checking_pieces'] if board[item['square']].upper() in _PIECE_NAMES]
+    checkers = [
+        {'square': item['square'], 'piece': board[item['square']].upper()}
+        for item in analysis['checking_pieces']
+        if board[item['square']].upper() in _PIECE_NAMES
+    ]
     controls = _escape_controls(board, analysis['king_square'], defender, attacker)
     types = {item['piece'] for item in checkers} | {item['piece'] for item in controls.values()}
     code = ''.join(piece for piece in 'RNCP' if piece in types)
     if code not in _ALLOWED_CODES:
         return None
-    return {'id': code, 'label_zh': ''.join(_PIECE_NAMES[piece] for piece in code) + ('杀' if len(code) == 1 else ''),
-            'checking_pieces': checkers,
-            'controlling_pieces': sorted(controls.values(), key=lambda item: item['square'])}
+    return {
+        'id': code,
+        'label_zh': ''.join(_PIECE_NAMES[piece] for piece in code) + ('杀' if len(code) == 1 else ''),
+        'checking_pieces': checkers,
+        'controlling_pieces': sorted(controls.values(), key=lambda item: item['square']),
+    }

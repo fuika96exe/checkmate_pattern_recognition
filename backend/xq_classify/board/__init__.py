@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Public board interface: FEN parsing, legal moves, checks, attacks and square helpers.
 
 Callers outside this subpackage use only the names exported here.  Legal moves

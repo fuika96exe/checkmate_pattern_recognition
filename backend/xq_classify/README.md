@@ -117,8 +117,9 @@ A rules bump in the lab also updates the matching document in `docs/` and regene
 - Keep IDs stable. Add a label or pattern rather than renaming one.
 - Keep the result of `to_dict()` stable, or bump `SCHEMA_VERSION`.
 - Keep every function at cognitive complexity 15 or lower.
+- Keep the code clean under xiangqi-server's ruff settings. Chinese punctuation in output strings is exempt, file by file, from `RUF001`.
 
-In the lab, `test_xq_classify_isolation.py` checks the import rules. `test_midgame_frozen.py` and `test_checkmate_frozen.py` are the gates for rule changes: a failing frozen case rejects the change.
+In the lab, `test_xq_classify_isolation.py` checks the import rules, `test_xq_classify_complexity.py` the complexity limit and `test_xq_classify_ruff.py` the ruff settings. `test_midgame_frozen.py` and `test_checkmate_frozen.py` are the gates for rule changes: a failing frozen case rejects the change.
 
 ## Layout
 

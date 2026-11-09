@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """``classify_checkmate``: the one place that decides a checkmate puzzle's labels.
 
 Before phase 0 step 4 this was spread over the lab's FastAPI handler (play the
@@ -21,7 +22,10 @@ def _play_line(fen: str, moves: list[str]) -> tuple[list[dict], CheckmateResult 
             current = board.apply_move(current, move)
         except (ValueError, TypeError) as exc:  # BoardError is a ValueError; TypeError for a non-string move
             failure = CheckmateResult(
-                status='invalid', error=f'第 {index} 手 {move} 無法套用：{exc}', failed_move_index=index, timeline=timeline,
+                status='invalid',
+                error=f'第 {index} 手 {move} 無法套用：{exc}',
+                failed_move_index=index,
+                timeline=timeline,
             )
             return timeline, failure
         timeline.append({'index': index, 'fen': current, 'move': move})

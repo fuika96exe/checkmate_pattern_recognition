@@ -41,9 +41,10 @@ def _pin_proof(run: Analysis, relation: dict, ply: int) -> dict | None:
 
 
 def _newly_attacked(frame: MoveFrame, identity: str) -> bool:
-    return any(r['profitable']
-               and not (frame.before.relation(r['actor']['id'], identity) or {}).get('profitable', False)
-               for r in frame.hits.get(identity, []))
+    return any(
+        r['profitable'] and not (frame.before.relation(r['actor']['id'], identity) or {}).get('profitable', False)
+        for r in frame.hits.get(identity, [])
+    )
 
 
 def _collect_exploited(run: Analysis, frame: MoveFrame, candidates: dict) -> None:
@@ -71,16 +72,23 @@ def _collect_captured(run: Analysis, frame: MoveFrame, candidates: dict) -> None
 
 def _blocker_recapture_proof(run: Analysis, frame: MoveFrame, key: tuple) -> dict | None:
     p, after, reply, response = frame.ply, frame.after, frame.reply, frame.response
-    realized = next((e for e in run.events[p + 1:] if e.side == run.solver and e.actor == key[0]
-                     and e.victim == key[2]), None)
+    realized = next(
+        (e for e in run.events[p + 1 :] if e.side == run.solver and e.actor == key[0] and e.victim == key[2]), None
+    )
     if not realized:
         return None
     gain = evaluate_exchange(run.positions[realized.ply - 1].fen, realized.move)
     if gain <= 0 or not opened_by(after, reply, key[0], key[2], response.move[:2]):
         return None
-    return {'guard': after.ref(key[1]), 'defendedTarget': after.ref(key[2]),
-            'capturePly': realized.ply, 'capture': realized.move, 'gain': gain,
-            'mode': 'blocker_recapture', 'response': response.move}
+    return {
+        'guard': after.ref(key[1]),
+        'defendedTarget': after.ref(key[2]),
+        'capturePly': realized.ply,
+        'capture': realized.move,
+        'gain': gain,
+        'mode': 'blocker_recapture',
+        'response': response.move,
+    }
 
 
 def _collect_blocker_recaptures(run: Analysis, frame: MoveFrame, candidates: dict) -> None:
@@ -89,8 +97,12 @@ def _collect_blocker_recaptures(run: Analysis, frame: MoveFrame, candidates: dic
     if not frame.reply:
         return
     for key, relation in frame.after.pins.items():
-        if (relation.get('absolute') or relation['front']['piece'].upper() in MAIN or
-                response.actor != key[1] or response.victim != frame.event.actor):
+        if (
+            relation.get('absolute')
+            or relation['front']['piece'].upper() in MAIN
+            or response.actor != key[1]
+            or response.victim != frame.event.actor
+        ):
             continue
         proof = _blocker_recapture_proof(run, frame, key)
         if proof:
@@ -116,10 +128,14 @@ def _only_while_in_check(frame: MoveFrame, key: tuple, candidate: _Candidate) ->
     after a reply that moved none of its pieces, it never restricted anything.
     """
     after, reply = frame.after, frame.reply
-    return (candidate.mode in {'created', 'exploited', 'defensive_duty_exploited'} and
-            candidate.confirmed == frame.ply and
-            after.checked and reply is not None and key not in reply.pins and
-            all(after.squares.get(x) == reply.squares.get(x) for x in key[:3]))
+    return (
+        candidate.mode in {'created', 'exploited', 'defensive_duty_exploited'}
+        and candidate.confirmed == frame.ply
+        and after.checked
+        and reply is not None
+        and key not in reply.pins
+        and all(after.squares.get(x) == reply.squares.get(x) for x in key[:3])
+    )
 
 
 def _report_candidate(run: Analysis, frame: MoveFrame, key: tuple, candidate: _Candidate) -> None:
@@ -133,10 +149,23 @@ def _report_candidate(run: Analysis, frame: MoveFrame, key: tuple, candidate: _C
     relation_pos = frame.before if mode == 'pinned_piece_captured' else run.positions[confirmed]
     if front_can_trade_pinner(relation_pos, relation):
         return
-    run.emit(Finding('pin', p, max(confirmed, proof['capturePly']), [key[0]], [key[1], key[2]], key[3],
-                     {'restriction': relation, 'use': mode, 'functionalCapture': proof,
-                      'relationFen': run.positions[confirmed].fen,
-                      'response': frame.response.move if confirmed == p + 1 else None}))
+    run.emit(
+        Finding(
+            'pin',
+            p,
+            max(confirmed, proof['capturePly']),
+            [key[0]],
+            [key[1], key[2]],
+            key[3],
+            {
+                'restriction': relation,
+                'use': mode,
+                'functionalCapture': proof,
+                'relationFen': run.positions[confirmed].fen,
+                'response': frame.response.move if confirmed == p + 1 else None,
+            },
+        )
+    )
 
 
 def detect_pins(run: Analysis, frame: MoveFrame) -> None:
@@ -160,14 +189,32 @@ def detect_recapture_pins(run: Analysis) -> None:
             continue
         if any(o['id'] == 'pin' for ply in run.plies for o in ply['occurrences']):
             break
-        found = (illegal_recapture_pin(run.positions, capture)
-                 or relative_recapture_pin(run.positions, run.events, capture))
+        found = illegal_recapture_pin(run.positions, capture) or relative_recapture_pin(
+            run.positions, run.events, capture
+        )
         if found:
             pinner, guard, king, proof = found
             mode, position = proof['mode'], run.positions[capture.ply]
-            run.emit(Finding('pin', capture.ply, capture.ply, [pinner], [guard, king], mode,
-                             {'restriction': {'actor': position.ref(pinner), 'front': position.ref(guard),
-                                              'rear': position.ref(king), 'kind': mode,
-                                              'absolute': mode == 'illegal_recapture'},
-                              'use': mode, 'functionalCapture': proof,
-                              'relationFen': position.fen, 'response': None}))
+            run.emit(
+                Finding(
+                    'pin',
+                    capture.ply,
+                    capture.ply,
+                    [pinner],
+                    [guard, king],
+                    mode,
+                    {
+                        'restriction': {
+                            'actor': position.ref(pinner),
+                            'front': position.ref(guard),
+                            'rear': position.ref(king),
+                            'kind': mode,
+                            'absolute': mode == 'illegal_recapture',
+                        },
+                        'use': mode,
+                        'functionalCapture': proof,
+                        'relationFen': position.fen,
+                        'response': None,
+                    },
+                )
+            )

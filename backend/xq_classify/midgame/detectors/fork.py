@@ -46,7 +46,8 @@ def _existed(before: Position, actor: str, target: str) -> bool:
     old = before.relation(actor, target)
     return bool(old and (old['profitable'] or old['check'])) or (
         b.position_analysis(before.query)['is_check']
-        and dst in b.pseudo_legal_targets(before.board, src, before.board[src]))
+        and dst in b.pseudo_legal_targets(before.board, src, before.board[src])
+    )
 
 
 def _is_general(pos: Position, target: str) -> bool:
@@ -60,7 +61,8 @@ def _pair_rejected(run: Analysis, frame: MoveFrame, actor: str, pair: tuple[str,
     # v2.6: a new check alone does not make a fork; the non-king
     # target must also be newly attacked by this move.
     if any(_is_general(after, t) for t in pair) and any(
-            _existed(before, actor, t) for t in pair if not _is_general(after, t)):
+        _existed(before, actor, t) for t in pair if not _is_general(after, t)
+    ):
         run.review('fork', p, 'check_with_preexisting_attack', {'actor': after.ref(actor)})
         return True
     defence = fork_defences(after, actor)
@@ -72,8 +74,12 @@ def _pair_rejected(run: Analysis, frame: MoveFrame, actor: str, pair: tuple[str,
     # actual reply, like every other label (no free second move).
     # Applies to forks of two non-king targets made while another
     # check is pending; check forks are judged by ruling D3.
-    if after.checked and reply is not None and not any(_is_general(after, t) for t in pair) and any(
-            not (reply.relation(actor, t) or {}).get('profitable') for t in pair):
+    if (
+        after.checked
+        and reply is not None
+        and not any(_is_general(after, t) for t in pair)
+        and any(not (reply.relation(actor, t) or {}).get('profitable') for t in pair)
+    ):
         run.review('fork', p, 'target_not_confirmed_after_check', {'actor': after.ref(actor)})
         return True
     return False
@@ -88,8 +94,17 @@ def _report_pair(run: Analysis, frame: MoveFrame, actor: str, pair: tuple[str, s
         return
     p, after, response, threats = frame.ply, frame.after, frame.response, frame.fork_threats
     attacks = [next(r for r in threats[t] if _threatens(r, actor)) for t in pair]
-    run.emit(Finding('fork', p, p, [actor], list(pair), 'new_target_pair',
-                     {'attacks': attacks, 'response': response.move if after.checked and response else None}))
+    run.emit(
+        Finding(
+            'fork',
+            p,
+            p,
+            [actor],
+            list(pair),
+            'new_target_pair',
+            {'attacks': attacks, 'response': response.move if after.checked and response else None},
+        )
+    )
 
 
 def detect_forks(run: Analysis, frame: MoveFrame) -> None:
@@ -136,8 +151,17 @@ def _emit_screen_forks(run: Analysis, frame: MoveFrame, checked: tuple[str, dict
     for target, attack in _new_screen_attacks(frame, screen):
         if fork_defences(after, cannon) or fork_defences(after, screen):
             continue
-        run.emit(Finding('fork', p, p, [cannon, screen], [king, target], 'friendly_cannon_screen_check',
-                         {'attacks': [check, attack], 'screen': after.ref(screen)}))
+        run.emit(
+            Finding(
+                'fork',
+                p,
+                p,
+                [cannon, screen],
+                [king, target],
+                'friendly_cannon_screen_check',
+                {'attacks': [check, attack], 'screen': after.ref(screen)},
+            )
+        )
 
 
 def detect_screen_forks(run: Analysis, frame: MoveFrame) -> None:
@@ -193,7 +217,19 @@ def detect_two_threat_forks(run: Analysis, frame: MoveFrame) -> None:
     actors = {r['actor']['id'] for r in fresh.values()}
     if len(fresh) < 2 or len(actors) < 2 or event.actor not in actors:
         return
-    pair = sorted(fresh)[:2] if len(fresh) == 2 else sorted(
-        fresh, key=lambda t: (fresh[t]['actor']['id'] != event.actor, t))[:2]
-    run.emit(Finding('fork', p, p, list(dict.fromkeys(fresh[t]['actor']['id'] for t in pair)), list(pair),
-                     'two_new_threats', {'attacks': [fresh[t] for t in pair]}))
+    pair = (
+        sorted(fresh)[:2]
+        if len(fresh) == 2
+        else sorted(fresh, key=lambda t: (fresh[t]['actor']['id'] != event.actor, t))[:2]
+    )
+    run.emit(
+        Finding(
+            'fork',
+            p,
+            p,
+            list(dict.fromkeys(fresh[t]['actor']['id'] for t in pair)),
+            list(pair),
+            'two_new_threats',
+            {'attacks': [fresh[t] for t in pair]},
+        )
+    )

@@ -48,8 +48,9 @@ def _play(before: Position, ply: int, move: str, solver: str) -> tuple[Event, Po
     after = b.apply_move(before.fen, move)
     if ply == 1 and b.side_to_move(after) != solver:
         raise ValueError(f'first_turn mismatch: expected {b.side_to_move(after)}, got {solver}')
-    event = Event(ply, b.side_to_move(before.fen), move, before.ids[src],
-                  before.ids.get(dst), before.board.get(dst, '').upper())
+    event = Event(
+        ply, b.side_to_move(before.fen), move, before.ids[src], before.ids.get(dst), before.board.get(dst, '').upper()
+    )
     return event, Position(after, b.move_piece_identity(before.ids, src, dst), solver)
 
 

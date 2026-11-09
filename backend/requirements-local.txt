@@ -6,3 +6,4 @@ pyffish
 pytest
 pytest-cov
 complexipy==8.3.0
+ruff==0.17.2

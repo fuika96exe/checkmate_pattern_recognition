@@ -17,7 +17,8 @@ def _is_checking_parent(frame: MoveFrame, parent: dict) -> bool:
     # v2.9 (expert ruling on R0g40E): a discovered attack whose moving
     # piece itself gives check is a checking parent as well.
     mover_checks = parent['id'] == 'discovered_attack' and any(
-        r['check'] and r['actor']['id'] == event.actor for rs in after.hits.values() for r in rs)
+        r['check'] and r['actor']['id'] == event.actor for rs in after.hits.values() for r in rs
+    )
     return mover_checks or any(t['piece'].upper() == 'K' for t in targets)
 
 
@@ -27,17 +28,32 @@ def _judge_parent(run: Analysis, frame: MoveFrame, parent: dict) -> None:
     # v2.7 (expert ruling D3): after the actual reply to the check
     # the player must have a profitable capture of a major piece,
     # or the discovering piece itself captured a major piece.
-    options = [r for rows in (reply.captures.values() if reply else []) for r in rows
-               if r['profitable'] and r['target']['piece'].upper() in MAIN]
+    options = [
+        r
+        for rows in (reply.captures.values() if reply else [])
+        for r in rows
+        if r['profitable'] and r['target']['piece'].upper() in MAIN
+    ]
     mover_capture = parent['id'] == 'discovered_attack' and event.victim_kind in MAIN
     if not options and not mover_capture:
         run.review('check_fork', p, 'no_profitable_capture_after_check', {'parentKey': evidence['key']})
         return
-    run.emit(Finding('check_fork', p, evidence['confirmedPly'], [r['id'] for r in evidence['actors']],
-                     [r['id'] for r in evidence['targets']], 'checking_parent',
-                     {'parentKey': evidence['key'],
-                      'checks': [r for rs in after.hits.values() for r in rs if r['check']],
-                      'gainOptions': options[:4], 'moverCapture': event.move if mover_capture else None}))
+    run.emit(
+        Finding(
+            'check_fork',
+            p,
+            evidence['confirmedPly'],
+            [r['id'] for r in evidence['actors']],
+            [r['id'] for r in evidence['targets']],
+            'checking_parent',
+            {
+                'parentKey': evidence['key'],
+                'checks': [r for rs in after.hits.values() for r in rs if r['check']],
+                'gainOptions': options[:4],
+                'moverCapture': event.move if mover_capture else None,
+            },
+        )
+    )
 
 
 def detect_check_forks(run: Analysis, frame: MoveFrame) -> None:

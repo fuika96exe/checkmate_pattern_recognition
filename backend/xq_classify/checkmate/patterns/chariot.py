@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Chariot-led checkmate patterns: 双车错, 三车闹士, 铁门栓, 进洞出洞, 双鬼拍门 and 大胆穿心."""
 
 from typing import NamedTuple
@@ -119,7 +120,7 @@ def recognize_double_chariots_checkmate(fen: str, moves: list[str] | None = None
     detected = bool(
         analysis['is_checkmate']
         and len(rook_squares) >= 2
-        and (alternating_rooks and checking_sequence or immediate_rook_finish)
+        and ((alternating_rooks and checking_sequence) or immediate_rook_finish)
         and (different_files or different_ranks)
     )
     return {
@@ -211,8 +212,7 @@ def _note_line_participation(
 
 def _attacks_any(analysis: dict, square: str, targets: list[str]) -> bool:
     return any(
-        any(attack['square'] == square for attack in analysis['attacked_squares'].get(target, []))
-        for target in targets
+        any(attack['square'] == square for attack in analysis['attacked_squares'].get(target, [])) for target in targets
     )
 
 
@@ -454,9 +454,7 @@ def _reply_to(move: dict, defender_trace: list[dict]) -> dict | None:
 
 def _general_tunnel_replies(replies: list[dict | None], zone: _DrawerZone) -> bool:
     return all(
-        reply is not None
-        and str(reply['piece']).upper() == 'K'
-        and str(reply['to_square']) in zone.king_tunnel_squares
+        reply is not None and str(reply['piece']).upper() == 'K' and str(reply['to_square']) in zone.king_tunnel_squares
         for reply in replies
     )
 
@@ -495,9 +493,7 @@ def recognize_drawer_checkmate(fen: str, moves: list[str] | None = None) -> dict
     home_rank = home_rank_of(defender)
     zone = _drawer_zone(defender)
     attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
-    home_cannons = sorted(
-        square for square, piece in board.items() if piece == cannon_piece and square[1] == home_rank
-    )
+    home_cannons = sorted(square for square, piece in board.items() if piece == cannon_piece and square[1] == home_rank)
     rook_cycles = _rook_cycles(attacker_trace, defender_trace, zone)
     center = 'e8' if defender == 'black' else 'e1'
     penetration_started = any(
@@ -577,12 +573,12 @@ def _is_main_piece_entering(item: dict, attacker: str, center: str) -> bool:
 def _qualifying_capture(line: tuple[str, list[str]], item: dict, advisor: str, center: str) -> dict | None:
     """The capture of the centre advisor at this ply, when another advisor remained or the victim was protected."""
     fen, applied = line
-    before, _ = apply_moves(fen, applied[:int(item['ply']) - 1])
+    before, _ = apply_moves(fen, applied[: int(item['ply']) - 1])
     previous = parse_fen(before)
     if previous.get(center) != advisor:
         return None
     other_advisors = [square for square, piece in previous.items() if piece == advisor and square != center]
-    after_capture, _ = apply_moves(fen, applied[:int(item['ply'])])
+    after_capture, _ = apply_moves(fen, applied[: int(item['ply'])])
     defenders = sorted(move[:2] for move in legal_moves(after_capture) if move[2:] == center)
     if other_advisors or defenders:
         return {'ply': item['ply'], 'other_advisors': other_advisors, 'protectors': defenders}

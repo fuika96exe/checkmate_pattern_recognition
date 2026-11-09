@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Cannon-led checkmate patterns: 重炮杀, 夹车炮, 闷宫杀, 天地炮 and 马后炮."""
 
 from typing import NamedTuple
@@ -11,7 +12,6 @@ from ..geometry import (
     orthogonal_palace_neighbors,
     palace_contains,
 )
-
 
 # --- 重炮杀 (double cannon) ---------------------------------------------------
 
@@ -295,9 +295,7 @@ def _board_without_other_checkers(board: dict[str, str], cannon: str, king: str,
     return probe
 
 
-def _some_move_leaves_cannon_attack(
-    probe: dict[str, str], square: str, piece: str, line: tuple[str, str, str]
-) -> bool:
+def _some_move_leaves_cannon_attack(probe: dict[str, str], square: str, piece: str, line: tuple[str, str, str]) -> bool:
     """Whether a pseudo-legal move of this piece leaves the cannon attacking; ``line`` is (cannon, king, attacker)."""
     cannon, king, attacker = line
     for target in pseudo_legal_targets(probe, square, piece):
@@ -308,9 +306,7 @@ def _some_move_leaves_cannon_attack(
     return False
 
 
-def _cannon_pinned_defenders(
-    board: dict[str, str], cannon: str, king: str, attacker: str, defender: str
-) -> list[str]:
+def _cannon_pinned_defenders(board: dict[str, str], cannon: str, king: str, attacker: str, defender: str) -> list[str]:
     """Find defenders pinned to their general by this cannon, independently of other checks."""
     if cannon[0] != king[0] and cannon[1] != king[1]:
         return []
@@ -381,8 +377,10 @@ def _is_cannon_protected_finish(
 ) -> bool:
     """Both cannons pinned before the last move, and a cannon-protected chariot or pawn mates in the palace."""
     return bool(
-        finish.piece and finish.piece.upper() in {'R', 'P'}
-        and finish.destination and palace_contains(finish.destination, setup.defender)
+        finish.piece
+        and finish.piece.upper() in {'R', 'P'}
+        and finish.destination
+        and palace_contains(finish.destination, setup.defender)
         and any(pre_pins.get(cannon) for cannon in setup.heaven)
         and any(pre_pins.get(cannon) for cannon in setup.earth)
         and finish.destination in checking_squares
@@ -393,16 +391,14 @@ def _is_cannon_protected_finish(
 def _is_center_pin_bottom_check(
     setup: _HeavenEarth, final_pins: dict[str, list[str]], checking_squares: set[str]
 ) -> bool:
-    return (
-        any(final_pins.get(cannon) for cannon in setup.earth)
-        and any(cannon in checking_squares for cannon in setup.heaven)
+    return any(final_pins.get(cannon) for cannon in setup.earth) and any(
+        cannon in checking_squares for cannon in setup.heaven
     )
 
 
 def _has_empty_center(setup: _HeavenEarth) -> bool:
     return any(
-        not any(square in setup.board for square in squares_between(cannon, setup.king))
-        for cannon in setup.earth
+        not any(square in setup.board for square in squares_between(cannon, setup.king)) for cannon in setup.earth
     )
 
 

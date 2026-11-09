@@ -60,9 +60,7 @@ class ExchangeEvaluator:
             return 0
         position = board.parse_fen(fen)
         moves = self._legal_moves(fen)
-        recaptures = sorted(
-            (piece_value(position[move[:2]], move[:2]), move) for move in moves if move[2:] == square
-        )
+        recaptures = sorted((piece_value(position[move[:2]], move[:2]), move) for move in moves if move[2:] == square)
         if not recaptures:
             return 0
         best = max(
@@ -91,7 +89,9 @@ class ExchangeEvaluator:
         if victim.upper() == 'K':
             return 0
         return piece_value(victim, target) - self.evaluate_square(
-            self._apply_move(fen, move), target, piece_value(position[source], source),
+            self._apply_move(fen, move),
+            target,
+            piece_value(position[source], source),
         )
 
 

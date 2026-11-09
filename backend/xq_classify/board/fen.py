@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """FEN and UCCI text: parsing, validation and serialisation.
 
 A board is a ``dict`` from square name to piece letter (upper case Red, lower

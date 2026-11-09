@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """Checkmates read from the general's own surroundings and from the way it is checked.
 
 Patterns: centroid (花心杀), crowned (平顶冠), tiger silhouette (侧面虎), double check (双将),

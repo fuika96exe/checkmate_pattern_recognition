@@ -6,8 +6,15 @@ from ..replay import Event
 
 
 def _capture_refs(run: Analysis, captures: tuple[Event, Event]) -> list[dict]:
-    return [{'ply': e.ply, 'ucci': e.move, 'actor': run.positions[e.ply - 1].ref(e.actor),
-             'victim': run.positions[e.ply - 1].ref(e.victim)} for e in captures]
+    return [
+        {
+            'ply': e.ply,
+            'ucci': e.move,
+            'actor': run.positions[e.ply - 1].ref(e.actor),
+            'victim': run.positions[e.ply - 1].ref(e.victim),
+        }
+        for e in captures
+    ]
 
 
 def _detect_bilateral_captures(run: Analysis) -> None:
@@ -18,8 +25,17 @@ def _detect_bilateral_captures(run: Analysis) -> None:
         for v in captures:
             if v.side == run.solver or (u.dst != v.dst and abs(u.ply - v.ply) != 1):
                 continue
-            run.emit(Finding('exchange', u.ply, max(u.ply, v.ply), [u.actor, v.actor], [u.victim, v.victim],
-                             'bilateral_major_captures', {'captures': _capture_refs(run, (u, v))}))
+            run.emit(
+                Finding(
+                    'exchange',
+                    u.ply,
+                    max(u.ply, v.ply),
+                    [u.actor, v.actor],
+                    [u.victim, v.victim],
+                    'bilateral_major_captures',
+                    {'captures': _capture_refs(run, (u, v))},
+                )
+            )
 
 
 def _detect_blunder_trade(run: Analysis) -> None:
@@ -31,11 +47,24 @@ def _detect_blunder_trade(run: Analysis) -> None:
     if len(run.events) <= 1:
         return
     blunder, answer = run.events[0], run.events[1]
-    if (blunder.victim_kind in MAIN and answer.side == run.solver and answer.victim_kind in MAIN
-            and VALUES[blunder.victim_kind] == VALUES[answer.victim_kind]
-            and not any(o['id'] == 'exchange' for o in run.occurrences(2))):
-        run.emit(Finding('exchange', 2, 2, [answer.actor, blunder.actor], [answer.victim, blunder.victim],
-                         'blunder_trade_recaptured', {'captures': _capture_refs(run, (answer, blunder))}))
+    if (
+        blunder.victim_kind in MAIN
+        and answer.side == run.solver
+        and answer.victim_kind in MAIN
+        and VALUES[blunder.victim_kind] == VALUES[answer.victim_kind]
+        and not any(o['id'] == 'exchange' for o in run.occurrences(2))
+    ):
+        run.emit(
+            Finding(
+                'exchange',
+                2,
+                2,
+                [answer.actor, blunder.actor],
+                [answer.victim, blunder.victim],
+                'blunder_trade_recaptured',
+                {'captures': _capture_refs(run, (answer, blunder))},
+            )
+        )
 
 
 def detect_exchanges(run: Analysis) -> None:

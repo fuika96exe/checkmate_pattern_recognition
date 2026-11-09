@@ -24,10 +24,14 @@ class _Departure(NamedTuple):
 def _held_until_realized(run: Analysis, case: _Departure, actor: str, target: str, realization: Event) -> bool:
     """Attacker and target stay put, and the capture stays profitable, up to the realization."""
     release = case.release
-    return not any(pos.squares.get(actor) != release.squares[actor] or
-                   pos.squares.get(target) != release.squares[target] or
-                   not pos.relation(actor, target) or not pos.relation(actor, target)['profitable']
-                   for pos in run.positions[case.trigger.ply + 1:realization.ply] if not pos.checked)
+    return not any(
+        pos.squares.get(actor) != release.squares[actor]
+        or pos.squares.get(target) != release.squares[target]
+        or not pos.relation(actor, target)
+        or not pos.relation(actor, target)['profitable']
+        for pos in run.positions[case.trigger.ply + 1 : realization.ply]
+        if not pos.checked
+    )
 
 
 def _realization_of(run: Analysis, case: _Departure, attack: dict, target: str) -> Event | None:
@@ -35,11 +39,15 @@ def _realization_of(run: Analysis, case: _Departure, attack: dict, target: str) 
     actor, blocker = attack['actor']['id'], case.response.actor
     if attack['check'] or not attack['profitable'] or actor == trigger.actor:
         return None
-    if (case.before.relation(actor, target) or pressure.relation(actor, blocker) or
-            not opened_by(pressure, release, actor, target, case.response.move[:2])):
+    if (
+        case.before.relation(actor, target)
+        or pressure.relation(actor, blocker)
+        or not opened_by(pressure, release, actor, target, case.response.move[:2])
+    ):
         return None
     realization = next(
-        (e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None,
+        (e for e in run.events[p + 1 :] if e.side == run.solver and e.actor == actor and e.victim == target),
+        None,
     )
     if not realization or evaluate_exchange(run.positions[realization.ply - 1].fen, realization.move) <= 0:
         return None
@@ -49,24 +57,42 @@ def _realization_of(run: Analysis, case: _Departure, attack: dict, target: str) 
 def _emit_clearance(run: Analysis, case: _Departure, attack: dict, target: str, realization: Event) -> None:
     trigger, response, pressure = case.trigger, case.response, case.pressure
     blocker = response.actor
-    run.emit(Finding('clearance', trigger.ply, realization.ply, [trigger.actor, attack['actor']['id']],
-                     [blocker, target],
-                     'forced_blocker_departure',
-                     {'blocker': pressure.ref(blocker), 'vacated': response.move[:2],
-                      'pressure': case.new_pressure, 'pressureFen': pressure.fen,
-                      'response': {'ply': response.ply, 'ucci': response.move},
-                      'releaseFen': case.release.fen, 'openedAttack': attack,
-                      'realization': {'ply': realization.ply, 'ucci': realization.move, 'gain':
-                                      evaluate_exchange(run.positions[realization.ply - 1].fen, realization.move)}}))
+    run.emit(
+        Finding(
+            'clearance',
+            trigger.ply,
+            realization.ply,
+            [trigger.actor, attack['actor']['id']],
+            [blocker, target],
+            'forced_blocker_departure',
+            {
+                'blocker': pressure.ref(blocker),
+                'vacated': response.move[:2],
+                'pressure': case.new_pressure,
+                'pressureFen': pressure.fen,
+                'response': {'ply': response.ply, 'ucci': response.move},
+                'releaseFen': case.release.fen,
+                'openedAttack': attack,
+                'realization': {
+                    'ply': realization.ply,
+                    'ucci': realization.move,
+                    'gain': evaluate_exchange(run.positions[realization.ply - 1].fen, realization.move),
+                },
+            },
+        )
+    )
 
 
 def _judge_trigger(run: Analysis, trigger: Event) -> None:
     p = trigger.ply
     response = run.events[p]
-    before, pressure, release = run.positions[p - 1:p + 2]
+    before, pressure, release = run.positions[p - 1 : p + 2]
     blocker = response.actor
-    new_pressure = [r for r in pressure.threats.get(blocker, []) if r['profitable'] and not (
-        before.relation(r['actor']['id'], blocker) or {}).get('profitable', False)]
+    new_pressure = [
+        r
+        for r in pressure.threats.get(blocker, [])
+        if r['profitable'] and not (before.relation(r['actor']['id'], blocker) or {}).get('profitable', False)
+    ]
     if not new_pressure and not pressure.checked:
         return
     case = _Departure(trigger, response, before, pressure, release, new_pressure)

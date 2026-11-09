@@ -86,9 +86,15 @@ class Position:
             if not victim or own(victim, self.side) or victim.upper() == 'K':
                 continue
             ok, gain = profitable_capture(self.query, move)
-            relation = {'actor': self.ref(self.ids[src]), 'target': self.ref(self.ids[dst]),
-                        'ucci': move, 'gain': gain, 'profitable': ok, 'check': False,
-                        'fen': self.query}
+            relation = {
+                'actor': self.ref(self.ids[src]),
+                'target': self.ref(self.ids[dst]),
+                'ucci': move,
+                'gain': gain,
+                'profitable': ok,
+                'check': False,
+                'fen': self.query,
+            }
             result.setdefault(self.ids[dst], []).append(relation)
         return result
 
@@ -104,23 +110,31 @@ class Position:
     @cached_property
     def hits(self) -> dict:
         """Major targets and actual checking sources, separately from capture values."""
-        result = {t: list(rows) for t, rows in self.captures.items()
-                  if rows[0]['target']['piece'].upper() in MAIN}
+        result = {t: list(rows) for t, rows in self.captures.items() if rows[0]['target']['piece'].upper() in MAIN}
         # A check is an actual attack on the general, never an exchange input.
         king = next((s for s, p in self.board.items() if p == ('k' if self.side == 'red' else 'K')), None)
         if king:
             for source, piece in sorted(self.board.items()):
                 if self._gives_safe_check(source, piece, king):
-                    result.setdefault(self.ids[king], []).append({
-                        'actor': self.ref(self.ids[source]), 'target': self.ref(self.ids[king]),
-                        'ucci': None, 'gain': None, 'profitable': False, 'check': True,
-                    })
+                    result.setdefault(self.ids[king], []).append(
+                        {
+                            'actor': self.ref(self.ids[source]),
+                            'target': self.ref(self.ids[king]),
+                            'ucci': None,
+                            'gain': None,
+                            'profitable': False,
+                            'check': True,
+                        }
+                    )
         return result
 
     @cached_property
     def threats(self) -> dict:
-        return {t: [r for r in rows if r['profitable'] or r['check']]
-                for t, rows in self.hits.items() if any(r['profitable'] or r['check'] for r in rows)}
+        return {
+            t: [r for r in rows if r['profitable'] or r['check']]
+            for t, rows in self.hits.items()
+            if any(r['profitable'] or r['check'] for r in rows)
+        }
 
     @cached_property
     def guards(self) -> dict:
@@ -232,9 +246,12 @@ def _absolute_line_pins(pos: Position, src: str, occupied: list[str], result: di
             continue
         screen = next((sq for sq in occupied[:king_index] if sq != front), None)
         result[(actor, guard, target, 'ray')] = {
-            'actor': pos.ref(actor), 'front': pos.ref(guard), 'rear': pos.ref(target),
+            'actor': pos.ref(actor),
+            'front': pos.ref(guard),
+            'rear': pos.ref(target),
             'screen': pos.ref(pos.ids[screen]) if screen else None,
-            'kind': 'ray', 'absolute': True,
+            'kind': 'ray',
+            'absolute': True,
         }
 
 
@@ -242,17 +259,25 @@ def _relative_line_pin(pos: Position, src: str, occupied: list[str], result: dic
     offset = int(pos.board[src].upper() == 'C')
     if len(occupied) < offset + 2:
         return
-    front, rear = occupied[offset:offset + 2]
+    front, rear = occupied[offset : offset + 2]
     fp, rp = pos.board[front], pos.board[rear]
-    if (own(fp, pos.side) or own(rp, pos.side) or fp.upper() not in 'RNCBAP' or
-            rp.upper() not in MAIN or piece_value(rp, rear) <= piece_value(fp, front)):
+    if (
+        own(fp, pos.side)
+        or own(rp, pos.side)
+        or fp.upper() not in 'RNCBAP'
+        or rp.upper() not in MAIN
+        or piece_value(rp, rear) <= piece_value(fp, front)
+    ):
         return
     actor, guard, target = pos.ids[src], pos.ids[front], pos.ids[rear]
     if exposed_relation(pos, actor, guard, target) and profitable_after_removal(pos, actor, guard, target):
         result[(actor, guard, target, 'ray')] = {
-            'actor': pos.ref(actor), 'front': pos.ref(guard), 'rear': pos.ref(target),
+            'actor': pos.ref(actor),
+            'front': pos.ref(guard),
+            'rear': pos.ref(target),
             'screen': pos.ref(pos.ids[occupied[0]]) if offset else None,
-            'kind': 'ray', 'absolute': False,
+            'kind': 'ray',
+            'absolute': False,
         }
 
 
@@ -270,10 +295,14 @@ def _horse_leg_pin(pos: Position, src: str, dst: str, victim: str, result: dict)
         return
     actor, front, rear = pos.ids[src], pos.ids[leg], pos.ids[dst]
     if exposed_relation(pos, actor, front, rear) and (
-            victim.upper() == 'K' or profitable_after_removal(pos, actor, front, rear)):
+        victim.upper() == 'K' or profitable_after_removal(pos, actor, front, rear)
+    ):
         result[(actor, front, rear, 'horse_leg')] = {
-            'actor': pos.ref(actor), 'front': pos.ref(front), 'rear': pos.ref(rear),
-            'kind': 'horse_leg', 'absolute': victim.upper() == 'K',
+            'actor': pos.ref(actor),
+            'front': pos.ref(front),
+            'rear': pos.ref(rear),
+            'kind': 'horse_leg',
+            'absolute': victim.upper() == 'K',
             'review': False,
         }
 
@@ -292,8 +321,13 @@ def _elephant_eye_pin(pos: Position, src: str, dst: str, victim: str, result: di
     actor, front, rear = pos.ids[src], pos.ids[eye], pos.ids[dst]
     if exposed_relation(pos, actor, front, rear) and profitable_after_removal(pos, actor, front, rear):
         result[(actor, front, rear, 'elephant_eye')] = {
-            'actor': pos.ref(actor), 'front': pos.ref(front), 'rear': pos.ref(rear),
-            'kind': 'elephant_eye', 'absolute': False, 'review': False}
+            'actor': pos.ref(actor),
+            'front': pos.ref(front),
+            'rear': pos.ref(rear),
+            'kind': 'elephant_eye',
+            'absolute': False,
+            'review': False,
+        }
 
 
 def _flying_general_pin(pos: Position, result: dict) -> None:
@@ -307,8 +341,11 @@ def _flying_general_pin(pos: Position, result: dict) -> None:
     actor = next(s for s in kings if own(pos.board[s], pos.side))
     rear = next(s for s in kings if s != actor)
     result[(pos.ids[actor], pos.ids[front], pos.ids[rear], 'flying_general')] = {
-        'actor': pos.ref(pos.ids[actor]), 'front': pos.ref(pos.ids[front]),
-        'rear': pos.ref(pos.ids[rear]), 'kind': 'flying_general', 'absolute': True,
+        'actor': pos.ref(pos.ids[actor]),
+        'front': pos.ref(pos.ids[front]),
+        'rear': pos.ref(pos.ids[rear]),
+        'kind': 'flying_general',
+        'absolute': True,
     }
 
 

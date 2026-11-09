@@ -13,12 +13,21 @@ def _report_revealed(run: Analysis, frame: MoveFrame, target: str, relation: dic
     # trade offer still counts when the same move gives check,
     # because the opponent must answer the check first.
     if not (relation['check'] or relation['profitable'] or after.checked):
-        run.review('discovered_attack', p, 'revealed_attack_not_profitable',
-                   {'attack': relation, 'vacated': event.move[:2]})
+        run.review(
+            'discovered_attack', p, 'revealed_attack_not_profitable', {'attack': relation, 'vacated': event.move[:2]}
+        )
         return
-    run.emit(Finding('discovered_attack', p, p + int(after.checked and not relation['check']),
-                     [event.actor, actor], [target], 'vacated_blocker',
-                     {'vacated': event.move[:2], 'attack': relation, 'beforeFen': before.fen}))
+    run.emit(
+        Finding(
+            'discovered_attack',
+            p,
+            p + int(after.checked and not relation['check']),
+            [event.actor, actor],
+            [target],
+            'vacated_blocker',
+            {'vacated': event.move[:2], 'attack': relation, 'beforeFen': before.fen},
+        )
+    )
 
 
 def detect_discovered_attacks(run: Analysis, frame: MoveFrame) -> None:
@@ -45,11 +54,29 @@ def detect_escaped_discovered_attacks(run: Analysis, frame: MoveFrame) -> None:
     follow = run.events[p + 1] if p + 1 < len(run.events) else None
     for relation in after.hits.get(target, []):
         actor = relation['actor']['id']
-        if (relation['check'] or actor == event.actor or before.relation(actor, target) or
-                any(r['actor']['id'] == actor for r in frame.hits.get(target, [])) or
-                not opened_by(before, after, actor, target, event.move[:2])):
+        if (
+            relation['check']
+            or actor == event.actor
+            or before.relation(actor, target)
+            or any(r['actor']['id'] == actor for r in frame.hits.get(target, []))
+            or not opened_by(before, after, actor, target, event.move[:2])
+        ):
             continue
         if follow and follow.victim == target and evaluate_exchange(run.positions[p + 1].fen, follow.move) > 0:
-            run.emit(Finding('discovered_attack', p, follow.ply, [event.actor, actor], [target], 'vacated_blocker',
-                             {'vacated': event.move[:2], 'attack': relation, 'beforeFen': before.fen,
-                              'escapedBy': response.move, 'wonOn': follow.move}))
+            run.emit(
+                Finding(
+                    'discovered_attack',
+                    p,
+                    follow.ply,
+                    [event.actor, actor],
+                    [target],
+                    'vacated_blocker',
+                    {
+                        'vacated': event.move[:2],
+                        'attack': relation,
+                        'beforeFen': before.fen,
+                        'escapedBy': response.move,
+                        'wonOn': follow.move,
+                    },
+                )
+            )

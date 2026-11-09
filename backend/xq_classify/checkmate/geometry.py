@@ -59,10 +59,10 @@ def attacker_and_defender_trace(
 ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
     """The line's trace, split into the attacker's plies and the defender's."""
     trace = move_trace(fen, moves)
-    initial_side = (fen.split()[1] if len(fen.split()) > 1 else 'w')
+    initial_side = fen.split()[1] if len(fen.split()) > 1 else 'w'
     initial_attacker = 'red' if initial_side == 'w' else 'black'
     attacker_offset = 0 if attacker == initial_attacker else 1
-    return trace[attacker_offset::2], trace[1 - attacker_offset::2]
+    return trace[attacker_offset::2], trace[1 - attacker_offset :: 2]
 
 
 def infer_sides(current_fen: str) -> tuple[dict[str, str], dict, str, str, str | None, str | None]:
@@ -94,7 +94,7 @@ def orthogonal_palace_neighbors(square: str, side: str) -> list[str]:
         nx = x + dx
         ny = y + dy
         if 0 <= nx < 9 and 0 <= ny <= 9:
-            target = f"{chr(ord('a') + nx)}{ny}"
+            target = f'{chr(ord("a") + nx)}{ny}'
             if palace_contains(target, side):
                 neighbors.append(target)
     return neighbors

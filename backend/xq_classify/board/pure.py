@@ -301,7 +301,7 @@ def _pawn_attacks(board: Board, source: str, x: int, y: int, red: bool, attacks:
     direction = 1 if red else -1
     for dx, dy in ((0, direction), (-1, 0), (1, 0)):
         target = square_at(x + dx, y + dy)
-        if target and (red and y >= 5 or not red and y <= 4 or dx == 0):
+        if target and ((red and y >= 5) or (not red and y <= 4) or dx == 0):
             _add_attack(attacks, target, source, 'pawn_attack')
 
 

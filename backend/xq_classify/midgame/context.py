@@ -1,3 +1,4 @@
+# ruff: noqa: RUF001 - Chinese punctuation in output strings
 """What the detectors of one puzzle share: the replay, the findings so far, and each solver move's frame.
 
 The order of ``emit`` and ``review`` calls is observable.  An occurrence's
@@ -34,8 +35,9 @@ class Analysis:
         self.positions = positions
         self.events = events
         self.solver = solver
-        self.plies = [{'ply': e.ply, 'ucci': e.move, 'solver': e.ply >= 2 and e.side == solver,
-                       'occurrences': []} for e in events]
+        self.plies = [
+            {'ply': e.ply, 'ucci': e.move, 'solver': e.ply >= 2 and e.side == solver, 'occurrences': []} for e in events
+        ]
         self.reviews: list[dict] = []
 
     def occurrences(self, ply: int) -> list[dict]:
@@ -47,11 +49,12 @@ class Analysis:
             yield from entry['occurrences']
 
     def review(self, label: str, ply: int, reason: str, evidence: dict) -> None:
-        self.reviews.append({'label': label, 'ply': ply, 'fen': self.positions[ply].fen,
-                             'reason': reason, 'evidence': evidence})
+        self.reviews.append(
+            {'label': label, 'ply': ply, 'fen': self.positions[ply].fen, 'reason': reason, 'evidence': evidence}
+        )
 
     def _reference(self, identity: str, ply: int) -> dict:
-        for snapshot in reversed(self.positions[:ply + 1]):
+        for snapshot in reversed(self.positions[: ply + 1]):
             if identity in snapshot.squares:
                 return snapshot.ref(identity)
         # A future participant in an exchange still existed initially.
@@ -62,7 +65,7 @@ class Analysis:
         key = f'{label}:{ply}:{len(self.occurrences(ply))}'
         actors, targets = list(dict.fromkeys(finding.actors)), list(dict.fromkeys(finding.targets))
         refs = [self._reference(i, ply) for i in dict.fromkeys([*actors, *targets])]
-        names = '、'.join(f"{r['id']}@{r['square']}" for r in refs)
+        names = '、'.join(f'{r["id"]}@{r["square"]}' for r in refs)
         occurrence = {
             'id': label,
             'label_zh': LABELS[label],
@@ -100,8 +103,11 @@ def verified_hits(pos: Position, reply: Position | None = None, excluded=frozens
 
 
 def threats_from(hits: dict) -> dict:
-    return {t: [r for r in rows if r['profitable'] or r['check']]
-            for t, rows in hits.items() if any(r['profitable'] or r['check'] for r in rows)}
+    return {
+        t: [r for r in rows if r['profitable'] or r['check']]
+        for t, rows in hits.items()
+        if any(r['profitable'] or r['check'] for r in rows)
+    }
 
 
 @dataclass(frozen=True)
@@ -122,18 +128,27 @@ class MoveFrame:
 
 def move_frame(run: Analysis, event: Event) -> MoveFrame:
     p = event.ply
-    before, after = run.positions[p - 1:p + 1]
+    before, after = run.positions[p - 1 : p + 1]
     response = run.events[p] if p < len(run.events) else None
     reply = run.positions[p + 1] if response else None
     excluded: set[str] = set()
     if response and response.victim == event.actor and evaluate_exchange(before.fen, event.move) <= 0:
         excluded.add(event.actor)
-        run.review('threat', p, 'nonpositive_mover_recaptured_next_ply', {
-            'actor': before.ref(event.actor), 'move': event.move,
-            'gain': evaluate_exchange(before.fen, event.move), 'response': response.move,
-            'responsePly': response.ply})
+        run.review(
+            'threat',
+            p,
+            'nonpositive_mover_recaptured_next_ply',
+            {
+                'actor': before.ref(event.actor),
+                'move': event.move,
+                'gain': evaluate_exchange(before.fen, event.move),
+                'response': response.move,
+                'responsePly': response.ply,
+            },
+        )
     hits = verified_hits(after, reply, excluded)
     if after.checked and reply is None:
         run.review('check_fork', p, 'missing_actual_check_response', {})
-    return MoveFrame(event, p, before, after, response, reply, excluded, hits, threats_from(hits),
-                     threats_from(after.hits))
+    return MoveFrame(
+        event, p, before, after, response, reply, excluded, hits, threats_from(hits), threats_from(after.hits)
+    )

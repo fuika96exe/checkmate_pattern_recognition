@@ -27,9 +27,14 @@ def _capture_proof(pre: Position, post: Position, capture: Event, guard: str, pi
     if capture.victim == guard:
         gain = evaluate_exchange(pre.fen, capture.move)
         if gain > 0:
-            return {'guard': pre.ref(guard), 'defendedTarget': pre.ref(guard),
-                    'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
-                    'mode': 'pinned_piece_captured'}
+            return {
+                'guard': pre.ref(guard),
+                'defendedTarget': pre.ref(guard),
+                'capturePly': capture.ply,
+                'capture': capture.move,
+                'gain': gain,
+                'mode': 'pinned_piece_captured',
+            }
     if guard not in pre.squares or pinner not in pre.squares or pinner == capture.actor:
         return None
     gain = evaluate_exchange(pre.fen, capture.move)
@@ -49,23 +54,34 @@ def _capture_proof(pre: Position, post: Position, capture: Event, guard: str, pi
     without_gain = evaluate_exchange(released_pre.fen, capture.move)
     if without_gain > 0:
         return None
-    return {'guard': pre.ref(guard), 'defendedTarget': pre.ref(capture.victim),
-            'capturePly': capture.ply, 'capture': capture.move, 'captureFen': pre.fen,
-            'gain': gain, 'preventedRecapture': reply, 'afterCaptureFen': post.fen,
-            'releasedFen': released_post.fen, 'gainWithoutPin': without_gain}
+    return {
+        'guard': pre.ref(guard),
+        'defendedTarget': pre.ref(capture.victim),
+        'capturePly': capture.ply,
+        'capture': capture.move,
+        'captureFen': pre.fen,
+        'gain': gain,
+        'preventedRecapture': reply,
+        'afterCaptureFen': post.fen,
+        'releasedFen': released_post.fen,
+        'gainWithoutPin': without_gain,
+    }
 
 
 def functional_pin_capture(
-    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+    relation: dict,
+    positions: list[Position],
+    events: list[Event],
+    start_ply: int,
 ) -> dict | None:
     """Minor pins need an actual profitable major capture enabled by the pin."""
     guard, pinner = relation['front']['id'], relation['actor']['id']
     key = _pin_key(relation)
-    for capture in events[start_ply - 1:]:
+    for capture in events[start_ply - 1 :]:
         if capture.side != positions[0].side or capture.victim_kind not in MAIN:
             continue
-        pre, post = positions[capture.ply - 1:capture.ply + 1]
-        if key not in pre.pins or any(key not in pos.pins for pos in positions[start_ply:capture.ply]):
+        pre, post = positions[capture.ply - 1 : capture.ply + 1]
+        if key not in pre.pins or any(key not in pos.pins for pos in positions[start_ply : capture.ply]):
             continue
         proof = _capture_proof(pre, post, capture, guard, pinner)
         if proof:
@@ -74,7 +90,10 @@ def functional_pin_capture(
 
 
 def absolute_pin_sacrifice(
-    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+    relation: dict,
+    positions: list[Position],
+    events: list[Event],
+    start_ply: int,
 ) -> dict | None:
     """The pinned piece captures its pinner and is then captured at a net loss."""
     guard, pinner = relation['front']['id'], relation['actor']['id']
@@ -85,27 +104,45 @@ def absolute_pin_sacrifice(
         gain = -evaluate_exchange(positions[event.ply - 1].fen, event.move)
         if gain <= 0:
             continue
-        realized = next((e for e in events[event.ply:] if e.actor in positions[e.ply - 1].squares
-                         and e.side == positions[0].side and e.victim == guard), None)
+        realized = next(
+            (
+                e
+                for e in events[event.ply :]
+                if e.actor in positions[e.ply - 1].squares and e.side == positions[0].side and e.victim == guard
+            ),
+            None,
+        )
         if realized:
-            return {'guard': positions[event.ply - 1].ref(guard), 'defendedTarget': positions[event.ply - 1].ref(guard),
-                    'capturePly': realized.ply, 'capture': realized.move, 'gain': gain,
-                    'mode': 'pinner_sacrifice', 'response': event.move}
+            return {
+                'guard': positions[event.ply - 1].ref(guard),
+                'defendedTarget': positions[event.ply - 1].ref(guard),
+                'capturePly': realized.ply,
+                'capture': realized.move,
+                'gain': gain,
+                'mode': 'pinner_sacrifice',
+                'response': event.move,
+            }
     return None
 
 
 def _kept_their_squares(positions: list[Position], span: tuple[int, int], guard: str, pinner: str) -> bool:
     start, end = span
     home = positions[start].squares
-    return all(positions[i].squares.get(guard) == home.get(guard) and
-               positions[i].squares.get(pinner) == home.get(pinner) for i in range(start, end))
+    return all(
+        positions[i].squares.get(guard) == home.get(guard) and positions[i].squares.get(pinner) == home.get(pinner)
+        for i in range(start, end)
+    )
 
 
 def _front_won_after_rear_left(
-    positions: list[Position], events: list[Event], start_ply: int, capture: Event, key: tuple,
+    positions: list[Position],
+    events: list[Event],
+    start_ply: int,
+    capture: Event,
+    key: tuple,
 ) -> dict | None:
     pinner, guard, rear = key[:3]
-    history = events[start_ply - 1:capture.ply - 1]
+    history = events[start_ply - 1 : capture.ply - 1]
     departure = next((e for e in history if e.actor == rear and e.side != positions[0].side), None)
     if not departure or key not in positions[departure.ply - 1].pins:
         return None
@@ -114,19 +151,28 @@ def _front_won_after_rear_left(
     gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
     if gain <= 0:
         return None
-    return {'guard': positions[start_ply].ref(guard), 'defendedTarget': positions[start_ply].ref(guard),
-            'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
-            'mode': 'rear_evades_front_captured', 'response': departure.move}
+    return {
+        'guard': positions[start_ply].ref(guard),
+        'defendedTarget': positions[start_ply].ref(guard),
+        'capturePly': capture.ply,
+        'capture': capture.move,
+        'gain': gain,
+        'mode': 'rear_evades_front_captured',
+        'response': departure.move,
+    }
 
 
 def relative_pin_front_capture(
-    relation: dict, positions: list[Position], events: list[Event], start_ply: int,
+    relation: dict,
+    positions: list[Position],
+    events: list[Event],
+    start_ply: int,
 ) -> dict | None:
     """The defender saves the rear piece, then the pinned front is won."""
     if relation.get('absolute'):
         return None
     key = _pin_key(relation)
-    for capture in events[start_ply - 1:]:
+    for capture in events[start_ply - 1 :]:
         if capture.side == positions[0].side and capture.victim == key[1]:
             proof = _front_won_after_rear_left(positions, events, start_ply, capture, key)
             if proof:
@@ -153,9 +199,15 @@ def pinned_front_won(relation: dict, positions: list[Position], events: list[Eve
             return None
         gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
         if gain > 0:
-            return {'guard': positions[start_ply].ref(guard), 'defendedTarget': positions[start_ply].ref(guard),
-                    'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
-                    'mode': 'pinned_front_won', 'pinner': positions[start_ply].ref(pinner)}
+            return {
+                'guard': positions[start_ply].ref(guard),
+                'defendedTarget': positions[start_ply].ref(guard),
+                'capturePly': capture.ply,
+                'capture': capture.move,
+                'gain': gain,
+                'mode': 'pinned_front_won',
+                'pinner': positions[start_ply].ref(pinner),
+            }
         return None
     return None
 
@@ -170,8 +222,11 @@ def _illegal_recapture_pinner(post: Position, trial: dict, kings: tuple[str, str
     if enemy_king[0] == own_king[0] and not any(s in trial for s in b.squares_between(enemy_king, own_king)):
         return post.ids[own_king]
     for src, attacker in sorted(trial.items()):
-        if (own(attacker, post.side) and src != capture_dst
-                and enemy_king in b.pseudo_legal_targets(trial, src, attacker)):
+        if (
+            own(attacker, post.side)
+            and src != capture_dst
+            and enemy_king in b.pseudo_legal_targets(trial, src, attacker)
+        ):
             return post.ids[src]
     return None
 
@@ -181,7 +236,7 @@ def illegal_recapture_pin(positions: list[Position], capture: Event) -> tuple | 
     because the recapturing piece is pinned to its own general (including the
     facing-generals rule). Returns (pinner, guard, king, proof) or None."""
     solver = positions[0].side
-    pre, post = positions[capture.ply - 1:capture.ply + 1]
+    pre, post = positions[capture.ply - 1 : capture.ply + 1]
     gain = evaluate_exchange(pre.fen, capture.move)
     if gain <= 0 or piece_value(pre.board[capture.move[:2]], capture.move[:2]) < VALUES[capture.victim_kind]:
         return None
@@ -198,10 +253,20 @@ def illegal_recapture_pin(positions: list[Position], capture: Event) -> tuple | 
         trial[capture.dst] = trial.pop(square)
         pinner = _illegal_recapture_pinner(post, trial, (enemy_king, own_king), capture.dst)
         if pinner:
-            return pinner, post.ids[square], post.ids[enemy_king], {
-                'guard': post.ref(post.ids[square]), 'defendedTarget': pre.ref(capture.victim),
-                'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
-                'preventedRecapture': square + capture.dst, 'mode': 'illegal_recapture'}
+            return (
+                pinner,
+                post.ids[square],
+                post.ids[enemy_king],
+                {
+                    'guard': post.ref(post.ids[square]),
+                    'defendedTarget': pre.ref(capture.victim),
+                    'capturePly': capture.ply,
+                    'capture': capture.move,
+                    'gain': gain,
+                    'preventedRecapture': square + capture.dst,
+                    'mode': 'illegal_recapture',
+                },
+            )
     return None
 
 
@@ -211,7 +276,7 @@ def relative_recapture_pin(positions: list[Position], events: list[Event], captu
     player piece win the more valuable rear piece. Returns
     (pinner, guard, rear, proof) or None."""
     solver = positions[0].side
-    pre, post = positions[capture.ply - 1:capture.ply + 1]
+    pre, post = positions[capture.ply - 1 : capture.ply + 1]
     capturer_value = piece_value(pre.board[capture.move[:2]], capture.move[:2])
     nxt = events[capture.ply] if capture.ply < len(events) else None
     legal = set(b.legal_moves(post.fen))
@@ -229,9 +294,20 @@ def relative_recapture_pin(positions: list[Position], events: list[Event], captu
         punish = child.relation(pinner, rear)
         if not punish or not punish['profitable']:
             continue
-        return pinner, guard, rear, {
-            'guard': post.ref(guard), 'defendedTarget': pre.ref(capture.victim), 'capturePly': capture.ply,
-            'capture': capture.move, 'gain': evaluate_exchange(pre.fen, capture.move),
-            'deterredRecapture': reply, 'punishment': punish['ucci'], 'punishmentGain': punish['gain'],
-            'mode': 'recapture_costs_rear'}
+        return (
+            pinner,
+            guard,
+            rear,
+            {
+                'guard': post.ref(guard),
+                'defendedTarget': pre.ref(capture.victim),
+                'capturePly': capture.ply,
+                'capture': capture.move,
+                'gain': evaluate_exchange(pre.fen, capture.move),
+                'deterredRecapture': reply,
+                'punishment': punish['ucci'],
+                'punishmentGain': punish['gain'],
+                'mode': 'recapture_costs_rear',
+            },
+        )
     return None

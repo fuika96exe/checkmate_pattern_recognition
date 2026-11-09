@@ -21,16 +21,22 @@ def _counter_value(realized: Position, old_counters: dict, newly_exposed: set[st
     for counter_target, counters in realized.captures.items():
         prior = _best_gain(old_counters.get(counter_target, []))
         for counter in counters:
-            if (counter['profitable'] and counter['actor']['id'] not in newly_exposed
-                    and counter['target']['square'] != attack['target']['square']
-                    and counter['gain'] > prior):
+            if (
+                counter['profitable']
+                and counter['actor']['id'] not in newly_exposed
+                and counter['target']['square'] != attack['target']['square']
+                and counter['gain'] > prior
+            ):
                 compensation = max(compensation, counter['gain'])
     return compensation
 
 
 def _net_loss(child: Position, attack: dict, old_counters: dict, newly_exposed: set[str], credit: int) -> int:
-    realized = Position(b.apply_move(child.query, attack['ucci']),
-                        b.move_piece_identity(child.ids, attack['ucci'][:2], attack['ucci'][2:]), other(child.side))
+    realized = Position(
+        b.apply_move(child.query, attack['ucci']),
+        b.move_piece_identity(child.ids, attack['ucci'][:2], attack['ucci'][2:]),
+        other(child.side),
+    )
     compensation = _counter_value(realized, old_counters, newly_exposed, attack)
     recovered = max(0, piece_value(attack['target']['piece'], attack['target']['square']) - attack['gain'])
     return attack['gain'] - max(0, compensation - recovered) - credit
@@ -40,8 +46,11 @@ def _indirect_loss(pos: Position, child: Position, target: str, escape: tuple[st
     """The escape saves the target but exposes something else for more than it was already losing."""
     move, credit, baseline = escape
     old_counters = Position(pos.fen, pos.ids, other(pos.side)).captures
-    newly_exposed = {identity for identity, rows in child.captures.items()
-                     if _best_gain(rows) > _best_gain(pos.captures.get(identity, []))}
+    newly_exposed = {
+        identity
+        for identity, rows in child.captures.items()
+        if _best_gain(rows) > _best_gain(pos.captures.get(identity, []))
+    }
     for identity, rows in child.captures.items():
         if identity == target or any(r['profitable'] for r in pos.captures.get(identity, [])):
             continue
@@ -50,22 +59,35 @@ def _indirect_loss(pos: Position, child: Position, target: str, escape: tuple[st
                 continue
             net = _net_loss(child, attack, old_counters, newly_exposed, credit)
             if net > baseline:
-                return {'escape': move, 'fen': child.fen, 'safe': False, 'reason': 'indirect_loss',
-                        'capture': attack, 'previousLoss': 0, 'netLoss': net,
-                        'originalLoss': baseline, 'captureCredit': credit}
+                return {
+                    'escape': move,
+                    'fen': child.fen,
+                    'safe': False,
+                    'reason': 'indirect_loss',
+                    'capture': attack,
+                    'previousLoss': 0,
+                    'netLoss': net,
+                    'originalLoss': baseline,
+                    'captureCredit': credit,
+                }
     return None
 
 
 def escape_assessment(pos: Position, target: str, move: str) -> dict:
     defender_fen = view(pos.fen, other(pos.side))
-    child = Position(b.apply_move(defender_fen, move),
-                     b.move_piece_identity(pos.ids, move[:2], move[2:]), pos.side)
+    child = Position(b.apply_move(defender_fen, move), b.move_piece_identity(pos.ids, move[:2], move[2:]), pos.side)
     victim = pos.board.get(move[2:], '')
     credit = piece_value(victim, move[2:]) if victim else 0
     direct = [r for r in child.captures.get(target, []) if r['profitable']]
     if direct:
-        return {'escape': move, 'fen': child.fen, 'safe': False, 'reason': 'direct_loss',
-                'capture': max(direct, key=lambda r: r['gain']), 'captureCredit': credit}
+        return {
+            'escape': move,
+            'fen': child.fen,
+            'safe': False,
+            'reason': 'direct_loss',
+            'capture': max(direct, key=lambda r: r['gain']),
+            'captureCredit': credit,
+        }
     baseline = _best_gain(pos.captures.get(target, []))
     indirect = _indirect_loss(pos, child, target, (move, credit, baseline))
     return indirect or {'escape': move, 'fen': child.fen, 'safe': True, 'captureCredit': credit}
@@ -93,9 +115,12 @@ def _pin_key(restriction: dict) -> tuple:
 def _front_of_labelled_pin(run: Analysis, frame: MoveFrame, target: str) -> bool:
     """An actively labelled pin takes precedence over trapping its front piece."""
     active_pins = {_pin_key(r) for r in frame.after.pins.values()}
-    return any(o['id'] == 'pin' and _pin_key(o['evidence']['restriction']) in active_pins
-               and o['evidence']['restriction']['front']['id'] == target
-               for o in run.occurrences_through(frame.ply))
+    return any(
+        o['id'] == 'pin'
+        and _pin_key(o['evidence']['restriction']) in active_pins
+        and o['evidence']['restriction']['front']['id'] == target
+        for o in run.occurrences_through(frame.ply)
+    )
 
 
 def _judge_pinned_target(run: Analysis, frame: MoveFrame, target: str, pinned_by: dict) -> None:
@@ -106,20 +131,41 @@ def _judge_pinned_target(run: Analysis, frame: MoveFrame, target: str, pinned_by
     """
     p, before, after = frame.ply, frame.before, frame.after
     run.review('trap', p, 'target_is_pinned_front', {'target': after.ref(target), 'restriction': pinned_by})
-    created = next((r for key, r in after.pins.items() if r['front']['id'] == target
-                    and key not in before.pins and key[0] == frame.event.actor), None)
-    already = any(o['id'] == 'pin' and o['evidence']['targets'][0]['id'] == target
-                  for o in run.occurrences_through(p))
+    created = next(
+        (
+            r
+            for key, r in after.pins.items()
+            if r['front']['id'] == target and key not in before.pins and key[0] == frame.event.actor
+        ),
+        None,
+    )
+    already = any(o['id'] == 'pin' and o['evidence']['targets'][0]['id'] == target for o in run.occurrences_through(p))
     stuck = trap_state(after, target, frame.excluded) if created else None
     if stuck and not already and not front_can_trade_pinner(after, created):
-        run.emit(Finding('pin', p, p, [created['actor']['id']], [target, created['rear']['id']], created['kind'],
-                         {'restriction': created, 'use': 'pinned_target_cannot_escape', 'functionalCapture': None,
-                          'escapeAnalysis': stuck, 'relationFen': after.fen, 'response': None}))
+        run.emit(
+            Finding(
+                'pin',
+                p,
+                p,
+                [created['actor']['id']],
+                [target, created['rear']['id']],
+                created['kind'],
+                {
+                    'restriction': created,
+                    'use': 'pinned_target_cannot_escape',
+                    'functionalCapture': None,
+                    'escapeAnalysis': stuck,
+                    'relationFen': after.fen,
+                    'response': None,
+                },
+            )
+        )
 
 
 def _is_skewer_target(run: Analysis, ply: int, target: str) -> bool:
-    return any(o['id'] == 'skewer' and any(t['id'] == target for t in o['evidence']['targets'])
-               for o in run.occurrences(ply))
+    return any(
+        o['id'] == 'skewer' and any(t['id'] == target for t in o['evidence']['targets']) for o in run.occurrences(ply)
+    )
 
 
 def _judge_target(run: Analysis, frame: MoveFrame, target: str) -> None:
@@ -131,8 +177,7 @@ def _judge_target(run: Analysis, frame: MoveFrame, target: str) -> None:
         return
     # v2.6 (expert review): a piece that cannot run because it is the
     # front of any pin relation is pinned, not trapped.
-    pinned_by = next((r for pos in (before, after) for r in pos.pins.values()
-                      if r['front']['id'] == target), None)
+    pinned_by = next((r for pos in (before, after) for r in pos.pins.values() if r['front']['id'] == target), None)
     if pinned_by:
         _judge_pinned_target(run, frame, target, pinned_by)
         return

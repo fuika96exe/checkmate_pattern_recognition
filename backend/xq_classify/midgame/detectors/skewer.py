@@ -14,14 +14,17 @@ def _add_rays(pos: Position, src: str, piece: str, result: dict) -> None:
         offset = int(piece.upper() == 'C')
         if len(occupied) < offset + 2:
             continue
-        front, rear = occupied[offset:offset + 2]
+        front, rear = occupied[offset : offset + 2]
         if any(own(pos.board[s], pos.side) or pos.board[s].upper() not in VALUES for s in (front, rear)):
             continue
         key = (pos.ids[src], pos.ids[front], pos.ids[rear], dx, dy)
-        result[key] = {'actor': pos.ref(pos.ids[src]), 'front': pos.ref(pos.ids[front]),
-                       'rear': pos.ref(pos.ids[rear]),
-                       'screen': pos.ref(pos.ids[occupied[0]]) if offset else None,
-                       'direction': [dx, dy]}
+        result[key] = {
+            'actor': pos.ref(pos.ids[src]),
+            'front': pos.ref(pos.ids[front]),
+            'rear': pos.ref(pos.ids[rear]),
+            'screen': pos.ref(pos.ids[occupied[0]]) if offset else None,
+            'direction': [dx, dy],
+        }
 
 
 def ray_relations(pos: Position) -> dict:
@@ -69,15 +72,19 @@ def _rear_attack(pos: Position, actor: str, rear: str) -> dict | None:
 def _played_out(run: Analysis, frame: MoveFrame, ray: _Line, confirmation: dict) -> tuple[dict, int]:
     """Prefer the line's actual continuation: the front piece really moves and the rear is then attacked."""
     actor, front, rear = ray.key[:3]
-    for later in run.events[frame.ply:]:
+    for later in run.events[frame.ply :]:
         if not _line_intact(run, later, ray):
             break
         if later.actor == front:
             pos = run.positions[later.ply]
             relation = _rear_attack(pos, actor, rear)
             if relation:
-                return {'frontAttack': ray.front_attack, 'escape': later.move,
-                        'fen': pos.fen, 'rearAttack': relation}, later.ply
+                return {
+                    'frontAttack': ray.front_attack,
+                    'escape': later.move,
+                    'fen': pos.fen,
+                    'rearAttack': relation,
+                }, later.ply
             break
         if later.actor in {actor, rear} or later.victim in {actor, front, rear}:
             break
@@ -95,13 +102,16 @@ def _judge_ray(run: Analysis, frame: MoveFrame, ray: _Line) -> None:
     # v2.6 (expert review): a skewer must actually win one of the
     # two line pieces in the PV; a blockable check or a protected
     # rear is not a real skewer.
-    won = next((e for e in run.events[p:] if e.side == run.solver and e.victim in {front, rear}
-                and e.victim_kind in MAIN), None)
+    won = next(
+        (e for e in run.events[p:] if e.side == run.solver and e.victim in {front, rear} and e.victim_kind in MAIN),
+        None,
+    )
     if not won:
         run.review('skewer', p, 'skewer_not_realized', ray.line)
         return
-    run.emit(Finding('skewer', p, confirmed, [actor], [front, rear], 'ray',
-                     {'line': ray.line, 'continuation': confirmation}))
+    run.emit(
+        Finding('skewer', p, confirmed, [actor], [front, rear], 'ray', {'line': ray.line, 'continuation': confirmation})
+    )
 
 
 def detect_skewers(run: Analysis, frame: MoveFrame) -> None:
@@ -109,8 +119,12 @@ def detect_skewers(run: Analysis, frame: MoveFrame) -> None:
     old_rays = ray_relations(frame.before)
     for key, line in ray_relations(frame.after).items():
         actor, front = key[:2]
-        if (key in old_rays or actor in frame.excluded or (response and response.victim == actor) or
-                VALUES[line['front']['piece'].upper()] < VALUES[line['rear']['piece'].upper()]):
+        if (
+            key in old_rays
+            or actor in frame.excluded
+            or (response and response.victim == actor)
+            or VALUES[line['front']['piece'].upper()] < VALUES[line['rear']['piece'].upper()]
+        ):
             continue
         front_attack = next((r for r in frame.hits.get(front, []) if r['actor']['id'] == actor), None)
         if front_attack:

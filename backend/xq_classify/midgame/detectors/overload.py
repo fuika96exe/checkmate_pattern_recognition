@@ -14,12 +14,18 @@ def _realization(run: Analysis, trigger: Event, duty: tuple[str, str], guard: st
     p = trigger.ply
     actor, target = duty
     realization = next(
-        (e for e in run.events[p + 1:] if e.side == run.solver and e.actor == actor and e.victim == target), None,
+        (e for e in run.events[p + 1 :] if e.side == run.solver and e.actor == actor and e.victim == target),
+        None,
     )
     if not realization:
         return None
-    if any(not pos.relation(actor, target) or not pos.relation(actor, target)['profitable'] or
-           guard in pos.guards.get(duty, {}) for pos in run.positions[p + 1:realization.ply] if not pos.checked):
+    if any(
+        not pos.relation(actor, target)
+        or not pos.relation(actor, target)['profitable']
+        or guard in pos.guards.get(duty, {})
+        for pos in run.positions[p + 1 : realization.ply]
+        if not pos.checked
+    ):
         return None
     return realization
 
@@ -36,12 +42,24 @@ def _judge_other_duty(run: Analysis, trigger: Event, duty: tuple[str, str], guar
     if not realization:
         return
     guards1 = before.guards.get((trigger.actor, trigger.victim), {})
-    run.emit(Finding('overload', p, realization.ply, [trigger.actor, duty[0]], [trigger.victim, duty[1]],
-                     'actual_guard_response',
-                     {'guard': before.ref(guard), 'guarding': [guards1[guard], guards2[guard]],
-                      'actualResponse': {'ply': response.ply, 'ucci': response.move},
-                      'beforeAttack': old, 'releaseAttack': new,
-                      'realization': {'ply': realization.ply, 'ucci': realization.move}}))
+    run.emit(
+        Finding(
+            'overload',
+            p,
+            realization.ply,
+            [trigger.actor, duty[0]],
+            [trigger.victim, duty[1]],
+            'actual_guard_response',
+            {
+                'guard': before.ref(guard),
+                'guarding': [guards1[guard], guards2[guard]],
+                'actualResponse': {'ply': response.ply, 'ucci': response.move},
+                'beforeAttack': old,
+                'releaseAttack': new,
+                'realization': {'ply': realization.ply, 'ucci': realization.move},
+            },
+        )
+    )
 
 
 def detect_overloads(run: Analysis) -> None:

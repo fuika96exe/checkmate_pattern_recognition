@@ -57,6 +57,13 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str) -> dict:
         detect(run)
     material = material_result(positions[0].fen, positions[-1].fen, solver)
     tactics, support = finalize_labels(run.plies, material)
-    return {'status': 'matched' if tactics else 'unmatched', 'solver': solver,
-            'tactics': tactics, 'fens': [p.fen for p in positions], 'plies': run.plies,
-            'material': material, 'supportingEvidence': support, 'reviewReasons': run.reviews}
+    return {
+        'status': 'matched' if tactics else 'unmatched',
+        'solver': solver,
+        'tactics': tactics,
+        'fens': [p.fen for p in positions],
+        'plies': run.plies,
+        'material': material,
+        'supportingEvidence': support,
+        'reviewReasons': run.reviews,
+    }
