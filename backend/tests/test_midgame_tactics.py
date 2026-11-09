@@ -19,7 +19,7 @@ REPLAY_CASE = {"fen": "3a5/4k4/5a2C/4N1c1p/pn2r1b2/7R1/P3P3P/4B4/9/3AKAB2 w - - 
 
 
 def fen_of(pieces, side="red"):
-    return f"{b._board_to_fen({'d0': 'K', 'f9': 'k', **pieces})} {'w' if side == 'red' else 'b'} - - 0 1"
+    return f"{b.board_to_fen({'d0': 'K', 'f9': 'k', **pieces})} {'w' if side == 'red' else 'b'} - - 0 1"
 
 
 @pytest.mark.parametrize("initial,final,delta,kind", [
@@ -42,7 +42,7 @@ def test_material_vectors_both_colors(initial, final, delta, kind):
 
 def swap_colors(fen):
     board = {f"{chr(ord('i') - (ord(s[0]) - ord('a')))}{9-int(s[1])}": p.swapcase() for s, p in b.parse_fen(fen).items()}
-    return f"{b._board_to_fen(board)} {'b' if b.side_to_move(fen) == 'red' else 'w'} - - 0 1"
+    return f"{b.board_to_fen(board)} {'b' if b.side_to_move(fen) == 'red' else 'w'} - - 0 1"
 
 
 def test_replay_ids_captures_and_invalid_ply():
