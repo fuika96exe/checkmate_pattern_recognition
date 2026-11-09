@@ -10,6 +10,7 @@ from ..exchange import evaluate_exchange, piece_value
 from ..version import MIDGAME_RULES_VERSION
 from .context import LABELS, Analysis, Finding, move_frame
 from .detectors.check_fork import detect_check_forks
+from .detectors.clearance import detect_clearances
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .detectors.pin import detect_pins, detect_recapture_pins
@@ -82,45 +83,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
 
     detect_recapture_pins(run)
 
-    # Forcing an enemy blocker away opens a previously unavailable attack.
-    # The later profitable capture, the vacated obstruction and the pressure
-    # are all identity-linked; voluntary unrelated moves cannot confirm it.
-    for trigger in events[1:]:
-        p = trigger.ply
-        if trigger.side != solver or p >= len(events):
-            continue
-        response = events[p]
-        before, pressure, release = positions[p - 1:p + 2]
-        blocker, vacated = response.actor, response.move[:2]
-        new_pressure = [r for r in pressure.threats.get(blocker, []) if r["profitable"] and not (
-            before.relation(r["actor"]["id"], blocker) or {}).get("profitable", False)]
-        if not new_pressure and not pressure.checked:
-            continue
-        for target, relations in release.hits.items():
-            if target == blocker:
-                continue
-            for attack in relations:
-                actor = attack["actor"]["id"]
-                if attack["check"] or not attack["profitable"] or actor == trigger.actor:
-                    continue
-                if (before.relation(actor, target) or pressure.relation(actor, blocker) or
-                        not opened_by(pressure, release, actor, target, vacated)):
-                    continue
-                realization = next((e for e in events[p + 1:] if e.side == solver and e.actor == actor and e.victim == target), None)
-                if not realization or evaluate_exchange(positions[realization.ply - 1].fen, realization.move) <= 0:
-                    continue
-                if any(pos.squares.get(actor) != release.squares[actor] or
-                       pos.squares.get(target) != release.squares[target] or
-                       not pos.relation(actor, target) or not pos.relation(actor, target)["profitable"]
-                       for pos in positions[p + 1:realization.ply] if not pos.checked):
-                    continue
-                emit("clearance", p, realization.ply, [trigger.actor, actor], [blocker, target], "forced_blocker_departure",
-                     {"blocker": pressure.ref(blocker), "vacated": vacated,
-                      "pressure": new_pressure, "pressureFen": pressure.fen,
-                      "response": {"ply": response.ply, "ucci": response.move},
-                      "releaseFen": release.fen, "openedAttack": attack,
-                      "realization": {"ply": realization.ply, "ucci": realization.move, "gain":
-                                      evaluate_exchange(positions[realization.ply - 1].fen, realization.move)}})
+    detect_clearances(run)
 
     # D7: actual profitable realization, with the same attacker/target and
     # uninterrupted release. Independent later blunders cannot confirm it.
