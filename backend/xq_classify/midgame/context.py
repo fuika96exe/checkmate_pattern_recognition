@@ -9,15 +9,9 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 
 from ..exchange import evaluate_exchange
+from ..labels import MIDGAME_LABELS_ZH_TW as LABELS
 from .position import Position
 from .replay import Event
-
-LABELS = {
-    'fork': '捉雙', 'discovered_attack': '閃擊', 'skewer': '串打',
-    'pin': '牽制', 'check_fork': '抽將', 'trap': '圍困',
-    'remove_defender': '消除保護', 'overload': '過載', 'exchange': '交換',
-    'clearance': '消除阻隔',
-}
 
 
 @dataclass(frozen=True)

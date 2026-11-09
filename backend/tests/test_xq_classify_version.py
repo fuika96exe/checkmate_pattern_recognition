@@ -1,8 +1,6 @@
-"""xq_classify.version must match the lab's rules-version constants.
+"""The lab's rules-version constants must stay the ones in xq_classify.version.
 
-Until phase 0 steps 4 and 5 make the lab modules read their versions from
-the package, the same value lives in two places. A rule change that bumps one
-and not the other would ship labels under the wrong version.
+A second copy on either side would ship labels under the wrong version.
 """
 import xq_classify
 from app.midgame_tactics import RULES_VERSION

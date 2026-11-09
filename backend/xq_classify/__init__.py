@@ -7,7 +7,9 @@ when vendored under another package; xiangqi-server imports it as
 ``xiangqi_server.vendor.xq_classify``.
 
 Public entry points: ``classify_checkmate``, ``classify_midgame`` and
-``clear_caches``.  ``board.use_backend`` swaps the move generator.
+``clear_caches``.  ``board.use_backend`` swaps the move generator and
+``labels`` holds the display names.  README.md describes the results, the
+coordinates and the version rules.
 """
 
 from .board import clear_caches
