@@ -1,16 +1,9 @@
-"""Checkmate pattern recognition: one recogniser per pattern, the dispatcher and the material fallback.
+"""Checkmate pattern recognition: the dispatcher and ``analyze_patterns``.
 
-Moved verbatim from the lab's ``backend/app/patterns.py`` in phase 0 step 4. Only
-the imports changed, plus the deletion of three recognisers no dispatcher reached:
-太监追皇帝, 双马饮泉, and a centroid-pawn variant that ``recognize_pattern``
-already routes to the centroid chariot. Phase 0 step 7 splits this module into
-``checkmate/patterns/`` and ``checkmate/geometry.py``.
+Each pattern's recogniser moves to ``checkmate/patterns/`` in phase 0 step 7.
 """
 from __future__ import annotations
 
-from functools import lru_cache
-
-from .. import board as _board
 from ..board import (
     apply_move,
     attacked_squares,
@@ -25,6 +18,17 @@ from ..board import (
     squares_between,
 )
 from ..version import CHECKMATE_RULES_VERSION  # noqa: F401 - re-exported
+from .geometry import (
+    apply_moves,
+    attacker_and_defender_trace,
+    home_rank_of,
+    infer_sides,
+    is_attacker_piece,
+    move_trace,
+    orthogonal_palace_neighbors,
+    palace_contains,
+)
+from .material import classify_mating_material
 
 
 PATTERN_ORDER = [
@@ -55,104 +59,6 @@ PATTERN_ORDER = [
 
 
 
-@lru_cache(maxsize=2048)
-def _apply_moves_cached(fen: str, moves: tuple[str, ...]) -> tuple[str, tuple[str, ...]]:
-    current_fen = fen
-    for move in moves:
-        current_fen = apply_move(current_fen, move)
-    return current_fen, moves
-
-
-def _apply_moves(fen: str, moves: list[str] | None) -> tuple[str, list[str]]:
-    current_fen, applied = _apply_moves_cached(fen, tuple(moves or ()))
-    return current_fen, list(applied)
-
-
-@lru_cache(maxsize=1024)
-def _move_trace_cached(fen: str, moves: tuple[str, ...]) -> tuple[dict[str, object], ...]:
-    current_fen = fen
-    identities = build_piece_identity(fen)
-    trace: list[dict[str, object]] = []
-    for ply, move in enumerate(moves, start=1):
-        board = parse_fen(current_fen)
-        from_square = move[:2]
-        to_square = move[2:]
-        piece = board[from_square]
-        piece_id = identities[from_square]
-        next_fen = apply_move(current_fen, move)
-        next_analysis = position_analysis(next_fen)
-        trace.append(
-            {
-                "ply": ply,
-                "move": move,
-                "piece": piece,
-                "piece_id": piece_id,
-                "from_square": from_square,
-                "to_square": to_square,
-                "analysis": next_analysis,
-            }
-        )
-        identities = move_piece_identity(identities, from_square, to_square)
-        current_fen = next_fen
-    return tuple(trace)
-
-
-def _move_trace(fen: str, moves: list[str] | None) -> list[dict[str, object]]:
-    return list(_move_trace_cached(fen, tuple(moves or ())))
-
-
-def _attacker_and_defender_trace(
-    fen: str, moves: list[str] | None, attacker: str
-) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
-    trace = _move_trace(fen, moves)
-    initial_side = (fen.split()[1] if len(fen.split()) > 1 else "w")
-    initial_attacker = "red" if initial_side == "w" else "black"
-    attacker_offset = 0 if attacker == initial_attacker else 1
-    return trace[attacker_offset::2], trace[1 - attacker_offset::2]
-
-
-def _infer_sides(current_fen: str) -> tuple[dict[str, str], dict, str, str, str | None, str | None]:
-    board = parse_fen(current_fen)
-    analysis = position_analysis(current_fen)
-    defender = analysis["side_to_move"]
-    attacker = "red" if defender == "black" else "black"
-    defender_piece = "k" if defender == "black" else "K"
-    attacker_piece = "K" if attacker == "red" else "k"
-    defender_king = next((s for s, p in board.items() if p == defender_piece), None)
-    attacker_king = next((s for s, p in board.items() if p == attacker_piece), None)
-    return board, analysis, attacker, defender, attacker_king, defender_king
-
-
-def _palace_contains(square: str, side: str) -> bool:
-    file_ok = square[0] in "def"
-    rank = int(square[1])
-    if side == "red":
-        return file_ok and 0 <= rank <= 2
-    return file_ok and 7 <= rank <= 9
-
-
-def _orthogonal_palace_neighbors(square: str, side: str) -> list[str]:
-    x = ord(square[0]) - ord("a")
-    y = int(square[1])
-    neighbors: list[str] = []
-    for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        nx = x + dx
-        ny = y + dy
-        if 0 <= nx < 9 and 0 <= ny <= 9:
-            target = f"{chr(ord('a') + nx)}{ny}"
-            if _palace_contains(target, side):
-                neighbors.append(target)
-    return neighbors
-
-
-def _home_rank(side: str) -> str:
-    return "0" if side == "red" else "9"
-
-
-def _is_attacker_piece(piece: str, attacker: str) -> bool:
-    return piece.isupper() if attacker == "red" else piece.islower()
-
-
 def _flank_name(square: str) -> str | None:
     if square[0] in {"a", "b", "c"}:
         return "left"
@@ -174,12 +80,12 @@ def _horse_leg_square(horse_square: str, target_square: str) -> str | None:
 
 
 def recognize_centroid_chariot_checkmate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(current_fen)
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(current_fen)
     center = "e8" if defender == "black" else "e1"
     piece = board.get(center, "")
     checkers = analysis["checking_pieces"]
-    present = bool(piece and _is_attacker_piece(piece, attacker) and piece.upper() in {"R", "P"})
+    present = bool(piece and is_attacker_piece(piece, attacker) and piece.upper() in {"R", "P"})
     detected = bool(analysis["is_checkmate"] and present and checkers and all(x["square"] != center for x in checkers))
     return {"pattern_id": "CENTROID_CHECKMATE", "pattern_name_zh": "花心杀", "detected": detected, "causal": detected, "fen": current_fen, "moves": applied, "analysis": analysis,
             "features": {"attacker_side": attacker, "defender_side": defender, "centroid_square": center, "centroid_piece": piece or None, "centroid_is_checker": any(x["square"] == center for x in checkers)},
@@ -189,8 +95,8 @@ def recognize_centroid_chariot_checkmate(fen: str, moves: list[str] | None = Non
 def recognize_crowned_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     cannon_piece = "C" if attacker == "red" else "c"
@@ -198,7 +104,7 @@ def recognize_crowned_checkmate(
     front_piece = board.get(crown_front_square)
     supporting_front_piece = bool(
         front_piece
-        and _is_attacker_piece(front_piece, attacker)
+        and is_attacker_piece(front_piece, attacker)
         and front_piece.upper() in {"R", "P"}
     )
     cannon_square = None
@@ -227,7 +133,7 @@ def recognize_crowned_checkmate(
     auxiliary_crown_pieces = sorted(
         square
         for square, piece in board.items()
-        if _is_attacker_piece(piece, attacker)
+        if is_attacker_piece(piece, attacker)
         and piece.upper() in {"R", "P"}
         and square[1] == crown_front_square[1]
         and square != crown_front_square
@@ -271,14 +177,14 @@ def recognize_crowned_checkmate(
 def recognize_discovered_horse_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     horse_piece = "N" if attacker == "red" else "n"
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     final_attack = attacker_trace[-1] if attacker_trace else None
-    previous_fen, _ = _apply_moves(fen, applied[:-1]) if applied else (fen, [])
+    previous_fen, _ = apply_moves(fen, applied[:-1]) if applied else (fen, [])
     previous_board = parse_fen(previous_fen)
 
     discovered_horses: list[dict[str, object]] = []
@@ -294,7 +200,7 @@ def recognize_discovered_horse_checkmate(
             if previous_board.get(horse_square) != horse_piece:
                 continue
             blocker_piece = previous_board.get(leg_square)
-            if not blocker_piece or not _is_attacker_piece(blocker_piece, attacker):
+            if not blocker_piece or not is_attacker_piece(blocker_piece, attacker):
                 continue
             discovered_horses.append(
                 {
@@ -348,8 +254,8 @@ def recognize_discovered_horse_checkmate(
 def recognize_double_cannon_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     cannon_piece = "C" if attacker == "red" else "c"
@@ -427,8 +333,8 @@ def recognize_double_cannon_checkmate(
 def recognize_cannons_sandwiching_chariot_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     rook_piece = "R" if attacker == "red" else "r"
@@ -461,7 +367,7 @@ def recognize_cannons_sandwiching_chariot_checkmate(
     final_checker_types = sorted(
         {board.get(square, "").upper() for square in final_checker_squares}
     )
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     checking_attackers = [
         item
         for item in attacker_trace
@@ -511,8 +417,8 @@ def recognize_cannons_sandwiching_chariot_checkmate(
 
 
 def recognize_smothered_cannon_checkmate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, king = _infer_sides(current_fen)
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, king = infer_sides(current_fen)
     advisor = "a" if defender == "black" else "A"
     checkers = analysis["checking_pieces"]
     types = {board.get(x["square"], "").upper() for x in checkers}
@@ -522,7 +428,7 @@ def recognize_smothered_cannon_checkmate(fen: str, moves: list[str] | None = Non
         if not king or board.get(square, "").upper() != "C":
             continue
         between = [x for x in squares_between(square, king) if x in board]
-        perpendicular = [x for x in _orthogonal_palace_neighbors(king, defender) if (x[0] == king[0] if square[1] == king[1] else x[1] == king[1])]
+        perpendicular = [x for x in orthogonal_palace_neighbors(king, defender) if (x[0] == king[0] if square[1] == king[1] else x[1] == king[1])]
         if len(between) == 1 and board[between[0]].upper() == "A" and perpendicular and all(board.get(x) == advisor for x in perpendicular):
             matches.append({"cannon": square, "screen": between[0], "blocked_squares": perpendicular})
     detected = bool(analysis["is_checkmate"] and types == {"C"} and matches)
@@ -532,13 +438,13 @@ def recognize_smothered_cannon_checkmate(fen: str, moves: list[str] | None = Non
 def recognize_double_chariots_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     rook_piece = "R" if attacker == "red" else "r"
     rook_squares = sorted(square for square, piece in board.items() if piece == rook_piece)
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     recent_attackers = attacker_trace[-3:] if len(attacker_trace) >= 3 else []
     alternating_rooks = False
     checking_sequence = False
@@ -560,7 +466,7 @@ def recognize_double_chariots_checkmate(
     supporting_rooks = [square for square in rook_squares if square not in checking_rooks]
     supporting_rook_escape_squares = []
     if defender_king:
-        for target in _orthogonal_palace_neighbors(defender_king, defender):
+        for target in orthogonal_palace_neighbors(defender_king, defender):
             if board.get(target):
                 continue
             attacks = analysis["attacked_squares"].get(target, [])
@@ -654,12 +560,12 @@ def _cannon_pinned_defenders(
 def recognize_heaven_and_earth_cannon_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     cannon_piece = "C" if attacker == "red" else "c"
-    home_rank = _home_rank(defender)
+    home_rank = home_rank_of(defender)
     cannons = sorted(
         square for square, piece in board.items() if piece == cannon_piece
     )
@@ -671,7 +577,7 @@ def recognize_heaven_and_earth_cannon_checkmate(
     final_destination = None
     captured_piece = None
     if applied:
-        pre_final_fen, _ = _apply_moves(fen, applied[:-1])
+        pre_final_fen, _ = apply_moves(fen, applied[:-1])
         pre_final_board = parse_fen(pre_final_fen)
         final_piece = pre_final_board.get(applied[-1][:2])
         final_destination = applied[-1][2:]
@@ -702,7 +608,7 @@ def recognize_heaven_and_earth_cannon_checkmate(
             )
         if (
             final_piece and final_piece.upper() in {"R", "P"}
-            and final_destination and _palace_contains(final_destination, defender)
+            and final_destination and palace_contains(final_destination, defender)
             and any(pre_pins.get(cannon) for cannon in heaven_cannons)
             and any(pre_pins.get(cannon) for cannon in earth_cannons)
             and final_destination in checking_squares
@@ -765,20 +671,20 @@ def recognize_heaven_and_earth_cannon_checkmate(
 
 
 def recognize_throat_cutting_checkmate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, king = _infer_sides(current_fen)
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, king = infer_sides(current_fen)
     advisor = "a" if defender == "black" else "A"
     center = "e8" if defender == "black" else "e1"
     qualifying = []
-    for item in _move_trace(fen, moves):
-        if not _is_attacker_piece(str(item["piece"]), attacker) or str(item["piece"]).upper() not in {"R", "P"} or item["to_square"] != center:
+    for item in move_trace(fen, moves):
+        if not is_attacker_piece(str(item["piece"]), attacker) or str(item["piece"]).upper() not in {"R", "P"} or item["to_square"] != center:
             continue
-        before, _ = _apply_moves(fen, applied[:int(item["ply"]) - 1])
+        before, _ = apply_moves(fen, applied[:int(item["ply"]) - 1])
         previous = parse_fen(before)
         if previous.get(center) != advisor:
             continue
         other_advisors = [sq for sq, piece in previous.items() if piece == advisor and sq != center]
-        after_capture, _ = _apply_moves(fen, applied[:int(item["ply"])])
+        after_capture, _ = apply_moves(fen, applied[:int(item["ply"])])
         defenders = sorted(move[:2] for move in legal_moves(after_capture) if move[2:] == center)
         if other_advisors or defenders:
             qualifying.append({"ply": item["ply"], "other_advisors": other_advisors, "protectors": defenders})
@@ -789,18 +695,18 @@ def recognize_throat_cutting_checkmate(fen: str, moves: list[str] | None = None)
 def recognize_drawer_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     rook_piece = "R" if attacker == "red" else "r"
     cannon_piece = "C" if attacker == "red" else "c"
-    home_rank = _home_rank(defender)
+    home_rank = home_rank_of(defender)
     # 2026.11.05-v15 (expert review): the drawer works on either rib file.
     cave_files = {"d", "f"}
     cave_ranks = {"8", "9"} if defender == "black" else {"0", "1"}
     king_tunnel_squares = {"e8", "e9"} if defender == "black" else {"e0", "e1"}
-    attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
 
     home_cannons = sorted(
         square
@@ -890,14 +796,14 @@ def recognize_drawer_checkmate(
 def recognize_elbow_horse_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     elbow_targets = {"c8", "g8"} if defender == "black" else {"c1", "g1"}
     attacker_horse_piece = "N" if attacker == "red" else "n"
     defender_king_piece = "k" if defender == "black" else "K"
-    attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
 
     elbow_index: int | None = None
     elbow_move: dict[str, object] | None = None
@@ -933,7 +839,7 @@ def recognize_elbow_horse_checkmate(
         if piece == attacker_horse_piece and square in elbow_targets
     )
     king_and_escape_squares = (
-        [defender_king, *_orthogonal_palace_neighbors(defender_king, defender)]
+        [defender_king, *orthogonal_palace_neighbors(defender_king, defender)]
         if defender_king else []
     )
     elbow_horse_control = {
@@ -1011,8 +917,8 @@ def recognize_elbow_horse_checkmate(
 def recognize_palcorner_horse_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     # Both corner ranks can occur in the opponent's palace.  The distinction
@@ -1024,7 +930,7 @@ def recognize_palcorner_horse_checkmate(
         else {"d0", "d2", "f0", "f2"}
     )
     defender_king_piece = "k" if defender == "black" else "K"
-    attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
 
     palcorner_index: int | None = None
     palcorner_move: dict[str, object] | None = None
@@ -1055,7 +961,7 @@ def recognize_palcorner_horse_checkmate(
         palcorner_square and board.get(palcorner_square, "").upper() == "N"
     )
     defender_neighbors = (
-        _orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
+        orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
     )
     palace_control_squares = (
         [defender_king, *defender_neighbors] if defender_king else defender_neighbors
@@ -1136,14 +1042,14 @@ def recognize_palcorner_horse_checkmate(
 def recognize_angler_horse_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     angler_targets = {"c7", "g7"} if defender == "black" else {"c2", "g2"}
     attacker_horse_piece = "N" if attacker == "red" else "n"
     defender_king_piece = "k" if defender == "black" else "K"
-    attacker_trace, defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, defender_trace = attacker_and_defender_trace(fen, moves, attacker)
 
     angler_horses = sorted(
         square
@@ -1152,7 +1058,7 @@ def recognize_angler_horse_checkmate(
     )
     empty_escape_squares = {
         square for square in (
-            _orthogonal_palace_neighbors(defender_king, defender)
+            orthogonal_palace_neighbors(defender_king, defender)
             if defender_king else []
         ) if square not in board
     }
@@ -1168,7 +1074,7 @@ def recognize_angler_horse_checkmate(
             )
             and not any(
                 reason["reason"] != "horse_attack"
-                and _is_attacker_piece(board.get(reason["square"], ""), attacker)
+                and is_attacker_piece(board.get(reason["square"], ""), attacker)
                 for reason in reasons
             )
         )
@@ -1261,8 +1167,8 @@ def recognize_angler_horse_checkmate(
 def recognize_tiger_silhouette_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     # The tiger horse must occupy a flank square in the defender's camp:
@@ -1279,7 +1185,7 @@ def recognize_tiger_silhouette_checkmate(
         for item in analysis["checking_pieces"]
         if board.get(item["square"], "").upper() != "N"
     ]
-    defender_escape_squares = set(_orthogonal_palace_neighbors(defender_king, defender)) if defender_king else set()
+    defender_escape_squares = set(orthogonal_palace_neighbors(defender_king, defender)) if defender_king else set()
     tiger_horse_contributions = {
         square: sorted(
             target
@@ -1300,7 +1206,7 @@ def recognize_tiger_silhouette_checkmate(
     }
     king_control_plies = []
     for ply in range(len(applied) + 1):
-        position, _ = _apply_moves(fen, applied[:ply])
+        position, _ = apply_moves(fen, applied[:ply])
         historical_board = parse_fen(position)
         historical_king = next((sq for sq, piece in historical_board.items() if piece == ("k" if defender == "black" else "K")), None)
         if historical_king and any(
@@ -1308,7 +1214,7 @@ def recognize_tiger_silhouette_checkmate(
             for entry in attacked_squares(historical_board, attacker).get(historical_king, [])
         ):
             king_control_plies.append(ply)
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     tiger_horse_move_ply = next(
         (
             int(item["ply"])
@@ -1361,14 +1267,14 @@ def recognize_tiger_silhouette_checkmate(
 def recognize_horse_cannon_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     cannon_piece = "C" if attacker == "red" else "c"
     horse_piece = "N" if attacker == "red" else "n"
     defender_neighbors = (
-        _orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
+        orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
     )
     cannon_horse_pairs: list[dict[str, object]] = []
 
@@ -1409,7 +1315,7 @@ def recognize_horse_cannon_checkmate(
     # classic horse-cannon mate it can serve as the cannon screen while the
     # other attacking pieces close the remaining escape squares.
     qualified_pairs = cannon_horse_pairs
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     final_attack = attacker_trace[-1] if attacker_trace else None
     final_cannon_finish = bool(
         final_attack
@@ -1461,11 +1367,11 @@ def recognize_horse_cannon_checkmate(
 def recognize_double_check_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
     final_attack = attacker_trace[-1] if attacker_trace else None
     checking_piece_squares = [item["square"] for item in analysis["checking_pieces"]]
     checking_piece_types = sorted(
@@ -1513,8 +1419,8 @@ def recognize_double_check_checkmate(
 def recognize_octagon_horse_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     octagon_targets = (
@@ -1523,7 +1429,7 @@ def recognize_octagon_horse_checkmate(
         else {"d0", "d2", "f0", "f2"}
     )
     horse_piece = "N" if attacker == "red" else "n"
-    attacker_trace, _defender_trace = _attacker_and_defender_trace(fen, moves, attacker)
+    attacker_trace, _defender_trace = attacker_and_defender_trace(fen, moves, attacker)
 
     octagon_move = next(
         (
@@ -1559,7 +1465,7 @@ def recognize_octagon_horse_checkmate(
         octagon_square and defender_king == opposite_corner
     )
     defender_neighbors = (
-        _orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
+        orthogonal_palace_neighbors(defender_king, defender) if defender_king else []
     )
     palace_control_squares = (
         [defender_king, *defender_neighbors] if defender_king else defender_neighbors
@@ -1631,8 +1537,8 @@ def recognize_octagon_horse_checkmate(
 def recognize_three_chariots_attacking_advisor_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     starting_board = parse_fen(fen)
@@ -1640,7 +1546,7 @@ def recognize_three_chariots_attacking_advisor_checkmate(
     starting_main_pieces = sorted(
         square
         for square, piece in starting_board.items()
-        if _is_attacker_piece(piece, attacker) and piece.upper() in {"R", "P"}
+        if is_attacker_piece(piece, attacker) and piece.upper() in {"R", "P"}
     )
     starting_rooks = [
         square for square in starting_main_pieces if starting_board[square].upper() == "R"
@@ -1653,7 +1559,7 @@ def recognize_three_chariots_attacking_advisor_checkmate(
         for item in analysis["checking_pieces"]
         if board.get(item["square"], "").upper() in {"R", "P"}
     ]
-    trace = _move_trace(fen, applied) if applied else []
+    trace = move_trace(fen, applied) if applied else []
     final_move_piece = trace[-1]["piece"].upper() if trace else None
     advisor_squares = sorted(
         square for square, piece in starting_board.items() if piece == defender_advisor
@@ -1681,7 +1587,7 @@ def recognize_three_chariots_attacking_advisor_checkmate(
                 participation[checker_id].append("check")
         position = apply_move(position, move)
     if defender_king:
-        escape_squares = [square for square in _orthogonal_palace_neighbors(defender_king, defender) if not board.get(square)]
+        escape_squares = [square for square in orthogonal_palace_neighbors(defender_king, defender) if not board.get(square)]
         for square, piece_id in identities.items():
             if piece_id in participation and any(
                 any(attack["square"] == square for attack in analysis["attacked_squares"].get(target, []))
@@ -1734,15 +1640,15 @@ def recognize_three_chariots_attacking_advisor_checkmate(
 
 
 def recognize_two_devils_knocking_checkmate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, king = _infer_sides(current_fen)
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, king = infer_sides(current_fen)
     rank = "8" if defender == "black" else "1"
     eyes = ["d" + rank, "f" + rank]
     occurrences = []
     for ply in range(len(applied) + 1):
-        position, _ = _apply_moves(fen, applied[:ply])
+        position, _ = apply_moves(fen, applied[:ply])
         state = parse_fen(position)
-        if all((piece := state.get(sq, "")) and _is_attacker_piece(piece, attacker) and piece.upper() == "P" for sq in eyes):
+        if all((piece := state.get(sq, "")) and is_attacker_piece(piece, attacker) and piece.upper() == "P" for sq in eyes):
             occurrences.append(ply)
     detected = bool(analysis["is_checkmate"] and occurrences)
     return {"pattern_id": "TWO_DEVILS_KNOCKING_CHECKMATE", "pattern_name_zh": "双鬼拍门", "detected": detected, "causal": detected, "fen": current_fen, "moves": applied, "analysis": analysis, "features": {"elephant_eye_squares": eyes, "occurrence_plies": occurrences}, "diagnostics": ["过程中两枚己方兵同时占据敌方象眼。"]}
@@ -1751,15 +1657,15 @@ def recognize_two_devils_knocking_checkmate(fen: str, moves: list[str] | None = 
 def recognize_iron_bolt_checkmate(
     fen: str, moves: list[str] | None = None
 ) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     # Only the advisor creates the iron-bolt gate.  An elephant alone is
     # not a sufficient lock because it can still participate in defense.
     lock_piece_set = {"a"} if defender == "black" else {"A"}
     attacker_line_pieces = {"C", "R"} if attacker == "red" else {"c", "r"}
-    home_rank = _home_rank(defender)
+    home_rank = home_rank_of(defender)
     central_lock_candidates = sorted(
         square
         for square, piece in board.items()
@@ -1852,11 +1758,11 @@ def recognize_iron_bolt_checkmate(
 
 
 def recognize_smothered_checkmate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, king = _infer_sides(current_fen)
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, king = infer_sides(current_fen)
     checkers = analysis["checking_pieces"]
     types = {board.get(x["square"], "").upper() for x in checkers}
-    neighbors = _orthogonal_palace_neighbors(king, defender) if king else []
+    neighbors = orthogonal_palace_neighbors(king, defender) if king else []
     outside = []
     for target in neighbors:
         # Test the checking pieces against the hypothetical king position; this
@@ -1867,7 +1773,7 @@ def recognize_smothered_checkmate(fen: str, moves: list[str] | None = None) -> d
         attacks = attacked_squares(hypothetical, attacker).get(target, [])
         if not any(a["square"] == c["square"] for a in attacks for c in checkers):
             outside.append(target)
-    blocked = [sq for sq in outside if (piece := board.get(sq, "")) and not _is_attacker_piece(piece, attacker) and piece.upper() != "A"]
+    blocked = [sq for sq in outside if (piece := board.get(sq, "")) and not is_attacker_piece(piece, attacker) and piece.upper() != "A"]
     perpendicular_groups = []
     for checker in checkers:
         square = checker["square"]
@@ -1879,7 +1785,7 @@ def recognize_smothered_checkmate(fen: str, moves: list[str] | None = None) -> d
             targets = [target for target in neighbors if target[0] == king[0]]
         else:
             continue
-        blockers = [target for target in targets if (piece := board.get(target, "")) and not _is_attacker_piece(piece, attacker) and piece.upper() != "A"]
+        blockers = [target for target in targets if (piece := board.get(target, "")) and not is_attacker_piece(piece, attacker) and piece.upper() != "A"]
         perpendicular_groups.append({"checker": square, "targets": targets, "blockers": blockers})
     double_cannon = recognize_double_cannon_checkmate(fen, moves)["detected"]
     line_blocked = any(group["targets"] and len(group["targets"]) == len(group["blockers"]) for group in perpendicular_groups)
@@ -1889,8 +1795,8 @@ def recognize_smothered_checkmate(fen: str, moves: list[str] | None = None) -> d
 
 
 def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     checking_pieces = [
@@ -1977,8 +1883,8 @@ def recognize_white_face_general(fen: str, moves: list[str] | None = None) -> di
 
 
 def recognize_stalemate(fen: str, moves: list[str] | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
-    _board, analysis, attacker, defender, attacker_king, defender_king = _infer_sides(
+    current_fen, applied = apply_moves(fen, moves)
+    _board, analysis, attacker, defender, attacker_king, defender_king = infer_sides(
         current_fen
     )
     detected = bool((not analysis["is_check"]) and (not analysis["legal_moves"]))
@@ -2007,146 +1913,96 @@ def recognize_stalemate(fen: str, moves: list[str] | None = None) -> dict:
     }
 
 
-def recognize_pattern(
-    pattern_id: str, fen: str, moves: list[str] | None = None
-) -> dict:
-    normalized = pattern_id.strip().upper()
-    if normalized == "CROWNED_CHECKMATE":
-        return recognize_crowned_checkmate(fen, moves)
-    if normalized in {"CENTROID_CHECKMATE", "CENTROID_PAWN_CHECKMATE", "CENTROID_CHARIOT_CHECKMATE"}:
-        return recognize_centroid_chariot_checkmate(fen, moves)
-    if normalized == "CANNONS_SANDWICHING_CHARIOT_CHECKMATE":
-        return recognize_cannons_sandwiching_chariot_checkmate(fen, moves)
-    if normalized == "DOUBLE_CANNON_CHECKMATE":
-        return recognize_double_cannon_checkmate(fen, moves)
-    if normalized == "DISCOVERED_HORSE_CHECKMATE":
-        return recognize_discovered_horse_checkmate(fen, moves)
-    if normalized == "SMOTHERED_CANNON_CHECKMATE":
-        return recognize_smothered_cannon_checkmate(fen, moves)
-    if normalized == "HEAVEN_AND_EARTH_CANNON_CHECKMATE":
-        return recognize_heaven_and_earth_cannon_checkmate(fen, moves)
-    if normalized == "DRAWER_CHECKMATE":
-        return recognize_drawer_checkmate(fen, moves)
-    if normalized == "THROAT_CUTTING_CHECKMATE":
-        return recognize_throat_cutting_checkmate(fen, moves)
-    if normalized == "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE":
-        return recognize_three_chariots_attacking_advisor_checkmate(fen, moves)
-    if normalized == "TIGER_SILHOUETTE_CHECKMATE":
-        return recognize_tiger_silhouette_checkmate(fen, moves)
-    if normalized == "HORSE_CANNON_CHECKMATE":
-        return recognize_horse_cannon_checkmate(fen, moves)
-    if normalized == "OCTAGON_HORSE_CHECKMATE":
-        return recognize_octagon_horse_checkmate(fen, moves)
-    if normalized == "DOUBLE_CHECK_CHECKMATE":
-        return recognize_double_check_checkmate(fen, moves)
-    if normalized == "TWO_DEVILS_KNOCKING_CHECKMATE":
-        return recognize_two_devils_knocking_checkmate(fen, moves)
-    if normalized == "ELBOW_HORSE_CHECKMATE":
-        return recognize_elbow_horse_checkmate(fen, moves)
-    if normalized == "PALCORNER_HORSE_CHECKMATE":
-        return recognize_palcorner_horse_checkmate(fen, moves)
-    if normalized == "ANGLER_HORSE_CHECKMATE":
-        return recognize_angler_horse_checkmate(fen, moves)
-    if normalized == "IRON_BOLT_CHECKMATE":
-        return recognize_iron_bolt_checkmate(fen, moves)
-    if normalized == "DOUBLE_CHARIOTS_CHECKMATE":
-        return recognize_double_chariots_checkmate(fen, moves)
-    if normalized == "CENTROID_CHARIOT_CHECKMATE":
-        return recognize_centroid_chariot_checkmate(fen, moves)
-    if normalized == "SMOTHERED_CHECKMATE":
-        return recognize_smothered_checkmate(fen, moves)
-    if normalized == "WHITE_FACE_GENERAL":
-        return recognize_white_face_general(fen, moves)
-    if normalized == "STALEMATE":
-        return recognize_stalemate(fen, moves)
-    raise ValueError(f"不支援的 pattern_id：{pattern_id}")
 
 
-def classify_mating_material(fen: str, analysis: dict) -> dict | None:
-    """Classify actual checking pieces and pieces controlling king escape squares."""
-    if not analysis["is_checkmate"]:
-        return None
-    board = parse_fen(fen)
-    defender = analysis["side_to_move"]
-    attacker = "black" if defender == "red" else "red"
-    king = analysis["king_square"]
-    king_piece = board[king]
-    names = {"R": "车", "N": "马", "C": "炮", "P": "兵"}
-    checkers = [{"square": item["square"], "piece": board[item["square"]].upper()}
-                for item in analysis["checking_pieces"] if board[item["square"]].upper() in names]
-    controls: dict[str, dict] = {}
-    for target in _orthogonal_palace_neighbors(king, defender):
-        occupant = board.get(target)
-        if occupant and not _is_attacker_piece(occupant, attacker):
-            continue
-        hypothetical = board.copy()
-        hypothetical.pop(king)
-        hypothetical[target] = king_piece
-        for attack in attacked_squares(hypothetical, attacker).get(target, []):
-            square = attack["square"]
-            piece = hypothetical[square].upper()
-            if piece not in names:
-                continue
-            entry = controls.setdefault(square, {"square": square, "piece": piece, "targets": []})
-            entry["targets"].append(target)
-    types = {item["piece"] for item in checkers} | {item["piece"] for item in controls.values()}
-    code = "".join(piece for piece in "RNCP" if piece in types)
-    allowed = {"R", "N", "C", "P", "RN", "RC", "RP", "RNC", "RNP", "RCP", "NC", "NCP", "NP", "CP"}
-    if code not in allowed:
-        return None
-    return {"id": code, "label_zh": "".join(names[piece] for piece in code) + ("杀" if len(code) == 1 else ""),
-            "checking_pieces": checkers, "controlling_pieces": sorted(controls.values(), key=lambda item: item["square"])}
+_RECOGNIZERS = {
+    'CROWNED_CHECKMATE': recognize_crowned_checkmate,
+    'CENTROID_CHECKMATE': recognize_centroid_chariot_checkmate,
+    'CENTROID_PAWN_CHECKMATE': recognize_centroid_chariot_checkmate,
+    'CENTROID_CHARIOT_CHECKMATE': recognize_centroid_chariot_checkmate,
+    'CANNONS_SANDWICHING_CHARIOT_CHECKMATE': recognize_cannons_sandwiching_chariot_checkmate,
+    'DOUBLE_CANNON_CHECKMATE': recognize_double_cannon_checkmate,
+    'DISCOVERED_HORSE_CHECKMATE': recognize_discovered_horse_checkmate,
+    'SMOTHERED_CANNON_CHECKMATE': recognize_smothered_cannon_checkmate,
+    'HEAVEN_AND_EARTH_CANNON_CHECKMATE': recognize_heaven_and_earth_cannon_checkmate,
+    'DRAWER_CHECKMATE': recognize_drawer_checkmate,
+    'THROAT_CUTTING_CHECKMATE': recognize_throat_cutting_checkmate,
+    'THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE': recognize_three_chariots_attacking_advisor_checkmate,
+    'TIGER_SILHOUETTE_CHECKMATE': recognize_tiger_silhouette_checkmate,
+    'HORSE_CANNON_CHECKMATE': recognize_horse_cannon_checkmate,
+    'OCTAGON_HORSE_CHECKMATE': recognize_octagon_horse_checkmate,
+    'DOUBLE_CHECK_CHECKMATE': recognize_double_check_checkmate,
+    'TWO_DEVILS_KNOCKING_CHECKMATE': recognize_two_devils_knocking_checkmate,
+    'ELBOW_HORSE_CHECKMATE': recognize_elbow_horse_checkmate,
+    'PALCORNER_HORSE_CHECKMATE': recognize_palcorner_horse_checkmate,
+    'ANGLER_HORSE_CHECKMATE': recognize_angler_horse_checkmate,
+    'IRON_BOLT_CHECKMATE': recognize_iron_bolt_checkmate,
+    'DOUBLE_CHARIOTS_CHECKMATE': recognize_double_chariots_checkmate,
+    'SMOTHERED_CHECKMATE': recognize_smothered_checkmate,
+    'WHITE_FACE_GENERAL': recognize_white_face_general,
+    'STALEMATE': recognize_stalemate,
+}
+
+# A pattern is dropped when one of the patterns listed for it is also present.
+_EXCLUDED_BY = {
+    'DOUBLE_CHARIOTS_CHECKMATE': {'CENTROID_CHECKMATE', 'TWO_DEVILS_KNOCKING_CHECKMATE', 'CROWNED_CHECKMATE'},
+    'DISCOVERED_HORSE_CHECKMATE': {'ELBOW_HORSE_CHECKMATE'},
+    'PALCORNER_HORSE_CHECKMATE': {'HORSE_CANNON_CHECKMATE'},
+    # 2026.11.05-v15 (expert review): 闷宫杀 already names this finish.
+    'HEAVEN_AND_EARTH_CANNON_CHECKMATE': {'SMOTHERED_CANNON_CHECKMATE'},
+}
+_DOUBLE_CHECK = 'DOUBLE_CHECK_CHECKMATE'
+
+
+def recognize_pattern(pattern_id: str, fen: str, moves: list[str] | None = None) -> dict:
+    recognizer = _RECOGNIZERS.get(pattern_id.strip().upper())
+    if recognizer is None:
+        raise ValueError(f'不支援的 pattern_id：{pattern_id}')
+    return recognizer(fen, moves)
+
+
+def _apply_exclusions(detected: list[dict], request: tuple[str | None, str, list[str] | None]) -> list[dict]:
+    pattern_id, fen, moves = request
+    present = {match['pattern_id'] for match in detected}
+    if pattern_id and detected and detected[0]['pattern_id'] in _EXCLUDED_BY:
+        present.update(
+            candidate for candidate in _EXCLUDED_BY[detected[0]['pattern_id']]
+            if recognize_pattern(candidate, fen, moves)['detected']
+        )
+    return [match for match in detected if not (_EXCLUDED_BY.get(match['pattern_id'], set()) & present)]
+
+
+def _drop_redundant_double_check(
+    detected: list[dict], position: tuple[str, dict], request: tuple[str | None, str, list[str] | None],
+) -> list[dict]:
+    """A cannon check alongside a chariot or pawn check is named by the other pattern, when there is one."""
+    pattern_id, fen, moves = request
+    current_fen, analysis = position
+    checker_types = {parse_fen(current_fen).get(item['square'], '').upper() for item in analysis['checking_pieces']}
+    if not ('C' in checker_types and checker_types.intersection({'R', 'P'})
+            and any(match['pattern_id'] == _DOUBLE_CHECK for match in detected)):
+        return detected
+    has_other = any(match['pattern_id'] != _DOUBLE_CHECK for match in detected)
+    if pattern_id and not has_other:
+        has_other = any(recognize_pattern(candidate, fen, moves)['detected']
+                        for candidate in PATTERN_ORDER if candidate != _DOUBLE_CHECK)
+    return [match for match in detected if match['pattern_id'] != _DOUBLE_CHECK] if has_other else detected
 
 
 def analyze_patterns(fen: str, moves: list[str] | None = None, pattern_id: str | None = None) -> dict:
-    current_fen, applied = _apply_moves(fen, moves)
+    current_fen, applied = apply_moves(fen, moves)
     analysis = position_analysis(current_fen)
-    if pattern_id:
-        candidate_ids = [pattern_id.strip().upper()]
-    else:
-        candidate_ids = PATTERN_ORDER
-    matches = [
-        recognize_pattern(candidate_id, fen, moves)
-        for candidate_id in candidate_ids
-    ]
-    detected = [match for match in matches if match["detected"]]
-    excluded_by = {
-        "DOUBLE_CHARIOTS_CHECKMATE": {"CENTROID_CHECKMATE", "TWO_DEVILS_KNOCKING_CHECKMATE", "CROWNED_CHECKMATE"},
-        "DISCOVERED_HORSE_CHECKMATE": {"ELBOW_HORSE_CHECKMATE"},
-        "PALCORNER_HORSE_CHECKMATE": {"HORSE_CANNON_CHECKMATE"},
-        # 2026.11.05-v15 (expert review): 闷宫杀 already names this finish.
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE": {"SMOTHERED_CANNON_CHECKMATE"},
-    }
-    present = {match["pattern_id"] for match in detected}
-    if pattern_id and detected and detected[0]["pattern_id"] in excluded_by:
-        present.update(
-            candidate for candidate in excluded_by[detected[0]["pattern_id"]]
-            if recognize_pattern(candidate, fen, moves)["detected"]
-        )
-    detected = [match for match in detected if not (excluded_by.get(match["pattern_id"], set()) & present)]
-    checker_types = {parse_fen(current_fen).get(item["square"], "").upper() for item in analysis["checking_pieces"]}
-    if "C" in checker_types and checker_types.intersection({"R", "P"}) and any(match["pattern_id"] == "DOUBLE_CHECK_CHECKMATE" for match in detected):
-        has_other = any(match["pattern_id"] != "DOUBLE_CHECK_CHECKMATE" for match in detected)
-        if pattern_id and not has_other:
-            has_other = any(recognize_pattern(candidate, fen, moves)["detected"] for candidate in PATTERN_ORDER if candidate != "DOUBLE_CHECK_CHECKMATE")
-        if has_other:
-            detected = [match for match in detected if match["pattern_id"] != "DOUBLE_CHECK_CHECKMATE"]
-    best_match = detected[0] if detected else None
+    candidate_ids = [pattern_id.strip().upper()] if pattern_id else PATTERN_ORDER
+    matches = [recognize_pattern(candidate_id, fen, moves) for candidate_id in candidate_ids]
+    request = (pattern_id, fen, moves)
+    detected = _apply_exclusions([match for match in matches if match['detected']], request)
+    detected = _drop_redundant_double_check(detected, (current_fen, analysis), request)
     return {
-        "requested_pattern_id": pattern_id.strip().upper() if pattern_id else None,
-        "fen": current_fen,
-        "moves": applied,
-        "analysis": analysis,
-        "best_match": best_match,
-        "matches": detected,
-        "material_fallback": classify_mating_material(current_fen, analysis) if not pattern_id and not detected else None,
+        'requested_pattern_id': pattern_id.strip().upper() if pattern_id else None,
+        'fen': current_fen,
+        'moves': applied,
+        'analysis': analysis,
+        'best_match': detected[0] if detected else None,
+        'matches': detected,
+        'material_fallback': classify_mating_material(current_fen, analysis) if not pattern_id and not detected else None,
     }
-
-
-def clear_caches() -> None:
-    _apply_moves_cached.cache_clear()
-    _move_trace_cached.cache_clear()
-
-
-# Both caches hold FENs produced by the active move generator; a backend switch must drop them.
-_board.register_dependent_cache(clear_caches)

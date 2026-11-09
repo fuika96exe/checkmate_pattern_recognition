@@ -7,8 +7,8 @@ import pytest
 from app.board import position_analysis
 from app.main import api_analyze_puzzle_line
 from app.models import PuzzleLineRequest
-import xq_classify.checkmate.recognition as pattern_module  # the module whose attacked_squares is patched
-from xq_classify.checkmate.recognition import classify_mating_material
+import xq_classify.checkmate.material as pattern_module  # the module whose attacked_squares is patched
+from xq_classify.checkmate.material import classify_mating_material
 from scripts.generate_puzzle_recognition import recognize_puzzle
 
 

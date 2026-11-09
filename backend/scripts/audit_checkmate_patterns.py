@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.app.board
 from backend.app import board  # noqa: E402
-from xq_classify.checkmate import recognition as patterns  # noqa: E402
+from xq_classify.checkmate import geometry, recognition as patterns  # noqa: E402
 
 RECOGNIZER_SOURCE = ROOT / "backend/xq_classify/checkmate/recognition.py"
 
@@ -47,7 +47,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
     defender = analysis["side_to_move"]
     attacker = "red" if defender == "black" else "black"
     king = analysis["king_square"]
-    targets = {king, *patterns._orthogonal_palace_neighbors(king, defender)}
+    targets = {king, *geometry.orthogonal_palace_neighbors(king, defender)}
     attacks = analysis["attacked_squares"]
     labels = recognition["patternIds"]
     flags: list[str] = []
@@ -83,7 +83,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
 
     if analysis["is_checkmate"]:
         checker_types = {pieces[e["square"]].upper() for e in analysis["checking_pieces"]}
-        neighbors = patterns._orthogonal_palace_neighbors(king, defender)
+        neighbors = geometry.orthogonal_palace_neighbors(king, defender)
         if checker_types == {"N"} and all(s in pieces and not own(pieces[s]) for s in neighbors):
             if "SMOTHERED_CHECKMATE" not in labels:
                 flags.append("fully_self_blocked_horse_mate_not_smothered")
