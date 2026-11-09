@@ -5,12 +5,11 @@ step 6 is moving each label's detector out of this module, in the original order
 """
 from __future__ import annotations
 
-from itertools import combinations
-
 from .. import board as b
 from ..exchange import evaluate_exchange, piece_value
 from ..version import MIDGAME_RULES_VERSION
-from .context import LABELS, Analysis, Finding, threats_from, verified_hits
+from .context import LABELS, Analysis, Finding, move_frame
+from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .material import material_result
 from .merge import finalize_labels
 from .position import MAIN, VALUES, Position, opened_by, other, own, view, without_pieces
@@ -343,26 +342,6 @@ def relative_recapture_pin(positions, events, capture):
     return None
 
 
-def fork_defences(pos: Position, actor: str, pair):
-    """Only a legal non-losing immediate capture of the attacker refutes a fork.
-
-    v2.9 (expert, R20g7j): a capture by the front piece of a pin does not
-    count when the pinned rear piece is worth more than the attacker, because
-    leaving the line loses that piece."""
-    fen = view(pos.fen, other(pos.side))
-    square = pos.squares[actor]
-    attacker_value = piece_value(pos.board[square], square)
-    pinned = {}
-    for (_, front, rear, _), relation in pos.pins.items():
-        rear_square = pos.squares.get(rear)
-        if rear_square and piece_value(pos.board[rear_square], rear_square) > attacker_value:
-            pinned[front] = relation
-    for move in b.legal_moves(fen):
-        if move[2:] == square and pos.ids.get(move[:2]) not in pinned and evaluate_exchange(fen, move) >= 0:
-            return move
-    return None
-
-
 def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
     positions, events = replay(fen, blunder, pv, solver)
     run = Analysis(positions, events, solver)
@@ -374,89 +353,11 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
     for event in events[1:]:
         if event.side != solver:
             continue
-        p = event.ply
-        before, after = positions[p - 1:p + 1]
-        response = events[p] if p < len(events) else None
-        reply = positions[p + 1] if response else None
-        excluded = set()
-        if response and response.victim == event.actor and evaluate_exchange(before.fen, event.move) <= 0:
-            excluded.add(event.actor)
-            review("threat", p, "nonpositive_mover_recaptured_next_ply", {
-                "actor": before.ref(event.actor), "move": event.move,
-                "gain": evaluate_exchange(before.fen, event.move), "response": response.move,
-                "responsePly": response.ply})
-        hits = verified_hits(after, reply, excluded)
-        threats = threats_from(hits)
-        if after.checked and reply is None:
-            review("check_fork", p, "missing_actual_check_response", {})
-        # Forks have their own immediate-capture test. A losing capture of the
-        # attacker must not be rejected by the general PV recapture filter.
-        fork_threats = threats_from(after.hits)
-        for actor in {r["actor"]["id"] for rows in fork_threats.values() for r in rows}:
-            targets = sorted(t for t, rows in fork_threats.items() if any(
-                r["actor"]["id"] == actor and (r["profitable"] or r["check"]) for r in rows))
-            for pair in combinations(targets, 2):
-                def existed(target):
-                    if actor not in before.squares or target not in before.squares:
-                        return False
-                    src, dst = before.squares[actor], before.squares[target]
-                    old = before.relation(actor, target)
-                    return bool(old and (old["profitable"] or old["check"])) or (b.position_analysis(before.query)["is_check"] and
-                        dst in b.pseudo_legal_targets(before.board, src, before.board[src]))
-                if all(existed(t) for t in pair):
-                    continue
-                # v2.6: a new check alone does not make a fork; the non-king
-                # target must also be newly attacked by this move.
-                if any(after.board.get(after.squares[t], "").upper() == "K" for t in pair) and any(
-                        existed(t) for t in pair if after.board.get(after.squares[t], "").upper() != "K"):
-                    review("fork", p, "check_with_preexisting_attack", {"actor": after.ref(actor)})
-                    continue
-                defence = fork_defences(after, actor, pair)
-                if defence:
-                    review("fork", p, "defensible", {"reply": defence, "actor": after.ref(actor)})
-                    continue
-                # v2.8 (expert, R18wlL): while the opponent is in check, a
-                # non-king target is confirmed only in the position after the
-                # actual reply, like every other label (no free second move).
-                # Applies to forks of two non-king targets made while another
-                # check is pending; check forks are judged by ruling D3.
-                if after.checked and reply is not None and not any(
-                        after.board.get(after.squares[t], "").upper() == "K" for t in pair) and any(
-                        not (reply.relation(actor, t) or {}).get("profitable") for t in pair):
-                    review("fork", p, "target_not_confirmed_after_check", {"actor": after.ref(actor)})
-                    continue
-                attacks = [next(r for r in fork_threats[t] if r["actor"]["id"] == actor and (r["profitable"] or r["check"])) for t in pair]
-                emit("fork", p, p, [actor], list(pair), "new_target_pair",
-                     {"attacks": attacks, "response": response.move if after.checked and response else None})
-        # A cannon check through a friendly screen, where the screen itself
-        # newly attacks another piece. v2.9 (expert, RPx5jO): either the
-        # checking cannon or its screen may be the piece that just moved.
-        if after.checked:
-            for king, rows in fork_threats.items():
-                for check in rows:
-                    cannon = check["actor"]["id"]
-                    if not check["check"] or after.board.get(after.squares.get(cannon, ""), "").upper() != "C":
-                        continue
-                    king_sq = after.squares[king]
-                    between = [sq for sq in b.squares_between(after.squares[cannon], king_sq) if sq in after.board]
-                    if len(between) != 1 or not own(after.board[between[0]], solver):
-                        continue
-                    screen = after.ids[between[0]]
-                    if event.actor not in {cannon, screen}:
-                        continue
-                    for target, attacks in fork_threats.items():
-                        for attack in attacks:
-                            if attack["actor"]["id"] != screen or not attack["profitable"]:
-                                continue
-                            old = before.relation(screen, target) if screen in before.squares and target in before.squares else None
-                            if old and old["profitable"]:
-                                continue
-                            defence = fork_defences(after, cannon, (king, target)) or fork_defences(after, screen, (king, target))
-                            if defence:
-                                continue
-                            emit("fork", p, p, [cannon, screen], [king, target],
-                                 "friendly_cannon_screen_check", {"attacks": [check, attack],
-                                 "screen": after.ref(screen)})
+        frame = move_frame(run, event)
+        p, before, after, response, reply = frame.ply, frame.before, frame.after, frame.response, frame.reply
+        excluded, hits, threats, fork_threats = frame.excluded, frame.hits, frame.threats, frame.fork_threats
+        detect_forks(run, frame)
+        detect_screen_forks(run, frame)
         for target, relations in hits.items():
             for relation in relations:
                 actor = relation["actor"]["id"]
@@ -528,33 +429,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
                 emit("skewer", p, confirmed, [actor], [front, rear], "ray", {"line": line, "continuation": confirmation})
             else:
                 review("skewer", p, "no_profitable_two_stage_confirmation", line)
-        # v3.0 (expert ruling on qGXnbL): one move creating two new effective
-        # threats on two different non-king majors counts as a fork even when
-        # the threats come from different pieces, provided the moving piece
-        # makes one of them and the move is not already a discovered attack or
-        # skewer (those labels explain it instead). A capturing move is
-        # excluded: its threats are the aftermath of the capture.
-        if not event.victim and not any(o["id"] in {"fork", "discovered_attack", "skewer"}
-                                        for o in plies[p - 1]["occurrences"]):
-            fresh = {}
-            for target, relations in hits.items():
-                if after.board.get(after.squares.get(target, ""), "").upper() not in MAIN:
-                    continue
-                for relation in relations:
-                    actor = relation["actor"]["id"]
-                    if relation["check"] or not relation["profitable"]:
-                        continue
-                    old = before.relation(actor, target) if actor in before.squares and target in before.squares else None
-                    if old and old["profitable"]:
-                        continue
-                    if actor != event.actor and opened_by(before, after, actor, target, event.move[:2]):
-                        continue
-                    fresh.setdefault(target, relation)
-            if len(fresh) >= 2 and len({r["actor"]["id"] for r in fresh.values()}) >= 2 and                     any(r["actor"]["id"] == event.actor for r in fresh.values()):
-                pair = sorted(fresh)[:2] if len(fresh) == 2 else sorted(
-                    fresh, key=lambda t: (fresh[t]["actor"]["id"] != event.actor, t))[:2]
-                emit("fork", p, p, list(dict.fromkeys(fresh[t]["actor"]["id"] for t in pair)), list(pair),
-                     "two_new_threats", {"attacks": [fresh[t] for t in pair]})
+        detect_two_threat_forks(run, frame)
         # Structural relations are tracked continuously. Emit an existing pin
         # only when this player move exploits it, including an actual capture.
         candidates = {}
