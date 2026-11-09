@@ -11,58 +11,13 @@ from ..version import MIDGAME_RULES_VERSION
 from .context import LABELS, Analysis, Finding, move_frame
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
+from .detectors.skewer import detect_skewers
 from .material import material_result
 from .merge import finalize_labels
 from .position import MAIN, VALUES, Position, opened_by, other, own, view, without_pieces
 from .replay import replay
 
 RULES_VERSION = MIDGAME_RULES_VERSION
-
-
-def ray_relations(pos: Position):
-    """Geometric front/rear/screen candidates; legal checks happen separately."""
-    result = {}
-    for src, piece in sorted(pos.board.items()):
-        if not own(piece, pos.side) or piece.upper() not in {"R", "C"}:
-            continue
-        x, y = b.coords(src)
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            occupied = []
-            cx, cy = x + dx, y + dy
-            while (square := b.square_at(cx, cy)) is not None:
-                if square in pos.board:
-                    occupied.append(square)
-                cx, cy = cx + dx, cy + dy
-            offset = int(piece.upper() == "C")
-            if len(occupied) < offset + 2:
-                continue
-            front, rear = occupied[offset:offset + 2]
-            if any(own(pos.board[s], pos.side) or pos.board[s].upper() not in VALUES for s in (front, rear)):
-                continue
-            key = (pos.ids[src], pos.ids[front], pos.ids[rear], dx, dy)
-            result[key] = {"actor": pos.ref(pos.ids[src]), "front": pos.ref(pos.ids[front]),
-                           "rear": pos.ref(pos.ids[rear]),
-                           "screen": pos.ref(pos.ids[occupied[0]]) if offset else None,
-                           "direction": [dx, dy]}
-    return result
-
-
-def skewer_confirmation(pos: Position, actor: str, front: str, rear: str, front_attack=None):
-    # A front piece that can take the attacker immediately breaks the skewer.
-    if pos.squares[front] + pos.squares[actor] in b.legal_moves(view(pos.fen, other(pos.side))):
-        return None
-    relation = front_attack or pos.relation(actor, front)
-    if not relation or not (relation["profitable"] or relation["check"]):
-        return None
-    for move in sorted(b.legal_moves(view(pos.fen, other(pos.side)))):
-        if move[:2] != pos.squares[front] or move[2:] in {pos.squares[actor], pos.squares[rear]}:
-            continue
-        ids = b.move_piece_identity(pos.ids, move[:2], move[2:])
-        child = Position(b.apply_move(view(pos.fen, other(pos.side)), move), ids, pos.side)
-        rear_attack = child.relation(actor, rear)
-        if rear_attack and rear_attack["profitable"]:
-            return {"frontAttack": relation, "escape": move, "fen": child.fen, "rearAttack": rear_attack}
-    return None
 
 
 def front_can_trade_pinner(pos: Position, relation):
@@ -361,43 +316,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
         detect_screen_forks(run, frame)
         detect_discovered_attacks(run, frame)
         detect_escaped_discovered_attacks(run, frame)
-        old_rays = ray_relations(before)
-        for key, line in ray_relations(after).items():
-            actor, front, rear = key[:3]
-            if (key in old_rays or actor in excluded or (response and response.victim == actor) or
-                    VALUES[line["front"]["piece"].upper()] < VALUES[line["rear"]["piece"].upper()]):
-                continue
-            front_attack = next((r for r in hits.get(front, []) if r["actor"]["id"] == actor), None)
-            if not front_attack:
-                continue
-            confirmation = skewer_confirmation(after, actor, front, rear, front_attack)
-            if confirmation:
-                confirmed = p
-                for later in events[p:]:
-                    pos = positions[later.ply]
-                    current_line = ray_relations(positions[later.ply - 1]).get(key)
-                    if not current_line or current_line["screen"] != line["screen"]:
-                        break
-                    if later.actor == front:
-                        relation = pos.relation(actor, rear) if actor in pos.squares and rear in pos.squares else None
-                        if relation and relation["profitable"]:
-                            confirmation = {"frontAttack": front_attack, "escape": later.move,
-                                            "fen": pos.fen, "rearAttack": relation}
-                            confirmed = later.ply
-                        break
-                    if later.actor in {actor, rear} or later.victim in {actor, front, rear}:
-                        break
-                # v2.6 (expert review): a skewer must actually win one of the
-                # two line pieces in the PV; a blockable check or a protected
-                # rear is not a real skewer.
-                won = next((e for e in events[p:] if e.side == solver and e.victim in {front, rear}
-                            and e.victim_kind in MAIN), None)
-                if not won:
-                    review("skewer", p, "skewer_not_realized", line)
-                    continue
-                emit("skewer", p, confirmed, [actor], [front, rear], "ray", {"line": line, "continuation": confirmation})
-            else:
-                review("skewer", p, "no_profitable_two_stage_confirmation", line)
+        detect_skewers(run, frame)
         detect_two_threat_forks(run, frame)
         # Structural relations are tracked continuously. Emit an existing pin
         # only when this player move exploits it, including an actual capture.
