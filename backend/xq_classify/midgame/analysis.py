@@ -14,6 +14,7 @@ from .detectors.clearance import detect_clearances
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .detectors.pin import detect_pins, detect_recapture_pins
+from .detectors.remove_defender import detect_removed_defenders
 from .detectors.skewer import detect_skewers
 from .detectors.trap import detect_traps
 from .material import material_result
@@ -22,39 +23,6 @@ from .position import MAIN, VALUES, Position, opened_by, other, own, view, witho
 from .replay import replay
 
 RULES_VERSION = MIDGAME_RULES_VERSION
-
-
-def guard_line_squares(pos: Position, guard: str, target: str) -> set[str]:
-    """Squares whose occupancy decides whether `guard` can recapture on `target`:
-    the rook/cannon line between them, a horse leg, or an elephant eye."""
-    gs, ts = pos.squares.get(guard), pos.squares.get(target)
-    if not gs or not ts:
-        return set()
-    kind = pos.board[gs].upper()
-    if kind in {"R", "C"}:
-        return set(b.squares_between(gs, ts))
-    gx, gy = b.coords(gs)
-    tx, ty = b.coords(ts)
-    dx, dy = tx - gx, ty - gy
-    if kind == "N" and sorted((abs(dx), abs(dy))) == [1, 2]:
-        leg = b.square_at(gx + (dx // 2 if abs(dx) == 2 else 0), gy + (dy // 2 if abs(dy) == 2 else 0))
-        return {leg} if leg else set()
-    if kind == "B" and abs(dx) == 2 and abs(dy) == 2:
-        eye = b.square_at(gx + dx // 2, gy + dy // 2)
-        return {eye} if eye else set()
-    return set()
-
-
-def checking_interception(before: Position, release: Position, move: str, guard: str, actor: str, target: str) -> bool:
-    """v3.1 (ruling E1): `move` checks and, in the same move, blocks the
-    guard's recapture line (rook/cannon line, horse leg, elephant eye) or
-    removes its cannon screen. Guard, attacker and target stay put through
-    the forced reply, so the reply did not restore or cause the loss."""
-    if any(before.squares.get(x) is None or before.squares.get(x) != release.squares.get(x)
-           for x in (guard, actor, target)):
-        return False
-    line = guard_line_squares(before, guard, target)
-    return move[:2] in line or move[2:4] in line
 
 
 def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
@@ -85,84 +53,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
 
     detect_clearances(run)
 
-    # D7: actual profitable realization, with the same attacker/target and
-    # uninterrupted release. Independent later blunders cannot confirm it.
-    for capture in events[1:]:
-        if capture.side != solver or capture.victim_kind not in MAIN:
-            continue
-        q, actor, target = capture.ply, capture.actor, capture.victim
-        realized = positions[q - 1].relation(actor, target)
-        if not realized or not realized["profitable"]:
-            continue
-        for trigger in events[1:q - 1]:
-            if trigger.side != solver:
-                continue
-            p = trigger.ply
-            before = positions[p - 1]
-            old = before.relation(actor, target)
-            guards = before.guards.get((actor, target), {})
-            if not old:
-                # A geometric protector is only a review candidate here: we
-                # have no earlier legal attack with which to prove recapture.
-                if trigger.victim and target in before.squares:
-                    protectors = b.attacked_squares(before.board, other(solver)).get(before.squares[target], [])
-                    if any(before.ids[r["square"]] == trigger.victim for r in protectors):
-                        review("remove_defender", p, "no_prior_legal_attack", {
-                            "target": before.ref(target), "removedGuard": before.ref(trigger.victim),
-                            "realizationPly": q})
-                continue
-            if old["profitable"] or not guards:
-                continue
-            for release_ply in (p, p + 1):
-                if release_ply >= q:
-                    continue
-                release = positions[release_ply]
-                new = release.relation(actor, target)
-                if release.checked or not new or not new["profitable"]:
-                    continue
-                remaining = release.guards.get((actor, target), {})
-                lost = set(guards) - set(remaining)
-                if not lost:
-                    continue
-                causal = []
-                for guard in sorted(lost):
-                    if trigger.victim == guard:
-                        causal.append(guard)
-                    elif release_ply == p:
-                        # Direct removal or demonstrable interception of the
-                        # same guard's recapture line, with both targets alive.
-                        if trigger.victim == guard or (guard in release.squares and
-                                before.squares[guard] == release.squares[guard] and
-                                before.squares[actor] == release.squares[actor] and
-                                before.squares[target] == release.squares[target]):
-                            causal.append(guard)
-                    elif (positions[p].checked and
-                          checking_interception(before, release, trigger.move, guard, actor, target)):
-                        # v3.1 (E1): the trigger position was skipped because it
-                        # is check; the line it cut is still cut after the reply.
-                        causal.append(guard)
-                    elif events[p].actor == guard:
-                        pressure = positions[p]
-                        if pressure.checked or guard in pressure.threats:
-                            causal.append(guard)
-                if not causal:
-                    review("remove_defender", p, "release_not_proven_forced", {"target": before.ref(target), "guards": sorted(lost), "realizationPly": q})
-                    continue
-                uninterrupted = True
-                for intermediate in positions[release_ply:q]:
-                    if intermediate.checked:
-                        continue
-                    rel = intermediate.relation(actor, target)
-                    if not rel or not rel["profitable"] or any(g in intermediate.guards.get((actor, target), {}) for g in causal):
-                        uninterrupted = False
-                        break
-                if uninterrupted:
-                    emit("remove_defender", p, q, [trigger.actor, actor], [target], "profitable_release",
-                         {"beforeFen": before.fen, "releaseFen": release.fen, "releasePly": release_ply,
-                          "guardsBefore": list(guards.values()), "guardsAfter": list(remaining.values()),
-                          "removedGuards": [before.ref(g) for g in causal], "beforeAttack": old,
-                          "releaseAttack": new, "realization": {"ply": q, "ucci": capture.move, "attack": realized}})
-                    break
+    detect_removed_defenders(run)
 
     # D8: actual recapture chain. v2.1 intentionally removes the sole-legal-
     # response gate; it does not claim exhaustive proof over alternative replies.
