@@ -13,69 +13,14 @@ from .detectors.check_fork import detect_check_forks
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .detectors.pin import detect_pins, detect_recapture_pins
-from .detectors.pin_proofs import front_can_trade_pinner
 from .detectors.skewer import detect_skewers
+from .detectors.trap import detect_traps
 from .material import material_result
 from .merge import finalize_labels
 from .position import MAIN, VALUES, Position, opened_by, other, own, view, without_pieces
 from .replay import replay
 
 RULES_VERSION = MIDGAME_RULES_VERSION
-
-
-def escape_assessment(pos: Position, target: str, move: str):
-    defender_fen = view(pos.fen, other(pos.side))
-    child = Position(b.apply_move(defender_fen, move),
-                     b.move_piece_identity(pos.ids, move[:2], move[2:]), pos.side)
-    victim = pos.board.get(move[2:], "")
-    credit = piece_value(victim, move[2:]) if victim else 0
-    direct = [r for r in child.captures.get(target, []) if r["profitable"]]
-    if direct:
-        return {"escape": move, "fen": child.fen, "safe": False, "reason": "direct_loss",
-                "capture": max(direct, key=lambda r: r["gain"]), "captureCredit": credit}
-    baseline = max((r["gain"] for r in pos.captures.get(target, []) if r["profitable"]), default=0)
-    owner = other(pos.side)
-    old_counters = Position(pos.fen, pos.ids, owner).captures
-    newly_exposed = {identity for identity, rows in child.captures.items()
-                     if max((r["gain"] for r in rows if r["profitable"]), default=0) >
-                     max((r["gain"] for r in pos.captures.get(identity, []) if r["profitable"]), default=0)}
-    for identity, rows in child.captures.items():
-        if identity == target or any(r["profitable"] for r in pos.captures.get(identity, [])):
-            continue
-        for attack in rows:
-            if not attack["profitable"] or attack["gain"] <= baseline:
-                continue
-            realized = Position(b.apply_move(child.query, attack["ucci"]),
-                                b.move_piece_identity(child.ids, attack["ucci"][:2], attack["ucci"][2:]), owner)
-            compensation = 0
-            for counter_target, counters in realized.captures.items():
-                prior = max((r["gain"] for r in old_counters.get(counter_target, []) if r["profitable"]), default=0)
-                for counter in counters:
-                    if (counter["profitable"] and counter["actor"]["id"] not in newly_exposed
-                            and counter["target"]["square"] != attack["target"]["square"]
-                            and counter["gain"] > prior):
-                        compensation = max(compensation, counter["gain"])
-            recovered = max(0, piece_value(attack["target"]["piece"], attack["target"]["square"]) - attack["gain"])
-            net = attack["gain"] - max(0, compensation - recovered) - credit
-            if net > baseline:
-                return {"escape": move, "fen": child.fen, "safe": False, "reason": "indirect_loss",
-                        "capture": attack, "previousLoss": 0, "netLoss": net,
-                        "originalLoss": baseline, "captureCredit": credit}
-    return {"escape": move, "fen": child.fen, "safe": True, "captureCredit": credit}
-
-def trap_state(pos: Position, target: str, excluded=frozenset()):
-    initial = [r for r in pos.threats.get(target, []) if r["profitable"] and r["actor"]["id"] not in excluded]
-    if not initial or pos.checked:
-        return None
-    escapes = []
-    for move in sorted(b.legal_moves(view(pos.fen, other(pos.side)))):
-        if move[:2] != pos.squares[target]:
-            continue
-        assessment = escape_assessment(pos, target, move)
-        if assessment["safe"]:
-            return None
-        escapes.append(assessment)
-    return {"initialAttack": initial[0], "escapes": escapes}
 
 
 def guard_line_squares(pos: Position, guard: str, target: str) -> set[str]:
@@ -133,68 +78,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
         detect_two_threat_forks(run, frame)
         detect_pins(run, frame)
         detect_check_forks(run, frame)
-        for target, attacks in threats.items():
-            if not any(r["profitable"] for r in attacks):
-                continue
-            # An actively labelled pin takes precedence over trapping its front piece.
-            active_pins = {(r["actor"]["id"], r["front"]["id"], r["rear"]["id"], r["kind"])
-                           for r in after.pins.values()}
-            if any(o["id"] == "pin" and
-                   (o["evidence"]["restriction"]["actor"]["id"],
-                    o["evidence"]["restriction"]["front"]["id"],
-                    o["evidence"]["restriction"]["rear"]["id"],
-                    o["evidence"]["restriction"]["kind"]) in active_pins and
-                   o["evidence"]["restriction"]["front"]["id"] == target
-                   for ply in plies[:p] for o in ply["occurrences"]):
-                continue
-            if after.checked:
-                review("trap", p, "defender_in_check", {"target": after.ref(target)})
-                continue
-            # v2.6 (expert review): a piece that cannot run because it is the
-            # front of any pin relation is pinned, not trapped; and a target
-            # already explained by this move's skewer or discovered attack is
-            # not additionally a trap.
-            pinned_by = next((r for pos in (before, after) for r in pos.pins.values()
-                              if r["front"]["id"] == target), None)
-            if pinned_by:
-                review("trap", p, "target_is_pinned_front", {"target": after.ref(target), "restriction": pinned_by})
-                # v2.7 (expert ruling D4): an attacked piece that cannot escape
-                # because of the pin is labelled as a pin.
-                # Only a pin newly created by this move, with the moving piece
-                # as the pinner, is credited this way.
-                created = next((r for key, r in after.pins.items() if r["front"]["id"] == target
-                                and key not in before.pins and key[0] == event.actor), None)
-                already = any(o["id"] == "pin" and o["evidence"]["targets"][0]["id"] == target
-                              for ply in plies[:p] for o in ply["occurrences"])
-                stuck = trap_state(after, target, excluded) if created else None
-                if stuck and not already and not front_can_trade_pinner(after, created):
-                    emit("pin", p, p, [created["actor"]["id"]], [target, created["rear"]["id"]], created["kind"],
-                         {"restriction": created, "use": "pinned_target_cannot_escape", "functionalCapture": None,
-                          "escapeAnalysis": stuck, "relationFen": after.fen, "response": None})
-                continue
-            # v2.7 (ruling D2): only a same-move skewer target is excluded; a
-            # discovered-attack target can still be trapped (q8Xlzq).
-            if any(o["id"] == "skewer" and
-                   any(t["id"] == target for t in o["evidence"]["targets"])
-                   for o in plies[p - 1]["occurrences"]):
-                review("trap", p, "target_explained_by_line_tactic", {"target": after.ref(target)})
-                continue
-            trapped = trap_state(after, target, excluded)
-            if not trapped or (target in before.squares and trap_state(before, target)):
-                continue
-            constraints = [(key, r) for key, r in after.pins.items()
-                           if key[1] == target and r.get("absolute")]
-            if constraints:
-                relaxed = without_pieces(after, {key[0] for key, _ in constraints})
-                if relaxed is None or not trap_state(relaxed, target):
-                    pins = [o for o in plies[p - 1]["occurrences"] if o["id"] == "pin" and
-                            o["evidence"]["restriction"]["front"]["id"] == target]
-                    if not pins:
-                        review("pin", p, "absolute_pin_without_proven_gain", {"restriction": constraints[0][1]})
-                    for occurrence in pins:
-                        occurrence["evidence"]["escapeAnalysis"] = trapped
-                    continue
-            emit("trap", p, p, [trapped["initialAttack"]["actor"]["id"]], [target], "all_legal_escapes", trapped)
+        detect_traps(run, frame)
 
     detect_recapture_pins(run)
 
