@@ -1,17 +1,12 @@
 """Checkmate pattern recognition: the dispatcher and ``analyze_patterns``.
 
-Each pattern's recogniser moves to ``checkmate/patterns/`` in phase 0 step 7.
+Each pattern's recogniser lives in ``checkmate/patterns/``.
 """
 from __future__ import annotations
 
-from ..board import (
-    parse_fen,
-    position_analysis,
-)
+from ..board import parse_fen, position_analysis
 from ..version import CHECKMATE_RULES_VERSION  # noqa: F401 - re-exported
-from .geometry import (
-    apply_moves,
-)
+from .geometry import apply_moves
 from .material import classify_mating_material
 from .patterns.cannon import (
     recognize_cannons_sandwiching_chariot_checkmate,
@@ -45,34 +40,31 @@ from .patterns.horse import (
     recognize_palcorner_horse_checkmate,
 )
 
-
 PATTERN_ORDER = [
-    "CROWNED_CHECKMATE",
-    "CENTROID_CHECKMATE",
-    "CANNONS_SANDWICHING_CHARIOT_CHECKMATE",
-    "DOUBLE_CANNON_CHECKMATE",
-    "SMOTHERED_CANNON_CHECKMATE",
-    "HEAVEN_AND_EARTH_CANNON_CHECKMATE",
-    "IRON_BOLT_CHECKMATE",
-    "DRAWER_CHECKMATE",
-    "THROAT_CUTTING_CHECKMATE",
-    "THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE",
-    "TWO_DEVILS_KNOCKING_CHECKMATE",
-    "DOUBLE_CHARIOTS_CHECKMATE",
-    "DISCOVERED_HORSE_CHECKMATE",
-    "TIGER_SILHOUETTE_CHECKMATE",
-    "HORSE_CANNON_CHECKMATE",
-    "ELBOW_HORSE_CHECKMATE",
-    "PALCORNER_HORSE_CHECKMATE",
-    "OCTAGON_HORSE_CHECKMATE",
-    "ANGLER_HORSE_CHECKMATE",
-    "SMOTHERED_CHECKMATE",
-    "DOUBLE_CHECK_CHECKMATE",
-    "WHITE_FACE_GENERAL",
-    "STALEMATE",
+    'CROWNED_CHECKMATE',
+    'CENTROID_CHECKMATE',
+    'CANNONS_SANDWICHING_CHARIOT_CHECKMATE',
+    'DOUBLE_CANNON_CHECKMATE',
+    'SMOTHERED_CANNON_CHECKMATE',
+    'HEAVEN_AND_EARTH_CANNON_CHECKMATE',
+    'IRON_BOLT_CHECKMATE',
+    'DRAWER_CHECKMATE',
+    'THROAT_CUTTING_CHECKMATE',
+    'THREE_CHARIOTS_ATTACKING_ADVISOR_CHECKMATE',
+    'TWO_DEVILS_KNOCKING_CHECKMATE',
+    'DOUBLE_CHARIOTS_CHECKMATE',
+    'DISCOVERED_HORSE_CHECKMATE',
+    'TIGER_SILHOUETTE_CHECKMATE',
+    'HORSE_CANNON_CHECKMATE',
+    'ELBOW_HORSE_CHECKMATE',
+    'PALCORNER_HORSE_CHECKMATE',
+    'OCTAGON_HORSE_CHECKMATE',
+    'ANGLER_HORSE_CHECKMATE',
+    'SMOTHERED_CHECKMATE',
+    'DOUBLE_CHECK_CHECKMATE',
+    'WHITE_FACE_GENERAL',
+    'STALEMATE',
 ]
-
-
 
 _RECOGNIZERS = {
     'CROWNED_CHECKMATE': recognize_crowned_checkmate,
@@ -163,5 +155,7 @@ def analyze_patterns(fen: str, moves: list[str] | None = None, pattern_id: str |
         'analysis': analysis,
         'best_match': detected[0] if detected else None,
         'matches': detected,
-        'material_fallback': classify_mating_material(current_fen, analysis) if not pattern_id and not detected else None,
+        'material_fallback': (
+            classify_mating_material(current_fen, analysis) if not pattern_id and not detected else None
+        ),
     }

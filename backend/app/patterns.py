@@ -2,7 +2,7 @@
 
 The recognisers moved into the portable package in phase 0 step 4.  Code that
 must patch module globals (tests of the material fallback, audit scripts) uses
-``xq_classify.checkmate.recognition`` directly.
+the ``xq_classify.checkmate`` submodules directly.
 """
 from __future__ import annotations
 

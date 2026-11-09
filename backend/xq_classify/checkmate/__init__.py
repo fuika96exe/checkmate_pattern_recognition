@@ -1,8 +1,8 @@
 """Checkmate pattern classification (``classify_checkmate``).
 
 Apply the line, require a final checkmate or stalemate, recognise the patterns,
-then fall back to the mating-material code.  Phase 0 step 7 splits
-``recognition`` into one module per pattern.
+then fall back to the mating-material code.  ``recognition`` dispatches to
+the recognisers under ``patterns/``.
 """
 
 from .classify import NOT_MATE_ERROR, classify_checkmate

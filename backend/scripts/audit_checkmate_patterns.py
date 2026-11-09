@@ -19,7 +19,8 @@ sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.ap
 from backend.app import board  # noqa: E402
 from xq_classify.checkmate import geometry, recognition as patterns  # noqa: E402
 
-RECOGNIZER_SOURCE = ROOT / "backend/xq_classify/checkmate/recognition.py"
+CHECKMATE_PACKAGE = ROOT / "backend/xq_classify/checkmate"
+RECOGNIZER_SOURCES = [CHECKMATE_PACKAGE / "recognition.py", *sorted((CHECKMATE_PACKAGE / "patterns").glob("*.py"))]
 
 
 def encode(pieces: dict[str, str], side: str) -> str:
@@ -144,15 +145,8 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
 
 def literal_examples() -> list[dict]:
     tree = ast.parse((ROOT/"backend/tests/test_position_analysis.py").read_text(encoding="utf-8"))
-    source = ast.parse(RECOGNIZER_SOURCE.read_text(encoding="utf-8"))
-    dispatch = {}
-    for f in source.body:
-        if isinstance(f, ast.FunctionDef):
-            for ret in f.body:
-                if isinstance(ret, ast.Return) and isinstance(ret.value, ast.Dict):
-                    for key, value in zip(ret.value.keys, ret.value.values):
-                        if isinstance(key, ast.Constant) and key.value == "pattern_id" and isinstance(value, ast.Constant):
-                            dispatch[f.name] = value.value
+    dispatch = {recognizer.__name__: pattern for pattern, recognizer in patterns._RECOGNIZERS.items()
+                if pattern in patterns.PATTERN_ORDER}
     examples = {}
 
     def collect(call, test, bindings):
@@ -287,7 +281,7 @@ def main():
         for flag in row["flags"]:
             flags[flag].append(row["id"])
     result = {"datasetVersion": data["datasetVersion"], "rulesVersion": patterns.CHECKMATE_RULES_VERSION,
-              "recognizerSha256": hashlib.sha256(RECOGNIZER_SOURCE.read_bytes()).hexdigest(),
+              "recognizerSha256": hashlib.sha256(b"".join(path.read_bytes() for path in RECOGNIZER_SOURCES)).hexdigest(),
               "patternCounts": dict(Counter(k for row in rows for k in row["labels"])),
               "flagCounts": {k: len(v) for k, v in flags.items()}, "flagIds": dict(flags),
               "examples": examples, "sequenceChecks": sequence_checks, "focusedProbes": focused_probes(), "corpus": rows}
