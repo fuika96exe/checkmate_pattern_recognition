@@ -123,9 +123,6 @@ def _only_while_in_check(frame: MoveFrame, key: tuple, candidate: _Candidate) ->
 def _report_candidate(run: Analysis, frame: MoveFrame, key: tuple, candidate: _Candidate) -> None:
     p = frame.ply
     relation, confirmed, mode, proof = candidate
-    if relation.get('review'):
-        run.review('pin', p, 'horse_leg_value_boundary', relation)
-        return
     if _only_while_in_check(frame, key, candidate):
         run.review('pin', p, 'pin_only_while_in_check', relation)
         return

@@ -7,7 +7,7 @@ already labelled on this move.
 from ... import board as b
 from ...exchange import piece_value
 from ..context import Analysis, Finding, MoveFrame
-from ..position import Position, other, view, without_pieces
+from ..position import Position, other, view
 from .pin_proofs import front_can_trade_pinner
 
 
@@ -117,24 +117,6 @@ def _judge_pinned_target(run: Analysis, frame: MoveFrame, target: str, pinned_by
                           'escapeAnalysis': stuck, 'relationFen': after.fen, 'response': None}))
 
 
-def _explained_by_absolute_pin(run: Analysis, frame: MoveFrame, target: str, trapped: dict) -> bool:
-    """The target is stuck only because of an absolute pin: that is a pin's evidence, not a trap."""
-    p, after = frame.ply, frame.after
-    constraints = [(key, r) for key, r in after.pins.items() if key[1] == target and r.get('absolute')]
-    if not constraints:
-        return False
-    relaxed = without_pieces(after, {key[0] for key, _ in constraints})
-    if relaxed is not None and trap_state(relaxed, target):
-        return False
-    pins = [o for o in run.occurrences(p) if o['id'] == 'pin' and
-            o['evidence']['restriction']['front']['id'] == target]
-    if not pins:
-        run.review('pin', p, 'absolute_pin_without_proven_gain', {'restriction': constraints[0][1]})
-    for occurrence in pins:
-        occurrence['evidence']['escapeAnalysis'] = trapped
-    return True
-
-
 def _is_skewer_target(run: Analysis, ply: int, target: str) -> bool:
     return any(o['id'] == 'skewer' and any(t['id'] == target for t in o['evidence']['targets'])
                for o in run.occurrences(ply))
@@ -162,9 +144,7 @@ def _judge_target(run: Analysis, frame: MoveFrame, target: str) -> None:
     trapped = trap_state(after, target, frame.excluded)
     if not trapped or (target in before.squares and trap_state(before, target)):
         return
-    if not _explained_by_absolute_pin(run, frame, target, trapped):
-        run.emit(Finding('trap', p, p, [trapped['initialAttack']['actor']['id']], [target],
-                         'all_legal_escapes', trapped))
+    run.emit(Finding('trap', p, p, [trapped['initialAttack']['actor']['id']], [target], 'all_legal_escapes', trapped))
 
 
 def detect_traps(run: Analysis, frame: MoveFrame) -> None:
