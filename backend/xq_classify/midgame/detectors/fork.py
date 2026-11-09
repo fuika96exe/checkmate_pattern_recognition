@@ -79,21 +79,29 @@ def _pair_rejected(run: Analysis, frame: MoveFrame, actor: str, pair: tuple[str,
     return False
 
 
+def _threatened_by(threats: dict, actor: str) -> list[str]:
+    return sorted(t for t, rows in threats.items() if any(_threatens(r, actor) for r in rows))
+
+
+def _report_pair(run: Analysis, frame: MoveFrame, actor: str, pair: tuple[str, str]) -> None:
+    if _pair_rejected(run, frame, actor, pair):
+        return
+    p, after, response, threats = frame.ply, frame.after, frame.response, frame.fork_threats
+    attacks = [next(r for r in threats[t] if _threatens(r, actor)) for t in pair]
+    run.emit(Finding('fork', p, p, [actor], list(pair), 'new_target_pair',
+                     {'attacks': attacks, 'response': response.move if after.checked and response else None}))
+
+
 def detect_forks(run: Analysis, frame: MoveFrame) -> None:
     """One piece newly threatening two targets.
 
     Forks have their own immediate-capture test: a losing capture of the
     attacker must not be rejected by the general PV recapture filter.
     """
-    p, after, response, threats = frame.ply, frame.after, frame.response, frame.fork_threats
+    threats = frame.fork_threats
     for actor in {r['actor']['id'] for rows in threats.values() for r in rows}:
-        targets = sorted(t for t, rows in threats.items() if any(_threatens(r, actor) for r in rows))
-        for pair in combinations(targets, 2):
-            if _pair_rejected(run, frame, actor, pair):
-                continue
-            attacks = [next(r for r in threats[t] if _threatens(r, actor)) for t in pair]
-            run.emit(Finding('fork', p, p, [actor], list(pair), 'new_target_pair',
-                             {'attacks': attacks, 'response': response.move if after.checked and response else None}))
+        for pair in combinations(_threatened_by(threats, actor), 2):
+            _report_pair(run, frame, actor, pair)
 
 
 def _checking_screen(frame: MoveFrame, king: str, check: dict) -> tuple[str, str] | None:

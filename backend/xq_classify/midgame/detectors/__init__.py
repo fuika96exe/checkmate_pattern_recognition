@@ -1,5 +1,5 @@
-"""One detector per midgame label (fork, pin, skewer, discovered attack, trap, ...).
+"""One module per midgame label.
 
-Filled in phase 0 step 6.  Detectors keep the lab's order, because some labels
-suppress others.
+``analysis.py`` lists the detectors in the order they must run, because some
+labels read or suppress others and evidence keys number occurrences per ply.
 """

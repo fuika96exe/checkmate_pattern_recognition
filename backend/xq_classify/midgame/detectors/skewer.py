@@ -5,6 +5,7 @@ from typing import NamedTuple
 from ... import board as b
 from ..context import Analysis, Finding, MoveFrame
 from ..position import LINES, MAIN, VALUES, Position, occupied_along, other, own, view
+from ..replay import Event
 
 
 def _add_rays(pos: Position, src: str, piece: str, result: dict) -> None:
@@ -55,24 +56,32 @@ class _Line(NamedTuple):
     front_attack: dict
 
 
+def _line_intact(run: Analysis, later: Event, ray: _Line) -> bool:
+    current_line = ray_relations(run.positions[later.ply - 1]).get(ray.key)
+    return bool(current_line) and current_line['screen'] == ray.line['screen']
+
+
+def _rear_attack(pos: Position, actor: str, rear: str) -> dict | None:
+    relation = pos.relation(actor, rear) if actor in pos.squares and rear in pos.squares else None
+    return relation if relation and relation['profitable'] else None
+
+
 def _played_out(run: Analysis, frame: MoveFrame, ray: _Line, confirmation: dict) -> tuple[dict, int]:
     """Prefer the line's actual continuation: the front piece really moves and the rear is then attacked."""
-    p = frame.ply
     actor, front, rear = ray.key[:3]
-    for later in run.events[p:]:
-        pos = run.positions[later.ply]
-        current_line = ray_relations(run.positions[later.ply - 1]).get(ray.key)
-        if not current_line or current_line['screen'] != ray.line['screen']:
+    for later in run.events[frame.ply:]:
+        if not _line_intact(run, later, ray):
             break
         if later.actor == front:
-            relation = pos.relation(actor, rear) if actor in pos.squares and rear in pos.squares else None
-            if relation and relation['profitable']:
+            pos = run.positions[later.ply]
+            relation = _rear_attack(pos, actor, rear)
+            if relation:
                 return {'frontAttack': ray.front_attack, 'escape': later.move,
                         'fen': pos.fen, 'rearAttack': relation}, later.ply
             break
         if later.actor in {actor, rear} or later.victim in {actor, front, rear}:
             break
-    return confirmation, p
+    return confirmation, frame.ply
 
 
 def _judge_ray(run: Analysis, frame: MoveFrame, ray: _Line) -> None:

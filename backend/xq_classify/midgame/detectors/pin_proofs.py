@@ -97,26 +97,34 @@ def _kept_their_squares(positions: list[Position], span: tuple[int, int], guard:
                positions[i].squares.get(pinner) == home.get(pinner) for i in range(start, end))
 
 
+def _front_won_after_rear_left(
+    positions: list[Position], events: list[Event], start_ply: int, capture: Event, key: tuple,
+) -> dict | None:
+    pinner, guard, rear = key[:3]
+    history = events[start_ply - 1:capture.ply - 1]
+    departure = next((e for e in history if e.actor == rear and e.side != positions[0].side), None)
+    if not departure or key not in positions[departure.ply - 1].pins:
+        return None
+    if not _kept_their_squares(positions, (start_ply, capture.ply), guard, pinner):
+        return None
+    gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
+    if gain <= 0:
+        return None
+    return {'guard': positions[start_ply].ref(guard), 'defendedTarget': positions[start_ply].ref(guard),
+            'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
+            'mode': 'rear_evades_front_captured', 'response': departure.move}
+
+
 def relative_pin_front_capture(relation: dict, positions: list[Position], events: list[Event], start_ply: int) -> dict | None:
     """The defender saves the rear piece, then the pinned front is won."""
     if relation.get('absolute'):
         return None
-    pinner, guard, rear = (relation[name]['id'] for name in ('actor', 'front', 'rear'))
     key = _pin_key(relation)
     for capture in events[start_ply - 1:]:
-        if capture.side != positions[0].side or capture.victim != guard:
-            continue
-        history = events[start_ply - 1:capture.ply - 1]
-        departure = next((e for e in history if e.actor == rear and e.side != positions[0].side), None)
-        if not departure or key not in positions[departure.ply - 1].pins:
-            continue
-        if not _kept_their_squares(positions, (start_ply, capture.ply), guard, pinner):
-            continue
-        gain = evaluate_exchange(positions[capture.ply - 1].fen, capture.move)
-        if gain > 0:
-            return {'guard': positions[start_ply].ref(guard), 'defendedTarget': positions[start_ply].ref(guard),
-                    'capturePly': capture.ply, 'capture': capture.move, 'gain': gain,
-                    'mode': 'rear_evades_front_captured', 'response': departure.move}
+        if capture.side == positions[0].side and capture.victim == key[1]:
+            proof = _front_won_after_rear_left(positions, events, start_ply, capture, key)
+            if proof:
+                return proof
     return None
 
 

@@ -312,19 +312,27 @@ def _flying_general_pin(pos: Position, result: dict) -> None:
     }
 
 
-def scan_pins(pos: Position) -> dict:
-    """Every pin the side to attack holds here, keyed ``(actor, front, rear, kind)``; the order is observable."""
-    result: dict = {}
+def _line_pins(pos: Position, result: dict) -> None:
     for src, piece in sorted(pos.board.items()):
         if own(piece, pos.side) and piece.upper() in {'R', 'C'}:
             for direction in LINES:
                 occupied = occupied_along(pos.board, src, direction)
                 _absolute_line_pins(pos, src, occupied, result)
                 _relative_line_pin(pos, src, occupied, result)
-    for letter, scan in (('N', _horse_leg_pin), ('B', _elephant_eye_pin)):
-        for src, piece in pos.board.items():
-            if own(piece, pos.side) and piece.upper() == letter:
-                for dst, victim in pos.board.items():
-                    scan(pos, src, dst, victim, result)
+
+
+def _leaper_pins(pos: Position, letter: str, scan, result: dict) -> None:
+    for src, piece in pos.board.items():
+        if own(piece, pos.side) and piece.upper() == letter:
+            for dst, victim in pos.board.items():
+                scan(pos, src, dst, victim, result)
+
+
+def scan_pins(pos: Position) -> dict:
+    """Every pin the side to attack holds here, keyed ``(actor, front, rear, kind)``; the order is observable."""
+    result: dict = {}
+    _line_pins(pos, result)
+    _leaper_pins(pos, 'N', _horse_leg_pin, result)
+    _leaper_pins(pos, 'B', _elephant_eye_pin, result)
     _flying_general_pin(pos, result)
     return result

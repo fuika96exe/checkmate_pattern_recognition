@@ -1,8 +1,7 @@
 """Midgame tactic classification (``classify_midgame``).
 
-Replay the line, detect the labels, then merge them with the suppression rules.
-Phase 0 step 6 splits ``analysis`` into a replay context, one detector per
-label and the merge step.
+Replay the line (``replay``), run one detector per label in a fixed order
+(``analysis``, ``detectors/``), then merge them with the suppression rules (``merge``).
 """
 
 from .analysis import RULES_VERSION, analyze_midgame
