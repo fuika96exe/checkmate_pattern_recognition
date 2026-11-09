@@ -12,17 +12,13 @@ CASES = json.loads(
 
 
 @pytest.fixture(params=["native", "python"])
-def exchange_backend(request, monkeypatch):
+def exchange_backend(request):
     """Run the same reference cases locally and with Cloudflare's board engine."""
-    if request.param == "native" and board.pyffish is None:
+    if request.param == "native" and board.NATIVE_BACKEND is None:
         pytest.skip("pyffish is unavailable")
-    if request.param == "python":
-        monkeypatch.setattr(board, "pyffish", None)
-    for cached in (board.legal_moves, board.apply_move, exchange.evaluate_exchange, exchange._evaluate_square):
-        cached.cache_clear()
+    previous = board.use_backend(board.NATIVE_BACKEND if request.param == "native" else board.PURE_BACKEND)
     yield
-    for cached in (board.legal_moves, board.apply_move, exchange.evaluate_exchange, exchange._evaluate_square):
-        cached.cache_clear()
+    board.use_backend(previous)  # also clears the board caches and the exchange caches
 
 
 @pytest.mark.parametrize("case", CASES, ids=[case["name"] for case in CASES])

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
   "datasetVersion": "5de49c3f18bd884e",
-  "rulesVersion": "checkmate-patterns-2026.11.02-v14",
-  "generatedAt": "2026-11-02T08:11:10.249299+00:00",
+  "rulesVersion": "checkmate-patterns-2026.11.05-v15",
+  "generatedAt": "2026-11-05T11:01:34.362067+00:00",
   "puzzleCount": 4729,
   "results": {
     "R1WmgZ": {
@@ -177,8 +177,7 @@
     "oyMnP6": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -476,8 +475,7 @@
     "qGK2V0": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -671,8 +669,7 @@
     "qKXYgM": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -3966,8 +3963,7 @@
     "R6jDZ6": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -4185,8 +4181,7 @@
     "Lb0ewg": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -4543,8 +4538,7 @@
     "La2D7d": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -5632,8 +5626,7 @@
     "qGK2Gr": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -6614,8 +6607,7 @@
     "R6jDgn": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -8581,8 +8573,7 @@
     "LNv2wL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -9249,8 +9240,7 @@
     "LJDk4o": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -9390,8 +9380,7 @@
     "qKrkPo": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -10879,8 +10868,7 @@
     "ovdxaL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -11145,8 +11133,7 @@
     "oyE8Go": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -11389,8 +11376,7 @@
     "oX8Vao": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -12058,8 +12044,7 @@
     "LlmzDR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -12612,8 +12597,7 @@
     "q85NzL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -14070,8 +14054,7 @@
     "Lpp5BL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -14691,8 +14674,7 @@
     "RWkPPR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -15289,8 +15271,7 @@
     "LJewMq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -15473,8 +15454,7 @@
     "R2JVZR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -16107,8 +16087,7 @@
     "RZYmPL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -16341,8 +16320,7 @@
     "LDVgbo": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -16815,8 +16793,7 @@
     "RZ8Glq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -16930,8 +16907,7 @@
     "q5zAPL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -16952,8 +16928,7 @@
     "ovypAR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17312,8 +17287,7 @@
     "qBJJdq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17549,8 +17523,7 @@
     "R2zDDR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17665,8 +17638,7 @@
     "o4m7aq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17689,8 +17661,7 @@
     "RZ8ENq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17825,8 +17796,7 @@
     "qAzwKL": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -17955,8 +17925,10 @@
     },
     "LkA2zo": {
       "status": "matched",
-      "patternIds": [],
-      "materialId": "RC"
+      "patternIds": [
+        "DRAWER_CHECKMATE"
+      ],
+      "materialId": null
     },
     "LmlYDq": {
       "status": "matched",
@@ -18568,16 +18540,14 @@
     "RP05wR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
     "LDQlmR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -21589,8 +21559,7 @@
     "Lb46Go": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -23128,8 +23097,7 @@
     "o7ka1o": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -23194,8 +23162,10 @@
     },
     "oj5zAR": {
       "status": "matched",
-      "patternIds": [],
-      "materialId": "RC"
+      "patternIds": [
+        "DRAWER_CHECKMATE"
+      ],
+      "materialId": null
     },
     "L3aDdo": {
       "status": "matched",
@@ -23925,8 +23895,7 @@
     "ovk38q": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -24259,8 +24228,7 @@
     "RWwK4R": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -24469,8 +24437,7 @@
     "ROPjQo": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -24949,8 +24916,7 @@
     "LpkXEq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -25365,8 +25331,10 @@
     },
     "owlNYq": {
       "status": "matched",
-      "patternIds": [],
-      "materialId": "RC"
+      "patternIds": [
+        "DRAWER_CHECKMATE"
+      ],
+      "materialId": null
     },
     "LarWdR": {
       "status": "matched",
@@ -25434,8 +25402,7 @@
     "oQ6yWq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -25532,8 +25499,7 @@
     "ROPy4o": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -27072,8 +27038,7 @@
     "oMZgbq": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -28617,8 +28582,7 @@
     "RVjebR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -28996,8 +28960,7 @@
     "LDbabo": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -29348,8 +29311,7 @@
     "qGQeXR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -29842,8 +29804,7 @@
     "LENv6R": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -30382,8 +30343,7 @@
     "qrm69o": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },
@@ -32271,8 +32231,7 @@
     "LEN4mR": {
       "status": "matched",
       "patternIds": [
-        "SMOTHERED_CANNON_CHECKMATE",
-        "HEAVEN_AND_EARTH_CANNON_CHECKMATE"
+        "SMOTHERED_CANNON_CHECKMATE"
       ],
       "materialId": null
     },

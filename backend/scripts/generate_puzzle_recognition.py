@@ -15,23 +15,15 @@ BACKEND_ROOT = Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
-from app.main import api_analyze_puzzle_line  # noqa: E402
-from app.models import PuzzleLineRequest  # noqa: E402
-from app.patterns import CHECKMATE_RULES_VERSION  # noqa: E402
+import app.board  # noqa: E402,F401 - installs the lab's default move generator (pyffish when available)
+from xq_classify import CHECKMATE_RULES_VERSION, classify_checkmate  # noqa: E402
 
 
 async def recognize_puzzle(puzzle: dict[str, Any]) -> dict[str, Any]:
+    """Thin wrapper: import errors stay here, everything else is xq_classify.classify_checkmate."""
     if puzzle["importStatus"] == "invalid":
         return {"status": "invalid", "patternIds": [], "error": "；".join(puzzle["importErrors"])}
-    response = await api_analyze_puzzle_line(
-        PuzzleLineRequest(fen=puzzle["initialFen"], blunder_move=puzzle["blunderMove"], pv=puzzle["pv"])
-    )
-    if not response.valid or response.analysis is None:
-        return {"status": "invalid", "patternIds": [], "error": response.error or "无法分析棋题"}
-    pattern_ids = [match.pattern_id for match in response.analysis.matches]
-    fallback = response.analysis.material_fallback
-    return {"status": "matched" if pattern_ids or fallback else "unmatched", "patternIds": pattern_ids,
-            "materialId": fallback.id if fallback else None}
+    return classify_checkmate(puzzle["initialFen"], puzzle["blunderMove"], puzzle["pv"]).to_dict()
 
 
 def recognize_puzzle_worker(puzzle: dict[str, Any]) -> dict[str, Any]:

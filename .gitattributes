@@ -1,0 +1,6 @@
+# Frozen regression fixtures are hashed byte-for-byte (MANIFEST.json); never convert line endings.
+backend/tests/fixtures/checkmate_frozen/** -text
+backend/tests/fixtures/midgame_frozen/** -text
+
+# xiangqi-server's ruff settings require LF; autocrlf would check the package out as CRLF on Windows.
+backend/xq_classify/** text eol=lf

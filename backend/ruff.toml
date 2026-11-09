@@ -1,0 +1,13 @@
+# The ruff settings of xiangqi-server's pyproject.toml. The lab only applies them to xq_classify,
+# the code that gets vendored there: python -m ruff check xq_classify; python -m ruff format --check xq_classify
+target-version = "py312"
+line-length = 120
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "C4", "RUF"]
+ignore = ["E501", "C901"]
+
+[format]
+quote-style = "single"
+indent-style = "space"
+line-ending = "lf"

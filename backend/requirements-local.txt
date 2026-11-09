@@ -4,3 +4,6 @@ pydantic==2.12.5
 uvicorn==0.35.0
 pyffish
 pytest
+pytest-cov
+complexipy==8.3.0
+ruff==0.17.2

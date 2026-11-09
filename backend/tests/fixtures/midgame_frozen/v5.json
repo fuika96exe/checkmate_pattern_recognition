@@ -1,0 +1,1249 @@
+{
+  "version": 5,
+  "status": "frozen",
+  "reviewedAt": "2026-11-04",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-2.5",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工追加：2026-11-04 審查判為「完全正確」、但 v1 之後尚未凍結的題（含沒得子及 PV 2、6、8、10、12 步）。expected 取自審查紀錄（審查時標籤，無增刪），不取自引擎輸出；v1 至 v4 檔案本身不改動。",
+  "excludedDuplicates": [
+    {
+      "id": "oX0ny1",
+      "keptAs": "R6jDO4",
+      "reason": "同一局面與著法，只差回合計數"
+    },
+    {
+      "id": "qAylYD",
+      "keptAs": "q8pwMX",
+      "reason": "局面相近（兵位及失着不同），PV 完全相同"
+    }
+  ],
+  "heldBack": [
+    {
+      "id": "oQQlNG",
+      "reason": "審查標籤為閃擊；裁決 C13（R0g40E）之後引擎加上抽將。凍結哪組標籤待用戶指示。"
+    },
+    {
+      "id": "RPx5eG",
+      "reason": "審查標籤為捉雙、抽將；裁決 D3 之後引擎只留捉雙。凍結哪組標籤待用戶指示。"
+    },
+    {
+      "id": "q8pwe2",
+      "reason": "審查標籤為牽制、消除阻隔；用戶接受加上捉雙、抽將之後引擎已改標。凍結哪組標籤待用戶指示。"
+    }
+  ],
+  "cases": [
+    {
+      "id": "ow3Eey",
+      "sourceRow": 2,
+      "url": "https://play.xiangqi.com/puzzle/ow3Eey/P",
+      "initialFen": "r2k1ab2/4a1N2/3c2r2/p3R3p/2pc1n3/6P2/P1P5P/2N1C4/4A4/2BAK1B1R w - - 1 19",
+      "blunderMove": "g8i9",
+      "pv": [
+        "f5d4",
+        "i0h0",
+        "d5i5",
+        "e6i6",
+        "i5i9",
+        "i6i9",
+        "d4c2",
+        "e2g2",
+        "d7e7",
+        "g0e2",
+        "g7g4",
+        "g2c2"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "exchange",
+          "fork",
+          "trap"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "RPx59G",
+      "sourceRow": 3,
+      "url": "https://play.xiangqi.com/puzzle/RPx59G/P",
+      "initialFen": "2bak2r1/4a4/4b1c2/C1p5p/3r2cn1/2P2R3/P3P3P/2C1B1N2/R8/2BAKA3 b - - 0 18",
+      "blunderMove": "h5i3",
+      "pv": [
+        "g2i3",
+        "h9h3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ROxwex",
+      "sourceRow": 6,
+      "url": "https://play.xiangqi.com/puzzle/ROxwex/P",
+      "initialFen": "2baka3/9/4b1c1r/p3pr3/8p/3R1nR2/P3P3P/2C1C4/4A4/2B1KA3 w - - 9 26",
+      "blunderMove": "e2d2",
+      "pv": [
+        "f4g6",
+        "c2c6",
+        "e6e5",
+        "c6g6",
+        "g7g4",
+        "d4g4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "exchange",
+          "trap"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "ovMwl9",
+      "sourceRow": 8,
+      "url": "https://play.xiangqi.com/puzzle/ovMwl9/P",
+      "initialFen": "1R1akab2/9/4b4/p1n1r1n1p/9/4C4/4P3P/c5N2/9/2BAKAB2 b - - 7 38",
+      "blunderMove": "f9e8",
+      "pv": [
+        "c0a2",
+        "g6i5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "La2Dd7",
+      "sourceRow": 12,
+      "url": "https://play.xiangqi.com/puzzle/La2Dd7/P",
+      "initialFen": "4kab2/2Nca4/3cb4/C1RN5/6pnp/2P6/P7P/4B4/3r5/4KAB2 w - - 6 28",
+      "blunderMove": "a6a9",
+      "pv": [
+        "d1d0",
+        "e0e1",
+        "h5i3",
+        "e1f1"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "R20geZ",
+      "sourceRow": 13,
+      "url": "https://play.xiangqi.com/puzzle/R20geZ/P",
+      "initialFen": "4kabr1/4a4/6n2/p3p3p/2r3b2/2C2R3/Pc2P3P/c5N2/4A4/1N1AK1BR1 w - - 0 22",
+      "blunderMove": "h0h9",
+      "pv": [
+        "a2b2",
+        "b0d1",
+        "b2c2",
+        "d1b2",
+        "g7h9",
+        "c4b4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "oM0b9E",
+      "sourceRow": 14,
+      "url": "https://play.xiangqi.com/puzzle/oM0b9E/P",
+      "initialFen": "4kab2/4a4/4b4/p4PR2/4N3p/2C1n4/8P/4B4/r3A2r1/cR1AK1B2 w - - 5 36",
+      "blunderMove": "b0a0",
+      "pv": [
+        "a1a0",
+        "g6g4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LkMzG9",
+      "sourceRow": 15,
+      "url": "https://play.xiangqi.com/puzzle/LkMzG9/P",
+      "initialFen": "2bakr3/4a4/4b1n2/p3p2Rp/2p3pC1/4Pn3/P1c3c1P/B1N2CN1B/4A4/3AK4 b - - 6 16",
+      "blunderMove": "g7h5",
+      "pv": [
+        "f2f9",
+        "e8f9"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "o4ajQn",
+      "sourceRow": 16,
+      "url": "https://play.xiangqi.com/puzzle/o4ajQn/P",
+      "initialFen": "3k1ab2/4a4/4b4/p4C2p/4N4/4n1N2/P1ncR3P/4K4/3r5/2B2AB2 b - - 1 29",
+      "blunderMove": "d1f1",
+      "pv": [
+        "e3d3",
+        "d9e9",
+        "g4h6",
+        "f1f6",
+        "e5f7",
+        "f6f7",
+        "h6f7",
+        "e8f7"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "o74wdB",
+      "sourceRow": 20,
+      "url": "https://play.xiangqi.com/puzzle/o74wdB/P",
+      "initialFen": "1nb1ka3/4a4/4b4/p1p1p3p/1r4r2/2P1P3C/P2R3NP/9/3RA4/2BAK3c b - - 3 21",
+      "blunderMove": "i0h0",
+      "pv": [
+        "h3g5",
+        "b5g5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ow3Evw",
+      "sourceRow": 22,
+      "url": "https://play.xiangqi.com/puzzle/ow3Evw/P",
+      "initialFen": "3rkab2/3ca4/n3b1nr1/p1p1p3p/6P2/1NP6/P3PR2c/1C4C1N/3R5/2BAKAB2 b - - 2 15",
+      "blunderMove": "i3e3",
+      "pv": [
+        "f3e3",
+        "d8d4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oM0beE",
+      "sourceRow": 28,
+      "url": "https://play.xiangqi.com/puzzle/oM0beE/P",
+      "initialFen": "2b1ka3/4a4/2n1b3N/6r2/2p6/5c3/2P4RP/4B4/4AC3/2BAK4 b - - 6 27",
+      "blunderMove": "g6i6",
+      "pv": [
+        "i7g8",
+        "f4f8",
+        "h3f3",
+        "i6i8",
+        "f3f8",
+        "c7d5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "Lb0edl",
+      "sourceRow": 33,
+      "url": "https://play.xiangqi.com/puzzle/Lb0edl/P",
+      "initialFen": "2baka1r1/9/2n1b4/p1p1p3p/5r3/2P2NR2/P3c3P/4BC3/4A4/2BAK3R b - - 1 18",
+      "blunderMove": "f5g5",
+      "pv": [
+        "g4g5",
+        "e7g5",
+        "f4d5",
+        "h9h3",
+        "d5c7",
+        "e6e5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "fork"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ReEe4r",
+      "sourceRow": 39,
+      "url": "https://play.xiangqi.com/puzzle/ReEe4r/P",
+      "initialFen": "3ak1b1r/3Ca4/2n1bcn2/p1R3N2/6r1N/2P2p3/P7p/4B4/4A4/2BAK2R1 w - - 0 21",
+      "blunderMove": "i5h7",
+      "pv": [
+        "i9h9",
+        "h0g0",
+        "f7h7",
+        "g0g5",
+        "e7g5",
+        "d8b8"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "Lmpvdn",
+      "sourceRow": 41,
+      "url": "https://play.xiangqi.com/puzzle/Lmpvdn/P",
+      "initialFen": "3a3RC/4ak3/4b4/p8/6b2/2PNnr2P/P8/9/4An3/2BAK1B2 w - - 8 36",
+      "blunderMove": "d4e6",
+      "pv": [
+        "e4d2",
+        "e1d2",
+        "f1d2",
+        "e0e1",
+        "d2f3",
+        "e1d1",
+        "f4c4",
+        "h9h8"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "o9WMdE",
+      "sourceRow": 51,
+      "url": "https://play.xiangqi.com/puzzle/o9WMdE/P",
+      "initialFen": "3ak1bn1/4a4/2R1b4/p7p/4N1p2/2P1c4/4N1P1P/4C4/9/crBAKAB2 w - - 3 18",
+      "blunderMove": "e2e4",
+      "pv": [
+        "a0c0",
+        "e0e1",
+        "b0b1",
+        "e3d1",
+        "c0c7",
+        "c4c5"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "fork"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "qYgWe9",
+      "sourceRow": 54,
+      "url": "https://play.xiangqi.com/puzzle/qYgWe9/P",
+      "initialFen": "4kab2/4a4/4b4/R8/8p/2C1P4/P2r5/2r1B4/4A4/4KAB2 w - - 1 25",
+      "blunderMove": "a6i6",
+      "pv": [
+        "e9d9",
+        "i6b6",
+        "c2c4",
+        "b6d6",
+        "d3d6",
+        "e2c4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RdpMdl",
+      "sourceRow": 56,
+      "url": "https://play.xiangqi.com/puzzle/RdpMdl/P",
+      "initialFen": "2b1ka3/4a4/2n1b2r1/p7p/4r4/2PN5/4cR2P/3CB1R2/4A4/2BAK4 w - - 2 21",
+      "blunderMove": "d4f5",
+      "pv": [
+        "h7h0",
+        "f3f0",
+        "h0f0",
+        "e0f0",
+        "e5f5",
+        "g2f2"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "remove_defender"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "o4aj9n",
+      "sourceRow": 62,
+      "url": "https://play.xiangqi.com/puzzle/o4aj9n/P",
+      "initialFen": "1r2ka3/4a4/2nc2n1b/1C2p1N1p/C1P6/6P2/r7P/4B4/9/1R1AKAB1R w - - 0 19",
+      "blunderMove": "c5b5",
+      "pv": [
+        "c7a8",
+        "b0b3",
+        "a3b3",
+        "b6b3",
+        "b9b5",
+        "a5a7",
+        "b5b3",
+        "a7g7"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "exchange",
+          "fork"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "LzPwvV",
+      "sourceRow": 64,
+      "url": "https://play.xiangqi.com/puzzle/LzPwvV/P",
+      "initialFen": "2c1kab2/4a4/4b1c2/pr2n1C2/4p1P2/rNR5R/4P4/5C3/4A4/3AK4 b - - 0 33",
+      "blunderMove": "e6g5",
+      "pv": [
+        "g6g9",
+        "e7g9",
+        "c4c9",
+        "e8d9",
+        "b4d5",
+        "a4i4",
+        "d5b6",
+        "i4i0"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "exchange",
+          "remove_defender"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "qBNydd",
+      "sourceRow": 65,
+      "url": "https://play.xiangqi.com/puzzle/qBNydd/P",
+      "initialFen": "4kab2/3n5/4ba3/p1r4cp/1R7/4P2R1/P2p2P1P/4C1N2/4A4/c3KAB2 w - - 3 21",
+      "blunderMove": "e4e5",
+      "pv": [
+        "c6c0",
+        "e1d0",
+        "d3d2",
+        "f0e1",
+        "c0c4",
+        "b5b0",
+        "c4h4",
+        "e1d2",
+        "a0a1",
+        "d0e1"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LEnkd6",
+      "sourceRow": 75,
+      "url": "https://play.xiangqi.com/puzzle/LEnkd6/P",
+      "initialFen": "2bk1a3/4a4/4b4/9/5P3/4C4/9/3Cn4/2cNA4/3A1K3 w - - 12 46",
+      "blunderMove": "f5e5",
+      "pv": [
+        "c1c0",
+        "f0f1",
+        "e2g3",
+        "d2g2",
+        "g3e4",
+        "d1e3"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "fork"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LkMzjm",
+      "sourceRow": 85,
+      "url": "https://play.xiangqi.com/puzzle/LkMzjm/P",
+      "initialFen": "r1bak4/4a4/4b2c1/p3C2cp/2R6/4P4/P1P5P/1C7/9/RNBAKAr2 w - - 0 16",
+      "blunderMove": "b2h2",
+      "pv": [
+        "g0g6",
+        "e6h6",
+        "g6h6",
+        "h2h7",
+        "e7c5",
+        "h7g7"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "Lp10by",
+      "sourceRow": 96,
+      "url": "https://play.xiangqi.com/puzzle/Lp10by/P",
+      "initialFen": "4ka1N1/9/4c4/p7p/2nr5/6BRP/P8/1C4C2/4A4/3K1AB2 w - - 27 56",
+      "blunderMove": "e1d2",
+      "pv": [
+        "d5d2",
+        "d0e0",
+        "e9d9",
+        "g2g3"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "fork"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "qAyldv",
+      "sourceRow": 97,
+      "url": "https://play.xiangqi.com/puzzle/qAyldv/P",
+      "initialFen": "3ak1b2/4a4/4b1r1n/pR6p/7r1/2N6/P3P3P/4BC3/4A1n2/2BK1AR2 w - - 2 24",
+      "blunderMove": "c4d6",
+      "pv": [
+        "h5d5",
+        "e1d2",
+        "g1e2",
+        "c0e2",
+        "g7g0",
+        "d6c8"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ogm3Jr",
+      "sourceRow": 98,
+      "url": "https://play.xiangqi.com/puzzle/ogm3Jr/P",
+      "initialFen": "3akab2/9/b1c3n2/p2r2p1p/3Np4/1R7/Pn1rP1P1P/3CB1N2/4A4/R3KAB2 w - - 6 19",
+      "blunderMove": "a0c0",
+      "pv": [
+        "b3d2",
+        "e1d2",
+        "c7c5",
+        "g3g4",
+        "d3d5",
+        "d2e1"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "trap"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RV5w9b",
+      "sourceRow": 127,
+      "url": "https://play.xiangqi.com/puzzle/RV5w9b/P",
+      "initialFen": "2bak4/4a4/4b4/p3C1r1p/1r1NR4/2R6/P5pcP/9/5Cn2/2BAKABN1 b - - 2 25",
+      "blunderMove": "b5d5",
+      "pv": [
+        "e5d5",
+        "g6e6"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "RdpMPr",
+      "sourceRow": 128,
+      "url": "https://play.xiangqi.com/puzzle/RdpMPr/P",
+      "initialFen": "3akab2/4n4/b8/3Rn3p/p4rp2/1R2c4/P1P1P1P1P/N3B1N2/4A4/2c1K4 w - - 0 23",
+      "blunderMove": "e3e4",
+      "pv": [
+        "e8d6",
+        "e2c0"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "qre19O",
+      "sourceRow": 129,
+      "url": "https://play.xiangqi.com/puzzle/qre19O/P",
+      "initialFen": "1rb1kabC1/4a3r/n3c4/2p1C3p/p5p2/2P6/P3P1P1P/1c4N2/9/1RBAKABR1 w - - 3 11",
+      "blunderMove": "h0h7",
+      "pv": [
+        "b2e2",
+        "b0b9",
+        "e2e6",
+        "c0e2",
+        "a7b9",
+        "h7h6"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oX0nrW",
+      "sourceRow": 131,
+      "url": "https://play.xiangqi.com/puzzle/oX0nrW/P",
+      "initialFen": "1rbak2r1/4a4/2n1b4/p1p1p3p/1c7/PRP3p2/4PCncP/2N1C1NRB/4A4/2BAK4 b - - 3 13",
+      "blunderMove": "h3h4",
+      "pv": [
+        "c4c5",
+        "c6c5",
+        "b4g4",
+        "h9f9",
+        "g4g3",
+        "h4c4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "fork",
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RdpMGl",
+      "sourceRow": 132,
+      "url": "https://play.xiangqi.com/puzzle/RdpMGl/P",
+      "initialFen": "2bakabr1/9/2n1c4/p1p1p3p/1N7/6R2/P2rn1PcP/R1C1B1N2/2C6/3AKAB2 w - - 0 16",
+      "blunderMove": "c2c7",
+      "pv": [
+        "e3g4",
+        "g3g4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "qKXYG9",
+      "sourceRow": 134,
+      "url": "https://play.xiangqi.com/puzzle/qKXYG9/P",
+      "initialFen": "3a1kb2/4a4/b3c4/6p1C/4n4/2p2NP2/P7P/B4N3/9/2BAKA3 w - - 2 31",
+      "blunderMove": "f0e1",
+      "pv": [
+        "e5d3",
+        "e0f0",
+        "d3f4",
+        "f2h3",
+        "e7f7",
+        "f0e0"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "qAyl9v",
+      "sourceRow": 141,
+      "url": "https://play.xiangqi.com/puzzle/qAyl9v/P",
+      "initialFen": "C2k1a3/4a4/N1n1bc3/p3p3p/9/2B3B2/P3P3P/6rc1/9/3AKA1R1 b - - 0 30",
+      "blunderMove": "f7h7",
+      "pv": [
+        "a7b9",
+        "e7c9",
+        "b9c7",
+        "d9d8",
+        "c7e6",
+        "d8d7",
+        "e6c5",
+        "d7d8"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oM0b9b",
+      "sourceRow": 154,
+      "url": "https://play.xiangqi.com/puzzle/oM0b9b/P",
+      "initialFen": "5ab2/4k4/3N1a3/p7p/3R2P2/P3C4/2r5P/4Bn3/4K4/1cBA1A3 b - - 28 41",
+      "blunderMove": "f2e4",
+      "pv": [
+        "d5e5",
+        "e8d8",
+        "e5e4",
+        "d8d7"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "exchange",
+          "fork"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "LmpvQa",
+      "sourceRow": 197,
+      "url": "https://play.xiangqi.com/puzzle/LmpvQa/P",
+      "initialFen": "1rbak4/4a4/4b1n2/p3c3p/3NN2n1/2C3P2/P3P3P/1c1CB4/9/R1BAKA3 w - - 5 22",
+      "blunderMove": "c4e4",
+      "pv": [
+        "b9b5",
+        "d5e7",
+        "c9e7",
+        "e4e6",
+        "g7e6",
+        "e5c4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "skewer"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oQQlKN",
+      "sourceRow": 203,
+      "url": "https://play.xiangqi.com/puzzle/oQQlKN/P",
+      "initialFen": "3k1a3/4a4/3cN3b/4n3p/4R4/9/P2r4P/5C3/4A4/2BA1K3 b - - 4 49",
+      "blunderMove": "d3d6",
+      "pv": [
+        "f2f6",
+        "d6d3",
+        "e5e6",
+        "i7g9",
+        "e7g8",
+        "d9d8"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "remove_defender"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "R0g4Bm",
+      "sourceRow": 204,
+      "url": "https://play.xiangqi.com/puzzle/R0g4Bm/P",
+      "initialFen": "2P1c4/4a4/4ka3/3N5/9/9/3n5/4B4/3K5/9 b - - 15 89",
+      "blunderMove": "e7d7",
+      "pv": [
+        "d6c4",
+        "e9e2",
+        "c4e5",
+        "d7d8",
+        "e5d3",
+        "e8d9"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "fork",
+          "pin"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RV5w46",
+      "sourceRow": 224,
+      "url": "https://play.xiangqi.com/puzzle/RV5w46/P",
+      "initialFen": "1rbak1cr1/4a4/1c2b1nC1/p3n3p/2p1C4/7R1/P1P1N3P/2N6/9/2BAKABR1 b - - 2 15",
+      "blunderMove": "g7f5",
+      "pv": [
+        "e3f5",
+        "h9h7",
+        "h4h7",
+        "b7h7",
+        "h0h7",
+        "e6g5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "o74wm9",
+      "sourceRow": 225,
+      "url": "https://play.xiangqi.com/puzzle/o74wm9/P",
+      "initialFen": "4k1b2/4cR3/4b2r1/p5p1p/2prc4/1N2n4/P5P1P/9/3CA4/1RBK1AB2 b - - 7 23",
+      "blunderMove": "c5c4",
+      "pv": [
+        "b4c6",
+        "c4b4",
+        "c6e5",
+        "e8e5",
+        "b0b4",
+        "d5c5",
+        "c0a2",
+        "e4c3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "o74wm2",
+      "sourceRow": 239,
+      "url": "https://play.xiangqi.com/puzzle/o74wm2/P",
+      "initialFen": "3ak2r1/4a2c1/2C1b1n2/p3p3p/6p2/2PR5/Pr2N1P1P/4B4/9/R2AKAB2 b - - 0 16",
+      "blunderMove": "b3e3",
+      "pv": [
+        "d4d8",
+        "e9f9",
+        "c7c9",
+        "f9f8",
+        "c9h9",
+        "e3f3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "skewer"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ovMw2z",
+      "sourceRow": 241,
+      "url": "https://play.xiangqi.com/puzzle/ovMw2z/P",
+      "initialFen": "r1bakab2/9/2N6/p3n1p1p/9/3p2P2/P1P1r3P/C3C4/R3A3R/2c1KAB2 b - - 0 15",
+      "blunderMove": "e3e2",
+      "pv": [
+        "g0e2",
+        "c0c7"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "q8pwBW",
+      "sourceRow": 244,
+      "url": "https://play.xiangqi.com/puzzle/q8pwBW/P",
+      "initialFen": "4kab2/4a4/4b1c2/6c2/9/2P2N3/8n/4BA2N/3C5/4KAB2 b - - 10 37",
+      "blunderMove": "g6d6",
+      "pv": [
+        "d1i1",
+        "d6i6",
+        "i1i3",
+        "i6i2",
+        "g0i2",
+        "e9d9"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "trap"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "ojl2PZ",
+      "sourceRow": 260,
+      "url": "https://play.xiangqi.com/puzzle/ojl2PZ/P",
+      "initialFen": "3k1ab2/4a1N2/8c/6C2/2n1C4/5p3/2p1n4/4B4/4A4/2BAK4 b - - 10 47",
+      "blunderMove": "c5b3",
+      "pv": [
+        "g6g9",
+        "d9d8",
+        "g8i7",
+        "e3g2",
+        "e5d5",
+        "c3d3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "remove_defender"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "o9WM2O",
+      "sourceRow": 275,
+      "url": "https://play.xiangqi.com/puzzle/o9WM2O/P",
+      "initialFen": "3akabr1/9/c1n1bc2n/pR2p1p1N/2p6/6P1P/P1P1P2r1/2N1BCC2/4A4/4KAB1R w - - 9 13",
+      "blunderMove": "i0i2",
+      "pv": [
+        "f7f6",
+        "b6b7",
+        "f6i6",
+        "b7c7",
+        "i6i2",
+        "f2i2"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "fork",
+          "trap"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LxN1G5",
+      "sourceRow": 286,
+      "url": "https://play.xiangqi.com/puzzle/LxN1G5/P",
+      "initialFen": "2bakab2/r7r/2n2c2n/p1p1p1p2/2c5R/1R5N1/P3P4/2N1BC2C/4A4/3AK1B2 b - - 2 12",
+      "blunderMove": "c9e7",
+      "pv": [
+        "i5f5",
+        "f7f2",
+        "i2i8",
+        "a8i8",
+        "f5f2",
+        "g6g5"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "qre10Q",
+      "sourceRow": 288,
+      "url": "https://play.xiangqi.com/puzzle/qre10Q/P",
+      "initialFen": "2b1ka2r/4a3n/1c2b4/p2R4p/4C1P2/5N3/P3P3P/cCN1K4/1n7/3A1AB2 w - - 11 25",
+      "blunderMove": "d6d8",
+      "pv": [
+        "i9h9",
+        "g5h5",
+        "h9g9",
+        "d8c8",
+        "c9a7",
+        "c8c7",
+        "g9g3",
+        "e3e4"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "R6aBAL",
+      "sourceRow": 299,
+      "url": "https://play.xiangqi.com/puzzle/R6aBAL/P",
+      "initialFen": "2b1kabr1/3Ca4/2n6/4p3p/r1p3p2/3nP4/2P3P1P/Nc4Nc1/4C4/1RBAKABR1 b - - 9 13",
+      "blunderMove": "d4c2",
+      "pv": [
+        "b0b2",
+        "c2e1",
+        "g2e1",
+        "h2e2",
+        "e1g2",
+        "h9h0",
+        "g2h0",
+        "e2a2"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "discovered_attack",
+          "exchange",
+          "trap"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "onAWXR",
+      "sourceRow": 300,
+      "url": "https://play.xiangqi.com/puzzle/onAWXR/P",
+      "initialFen": "3k1ab2/4a4/r1n1b1n2/2C1pR2p/p8/2P2N3/c3P3P/NcC1B4/3rAR3/2BAK4 b - - 5 21",
+      "blunderMove": "g7h5",
+      "pv": [
+        "f4h5",
+        "b2e2",
+        "e0f0",
+        "e2a2",
+        "c0a2",
+        "a3b3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "exchange"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "LNexkq",
+      "sourceRow": 302,
+      "url": "https://play.xiangqi.com/puzzle/LNexkq/P",
+      "initialFen": "1rbak1b2/4a4/1cn2c2n/pR2p1p2/2r5p/3NC1PN1/P3P3P/4B2C1/4A4/2BAK3R b - - 1 13",
+      "blunderMove": "f7f6",
+      "pv": [
+        "d4e6",
+        "f6b6",
+        "e6c5",
+        "b6e6"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack",
+          "exchange"
+        ],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "oXQX5q",
+      "sourceRow": 319,
+      "url": "https://play.xiangqi.com/puzzle/oXQX5q/P",
+      "initialFen": "2b1ka3/4aPR2/4b4/p1p6/8p/P1P1p4/5r1nP/4B4/4A4/2NAK1B2 w - - 15 36",
+      "blunderMove": "c0d2",
+      "pv": [
+        "e7g5",
+        "e1f0",
+        "h3g1",
+        "e0e1",
+        "f3f0",
+        "f8f9",
+        "e8f9",
+        "e2c0"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [],
+        "material": "no_gain"
+      }
+    },
+    {
+      "id": "owp2wq",
+      "sourceRow": 321,
+      "url": "https://play.xiangqi.com/puzzle/owp2wq/P",
+      "initialFen": "1r1k1ab2/4a4/3cb4/p7p/1P1C1Rp2/9/Pn2P1c1P/1CN2R3/1r7/2BAKAB2 b - - 12 25",
+      "blunderMove": "d9e9",
+      "pv": [
+        "d5e5",
+        "e9d9",
+        "c2d4",
+        "b9c9",
+        "d4b3",
+        "c9c3"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "RVrngR",
+      "sourceRow": 328,
+      "url": "https://play.xiangqi.com/puzzle/RVrngR/P",
+      "initialFen": "3akab2/9/4b4/p7p/2r2P3/9/PRc2p2P/2N1B4/4A4/4KA3 w - - 2 26",
+      "blunderMove": "f5f6",
+      "pv": [
+        "c3i3",
+        "b3f3",
+        "i3i0",
+        "e2g0",
+        "c5c2",
+        "f6f7"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "discovered_attack"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "o996Eo",
+      "sourceRow": 340,
+      "url": "https://play.xiangqi.com/puzzle/o996Eo/P",
+      "initialFen": "3rkab2/5C3/1R2Ca3/p3p3p/7n1/r8/1N7/4B4/4A4/3AK1B2 b - - 9 43",
+      "blunderMove": "h5f4",
+      "pv": [
+        "f8a8",
+        "a6a5",
+        "a8a4",
+        "a5a4",
+        "e7c7",
+        "a4b4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "trap"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "q5Ywwm",
+      "sourceRow": 368,
+      "url": "https://play.xiangqi.com/puzzle/q5Ywwm/P",
+      "initialFen": "4kab2/4a4/2n1b4/p3p3p/9/1N2PnBN1/P7P/1C7/4A4/3AK3c b - - 2 24",
+      "blunderMove": "i6i5",
+      "pv": [
+        "b4d3",
+        "c7d5",
+        "d3f4",
+        "d5f4",
+        "b2b4",
+        "e6e5",
+        "b4f4",
+        "e5e4"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "trap"
+        ],
+        "material": "gain"
+      }
+    },
+    {
+      "id": "oM2jKq",
+      "sourceRow": 501,
+      "url": "https://play.xiangqi.com/puzzle/oM2jKq/P",
+      "initialFen": "r3kabr1/4aR3/4b1n2/p3c3p/2pnC1p2/9/P3N1c1P/4C1N1B/5R3/2BAKA3 b - - 2 17",
+      "blunderMove": "d5e3",
+      "pv": [
+        "e5e7",
+        "e9d9",
+        "e7e3",
+        "a9a8"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack",
+          "fork"
+        ],
+        "material": "no_gain"
+      }
+    }
+  ]
+}

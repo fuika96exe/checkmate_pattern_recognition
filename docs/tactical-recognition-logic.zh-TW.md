@@ -6,13 +6,13 @@
 
 通用戰術分類規則版本：`nine-tactics-draft-0.10`
 走子目的規則版本：`tactics-draft-0.2`  
-主要來源：[戰術分類](../backend/app/tactical_categories.py)、[走子目的](../backend/app/tactics.py)、[交換計算](../backend/app/exchange.py)
+主要來源：[戰術分類](../backend/app/tactical_categories.py)、[走子目的](../backend/app/tactics.py)、[交換計算](../backend/xq_classify/exchange.py)
 
 本文按目前程式實際執行的條件，解釋中國象棋戰術標籤怎樣產生，並指出規則的適用範圍。這些標籤是程式根據局面和短期變化作出的描述，不等同引擎證明該着是最佳着，也不保證符合所有棋書對名稱的定義。
 
 ## 中局題瀏覽器 v3.0 的獨立契約
 
-正常中局題入口 `CapturingTacticsLab` 讀取 `public/data/capturing-tactics.json`；批次入口 `label_puzzle` 經 `analyze_midgame_categories(fen, blunder, pv, solver)` 呼叫 [midgame_tactics.py](../backend/app/midgame_tactics.py)。CSV 匯入先套用既有 `adapt_upload_row`；重新分析舊資料亦走同一入口，完全重算，沒有把 big/small 映射為新分類。
+正常中局題入口 `CapturingTacticsLab` 讀取 `public/data/capturing-tactics.json`；批次入口 `label_puzzle` 經 `analyze_midgame_categories(fen, blunder, pv, solver)` 呼叫 [classify_midgame](../backend/xq_classify/midgame/classify.py)（各標籤的檢測器在 `midgame/detectors/`）。CSV 匯入先套用既有 `adapt_upload_row`；重新分析舊資料亦走同一入口，完全重算，沒有把 big/small 映射為新分類。
 
 完整時間線是 B0（失着前）、B1（失着後）、原題 PV 的各局面。ply 1 是失着，ply 2 是玩家首着。只重播一次，所有步驟都用真實行棋方驗證；雙方着法都更新各自獨立的持久棋子 ID 快照。失着參與計分、但不發標籤。假設輪到玩家的 `view` 只替換 FEN 行棋方並保留其餘欄位，不會當作 PV 停着。缺王、錯誤 FEN、空 PV、行棋方錯配或非法着均回報 `invalid`，附 `id/sourceRow/errorPly/errorFen/errorMove`，不歸入「並非得子」。
 
@@ -99,7 +99,7 @@ npm run build
 
 - FEN 包含棋子位置和行棋方；走法使用 UCCI，例如 `b2e2` 表示由 `b2` 走到 `e2`。棋盤以紅方視角計，`a–i` 由左至右，`0–9` 由紅方底線至黑方底線。
 - 每手結果包含 `ply`、`side`、`ucci` 和 `occurrences`；每個命中項包含識別碼 `id`、中文名稱 `label_zh`、相關格子 `squares` 及說明 `detail`。一手可以同時命中多個標籤，也可以沒有標籤。
-- 合法着法由 [board.py](../backend/app/board.py) 提供，會考慮炮架、蹩馬腿、將帥安全等規則；攻擊圖描述棋子的幾何攻擊。兩者用途不同：「有攻擊」不一定代表該着合法，或吃下後一定得子。
+- 合法着法由 [棋盤模組](../backend/xq_classify/board/) 提供，會考慮炮架、蹩馬腿、將帥安全等規則；攻擊圖描述棋子的幾何攻擊。兩者用途不同：「有攻擊」不一定代表該着合法，或吃下後一定得子。
 - 重播過程依賴提供的棋譜。起始 FEN 不包含之前的走子歷史；例如某次較早的吃子，若不在輸入棋譜內，就不能用來辨認後來的實際反吃。
 - 戰術分類和走子目的各有自己的規則，即使中文名稱相似，也不保證判定相同。它們與將死殺法分類、重複局面的長將／長捉裁決是不同功能。
 
@@ -307,6 +307,6 @@ npm run build
 ## 相關文件與程式
 
 - [將死辨認邏輯（繁體中文）](checkmate-recognition-logic.zh-TW.md)：另一套以終局與殺法為主的辨認規則。
-- [戰術分類程式](../backend/app/tactical_categories.py)、[走子目的程式](../backend/app/tactics.py)、[交換計算程式](../backend/app/exchange.py)。
+- [戰術分類程式](../backend/app/tactical_categories.py)、[走子目的程式](../backend/app/tactics.py)、[交換計算程式](../backend/xq_classify/exchange.py)。
 - [戰術分類測試](../backend/tests/test_tactical_categories.py)、[走子目的測試](../backend/tests/test_tactics.py)、[交換測試](../backend/tests/test_exchange.py)。
 - [API](../backend/app/main.py)及[工作台報告合併](../backend/app/service.py)。
