@@ -9,6 +9,7 @@ from .. import board as b
 from ..exchange import evaluate_exchange, piece_value
 from ..version import MIDGAME_RULES_VERSION
 from .context import LABELS, Analysis, Finding, move_frame
+from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .material import material_result
 from .merge import finalize_labels
@@ -358,40 +359,8 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
         excluded, hits, threats, fork_threats = frame.excluded, frame.hits, frame.threats, frame.fork_threats
         detect_forks(run, frame)
         detect_screen_forks(run, frame)
-        for target, relations in hits.items():
-            for relation in relations:
-                actor = relation["actor"]["id"]
-                if actor == event.actor or before.relation(actor, target):
-                    continue
-                if opened_by(before, after, actor, target, event.move[:2]):
-                    # v2.7 (expert ruling D1): the revealed attack must be a
-                    # real check or a capture with exchange value > 0. An even
-                    # trade offer still counts when the same move gives check,
-                    # because the opponent must answer the check first.
-                    if not (relation["check"] or relation["profitable"] or after.checked):
-                        review("discovered_attack", p, "revealed_attack_not_profitable",
-                               {"attack": relation, "vacated": event.move[:2]})
-                        continue
-                    emit("discovered_attack", p, p + int(after.checked and not relation["check"]),
-                         [event.actor, actor], [target], "vacated_blocker",
-                         {"vacated": event.move[:2], "attack": relation, "beforeFen": before.fen})
-        # v2.8 (expert, o7PaGq): with a pending check, a revealed attack whose
-        # target escapes by answering the check (e.g. capturing the checker)
-        # still counts when the player then wins that piece on its new square.
-        if after.checked and reply is not None and response.actor in after.squares:
-            target = response.actor
-            for relation in after.hits.get(target, []):
-                actor = relation["actor"]["id"]
-                if (relation["check"] or actor == event.actor or before.relation(actor, target) or
-                        any(r["actor"]["id"] == actor for r in hits.get(target, [])) or
-                        not opened_by(before, after, actor, target, event.move[:2])):
-                    continue
-                follow = events[p + 1] if p + 1 < len(events) else None
-                if (follow and follow.victim == target and
-                        evaluate_exchange(positions[p + 1].fen, follow.move) > 0):
-                    emit("discovered_attack", p, follow.ply, [event.actor, actor], [target], "vacated_blocker",
-                         {"vacated": event.move[:2], "attack": relation, "beforeFen": before.fen,
-                          "escapedBy": response.move, "wonOn": follow.move})
+        detect_discovered_attacks(run, frame)
+        detect_escaped_discovered_attacks(run, frame)
         old_rays = ray_relations(before)
         for key, line in ray_relations(after).items():
             actor, front, rear = key[:3]
