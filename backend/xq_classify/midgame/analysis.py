@@ -9,6 +9,7 @@ from .. import board as b
 from ..exchange import evaluate_exchange, piece_value
 from ..version import MIDGAME_RULES_VERSION
 from .context import LABELS, Analysis, Finding, move_frame
+from .detectors.check_fork import detect_check_forks
 from .detectors.discovered_attack import detect_discovered_attacks, detect_escaped_discovered_attacks
 from .detectors.fork import detect_forks, detect_screen_forks, detect_two_threat_forks
 from .detectors.pin import detect_pins, detect_recapture_pins
@@ -131,30 +132,7 @@ def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str):
         detect_skewers(run, frame)
         detect_two_threat_forks(run, frame)
         detect_pins(run, frame)
-        # Derived only after rejecting dead actors and resolving pending check.
-        for parent in list(plies[p - 1]["occurrences"]):
-            if parent["id"] not in {"fork", "discovered_attack", "skewer"} or not after.checked:
-                continue
-            ev = parent["evidence"]
-            targets = ev["targets"][:1] if parent["id"] == "skewer" else ev["targets"]
-            # v2.9 (expert ruling on R0g40E): a discovered attack whose moving
-            # piece itself gives check is a checking parent as well.
-            mover_checks = parent["id"] == "discovered_attack" and any(
-                r["check"] and r["actor"]["id"] == event.actor for rs in after.hits.values() for r in rs)
-            if mover_checks or any(t["piece"].upper() == "K" for t in targets):
-                # v2.7 (expert ruling D3): after the actual reply to the check
-                # the player must have a profitable capture of a major piece,
-                # or the discovering piece itself captured a major piece.
-                options = [r for rows in (reply.captures.values() if reply else []) for r in rows
-                           if r["profitable"] and r["target"]["piece"].upper() in MAIN]
-                mover_capture = parent["id"] == "discovered_attack" and event.victim_kind in MAIN
-                if not options and not mover_capture:
-                    review("check_fork", p, "no_profitable_capture_after_check", {"parentKey": ev["key"]})
-                    continue
-                emit("check_fork", p, ev["confirmedPly"], [r["id"] for r in ev["actors"]],
-                     [r["id"] for r in ev["targets"]], "checking_parent",
-                     {"parentKey": ev["key"], "checks": [r for rs in after.hits.values() for r in rs if r["check"]],
-                      "gainOptions": options[:4], "moverCapture": event.move if mover_capture else None})
+        detect_check_forks(run, frame)
         for target, attacks in threats.items():
             if not any(r["profitable"] for r in attacks):
                 continue
