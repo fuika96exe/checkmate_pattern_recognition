@@ -42,9 +42,10 @@ def _detect_blunder_trade(run: Analysis) -> None:
     """v2.6: the blunder itself may be the opponent's half of an even trade.
 
     Only an immediate same-value major recapture counts; winning a larger
-    piece back is a material gain, not an exchange.
+    piece back is a material gain, not an exchange.  A puzzle without a
+    blunder has no opponent half, so this rule never fires there.
     """
-    if len(run.events) <= 1:
+    if len(run.events) <= 1 or run.events[0].move is None:
         return
     blunder, answer = run.events[0], run.events[1]
     if (

@@ -4,8 +4,11 @@ from ..contracts import MidgameResult
 from .analysis import analyze_midgame
 
 
-def classify_midgame(fen: str, blunder: str, pv: list[str], solver: str) -> MidgameResult:
+def classify_midgame(fen: str, blunder: str | None, pv: list[str], solver: str) -> MidgameResult:
     """Classify a midgame puzzle: *fen* before the *blunder*, the solution line *pv*, *solver* ``'red'``/``'black'``.
+
+    With ``blunder=None`` (a puzzle that starts on the solver's turn) *fen* is the
+    puzzle position and ply 1 is a pass, so the solver's first move is still ply 2.
 
     Raises ``ReplayError`` (with ``ply``, ``fen`` and ``move``) when the input
     does not replay; callers that index many puzzles record it as an invalid row.

@@ -21,6 +21,7 @@ Extra checks for `backend/xq_classify/`:
 python backend\scripts\portability_check.py                  # frozen gates with nothing from the lab importable, flat and vendored
 python backend\scripts\golden_snapshot.py verify             # full output against a local baseline (refactors only)
 python backend\scripts\bench_classify.py --cpus 0-11 --rounds 5 --baseline-root <checkout>   # exits 1 if over 10% slower
+python backend\scripts\no_blunder_diff.py --out <path>       # blunder=None path against the frozen sets (report only)
 python -m pytest backend\tests -q --cov=backend\xq_classify --cov-branch
 ```
 
@@ -160,6 +161,7 @@ The hand-written checkmate label tests (`test_puzzle_label_regressions.py`, `tes
 - Detector order in `midgame/analysis.py` and `PATTERN_ORDER` in `checkmate/recognition.py` are observable in the output.
 - A new label or pattern also needs its zh-TW name in `labels.py`, taken from the lab's rules, never translated (`test_xq_classify_contracts.py`). A new checkmate pattern needs a section in the rules document too, because the test reads the names from there.
 - Lab code calls the package. Do not grow a second copy of a rule or of the move generator in `backend/app/`.
+- Both entry points accept `blunder=None` for puzzles that start on the solver's turn (package 0.2.0). No frozen version covers that path yet, so its labels are provisional. `no_blunder_diff.py` lists where they differ from the frozen labels. Never change a rule to remove such a difference without the user's ruling.
 
 ## Style and safety
 

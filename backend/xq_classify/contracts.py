@@ -18,8 +18,9 @@ class CheckmateResult:
 
     ``status`` is ``'matched'`` (a pattern or a mating-material code), ``'unmatched'``
     or ``'invalid'``.  An invalid result has an ``error``: a move that cannot be
-    played (then ``failed_move_index``, 1-based over blunder + pv), a failed
-    analysis, or a line that does not end in checkmate or stalemate.
+    played (then ``failed_move_index``, 1-based over blunder + pv, or over pv
+    alone when there is no blunder), an empty line, a failed analysis, or a
+    line that does not end in checkmate or stalemate.
     ``timeline`` lists the positions reached (``index``, ``fen``, ``move``);
     ``analysis`` is the full pattern analysis (evidence), when one was made.
     """
@@ -57,7 +58,9 @@ class MidgameResult:
     ``status`` is ``'matched'`` when ``tactics`` is non-empty, else ``'unmatched'``.
     ``tactics`` lists label IDs in the fixed label order; ``material`` holds
     ``kind`` (``'gain'`` / ``'no_gain'``), ``start``, ``end`` and ``delta``.
-    ``plies`` carries the per-move occurrences with their evidence;
+    ``plies`` carries the per-move occurrences with their evidence.  Ply 1 is
+    the blunder; without one it is a pass with ``ucci`` ``None`` and ``fens[1]``
+    repeats ``fens[0]``, so the solver's first move is ply 2 either way.
     ``supporting_evidence`` keeps suppressed occurrences, ``review_reasons``
     the candidates a rule rejected and why.
     """

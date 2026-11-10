@@ -16,10 +16,12 @@ class ReplayError(ValueError):
 
 @dataclass(frozen=True)
 class Event:
+    """One ply of the line.  Without a blunder, ply 1 is a pass: ``move`` and ``actor`` are ``None``."""
+
     ply: int
     side: str
-    move: str
-    actor: str
+    move: str | None
+    actor: str | None
     victim: str | None
     victim_kind: str
 
@@ -54,7 +56,19 @@ def _play(before: Position, ply: int, move: str, solver: str) -> tuple[Event, Po
     return event, Position(after, b.move_piece_identity(before.ids, src, dst), solver)
 
 
-def replay(fen: str, blunder: str, pv: list[str], solver: str) -> tuple[list[Position], list[Event]]:
+def _pass(before: Position, solver: str) -> tuple[Event, Position]:
+    """Ply 1 without a blunder: nothing moves, and the solver must already be the side to move."""
+    if b.side_to_move(before.fen) != solver:
+        raise ValueError(f'first_turn mismatch: expected {b.side_to_move(before.fen)}, got {solver}')
+    opponent = 'black' if solver == 'red' else 'red'
+    return Event(1, opponent, None, None, None, ''), before
+
+
+def replay(fen: str, blunder: str | None, pv: list[str], solver: str) -> tuple[list[Position], list[Event]]:
+    """Play *blunder* (ply 1) and *pv* (plies 2 on); ``blunder=None`` makes ply 1 a pass.
+
+    The numbering is the same either way, so the solver's first move is always ply 2.
+    """
     try:
         ids = _checked_identities(fen, pv, solver)
     except (ValueError, TypeError) as error:
@@ -64,7 +78,7 @@ def replay(fen: str, blunder: str, pv: list[str], solver: str) -> tuple[list[Pos
     for ply, move in enumerate([blunder, *pv], 1):
         before = positions[-1]
         try:
-            event, after = _play(before, ply, move, solver)
+            event, after = _pass(before, solver) if ply == 1 and blunder is None else _play(before, ply, move, solver)
         except (ValueError, TypeError) as error:
             raise ReplayError(str(error), ply, before.fen, move) from error
         events.append(event)

@@ -25,10 +25,20 @@ Both entry points read the same puzzle line:
 
 | Argument | Meaning |
 |---|---|
-| `fen` | The position before the blunder |
-| `blunder` | The UCCI move that creates the puzzle |
+| `fen` | The position before the blunder, or the puzzle position when `blunder` is `None` |
+| `blunder` | The UCCI move that creates the puzzle, or `None` |
 | `pv` | The solution line, a list of UCCI moves |
 | `solver` | Midgame only: `'red'` or `'black'` |
+
+### Puzzles without a blunder
+
+Some puzzles, such as user-made ones, start on the solver's turn and have no blunder. Pass `blunder=None` and the puzzle position as `fen`; `pv` then starts with the solver's first move.
+
+- `classify_midgame` keeps its ply numbering: ply 1 is a pass that leaves the position unchanged, so the solver's first move is still ply 2. `plies[0]` is `{'ply': 1, 'ucci': None, 'solver': False, 'occurrences': []}` and `fens[1]` repeats `fens[0]`. `fen` must have the solver to move, or `ReplayError` is raised at `ply` 1 with `move` `None`.
+- `classify_checkmate` plays `pv` alone. `timeline` indexes and `failed_move_index` count the moves of `pv`. An empty `pv` is invalid.
+- No rule reads the blunder except one midgame `exchange` case (`blunder_trade_recaptured`: the solver at once wins back a piece of the value the blunder took), which therefore never fires here. `material` is counted from `fen`, so a piece the blunder took is not part of `delta`.
+
+This path is not yet covered by the frozen sets. Results for it are provisional until experts have reviewed a batch of such puzzles and a frozen version covers them.
 
 Bad input is reported differently by each:
 
@@ -49,7 +59,7 @@ Both results are frozen dataclasses. `to_dict()` gives the JSON-safe record and 
 | `pattern_ids` | `patternIds` | Pattern IDs in rule order |
 | `material_id` | `materialId` | Mating-material code, only when the line ends in mate and no pattern matched. Absent from an invalid record. |
 | `error` | `error` | Why the line is invalid. Present only in an invalid record. |
-| `failed_move_index` | – | 1-based position in blunder + pv of a move that cannot be played |
+| `failed_move_index` | – | 1-based position in blunder + pv (pv alone without a blunder) of a move that cannot be played |
 | `timeline` | – | Positions reached: `index`, `fen`, `move` |
 | `analysis` | – | Evidence: see below |
 | `schema_version` | – | `SCHEMA_VERSION` |
@@ -63,7 +73,7 @@ Both results are frozen dataclasses. `to_dict()` gives the JSON-safe record and 
 | `status` | `status` | `'matched'` when `tactics` is not empty, else `'unmatched'` |
 | `solver` | `solver` | `'red'` or `'black'` |
 | `tactics` | `tactics` | Label IDs in the fixed label order |
-| `fens` | `fens` | The initial position, then the position after each move |
+| `fens` | `fens` | The initial position, then the position after each ply (a pass repeats it) |
 | `plies` | `plies` | One entry per move, see below |
 | `material` | `material` | `kind`, `start`, `end`, `delta` |
 | `supporting_evidence` | `supportingEvidence` | Occurrences of suppressed labels |
@@ -72,7 +82,7 @@ Both results are frozen dataclasses. `to_dict()` gives the JSON-safe record and 
 
 `material` is the solver's balance of chariots, horses and cannons. `kind` is `'gain'` when `delta` is at least 4, else `'no_gain'`.
 
-A ply has `ply` (1 is the blunder), `ucci`, `solver` (true on the solver's moves) and `occurrences`. An occurrence has `id`, `label_zh`, `squares`, `detail` and `evidence`. Every `evidence` has `key`, `triggerPly`, `confirmedPly`, `relationKind`, `actors` and `targets`; the other keys depend on the label.
+A ply has `ply` (1 is the blunder, or a pass with `ucci` `None`), `ucci`, `solver` (true on the solver's moves) and `occurrences`. An occurrence has `id`, `label_zh`, `squares`, `detail` and `evidence`. Every `evidence` has `key`, `triggerPly`, `confirmedPly`, `relationKind`, `actors` and `targets`; the other keys depend on the label.
 
 ### IDs and display names
 
@@ -109,6 +119,11 @@ All four constants live in `version.py`.
 | `PACKAGE_VERSION` | A new copy is vendored into another repository |
 
 A rules bump in the lab also updates the matching document in `docs/` and regenerates the affected `public/data/*.json`.
+
+| Package | Schema | Change |
+|---|---|---|
+| 0.1.0 | 1.0 | First portable release |
+| 0.2.0 | 1.1 | `blunder=None` for puzzles without a blunder. A midgame `plies[0].ucci` may be `None`. Output for puzzles with a blunder is unchanged, and so are both rules versions. |
 
 ## Changing the package
 

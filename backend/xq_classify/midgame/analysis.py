@@ -45,7 +45,7 @@ LINE_DETECTORS = (
 )
 
 
-def analyze_midgame(fen: str, blunder: str, pv: list[str], solver: str) -> dict:
+def analyze_midgame(fen: str, blunder: str | None, pv: list[str], solver: str) -> dict:
     positions, events = replay(fen, blunder, pv, solver)
     run = Analysis(positions, events, solver)
     for event in events[1:]:

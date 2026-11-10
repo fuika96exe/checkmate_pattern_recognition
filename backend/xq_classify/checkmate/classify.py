@@ -11,6 +11,7 @@ from ..contracts import CheckmateResult
 from .recognition import analyze_patterns
 
 NOT_MATE_ERROR = '解答線終局不是將死或困斃局面'
+EMPTY_LINE_ERROR = '沒有失著時，解答線不能為空'
 
 
 def _play_line(fen: str, moves: list[str]) -> tuple[list[dict], CheckmateResult | None]:
@@ -32,9 +33,17 @@ def _play_line(fen: str, moves: list[str]) -> tuple[list[dict], CheckmateResult 
     return timeline, None
 
 
-def classify_checkmate(fen: str, blunder: str, pv: list[str]) -> CheckmateResult:
-    """Classify a checkmate puzzle: *fen* before the *blunder*, then the solution line *pv*."""
-    moves = [blunder, *pv]
+def classify_checkmate(fen: str, blunder: str | None, pv: list[str]) -> CheckmateResult:
+    """Classify a checkmate puzzle: *fen* before the *blunder*, then the solution line *pv*.
+
+    With ``blunder=None`` *fen* is the puzzle position and only *pv* is played, so
+    ``timeline`` indexes and ``failed_move_index`` count the moves of *pv*.
+    """
+    moves = [*pv] if blunder is None else [blunder, *pv]
+    if not moves:
+        return CheckmateResult(
+            status='invalid', error=EMPTY_LINE_ERROR, timeline=[{'index': 0, 'fen': fen, 'move': None}]
+        )
     timeline, failure = _play_line(fen, moves)
     if failure is not None:
         return failure
