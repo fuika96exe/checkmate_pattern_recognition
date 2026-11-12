@@ -579,7 +579,7 @@ def _qualifying_capture(line: tuple[str, list[str]], item: dict, advisor: str, c
         return None
     other_advisors = [square for square, piece in previous.items() if piece == advisor and square != center]
     after_capture, _ = apply_moves(fen, applied[: int(item['ply'])])
-    defenders = sorted(move[:2] for move in legal_moves(after_capture) if move[2:] == center)
+    defenders = sorted(move[:2] for move in legal_moves(after_capture) if move.endswith(center))
     if other_advisors or defenders:
         return {'ply': item['ply'], 'other_advisors': other_advisors, 'protectors': defenders}
     return None

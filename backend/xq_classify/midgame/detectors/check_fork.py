@@ -59,6 +59,6 @@ def _judge_parent(run: Analysis, frame: MoveFrame, parent: dict) -> None:
 def detect_check_forks(run: Analysis, frame: MoveFrame) -> None:
     if not frame.after.checked:
         return
-    for parent in list(run.occurrences(frame.ply)):  # a copy: emitting appends to the same ply
+    for parent in list(run.occurrences(frame.ply)):  # NOSONAR: a copy, emitting appends to the same ply
         if parent['id'] in _PARENTS and _is_checking_parent(frame, parent):
             _judge_parent(run, frame, parent)

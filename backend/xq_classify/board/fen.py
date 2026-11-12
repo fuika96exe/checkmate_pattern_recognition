@@ -13,7 +13,7 @@ from .errors import BoardError
 from .geometry import FILES
 
 START_FEN = 'rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1'
-UCCI_RE = re.compile(r'^[a-i][0-9][a-i][0-9]$')
+UCCI_RE = re.compile(r'^[a-i]\d[a-i]\d$', re.ASCII)
 _PIECE_LETTERS = 'rnbakcpRNBAKCP'
 
 
