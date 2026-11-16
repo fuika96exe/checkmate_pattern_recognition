@@ -10,9 +10,9 @@ from .board import FILES, apply_move, attacked_squares, legal_moves, parse_fen, 
 
 
 def analyze_midgame_categories(fen: str, blunder: str, pv: list[str], solver: str) -> dict:
-    """Separate puzzle contract; generic API/workbench semantics stay unchanged."""
-    from .midgame_tactics import analyze_midgame
-    return analyze_midgame(fen, blunder, pv, solver)
+    """Separate puzzle contract (xq_classify.classify_midgame); generic API/workbench semantics stay unchanged."""
+    from xq_classify import classify_midgame
+    return classify_midgame(fen, blunder, pv, solver).to_dict()
 
 CATEGORY_RULES_VERSION = "nine-tactics-draft-0.10"
 LABELS = {

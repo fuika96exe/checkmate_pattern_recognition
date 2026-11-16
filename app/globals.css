@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* Docs hold Windows paths such as "C--Coding-…\ba3feaed…": Tailwind reads them as
+   CSS variables, and the escape decodes to an invalid code point that crashes the build. */
+@source not "../docs";
 
 :root {
   --canvas: #f2f3f5;

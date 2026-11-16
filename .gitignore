@@ -53,3 +53,6 @@ build/pyinstaller/
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Phase-0 golden snapshots (backend/scripts/golden_snapshot.py)
+backend/.golden/

@@ -15,11 +15,16 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-from backend.app import board, patterns  # noqa: E402
+sys.path.insert(0, str(ROOT / "backend"))  # xq_classify, imported by backend.app.board
+from backend.app import board  # noqa: E402
+from xq_classify.checkmate import geometry, recognition as patterns  # noqa: E402
+
+CHECKMATE_PACKAGE = ROOT / "backend/xq_classify/checkmate"
+RECOGNIZER_SOURCES = [CHECKMATE_PACKAGE / "recognition.py", *sorted((CHECKMATE_PACKAGE / "patterns").glob("*.py"))]
 
 
 def encode(pieces: dict[str, str], side: str) -> str:
-    return f"{board._board_to_fen(pieces)} {side} - - 0 1"
+    return f"{board.board_to_fen(pieces)} {side} - - 0 1"
 
 
 def transform(fen: str, moves: list[str], rotate: bool = False) -> tuple[str, list[str]]:
@@ -43,7 +48,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
     defender = analysis["side_to_move"]
     attacker = "red" if defender == "black" else "black"
     king = analysis["king_square"]
-    targets = {king, *patterns._orthogonal_palace_neighbors(king, defender)}
+    targets = {king, *geometry.orthogonal_palace_neighbors(king, defender)}
     attacks = analysis["attacked_squares"]
     labels = recognition["patternIds"]
     flags: list[str] = []
@@ -79,7 +84,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
 
     if analysis["is_checkmate"]:
         checker_types = {pieces[e["square"]].upper() for e in analysis["checking_pieces"]}
-        neighbors = patterns._orthogonal_palace_neighbors(king, defender)
+        neighbors = geometry.orthogonal_palace_neighbors(king, defender)
         if checker_types == {"N"} and all(s in pieces and not own(pieces[s]) for s in neighbors):
             if "SMOTHERED_CHECKMATE" not in labels:
                 flags.append("fully_self_blocked_horse_mate_not_smothered")
@@ -89,7 +94,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
             for target in neighbors:
                 if target in pieces or target[0] != own_king[0]:
                     continue
-                if not any(s in pieces for s in board._between(pieces, own_king, target)) and not attacks.get(target):
+                if not any(s in pieces for s in board.squares_between(own_king, target)) and not attacks.get(target):
                     flags.append("off_center_general_closes_unique_escape_but_no_white_face")
                     break
 
@@ -111,7 +116,7 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
             for checker in analysis["checking_pieces"]:
                 if checker["reason"] != "cannon_screen":
                     continue
-                screen = [s for s in board._between(pieces, checker["square"], king) if s in pieces]
+                screen = [s for s in board.squares_between(checker["square"], king) if s in pieces]
                 if len(screen) == 1 and screen[0] in horses:
                     flags.append("horse_cannon_geometry_unlabeled_candidate")
                     break
@@ -123,11 +128,6 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
         piece = trial.pop(move[:2])
         trace.append({"ply": ply, "piece": piece, "move": move, "captured": trial.get(move[2:])})
         trial[move[2:]] = piece
-    for first, reply, second in zip(trace[1::2], trace[2::2], trace[3::2]):
-        if first["piece"].upper() == "C" and reply["piece"].upper() == "B" and second["piece"].upper() == "C":
-            if first["move"][2:] == reply["move"][2:] == second["move"][2:]:
-                flags.append("double_toast_sequence_candidate")
-                break
 
     if "THROAT_CUTTING_CHECKMATE" in labels:
         central = "e8" if defender == "black" else "e1"
@@ -145,15 +145,8 @@ def corpus_row(task: tuple[dict, dict]) -> dict:
 
 def literal_examples() -> list[dict]:
     tree = ast.parse((ROOT/"backend/tests/test_position_analysis.py").read_text(encoding="utf-8"))
-    source = ast.parse((ROOT/"backend/app/patterns.py").read_text(encoding="utf-8"))
-    dispatch = {}
-    for f in source.body:
-        if isinstance(f, ast.FunctionDef):
-            for ret in f.body:
-                if isinstance(ret, ast.Return) and isinstance(ret.value, ast.Dict):
-                    for key, value in zip(ret.value.keys, ret.value.values):
-                        if isinstance(key, ast.Constant) and key.value == "pattern_id" and isinstance(value, ast.Constant):
-                            dispatch[f.name] = value.value
+    dispatch = {recognizer.__name__: pattern for pattern, recognizer in patterns._RECOGNIZERS.items()
+                if pattern in patterns.PATTERN_ORDER}
     examples = {}
 
     def collect(call, test, bindings):
@@ -224,8 +217,6 @@ def sequence_recheck(task: tuple[dict, str]) -> dict:
 
 def focused_probes() -> list[dict]:
     cases = [
-        ("toast_original", "DOUBLE_TOAST_CHECKMATE", "2b1ka3/4a4/4b4/6C2/9/6B2/9/6C2/9/3K5 w - - 0 1", ["g6g9", "e7g9", "g2g9"], True),
-        ("toast_with_legal_blunder_prefix", "DOUBLE_TOAST_CHECKMATE", "2b1ka3/9/3ab4/6C2/9/6B2/9/6C2/9/3K5 b - - 0 1", ["d7e8", "g6g9", "e7g9", "g2g9"], True),
         ("drawer_original", "DRAWER_CHECKMATE", "3akab1C/9/4b4/5R3/9/9/9/9/9/5K3 w - - 0 1", ["f6f9", "e9e8", "f9f8"], True),
         ("drawer_with_legal_blunder_prefix", "DRAWER_CHECKMATE", "2bakab1C/9/9/5R3/9/9/9/9/9/5K3 b - - 0 1", ["c9e7", "f6f9", "e9e8", "f9f8"], True),
         ("heaven_earth_quiet_finish", "HEAVEN_AND_EARTH_CANNON_CHECKMATE", "1Cbak4/4a4/4b1N2/4CR3/9/9/9/9/9/3K5 w - - 0 1", ["f6f9"], True),
@@ -279,8 +270,7 @@ def main():
         puzzles = {p["id"]: p for p in data["puzzles"]}
         rechecks = []
         for row in rows:
-            for flag, pattern in (("double_toast_sequence_candidate", "DOUBLE_TOAST_CHECKMATE"),
-                                  ("palcorner_unlabeled_sequence_review_candidate", "PALCORNER_HORSE_CHECKMATE"),
+            for flag, pattern in (("palcorner_unlabeled_sequence_review_candidate", "PALCORNER_HORSE_CHECKMATE"),
                                   ("elbow_without_real_palace_control", "ELBOW_HORSE_CHECKMATE"),
                                   ("horse_cannon_geometry_unlabeled_candidate", "HORSE_CANNON_CHECKMATE")):
                 if flag in row["flags"] and row["isCheckmate"]:
@@ -291,7 +281,7 @@ def main():
         for flag in row["flags"]:
             flags[flag].append(row["id"])
     result = {"datasetVersion": data["datasetVersion"], "rulesVersion": patterns.CHECKMATE_RULES_VERSION,
-              "recognizerSha256": hashlib.sha256((ROOT/"backend/app/patterns.py").read_bytes()).hexdigest(),
+              "recognizerSha256": hashlib.sha256(b"".join(path.read_bytes() for path in RECOGNIZER_SOURCES)).hexdigest(),
               "patternCounts": dict(Counter(k for row in rows for k in row["labels"])),
               "flagCounts": {k: len(v) for k, v in flags.items()}, "flagIds": dict(flags),
               "examples": examples, "sequenceChecks": sequence_checks, "focusedProbes": focused_probes(), "corpus": rows}

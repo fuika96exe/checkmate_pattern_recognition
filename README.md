@@ -86,13 +86,16 @@ npm.cmd run puzzles:import -- "C:\path\to\Puzzles.csv"
 
 `npm test` 目前仍會執行 `tests/rendered-html.test.mjs` 的舊 starter skeleton 測試；該測試尚未遷移到現有實驗室頁面，因此不是目前的 canonical 驗證命令。請使用上面的 pytest、lint 及 build 組合。
 
+中局戰術及殺法規則在 `backend/xq_classify/`。這個 package 只用標準函式庫，並會複製到 xiangqi-server 使用；介面、輸出欄位、座標約定及版本規則見 [backend/xq_classify/README.md](backend/xq_classify/README.md)。獨立環境驗證用 `python backend\scripts\portability_check.py`，效能比較用 `python backend\scripts\bench_classify.py`。
+
 ## 主要目錄
 
 ```text
 app/                         React/Next.js 前端
   components/                棋盤、工作台及案例測試 UI
   lib/                       API client 與 TypeScript 型別
-backend/app/                 FastAPI、棋盤、記譜及辨識引擎
+backend/app/                 FastAPI、pyffish 棋盤介面、記譜及開局辨識
+backend/xq_classify/         可移植的中局戰術及殺法分類 package
 backend/tests/               pytest 與內置／使用者案例
 backend/tests/fixtures/      JSON 回歸案例
 public/                      靜態資源

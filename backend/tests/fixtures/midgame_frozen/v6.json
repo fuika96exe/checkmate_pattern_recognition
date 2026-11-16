@@ -1,0 +1,103 @@
+{
+  "version": 6,
+  "status": "frozen",
+  "reviewedAt": "2026-11-05",
+  "reviewer": "u_IZTIw8qUC0ZEAibCbgz7BQ",
+  "reviewedRulesVersion": "midgame-tactics-3.1",
+  "source": {
+    "csv": "Puzzles_2026-10-22_08-12-00_tactic_upload.csv",
+    "sourceSha256": "29f714b8b6f6ed0bab3997587e0404610269030d595b3d5628c5b32fbdd81e90"
+  },
+  "vocabulary": [
+    "fork",
+    "discovered_attack",
+    "skewer",
+    "pin",
+    "check_fork",
+    "trap",
+    "remove_defender",
+    "overload",
+    "exchange",
+    "clearance"
+  ],
+  "description": "人工追加：v5 暫不收錄的 3 題。審查標籤與其後的專家裁決結果不同，用戶於 2026-11-05 同意新標籤，依新標籤凍結。v1 至 v5 檔案本身不改動。",
+  "cases": [
+    {
+      "id": "oQQlNG",
+      "sourceRow": 4,
+      "url": "https://play.xiangqi.com/puzzle/oQQlNG/P",
+      "initialFen": "1r2kabn1/4aN3/1Cn1b4/p1p2c2p/6P2/1R1p5/P1P5P/4B1N2/4A4/2BAK4 b - - 5 18",
+      "blunderMove": "f6f7",
+      "pv": [
+        "b7e7",
+        "e8d9",
+        "b4d4",
+        "b9b8"
+      ],
+      "solverSide": "red",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "discovered_attack"
+        ],
+        "material": "no_gain"
+      },
+      "basis": "審查標籤為閃擊；專家裁決 C13（R0g40E 一案）：閃擊的走動子本身將軍，一律是閃擊加抽將。"
+    },
+    {
+      "id": "RPx5eG",
+      "sourceRow": 30,
+      "url": "https://play.xiangqi.com/puzzle/RPx5eG/P",
+      "initialFen": "4ka3/9/4Ca3/p1P5p/2n3p2/2c1R4/P1r3P1P/9/1C2N4/c1BAKAB2 w - - 0 24",
+      "blunderMove": "e4d4",
+      "pv": [
+        "c4c6",
+        "e1c2",
+        "c3c2",
+        "e7e3",
+        "c5d3",
+        "d4d3",
+        "c6c0",
+        "e0e1",
+        "c2c1",
+        "d3d1",
+        "c1c3",
+        "d1d2"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "fork"
+        ],
+        "material": "no_gain"
+      },
+      "basis": "審查標籤為捉雙＋抽將；專家裁決 D3：抽將須在應將後有有利吃車馬炮的選項，這題沒有，只留捉雙。"
+    },
+    {
+      "id": "q8pwe2",
+      "sourceRow": 122,
+      "url": "https://play.xiangqi.com/puzzle/q8pwe2/P",
+      "initialFen": "4kab2/4a4/4b4/p5p2/5P2p/2C1n1N2/P1rc4P/4B1R2/1R2A2r1/3AK1B2 w - - 8 32",
+      "blunderMove": "g4e5",
+      "pv": [
+        "e4d2",
+        "e1d2",
+        "h1b1",
+        "e5d3",
+        "c3d3",
+        "d2e1"
+      ],
+      "solverSide": "black",
+      "expected": {
+        "tactics": [
+          "check_fork",
+          "clearance",
+          "fork",
+          "pin"
+        ],
+        "material": "gain"
+      },
+      "basis": "審查標籤為牽制＋消除阻隔；用戶接受加上捉雙＋抽將（R20g7j 規則：被牽制、離開就失更大子的子吃攻擊子，不算化解）。"
+    }
+  ]
+}

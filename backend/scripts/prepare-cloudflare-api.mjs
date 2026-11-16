@@ -23,6 +23,8 @@ function copyPythonTree(source, destination) {
 rmSync(outputDirectory, { recursive: true, force: true });
 mkdirSync(outputDirectory, { recursive: true });
 copyPythonTree(join(backendDirectory, "app"), join(outputDirectory, "app"));
+// app/board.py imports the portable classifier package as top-level `xq_classify`.
+copyPythonTree(join(backendDirectory, "xq_classify"), join(outputDirectory, "xq_classify"));
 copyFileSync(
   join(backendDirectory, "worker.py"),
   join(outputDirectory, "worker.py"),

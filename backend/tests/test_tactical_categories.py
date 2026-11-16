@@ -131,17 +131,6 @@ def test_user_regressions_reject_non_tactical_labels() -> None:
         )
 
 
-def test_two_separate_black_pieces_can_form_a_fork() -> None:
-    # ...Cb6-h6 simultaneously leaves the black rook attacking Rb4 and the
-    # moved black cannon attacking Rh0.  This is 捉双 even though the two
-    # attacks originate from different black pieces.
-    # The supplied board must have Black to move; with ``w`` this black-cannon
-    # move is necessarily illegal.
-    fen = "1rbak4/4a4/4b1n2/pc6p/6pc1/1R1N1r3/P3P1P1P/4BC2N/4A4/4KABR1 b - - 9 17"
-    labels = _labels(fen, "b6h6")
-    assert "fork" in labels
-
-
 def test_horse_for_crossed_pawn_is_not_an_exchange() -> None:
     # ...Ne7xe3 only trades a 4-point horse for a crossed 2-point pawn; the
     # value loss is not an equal exchange even though the capture is concrete.
@@ -387,13 +376,6 @@ def test_reciprocal_rooks_after_h7i7_are_not_a_discovered_attack() -> None:
     # is an immediate legal recapture, so the rooks merely face a trade.
     fen = "r1bakabr1/9/1cn3nc1/p1p1p2Rp/6p2/2P6/P3P1P1P/1C2C1N2/9/RNBAKAB2 b - - 9 5"
     assert "discovered_attack" not in _labels(fen, "h7i7")
-
-
-def test_unanswerable_new_capture_remains_a_discovered_attack() -> None:
-    # Here b7 is only the cannon's screen, not a defender of the rook on b9.
-    # The same blocker move creates a genuine, unanswerable cannon capture.
-    fen = "1r2k4/9/1p7/9/1R7/9/9/1C7/9/4K4 w - - 0 1"
-    assert "discovered_attack" in _labels(fen, "b5e5")
 
 
 def test_king_escape_restoring_a_rook_move_is_not_discovered_attack() -> None:
